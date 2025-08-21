@@ -1,0 +1,33 @@
+node_modules
+dist
+coverage
+
+# build / artifacts
+out/
+logs/
+*.tgz
+*.tar
+*.zip
+*.gz
+*.lz4
+artifacts/*.pt
+artifacts/*.bin
+artifacts/*.safetensors
+artifacts/*.index
+faiss*/
+*.npy
+*.npz
+
+# OS/editor
+.DS_Store
+*.swp
+
+# binaries
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# logs
+npm-debug.log*
+
