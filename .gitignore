@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+
+# binaries
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# logs
+npm-debug.log*
+
