@@ -1,9 +1,5 @@
+import { registerSW as pwaRegister } from 'virtual:pwa-register';
+
 export function registerSW() {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {
-        // ignore
-      });
-    });
-  }
+  pwaRegister({ immediate: true });
 }

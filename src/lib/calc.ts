@@ -44,6 +44,34 @@ export function computeStreak(drinksByDay: Record<string, number>): number {
   return streak;
 }
 
+export function computeLongestStreak(
+  drinksByDay: Record<string, number>
+): number {
+  const days = Object.keys(drinksByDay);
+  if (days.length === 0) return 0;
+  const times = days
+    .map((d) => new Date(d).getTime())
+    .filter((n) => Number.isFinite(n));
+  if (times.length === 0) return 0;
+  let longest = 0;
+  let currentStreak = 0;
+  const current = new Date(Math.min(...times));
+  const today = new Date();
+  while (current <= today) {
+    const key = current.toISOString().slice(0, 10);
+    const val = drinksByDay[key] ?? 0;
+    if (val === 0) {
+      currentStreak++;
+    } else {
+      longest = Math.max(longest, currentStreak);
+      currentStreak = 0;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+  longest = Math.max(longest, currentStreak);
+  return longest;
+}
+
 export function computePoints(
   drinksByDay: Record<string, { std: number; coping: number }>,
   dailyCap: number,

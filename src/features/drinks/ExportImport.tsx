@@ -1,55 +1,69 @@
 import React, { useRef } from 'react';
-import { Drink } from './DrinkForm';
-import { Button } from '../../components/ui/Button';
+import { useDB } from '../../store/db';
+import type { DB } from '../../store/db';
+import { sha256 } from '../../lib/sha256';
 
-interface Props {
-  drinks: Drink[];
-  onImport: (drinks: Drink[]) => void;
-}
+export default function ExportImport() {
+  const aRef = useRef<HTMLAnchorElement>(null);
+  const { db, wipeAll } = useDB(s => ({ db: s.db, wipeAll: s.wipeAll }));
 
-export function ExportImport({ drinks, onImport }: Props) {
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  function exportData() {
-    const blob = new Blob([JSON.stringify(drinks, null, 2)], {
-      type: 'application/json',
-    });
+  async function doExport() {
+    const payload = { version: db.version, exportedAt: new Date().toISOString(), data: db };
+    const checksum = await sha256(payload.data);
+    const blob = new Blob([JSON.stringify({ ...payload, checksum }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'alchohalt-drinks.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    if (aRef.current) {
+      aRef.current.href = url;
+      aRef.current.download = `alchohalt-export-${Date.now()}.json`;
+      aRef.current.click();
+      URL.revokeObjectURL(url);
+    }
   }
 
-  function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    file.text().then((text) => {
-      try {
-        const data = JSON.parse(text);
-        if (Array.isArray(data)) onImport(data as Drink[]);
-      } catch {
-        // ignore
-      } finally {
-        e.target.value = '';
-      }
-    });
+  async function doImport(ev: React.ChangeEvent<HTMLInputElement>) {
+    const f = ev.target.files?.[0];
+    if (!f) return;
+    const text = await f.text();
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      alert('Invalid JSON');
+      return;
+    }
+    const obj = parsed as { data: DB; checksum?: string };
+    if (!obj?.data?.version) {
+      alert('Missing data/version');
+      return;
+    }
+    const sum = await sha256(obj.data);
+    if (sum !== obj.checksum) {
+      alert('Checksum mismatch');
+      return;
+    }
+    if (!confirm('Replace ALL current data with import?')) return;
+    useDB.setState({ db: obj.data });
+    useDB.getState()._recompute();
+    alert('Import complete');
+  }
+
+  function doWipe() {
+    const s = prompt('Type WIPE to confirm');
+    if (s === 'WIPE') {
+      wipeAll(true);
+      alert('All data cleared');
+    }
   }
 
   return (
     <div className="space-x-2">
-      <Button onClick={exportData}>Export</Button>
-      <Button onClick={() => fileRef.current?.click()} variant="secondary">
+      <button className="px-3 py-1 rounded border" onClick={doExport}>Export</button>
+      <label className="px-3 py-1 rounded border cursor-pointer">
         Import
-      </Button>
-      <input
-        ref={fileRef}
-        type="file"
-        accept="application/json"
-        className="hidden"
-        onChange={handleImport}
-      />
+        <input type="file" accept="application/json" className="hidden" onChange={doImport} />
+      </label>
+      <button className="px-3 py-1 rounded border border-red-600 text-red-600" onClick={doWipe}>Wipe</button>
+      <a ref={aRef} className="hidden" />
     </div>
   );
 }

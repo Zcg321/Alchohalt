@@ -7,7 +7,9 @@ coverage
 *.jpg
 *.jpeg
 *.gif
+!public/*.png
 
 # logs
 npm-debug.log*
 
+!public/icons/*.png

@@ -4,7 +4,8 @@ import {
   stdDrinks,
   widmarkBAC,
   computeStreak,
-  computePoints
+  computePoints,
+  computeLongestStreak
 } from '../src/lib/calc';
 
 describe('calc library', () => {
@@ -38,6 +39,19 @@ describe('calc library', () => {
       '2024-01-01': 1
     };
     expect(computeStreak(data)).toBe(2);
+  });
+
+  it('finds longest AF streak', () => {
+    vi.setSystemTime(new Date('2024-01-10'));
+    const data: Record<string, number> = {
+      '2024-01-10': 0,
+      '2024-01-09': 0,
+      '2024-01-08': 1,
+      '2024-01-07': 0,
+      '2024-01-06': 0,
+      '2024-01-05': 0
+    };
+    expect(computeLongestStreak(data)).toBe(3);
   });
 
   it('computes points', () => {
