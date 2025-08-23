@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getJSON, setJSON } from '../../lib/storage';
 import { Button } from '../../components/ui/Button';
+import { useLanguage } from '../../i18n';
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { t } = useLanguage();
 
   useEffect(() => {
     getJSON<'light' | 'dark'>('theme', 'light').then((t) => {
@@ -20,8 +22,8 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button variant="secondary" onClick={toggle} aria-label="Toggle dark mode">
-      {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+    <Button variant="secondary" onClick={toggle} aria-label={t('toggleDark')}>
+      {theme === 'dark' ? t('lightMode') : t('darkMode')}
     </Button>
   );
 }
