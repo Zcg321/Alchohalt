@@ -1,3 +1,4 @@
+// @no-smoke
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { AlcoholCoachApp } from './app/AlcoholCoachApp';

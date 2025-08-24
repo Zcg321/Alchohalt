@@ -5,7 +5,8 @@ import {
   widmarkBAC,
   computeStreak,
   computePoints,
-  computeLongestStreak
+  computeLongestStreak,
+  daysSinceLastDrink
 } from '../src/lib/calc';
 
 describe('calc library', () => {
@@ -52,6 +53,16 @@ describe('calc library', () => {
       '2024-01-05': 0
     };
     expect(computeLongestStreak(data)).toBe(3);
+  });
+
+  it('computes days since last drink', () => {
+    vi.setSystemTime(new Date('2024-01-05'));
+    const data: Record<string, number> = {
+      '2024-01-05': 0,
+      '2024-01-04': 0,
+      '2024-01-03': 2
+    };
+    expect(daysSinceLastDrink(data)).toBe(2);
   });
 
   it('computes points', () => {

@@ -72,6 +72,21 @@ export function computeLongestStreak(
   return longest;
 }
 
+export function daysSinceLastDrink(drinksByDay: Record<string, number>): number {
+  const current = new Date();
+  let days = 0;
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const key = current.toISOString().slice(0, 10);
+    const val = drinksByDay[key] ?? 0;
+    if (val > 0) break;
+    days++;
+    current.setDate(current.getDate() - 1);
+    if (days > 3650) break;
+  }
+  return days;
+}
+
 export function computePoints(
   drinksByDay: Record<string, { std: number; coping: number }>,
   dailyCap: number,

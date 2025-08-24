@@ -18,6 +18,8 @@ module.exports = {
     }
   },
   rules: {
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+    'max-lines': ['warn', { max: 600, skipBlankLines: true, skipComments: true }],
+    'max-lines-per-function': ['warn', { max: 80, skipBlankLines: true, skipComments: true, IIFEs: true }]
   }
 };

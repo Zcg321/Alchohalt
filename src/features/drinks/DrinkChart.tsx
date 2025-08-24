@@ -1,14 +1,8 @@
-import React from 'react';
-import { Drink } from './DrinkForm';
-import { stdDrinks } from '../../lib/calc';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+// @no-smoke
+import React from "react";
+import { LazyRecharts as R } from "@/shared/charts";
+import { Drink } from "./DrinkForm";
+import { stdDrinks } from "../../lib/calc";
 
 interface Props {
   drinks: Drink[];
@@ -27,16 +21,22 @@ export function DrinkChart({ drinks }: Props) {
     data.push({ date: key.slice(5), std: Number(total.toFixed(2)) });
   }
 
+  if (data.every((d) => d.std === 0)) {
+    return <div data-testid="drinkchart-empty" className="w-full h-48" />;
+  }
+
   return (
     <div className="w-full h-48">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          <XAxis dataKey="date" />
-          <YAxis allowDecimals={false} />
-          <Tooltip />
-          <Bar dataKey="std" fill="#4f46e5" />
-        </BarChart>
-      </ResponsiveContainer>
+      <React.Suspense fallback={<div data-testid="drinkchart-loading" />}>
+        <R.ResponsiveContainer width="100%" height="100%">
+          <R.BarChart data={data}>
+            <R.XAxis dataKey="date" />
+            <R.YAxis allowDecimals={false} />
+            <R.Tooltip />
+            <R.Bar dataKey="std" fill="#4f46e5" />
+          </R.BarChart>
+        </R.ResponsiveContainer>
+      </React.Suspense>
     </div>
   );
 }

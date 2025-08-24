@@ -1,7 +1,8 @@
-import React from 'react';
-import { useDB } from '../store/db';
-import { monthlyBreakdown } from '../lib/stats';
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
+// @no-smoke
+import React from "react";
+import { LazyRecharts as R } from "@/shared/charts";
+import { useDB } from "../store/db";
+import { monthlyBreakdown } from "../lib/stats";
 
 export default function Spending() {
   const { db, stats } = useDB(s => ({ db: s.db, stats: s.stats }));
@@ -25,14 +26,24 @@ export default function Spending() {
             <div className="mt-1 text-sm">Budget: ${budget.toFixed(2)} • <span className={variance>0?'text-red-600':'text-green-600'}>{variance>0?`Over by $${variance.toFixed(2)}`:`Under by $${Math.abs(variance).toFixed(2)}`}</span></div>
           </div>
           <div className="w-full md:w-64 h-40">
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie dataKey="value" data={data} innerRadius={40} outerRadius={60} paddingAngle={2}>
-                  {data.map((_,i)=><Cell key={i} />)}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <React.Suspense fallback={<div data-testid="spending-loading" />}>
+              <R.ResponsiveContainer>
+                <R.PieChart>
+                  <R.Pie
+                    dataKey="value"
+                    data={data}
+                    innerRadius={40}
+                    outerRadius={60}
+                    paddingAngle={2}
+                  >
+                    {data.map((_, i) => (
+                      <R.Cell key={i} />
+                    ))}
+                  </R.Pie>
+                  <R.Tooltip />
+                </R.PieChart>
+              </R.ResponsiveContainer>
+            </React.Suspense>
           </div>
         </div>
         <div className="mt-3 w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-3">

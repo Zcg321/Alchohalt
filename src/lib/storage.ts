@@ -1,7 +1,7 @@
-import { Preferences } from '@capacitor/preferences';
+import { getPreferences } from "@/shared/capacitor";
 
 export async function getJSON<T>(key: string, defaultValue: T): Promise<T> {
-  const { value } = await Preferences.get({ key });
+  const { value } = await (await getPreferences()).get({ key });
   if (!value) return defaultValue;
   try {
     return JSON.parse(value) as T;
@@ -11,7 +11,7 @@ export async function getJSON<T>(key: string, defaultValue: T): Promise<T> {
 }
 
 export async function setJSON(key: string, value: unknown): Promise<void> {
-  await Preferences.set({ key, value: JSON.stringify(value) });
+  await (await getPreferences()).set({ key, value: JSON.stringify(value) });
 }
 
 const timers = new Map<string, ReturnType<typeof setTimeout>>();

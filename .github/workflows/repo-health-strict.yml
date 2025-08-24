@@ -1,0 +1,57 @@
+name: Repo Health Strict
+
+on:
+  pull_request:
+    branches: [ "main", "master" ]
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  strict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install
+        run: pnpm install || npm install
+      - name: Repo Scan (full)
+        run: npm run scan:full
+      - name: Upload scan JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-scan
+          path: repo_scan.json
+      - name: Repo Scan (strict)
+        run: npm run scan:strict
+      - name: Generate smoke tests
+        run: npm run test:smoke
+      - name: Test w/ coverage
+        run: |
+          npm run test:ci
+          npm run coverage:check
+      - name: Dead code & deps
+        run: |
+          npm run deadcode
+          npm run deps:check
+      - name: Build web
+        run: npm run build
+      - name: Size prep
+        run: npm run size:prep
+      - name: Size debug
+        run: npm run size:debug
+      - name: Size report
+        run: npm run size:report
+      - name: APK size (best-effort)
+        run: npm run apk:size || true
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage

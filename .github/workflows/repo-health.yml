@@ -1,0 +1,57 @@
+name: Repo Health
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - name: Set up PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install deps (best-effort)
+        run: |
+          pnpm install || npm install || true
+      - name: Repo Scan (Python)
+        run: |
+          python3 --version
+          python3 repo_scan.py | sed -n '1,200p'
+      - name: Repo Scan (strict)
+        run: SCAN_MAX_FILE=600 SCAN_MAX_FN=80 SCAN_COMPLEXITY=15 python3 repo_scan.py --fail
+      - name: Lint / Typecheck / Tests (best-effort)
+        run: |
+          pnpm run lint || true
+          pnpm run typecheck || true
+          pnpm run test || true
+      - name: Upload JSON report
+        if: always()
+        run: |
+          python3 repo_scan.py --json > repo_scan.json
+          echo "Report lines:"; wc -l repo_scan.json || true
+      - name: Import Graph (DOT/PNG)
+        run: |
+          python3 repo_scan.py --dot imports.dot
+          if command -v dot >/dev/null 2>&1; then dot -Tpng imports.dot -o imports.png; fi
+      - name: Upload Graph
+        uses: actions/upload-artifact@v4
+        with:
+          name: imports-graph
+          path: |
+            imports.dot
+            imports.png
+      - name: Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-scan-json
+          path: repo_scan.json
