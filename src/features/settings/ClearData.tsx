@@ -1,4 +1,4 @@
-import { Preferences } from '@capacitor/preferences';
+import { getPreferences } from "@/shared/capacitor";
 import { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { useLanguage } from '../../i18n';
@@ -13,7 +13,7 @@ export function ClearData({ onCleared }: ClearDataProps) {
 
   async function handleClick() {
     if (!window.confirm(t('eraseConfirm'))) return;
-    await Preferences.clear();
+    await (await getPreferences()).clear();
     onCleared();
     setStatus(t('dataCleared'));
     setTimeout(() => setStatus(''), 3000);

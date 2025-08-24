@@ -1,5 +1,10 @@
 # alchohalt
 
+[![Repo Health](https://github.com/Zcg321/Alchohalt/actions/workflows/repo-health.yml/badge.svg)](../../actions/workflows/repo-health.yml)
+
+<!-- Coverage badge placeholder; integrate Codecov later if desired -->
+<img alt="Coverage Gate" src="https://img.shields.io/badge/coverage-gated-%3E%3D70%25-success">
+
 Experimental React app wrapped with Capacitor. Data saved as a single versioned Preferences record (`alchohalt.db`) for easier migration.
 
 Currently includes basic drink logging with intention, craving rating, HALT flags, and optional alternative actions, persisted with Capacitor Preferences. It offers minimal Tailwind styling, streak and points stats, goal settings for daily caps and weekly totals, and an installable PWA with Workbox-powered offline caching and proper icons. Optional check-in reminders can be enabled via local notifications. Recent additions include JSON export/import of drink history from the settings panel, per-entry editing and deletion, daily grouping with totals, a clear data option, a weekly consumption chart, and a top-level error boundary to catch unexpected issues.

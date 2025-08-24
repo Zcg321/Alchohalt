@@ -1,18 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { stdDrinks } from '../lib/calc';
 import { getJSON, setJSONDebounced } from '../lib/storage';
-import { Drink, DrinkForm, Intention, haltOptions, Halt } from '../features/drinks/DrinkForm';
+import type { Drink, Intention, Halt } from '../features/drinks/DrinkForm/lib';
+import { haltOptions } from '../features/drinks/DrinkForm/lib';
 import type { DrinkPreset } from '../features/drinks/DrinkPresets';
-import { DrinkList } from '../features/drinks/DrinkList';
 import ReminderBanner from '../features/coach/ReminderBanner';
-import { DrinkChart } from '../features/drinks/DrinkChart';
-import { Stats } from '../features/rewards/Stats';
 import { GoalSettings, Goals } from '../features/goals/GoalSettings';
 import { Disclaimer } from '../components/Disclaimer';
-import SettingsPanel from '../features/settings/SettingsPanel';
 import { useLanguage } from '../i18n';
 import { Button } from '../components/ui/Button';
 import ScrollTopButton from '../components/ScrollTopButton';
+
+const DrinkForm = React.lazy(() => import('../features/drinks/DrinkForm'));
+const DrinkList = React.lazy(() => import('../features/drinks/DrinkList'));
+const Stats = React.lazy(() => import('../features/rewards/Stats'));
+const SettingsPanel = React.lazy(() => import('../features/settings/SettingsPanel'));
+const DrinkChart = React.lazy(() => import('../features/drinks/DrinkChart').then(m => ({ default: m.DrinkChart })));
 
 const defaultGoals: Goals = {
   dailyCap: 3,
@@ -111,35 +114,41 @@ export function AlcoholCoachApp() {
     0
   );
   return (
-    <div id="main" className="p-4 space-y-4">
+    <>
+      <a href="#main" className="sr-only focus:not-sr-only">
+        {t('skipToContent')}
+      </a>
+      <main id="main" className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">{t('appName')}</h1>
       <ReminderBanner />
-      {editing ? (
-        <DrinkForm
-          initial={editing}
-          submitLabel={t('save')}
-          onSubmit={saveDrink}
-          onCancel={() => setEditing(null)}
-          presets={presets}
+      <Suspense fallback={null}>
+        {editing ? (
+          <DrinkForm
+            initial={editing}
+            submitLabel={t('save')}
+            onSubmit={saveDrink}
+            onCancel={() => setEditing(null)}
+            presets={presets}
+          />
+        ) : (
+          <DrinkForm onSubmit={addDrink} presets={presets} />
+        )}
+        <div>
+          {t('totalStdDrinks')}: {totalStd.toFixed(2)}
+        </div>
+        <GoalSettings goals={goals} onChange={setGoals} />
+        <Stats drinks={drinks} goals={goals} />
+        <DrinkChart drinks={drinks} />
+        <DrinkList
+          drinks={drinks}
+          onDelete={deleteDrink}
+          onEdit={startEdit}
+          dailyCap={goals.dailyCap}
         />
-      ) : (
-        <DrinkForm onSubmit={addDrink} presets={presets} />
-      )}
-      <div>
-        {t('totalStdDrinks')}: {totalStd.toFixed(2)}
-      </div>
-      <GoalSettings goals={goals} onChange={setGoals} />
-      <Stats drinks={drinks} goals={goals} />
-      <DrinkChart drinks={drinks} />
-      <DrinkList
-        drinks={drinks}
-        onDelete={deleteDrink}
-        onEdit={startEdit}
-        dailyCap={goals.dailyCap}
-      />
-      <SettingsPanel />
-      <Disclaimer />
-      <ScrollTopButton />
+        <SettingsPanel />
+        <Disclaimer />
+        <ScrollTopButton />
+      </Suspense>
       {lastDeleted && (
         <div
           className="fixed bottom-4 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white px-4 py-2 rounded shadow flex items-center"
@@ -152,6 +161,7 @@ export function AlcoholCoachApp() {
           </Button>
         </div>
       )}
-    </div>
+      </main>
+    </>
   );
 }

@@ -7,15 +7,19 @@ vi.mock('@capacitor/preferences', () => ({
   },
 }));
 
-import { dictionaries, loadInitialLang } from '../src/i18n';
+import { dictionaries, loadInitialLang, loadLocale } from '../src/i18n';
 
 describe('i18n dictionaries', () => {
+  beforeAll(async () => {
+    await loadLocale('es');
+  });
+
   it('provides Spanish translation', () => {
-    expect(dictionaries.es.clearAllData).toBe('Borrar todos los datos');
+    expect(dictionaries.es?.clearAllData).toBe('Borrar todos los datos');
   });
 
   it('translates undo action', () => {
-    expect(dictionaries.es.undo).toBe('Deshacer');
+    expect(dictionaries.es?.undo).toBe('Deshacer');
   });
 });
 

@@ -1,3 +1,4 @@
+import { getLocalNotifications } from "@/shared/capacitor";
 /**
  * Notifications: Native (Capacitor LocalNotifications) + Web fallback.
  * - No top-level await (build-safe for ES2020).

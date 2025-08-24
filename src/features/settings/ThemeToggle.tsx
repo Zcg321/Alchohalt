@@ -8,9 +8,11 @@ export function ThemeToggle() {
   const { t } = useLanguage();
 
   useEffect(() => {
-    getJSON<'light' | 'dark'>('theme', 'light').then((t) => {
-      setTheme(t);
-      document.documentElement.classList.toggle('dark', t === 'dark');
+    getJSON<'light' | 'dark' | null>('theme', null).then((t) => {
+      const initial =
+        t ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      setTheme(initial);
+      document.documentElement.classList.toggle('dark', initial === 'dark');
     });
   }, []);
 

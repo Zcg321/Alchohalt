@@ -53,10 +53,13 @@ export default function SettingsPanel() {
         </div>
         </section>
 
-        <section className="p-4 border rounded-2xl">
-          <h2 className="font-semibold mb-2">Data</h2>
-          <ExportImport />
-        </section>
+      <section className="p-4 border rounded-2xl">
+        <h2 className="font-semibold mb-2">Data</h2>
+        <p className="text-sm text-gray-600 mb-2">
+          All data stays on this device. Export for backup. Not medical advice.
+        </p>
+        <ExportImport />
+      </section>
 
         <About />
         <DevTools />
