@@ -18,15 +18,20 @@ export default defineConfig(() => {
         registerType: 'autoUpdate',
         includeAssets: ['icons/icon.svg'],
         manifest: {
-          name: 'Alchohalt',
+          name: 'Alchohalt - Smart Alcohol Tracker & Coach',
           short_name: 'Alchohalt',
-          description: 'Offline-first alcohol tracker & coach. 100% on-device.',
+          description: 'AI-powered alcohol tracking with personalized insights, smart recommendations, and goal management. 100% offline and private.',
           theme_color: '#0ea5e9',
-          background_color: '#0b0f14',
+          background_color: '#0f172a',
           display: 'standalone',
-          display_override: ['standalone', 'minimal-ui', 'browser'],
+          display_override: ['standalone', 'fullscreen', 'minimal-ui'],
+          orientation: 'portrait-primary',
           scope: '/',
-          start_url: '/',
+          start_url: '/?source=pwa',
+          lang: 'en',
+          edge_side_panel: {
+            "preferred_width": 400
+          },
           categories: ['health', 'lifestyle', 'productivity'],
           shortcuts: [
             {

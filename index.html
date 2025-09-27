@@ -2,21 +2,67 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- iOS PWA polish -->
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- iOS PWA optimization -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Alchohalt" />
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192.png" />
-    <!-- Theme colors for light/dark -->
+    <link rel="apple-touch-startup-image" href="/icons/icon-512.png" />
+    
+    <!-- Android PWA optimization -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Alchohalt" />
+    
+    <!-- Theme colors for light/dark with better contrast -->
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#0ea5e9" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0f14" />
-    <title>Alchohalt</title>
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a" />
+    <meta name="msapplication-navbutton-color" content="#0ea5e9" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- SEO and social optimization -->
+    <meta name="description" content="AI-powered alcohol tracking with personalized insights, smart recommendations, and goal management. 100% offline and private." />
+    <meta name="keywords" content="alcohol tracker, sobriety, health, wellness, habit tracker, mindful drinking" />
+    <meta name="author" content="Alchohalt" />
+    
+    <!-- Performance hints -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="prefetch" href="/icons/icon-512.png" />
+    
+    <title>Alchohalt - Smart Alcohol Tracker & Coach</title>
   </head>
-  <body class="bg-black text-white">
+  <body class="bg-black text-white antialiased overflow-x-hidden">
+    <!-- Loading screen for better perceived performance -->
+    <div id="initial-loader" class="fixed inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center z-50">
+      <div class="text-center">
+        <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Alchohalt</h1>
+        <p class="text-slate-400 text-sm mt-2">Loading your wellness coach...</p>
+      </div>
+    </div>
+    
+    <!-- App root -->
     <div id="root"></div>
+    
+    <!-- Remove loader when app loads -->
+    <script>
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('initial-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          loader.style.transition = 'opacity 300ms ease-out';
+          setTimeout(() => loader.remove(), 300);
+        }
+      });
+    </script>
+    
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
