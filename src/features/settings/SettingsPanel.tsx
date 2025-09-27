@@ -4,6 +4,8 @@ import type { Theme, Language } from '../../store/db';
 import { resyncNotifications } from '../../lib/notify';
 import DevTools from './DevTools';
 import ExportImport from '../drinks/ExportImport';
+
+import LegalLinks from './LegalLinks';
 import About from './About';
 
 export default function SettingsPanel() {
@@ -60,9 +62,10 @@ export default function SettingsPanel() {
         </p>
         <ExportImport />
       </section>
+      <About />
+      <LegalLinks />
+      <DevTools />
+    </div>
+  );
+}
 
-        <About />
-        <DevTools />
-      </div>
-    );
-  }
