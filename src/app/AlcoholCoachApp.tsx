@@ -120,18 +120,18 @@ export function AlcoholCoachApp() {
       </a>
       
       <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-950">
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-6xl">
           {/* Header */}
-          <header className="text-center mb-8 animate-in">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent mb-2">
+          <header className="text-center mb-6 sm:mb-8 animate-in">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent mb-2">
               {t('appName')}
             </h1>
-            <p className="text-neutral-600 dark:text-neutral-400 text-lg">
+            <p className="text-neutral-600 dark:text-neutral-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
               Track your journey towards healthier habits
             </p>
           </header>
 
-          <main id="main" className="space-y-6">
+          <main id="main" className="space-y-4 sm:space-y-6">
             <ReminderBanner />
             
             <Suspense fallback={
@@ -179,19 +179,19 @@ export function AlcoholCoachApp() {
               </section>
 
               {/* Stats Summary */}
-              <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="card text-center">
+              <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="card text-center lg:col-span-1">
                   <div className="card-content">
-                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">
+                    <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
                       {totalStd.toFixed(1)}
                     </div>
-                    <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                    <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
                       {t('totalStdDrinks')}
                     </div>
                   </div>
                 </div>
                 
-                <div className="md:col-span-2">
+                <div className="lg:col-span-2">
                   <GoalSettings goals={goals} onChange={setGoals} />
                 </div>
               </section>
@@ -214,7 +214,7 @@ export function AlcoholCoachApp() {
               <SettingsPanel />
               
               {/* Footer */}
-              <footer className="mt-12">
+              <footer className="mt-8 sm:mt-12">
                 <Disclaimer />
               </footer>
               

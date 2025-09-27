@@ -99,6 +99,25 @@
   .gradient-bg {
     @apply bg-gradient-soft from-primary-50 to-primary-100 dark:from-primary-950 dark:to-primary-900;
   }
+  
+  /* Custom slider styling */
+  .slider::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 bg-white rounded-full shadow-md cursor-pointer border-2 border-primary-500;
+  }
+  
+  .slider::-moz-range-thumb {
+    @apply w-5 h-5 bg-white rounded-full shadow-md cursor-pointer border-2 border-primary-500;
+    border: 2px solid theme('colors.primary.500');
+  }
+  
+  /* Focus states for better accessibility */
+  .slider:focus::-webkit-slider-thumb {
+    @apply ring-2 ring-primary-500 ring-offset-2;
+  }
+  
+  .slider:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 2px theme('colors.white'), 0 0 0 4px theme('colors.primary.500');
+  }
 }
 
 @layer utilities {
