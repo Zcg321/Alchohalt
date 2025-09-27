@@ -16,8 +16,7 @@
       "@/*": ["src/*"]
     },
     "types": [
-      "vitest/globals",
-      "node"
+      "vite/client"
     ],
     "lib": [
       "ES2020",

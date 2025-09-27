@@ -10,6 +10,8 @@ import { Disclaimer } from '../components/Disclaimer';
 import { useLanguage } from '../i18n';
 import { Button } from '../components/ui/Button';
 import ScrollTopButton from '../components/ScrollTopButton';
+import AppHeader from './AppHeader';
+import StatsAndGoals from './StatsAndGoals';
 
 const DrinkForm = React.lazy(() => import('../features/drinks/DrinkForm'));
 const DrinkList = React.lazy(() => import('../features/drinks/DrinkList'));
@@ -20,7 +22,6 @@ const InsightsPanel = React.lazy(() => import('../features/insights/InsightsPane
 const SmartRecommendations = React.lazy(() => import('../features/insights/SmartRecommendations'));
 const QuickActions = React.lazy(() => import('../features/insights/QuickActions'));
 const ProgressVisualization = React.lazy(() => import('../features/insights/ProgressVisualization'));
-const AdvancedGoalSetting = React.lazy(() => import('../features/goals/AdvancedGoalSetting'));
 
 const defaultGoals: Goals = {
   dailyCap: 3,
@@ -113,11 +114,6 @@ export function AlcoholCoachApp() {
   function startEdit(drink: Drink) {
     setEditing(drink);
   }
-
-  const totalStd = drinks.reduce(
-    (sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct),
-    0
-  );
   return (
     <>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-4 py-2 bg-primary-600 text-white rounded-md">
@@ -126,15 +122,7 @@ export function AlcoholCoachApp() {
       
       <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-950">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-6xl">
-          {/* Header */}
-          <header className="text-center mb-6 sm:mb-8 animate-in">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent mb-2">
-              {t('appName')}
-            </h1>
-            <p className="text-neutral-600 dark:text-neutral-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Track your journey towards healthier habits
-            </p>
-          </header>
+          <AppHeader />
 
           <main id="main" className="space-y-4 sm:space-y-6">
             <ReminderBanner />
@@ -184,23 +172,11 @@ export function AlcoholCoachApp() {
               </section>
 
               {/* Stats Summary */}
-              <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                <div className="card text-center lg:col-span-1">
-                  <div className="card-content">
-                    <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
-                      {totalStd.toFixed(1)}
-                    </div>
-                    <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                      {t('totalStdDrinks')}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="lg:col-span-2 space-y-4">
-                  <GoalSettings goals={goals} onChange={setGoals} />
-                  <AdvancedGoalSetting goals={goals} onChange={setGoals} />
-                </div>
-              </section>
+              <StatsAndGoals 
+                drinks={drinks}
+                goals={goals}
+                onGoalsChange={setGoals}
+              />
 
               {/* Quick Actions */}
               <QuickActions 
