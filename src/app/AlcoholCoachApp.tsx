@@ -16,6 +16,11 @@ const DrinkList = React.lazy(() => import('../features/drinks/DrinkList'));
 const Stats = React.lazy(() => import('../features/rewards/Stats'));
 const SettingsPanel = React.lazy(() => import('../features/settings/SettingsPanel'));
 const DrinkChart = React.lazy(() => import('../features/drinks/DrinkChart').then(m => ({ default: m.DrinkChart })));
+const InsightsPanel = React.lazy(() => import('../features/insights/InsightsPanel'));
+const SmartRecommendations = React.lazy(() => import('../features/insights/SmartRecommendations'));
+const QuickActions = React.lazy(() => import('../features/insights/QuickActions'));
+const ProgressVisualization = React.lazy(() => import('../features/insights/ProgressVisualization'));
+const AdvancedGoalSetting = React.lazy(() => import('../features/goals/AdvancedGoalSetting'));
 
 const defaultGoals: Goals = {
   dailyCap: 3,
@@ -191,10 +196,29 @@ export function AlcoholCoachApp() {
                   </div>
                 </div>
                 
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 space-y-4">
                   <GoalSettings goals={goals} onChange={setGoals} />
+                  <AdvancedGoalSetting goals={goals} onChange={setGoals} />
                 </div>
               </section>
+
+              {/* Quick Actions */}
+              <QuickActions 
+                drinks={drinks}
+                goals={goals}
+                onAddDrink={addDrink}
+                onOpenSettings={() => {/* scroll to settings */}}
+                onOpenStats={() => {/* scroll to stats */}}
+              />
+
+              {/* Smart Recommendations */}
+              <SmartRecommendations drinks={drinks} goals={goals} />
+
+              {/* Progress Visualization */}
+              <ProgressVisualization drinks={drinks} goals={goals} />
+
+              {/* Personal Insights */}
+              <InsightsPanel drinks={drinks} goals={goals} />
 
               {/* Main Stats */}
               <Stats drinks={drinks} goals={goals} />
