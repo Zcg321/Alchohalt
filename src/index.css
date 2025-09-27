@@ -1,3 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-sans antialiased text-neutral-900 bg-neutral-50 dark:text-neutral-100 dark:bg-neutral-900;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-neutral-900 dark:text-neutral-100;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl leading-tight;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl leading-snug;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl leading-snug;
+  }
+  
+  /* Focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-neutral-900;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white dark:bg-neutral-800 rounded-xl shadow-card border border-neutral-200 dark:border-neutral-700;
+  }
+  
+  .card-header {
+    @apply p-6 border-b border-neutral-200 dark:border-neutral-700;
+  }
+  
+  .card-content {
+    @apply p-6;
+  }
+  
+  .card-footer {
+    @apply p-6 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 rounded-b-xl;
+  }
+  
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500 shadow-sm hover:shadow-md;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-50 focus-visible:ring-neutral-500 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600 dark:hover:bg-neutral-700 shadow-sm hover:shadow-md;
+  }
+  
+  .btn-success {
+    @apply bg-success-600 text-white hover:bg-success-700 focus-visible:ring-success-500 shadow-sm hover:shadow-md;
+  }
+  
+  .btn-danger {
+    @apply bg-danger-600 text-white hover:bg-danger-700 focus-visible:ring-danger-500 shadow-sm hover:shadow-md;
+  }
+  
+  .btn-ghost {
+    @apply text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:ring-neutral-500 dark:text-neutral-400 dark:hover:text-neutral-100 dark:hover:bg-neutral-800;
+  }
+  
+  .input {
+    @apply block w-full px-3 py-2.5 text-sm border border-neutral-300 rounded-lg bg-white placeholder-neutral-500 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 disabled:bg-neutral-50 disabled:text-neutral-500 dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-100 dark:placeholder-neutral-400 dark:focus:border-primary-400 dark:disabled:bg-neutral-900 transition-colors duration-200;
+  }
+  
+  .label {
+    @apply block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5;
+  }
+  
+  .error-message {
+    @apply text-sm text-danger-600 dark:text-danger-400 mt-1;
+  }
+  
+  .success-message {
+    @apply text-sm text-success-600 dark:text-success-400 mt-1;
+  }
+  
+  .skeleton {
+    @apply bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-soft from-primary-50 to-primary-100 dark:from-primary-950 dark:to-primary-900;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .transition-base {
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  .animate-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  .scale-up {
+    animation: scaleUp 0.2s ease-out;
+  }
+}
