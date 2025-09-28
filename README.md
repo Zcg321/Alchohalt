@@ -62,3 +62,7 @@ Export creates a JSON with a SHA-256 checksum. Import verifies version + checksu
 - Export → Wipe → Import sanity
 - Android/iOS device check for LocalNotifications
 - Tag: v1.0.0
+
+## Screenshots
+
+Placeholder screenshots for mobile and desktop can be found under `public/screenshots/`. Replace the placeholder files with actual images when you have them.

@@ -5,6 +5,7 @@ import { resyncNotifications } from '../../lib/notify';
 import { Button } from '../../components/ui/Button';
 import DevTools from './DevTools';
 import ExportImport from '../drinks/ExportImport';
+import LegalLinks from './LegalLinks';
 import About from './About';
 
 export default function SettingsPanel() {
@@ -133,6 +134,7 @@ export default function SettingsPanel() {
       </section>
 
       <About />
+      <LegalLinks />
       <DevTools />
     </div>
   );

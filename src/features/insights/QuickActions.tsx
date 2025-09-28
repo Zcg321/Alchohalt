@@ -4,6 +4,8 @@ import { Button } from '../../components/ui/Button';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../goals/GoalSettings';
 import { stdDrinks } from '../../lib/calc';
+import { useAnalytics } from '../analytics/analytics';
+import MoodTracker from '../mood/MoodTracker';
 
 interface Props {
   drinks: Drink[];
@@ -16,6 +18,7 @@ interface Props {
 export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings, onOpenStats }: Props) {
   const { t } = useLanguage();
   const [showMoodCheck, setShowMoodCheck] = useState(false);
+  const { trackFeatureUsage, trackMoodCheckin } = useAnalytics();
 
   const todayStart = new Date().setHours(0, 0, 0, 0);
   const todayDrinks = drinks.filter(d => d.ts >= todayStart);
@@ -53,13 +56,13 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
 
   const handleMoodCheckIn = () => {
     setShowMoodCheck(true);
+    trackFeatureUsage('mood_check_opened', { source: 'quick_actions' });
   };
 
   const submitMoodCheck = (mood: 'good' | 'stressed' | 'craving' | 'bored') => {
     setShowMoodCheck(false);
-    
+    trackMoodCheckin(mood, 3); // Default intensity for simple check-in
     // Could trigger different recommendations based on mood
-    // For now, just close the modal
   };
 
   return (
@@ -182,58 +185,32 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
         </div>
       </div>
 
-      {/* Mood Check Modal */}
+      {/* Enhanced Mood Check Modal */}
       {showMoodCheck && (
-        <MoodCheckModal
-          onSubmit={submitMoodCheck}
-          onClose={() => setShowMoodCheck(false)}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-lg w-full">
+            <button
+              onClick={() => setShowMoodCheck(false)}
+              className="absolute -top-2 -right-2 z-10 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-gray-50"
+            >
+              <CloseIcon />
+            </button>
+            <MoodTracker 
+              onComplete={() => setShowMoodCheck(false)}
+              className="w-full"
+            />
+          </div>
+        </div>
       )}
     </div>
   );
 }
 
-function MoodCheckModal({ onSubmit, onClose }: {
-  onSubmit: (mood: 'good' | 'stressed' | 'craving' | 'bored') => void;
-  onClose: () => void;
-}) {
-  const moods = [
-    { key: 'good' as const, label: 'Feeling Good', icon: '😊', color: 'text-green-600' },
-    { key: 'stressed' as const, label: 'Stressed', icon: '😰', color: 'text-red-600' },
-    { key: 'craving' as const, label: 'Having Cravings', icon: '🤔', color: 'text-yellow-600' },
-    { key: 'bored' as const, label: 'Bored', icon: '😐', color: 'text-blue-600' },
-  ];
-
+function CloseIcon() {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="card max-w-sm w-full">
-        <div className="card-header">
-          <h3 className="font-semibold">How are you feeling right now?</h3>
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600"
-          >
-            <CloseIcon />
-          </button>
-        </div>
-        <div className="card-content">
-          <div className="space-y-3">
-            {moods.map((mood) => (
-              <button
-                key={mood.key}
-                onClick={() => onSubmit(mood.key)}
-                className={`w-full p-4 text-left rounded-lg border border-neutral-200 hover:border-neutral-300 dark:border-neutral-700 dark:hover:border-neutral-600 transition-colors ${mood.color}`}
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">{mood.icon}</span>
-                  <span className="font-medium">{mood.label}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
   );
 }
 
@@ -333,10 +310,3 @@ function StarIcon() {
   );
 }
 
-function CloseIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  );
-}
