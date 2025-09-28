@@ -203,6 +203,20 @@ function recompute(set: any, get: any) {
 function createStore(set: any, get: any) {
   const base = defaults();
   const d = derive(base);
+  
+  // Initialize theme on store creation
+  if (typeof document !== 'undefined') {
+    const theme = base.settings.theme;
+    const root = document.documentElement;
+    root.classList.remove('light', 'dark');
+    if (theme === 'system') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) root.classList.add('dark');
+    } else {
+      root.classList.add(theme);
+    }
+  }
+  
   return {
     db: { ...base, _lastLogAt: d.lastLog },
     todayTotal: d.todayTotal,

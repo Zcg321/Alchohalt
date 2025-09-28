@@ -4,16 +4,44 @@ import { useLanguage } from '../i18n';
 import { UndoToast } from '../components/UndoToast';
 
 export default function History() {
-  const { entries, deleteEntry } = useDB(
+  const { entries, deleteEntry, editEntry } = useDB(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (s: any) => ({ entries: s.db.entries, deleteEntry: s.deleteEntry })
+    (s: any) => ({ entries: s.db.entries, deleteEntry: s.deleteEntry, editEntry: s.editEntry })
   );
   const [toast, setToast] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    intention: '',
+    craving: 0,
+    altAction: '',
+    notes: ''
+  });
   const { t } = useLanguage();
 
   const onDelete = (id: string) => {
     deleteEntry(id);
     setToast(true);
+  };
+
+  const startEdit = (entry: any) => {
+    setEditingId(entry.id);
+    setEditForm({
+      intention: entry.intention,
+      craving: entry.craving,
+      altAction: entry.altAction || '',
+      notes: entry.notes || ''
+    });
+  };
+
+  const saveEdit = () => {
+    if (editingId) {
+      editEntry(editingId, editForm);
+      setEditingId(null);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
   };
 
   const close = () => setToast(false);
@@ -42,8 +70,38 @@ export default function History() {
               <tr key={e.id} className="border-t">
                 <td className="p-2">{new Date(e.ts).toLocaleString()}</td>
                 <td className="p-2">{e.kind}</td>
-                <td className="p-2">{e.intention}</td>
-                <td className="p-2">{e.craving}</td>
+                <td className="p-2">
+                  {editingId === e.id ? (
+                    <select
+                      value={editForm.intention}
+                      onChange={(ev) => setEditForm(prev => ({ ...prev, intention: ev.target.value }))}
+                      className="w-full px-2 py-1 border rounded text-sm"
+                    >
+                      <option value="celebrate">Celebrate</option>
+                      <option value="social">Social</option>
+                      <option value="taste">Taste</option>
+                      <option value="bored">Bored</option>
+                      <option value="cope">Cope</option>
+                      <option value="other">Other</option>
+                    </select>
+                  ) : (
+                    e.intention
+                  )}
+                </td>
+                <td className="p-2">
+                  {editingId === e.id ? (
+                    <input
+                      type="number"
+                      min="0"
+                      max="10"
+                      value={editForm.craving}
+                      onChange={(ev) => setEditForm(prev => ({ ...prev, craving: parseInt(ev.target.value) || 0 }))}
+                      className="w-16 px-2 py-1 border rounded text-sm"
+                    />
+                  ) : (
+                    e.craving
+                  )}
+                </td>
                 <td className="p-2">{
                   Object.keys(e.halt)
                     .filter((k) => (e.halt as HALT)[k as keyof HALT])
@@ -52,8 +110,17 @@ export default function History() {
                 <td className="p-2">{e.stdDrinks}</td>
                 <td className="p-2">{e.cost?.toFixed(2) ?? '-'}</td>
                 <td className="p-2">
-                  <button className="px-2 py-1 rounded border mr-2">{t('history.edit')}</button>
-                  <button className="px-2 py-1 rounded border" onClick={() => onDelete(e.id)}>{t('history.delete')}</button>
+                  {editingId === e.id ? (
+                    <div className="flex gap-1">
+                      <button className="px-2 py-1 rounded bg-green-600 text-white" onClick={saveEdit}>{t('save')}</button>
+                      <button className="px-2 py-1 rounded border" onClick={cancelEdit}>{t('cancel')}</button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-1">
+                      <button className="px-2 py-1 rounded border mr-2" onClick={() => startEdit(e)}>{t('history.edit')}</button>
+                      <button className="px-2 py-1 rounded border" onClick={() => onDelete(e.id)}>{t('history.delete')}</button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

@@ -43,7 +43,7 @@ export default function DrinkForm({ onSubmit, initial, submitLabel, onCancel, pr
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6">
+    <form id="drink-form" onSubmit={submit} className="space-y-6">
       {presets && (
         <div className="animate-in">
           <PresetButtons 

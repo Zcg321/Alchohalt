@@ -39,9 +39,7 @@ export default defineConfig({
         "**/index.{ts,tsx}",
         "src/**/lib/**",
         "src/**/data/**",
-        "src/**/*.stories.{ts,tsx}",
-        "src/features/**",
-        "src/routes/**"
+        "src/**/*.stories.{ts,tsx}"
       ],
       lines: parseInt(process.env.TEST_COVERAGE_LINES ?? "70", 10),
     },

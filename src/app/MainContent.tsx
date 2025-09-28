@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import type { Drink, DrinkPreset } from '../types/common';
+import type { Drink, DrinkPreset, Goals } from '../types/common';
 import { useLanguage } from '../i18n';
 import ReminderBanner from '../features/coach/ReminderBanner';
 import { Disclaimer } from '../components/Disclaimer';
@@ -16,6 +16,7 @@ const ProgressVisualization = React.lazy(() => import('../features/insights/Prog
 interface MainContentProps {
   drinks: Drink[];
   editing: Drink | null;
+  goals: Goals;
   presets: DrinkPreset[];
   lastDeleted: Drink | null;
   onAddDrink: (drink: Drink) => void;
@@ -29,6 +30,7 @@ interface MainContentProps {
 export default function MainContent({
   drinks,
   editing,
+  goals,
   presets,
   lastDeleted,
   onAddDrink,
@@ -47,18 +49,30 @@ export default function MainContent({
       {/* Quick Actions - Priority on mobile */}
       <div className="block lg:hidden">
         <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
-          <QuickActions />
+          <QuickActions 
+            drinks={drinks}
+            goals={goals}
+            onAddDrink={onAddDrink}
+            onOpenSettings={() => {}}
+            onOpenStats={() => {}}
+          />
         </Suspense>
       </div>
 
       {/* Smart Recommendations */}
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>
-        <SmartRecommendations />
+        <SmartRecommendations 
+          drinks={drinks}
+          goals={goals}
+        />
       </Suspense>
 
       {/* Progress Visualization */}
       <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-        <ProgressVisualization />
+        <ProgressVisualization 
+          drinks={drinks}
+          goals={goals}
+        />
       </Suspense>
 
       {/* Main Grid Layout */}
@@ -68,7 +82,7 @@ export default function MainContent({
           <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
             <DrinkForm
               onSubmit={editing ? onSaveDrink : onAddDrink}
-              initial={editing}
+              initial={editing || undefined}
               submitLabel={editing ? t('save') : t('add')}
               onCancel={editing ? onCancelEdit : undefined}
               presets={presets}
@@ -78,7 +92,13 @@ export default function MainContent({
           {/* Quick Actions - Desktop */}
           <div className="hidden lg:block">
             <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
-              <QuickActions />
+              <QuickActions 
+                drinks={drinks}
+                goals={goals}
+                onAddDrink={onAddDrink}
+                onOpenSettings={() => {}}
+                onOpenStats={() => {}}
+              />
             </Suspense>
           </div>
         </div>
@@ -89,12 +109,18 @@ export default function MainContent({
             <DrinkList
               drinks={drinks}
               onEdit={onStartEdit}
-              onDelete={onDeleteDrink}
+              onDelete={(ts: number) => {
+                const drink = drinks.find(d => d.ts === ts);
+                if (drink) onDeleteDrink(drink);
+              }}
             />
           </Suspense>
 
           <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-            <InsightsPanel />
+            <InsightsPanel 
+              drinks={drinks}
+              goals={goals}
+            />
           </Suspense>
         </div>
       </div>
