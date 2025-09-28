@@ -10,7 +10,16 @@ export default function ReminderBanner() {
   const due = db.settings.reminders.enabled && isReminderWindowDue(now, db.settings.reminders.times, db._lastLogAt);
   if (!due || suppressed) return null;
 
-  const logNow = () => { window.location.href = '/log'; };
+  const logNow = () => { 
+    // Scroll to the drink form instead of navigating to non-existent route
+    const form = document.getElementById('drink-form');
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Focus first input for better UX
+      const firstInput = form.querySelector('input, select') as HTMLElement;
+      if (firstInput) firstInput.focus();
+    }
+  };
 
   return (
     <div className="fixed top-0 inset-x-0 z-40 bg-amber-100 text-amber-900 dark:bg-amber-900 dark:text-amber-100 px-4 py-3 flex items-center justify-between shadow">
