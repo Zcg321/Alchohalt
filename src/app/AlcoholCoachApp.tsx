@@ -1,21 +1,16 @@
-import React, { useEffect, useState, useRef, Suspense } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { stdDrinks } from '../lib/calc';
 import { getJSON, setJSONDebounced } from '../lib/storage';
-import type { Drink, Intention, Halt } from '../features/drinks/DrinkForm/lib';
+import type { Drink, Intention, Halt, DrinkPreset, Goals } from '../types/common';
 import { haltOptions } from '../features/drinks/DrinkForm/lib';
-import type { DrinkPreset } from '../features/drinks/DrinkPresets';
-import ReminderBanner from '../features/coach/ReminderBanner';
-import { GoalSettings, Goals } from '../features/goals/GoalSettings';
-import { Disclaimer } from '../components/Disclaimer';
 import { useLanguage } from '../i18n';
-import { Button } from '../components/ui/Button';
 import ScrollTopButton from '../components/ScrollTopButton';
-
-const DrinkForm = React.lazy(() => import('../features/drinks/DrinkForm'));
-const DrinkList = React.lazy(() => import('../features/drinks/DrinkList'));
-const Stats = React.lazy(() => import('../features/rewards/Stats'));
-const SettingsPanel = React.lazy(() => import('../features/settings/SettingsPanel'));
-const DrinkChart = React.lazy(() => import('../features/drinks/DrinkChart').then(m => ({ default: m.DrinkChart })));
+import AppHeader from './AppHeader';
+import StatsAndGoals from './StatsAndGoals';
+import MainContent from './MainContent';
+import PWAInstallBanner from './PWAInstallBanner';
+import UpdateBanner from './UpdateBanner';
+import { usePWA } from '../hooks/usePWA';
 
 const defaultGoals: Goals = {
   dailyCap: 3,
@@ -30,40 +25,18 @@ export function AlcoholCoachApp() {
   const [editing, setEditing] = useState<Drink | null>(null);
   const [presets, setPresets] = useState<DrinkPreset[]>([]);
   const [lastDeleted, setLastDeleted] = useState<Drink | null>(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(true);
+  const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const undoTimer = useRef<number>();
   const { t } = useLanguage();
+  const { isInstallable, isOnline, updateAvailable, promptInstall, updateApp } = usePWA();
 
+  // Load data on mount
   useEffect(() => {
-    getJSON<Drink[]>('drinks', []).then((saved) =>
-      setDrinks(
-        saved.map((d) => ({
-          volumeMl: d.volumeMl,
-          abvPct: d.abvPct,
-          intention: (d.intention as Intention) || 'taste',
-          craving: typeof d.craving === 'number' ? d.craving : 0,
-          halt: Array.isArray(d.halt)
-            ? d.halt.filter((h): h is Halt => (haltOptions as readonly string[]).includes(h))
-            : [],
-          alt: d.alt || '',
-          ts: d.ts,
-        }))
-      )
-    );
+    loadData();
   }, []);
 
-  useEffect(() => {
-    getJSON<DrinkPreset[]>('presets', []).then(setPresets);
-  }, []);
-
-  useEffect(() => {
-    getJSON<Partial<Goals>>('goals', {}).then((g) =>
-      setGoals({
-        ...defaultGoals,
-        ...g,
-      })
-    );
-  }, []);
-
+  // Persist data changes
   useEffect(() => {
     setJSONDebounced('drinks', drinks);
   }, [drinks]);
@@ -76,31 +49,53 @@ export function AlcoholCoachApp() {
     setJSONDebounced('presets', presets);
   }, [presets]);
 
+  async function loadData() {
+    const [savedDrinks, savedPresets, savedGoals] = await Promise.all([
+      getJSON<Drink[]>('drinks', []),
+      getJSON<DrinkPreset[]>('presets', []),
+      getJSON<Partial<Goals>>('goals', {})
+    ]);
+
+    setDrinks(
+      savedDrinks.map((d) => ({
+        volumeMl: d.volumeMl,
+        abvPct: d.abvPct,
+        intention: (d.intention as Intention) || 'taste',
+        craving: typeof d.craving === 'number' ? d.craving : 0,
+        halt: Array.isArray(d.halt)
+          ? d.halt.filter((h): h is Halt => (haltOptions as readonly string[]).includes(h))
+          : [],
+        alt: d.alt || '',
+        ts: d.ts,
+      }))
+    );
+
+    setPresets(savedPresets);
+    setGoals({ ...defaultGoals, ...savedGoals });
+  }
+
   function addDrink(drink: Drink) {
-    setDrinks((d) => [...d, drink]);
+    setDrinks((prev) => [...prev, { ...drink, ts: Date.now() }]);
   }
 
   function saveDrink(drink: Drink) {
-    setDrinks((d) => d.map((x) => (x.ts === drink.ts ? drink : x)));
+    setDrinks((prev) => prev.map((d) => (d.ts === drink.ts ? drink : d)));
     setEditing(null);
   }
 
-
-  function deleteDrink(ts: number) {
-    setDrinks((d) => {
-      const drink = d.find((x) => x.ts === ts);
-      if (drink) {
-        setLastDeleted(drink);
-        if (undoTimer.current) clearTimeout(undoTimer.current);
-        undoTimer.current = window.setTimeout(() => setLastDeleted(null), 5000);
-      }
-      return d.filter((drink) => drink.ts !== ts);
-    });
+  function deleteDrink(drink: Drink) {
+    setDrinks((prev) => prev.filter((d) => d.ts !== drink.ts));
+    setLastDeleted(drink);
+    
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+    undoTimer.current = window.setTimeout(() => {
+      setLastDeleted(null);
+    }, 5000);
   }
 
   function undoDelete() {
     if (!lastDeleted) return;
-    setDrinks((d) => [...d, lastDeleted]);
+    setDrinks((prev) => [...prev, lastDeleted]);
     setLastDeleted(null);
     if (undoTimer.current) clearTimeout(undoTimer.current);
   }
@@ -109,59 +104,50 @@ export function AlcoholCoachApp() {
     setEditing(drink);
   }
 
-  const totalStd = drinks.reduce(
-    (sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct),
-    0
-  );
+  function cancelEdit() {
+    setEditing(null);
+  }
+
   return (
     <>
-      <a href="#main" className="sr-only focus:not-sr-only">
-        {t('skipToContent')}
-      </a>
-      <main id="main" className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">{t('appName')}</h1>
-      <ReminderBanner />
-      <Suspense fallback={null}>
-        {editing ? (
-          <DrinkForm
-            initial={editing}
-            submitLabel={t('save')}
-            onSubmit={saveDrink}
-            onCancel={() => setEditing(null)}
-            presets={presets}
-          />
-        ) : (
-          <DrinkForm onSubmit={addDrink} presets={presets} />
-        )}
-        <div>
-          {t('totalStdDrinks')}: {totalStd.toFixed(2)}
-        </div>
-        <GoalSettings goals={goals} onChange={setGoals} />
-        <Stats drinks={drinks} goals={goals} />
-        <DrinkChart drinks={drinks} />
-        <DrinkList
-          drinks={drinks}
-          onDelete={deleteDrink}
-          onEdit={startEdit}
-          dailyCap={goals.dailyCap}
-        />
-        <SettingsPanel />
-        <Disclaimer />
-        <ScrollTopButton />
-      </Suspense>
-      {lastDeleted && (
-        <div
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 transform bg-gray-800 text-white px-4 py-2 rounded shadow flex items-center"
-          role="alert"
-          aria-live="assertive"
-        >
-          <span>{t('drinkDeleted')}</span>
-          <Button className="ml-2" onClick={undoDelete}>
-            {t('undo')}
-          </Button>
-        </div>
-      )}
-      </main>
+      <PWAInstallBanner
+        isInstallable={isInstallable && showInstallBanner}
+        promptInstall={promptInstall}
+        onDismiss={() => setShowInstallBanner(false)}
+      />
+      
+      <UpdateBanner
+        updateAvailable={updateAvailable && showUpdateBanner}
+        updateApp={updateApp}
+        onDismiss={() => setShowUpdateBanner(false)}
+      />
+
+      {/* Online Status Indicator */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} animate-pulse`} />
+        <span className="text-xs text-gray-600 bg-white/90 px-2 py-1 rounded shadow">
+          {isOnline ? 'Online' : 'Offline'}
+        </span>
+      </div>
+
+      <AppHeader />
+
+      <StatsAndGoals />
+
+      <MainContent
+        drinks={drinks}
+        editing={editing}
+        presets={presets}
+        lastDeleted={lastDeleted}
+        onAddDrink={addDrink}
+        onSaveDrink={saveDrink}
+        onStartEdit={startEdit}
+        onDeleteDrink={deleteDrink}
+        onUndoDelete={undoDelete}
+        onCancelEdit={cancelEdit}
+      />
+
+      <ScrollTopButton />
     </>
   );
 }

@@ -33,48 +33,77 @@ export function GoalSettings({ goals, onChange }: Props) {
   }
 
   return (
-    <div className="space-y-2">
-      <div>
-        <Label htmlFor="dailyCap">Daily cap (std drinks)</Label>
-        <Input
-          id="dailyCap"
-          type="number"
-          value={goals.dailyCap}
-          onChange={handleDailyCap}
-          min={0}
-        />
+    <div className="card">
+      <div className="card-header">
+        <h3 className="text-lg font-semibold flex items-center">
+          <span className="w-2 h-2 bg-warning-500 rounded-full mr-3"></span>
+          Goals & Budget
+        </h3>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+          Set your personal targets and spending limits
+        </p>
       </div>
-      <div>
-        <Label htmlFor="weeklyGoal">Weekly goal (std drinks)</Label>
-        <Input
-          id="weeklyGoal"
-          type="number"
-          value={goals.weeklyGoal}
-          onChange={handleWeeklyGoal}
-          min={0}
-        />
-      </div>
-      <div>
-        <Label htmlFor="pricePerStd">Price per std drink ($)</Label>
-        <Input
-          id="pricePerStd"
-          type="number"
-          value={goals.pricePerStd}
-          onChange={handlePricePerStd}
-          min={0}
-          step="0.01"
-        />
-      </div>
-      <div>
-        <Label htmlFor="baselineMonthly">Baseline monthly spend ($)</Label>
-        <Input
-          id="baselineMonthly"
-          type="number"
-          value={goals.baselineMonthlySpend}
-          onChange={handleBaselineMonthly}
-          min={0}
-          step="0.01"
-        />
+      
+      <div className="card-content">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <Label htmlFor="dailyCap">Daily limit</Label>
+            <Input
+              id="dailyCap"
+              type="number"
+              value={goals.dailyCap}
+              onChange={handleDailyCap}
+              min={0}
+              rightIcon={
+                <span className="text-xs text-neutral-400">drinks</span>
+              }
+            />
+          </div>
+          
+          <div className="space-y-1">
+            <Label htmlFor="weeklyGoal">Weekly goal</Label>
+            <Input
+              id="weeklyGoal"
+              type="number"
+              value={goals.weeklyGoal}
+              onChange={handleWeeklyGoal}
+              min={0}
+              rightIcon={
+                <span className="text-xs text-neutral-400">drinks</span>
+              }
+            />
+          </div>
+          
+          <div className="space-y-1">
+            <Label htmlFor="pricePerStd">Price per drink</Label>
+            <Input
+              id="pricePerStd"
+              type="number"
+              value={goals.pricePerStd}
+              onChange={handlePricePerStd}
+              min={0}
+              step="0.01"
+              leftIcon={
+                <span className="text-xs text-neutral-400">$</span>
+              }
+            />
+          </div>
+          
+          <div className="space-y-1">
+            <Label htmlFor="baselineMonthly">Monthly budget</Label>
+            <Input
+              id="baselineMonthly"
+              type="number"
+              value={goals.baselineMonthlySpend}
+              onChange={handleBaselineMonthly}
+              min={0}
+              step="0.01"
+              leftIcon={
+                <span className="text-xs text-neutral-400">$</span>
+              }
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

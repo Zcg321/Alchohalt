@@ -1,21 +1,61 @@
 import React from 'react';
+import { cn } from '../../lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
-  type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
+  variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
-const base =
-  'px-4 py-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2';
-const variants: Record<string, string> = {
-  primary:
-    'bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-600',
-  secondary:
-    'bg-gray-200 text-gray-900 hover:bg-gray-300 focus-visible:ring-gray-600',
-  danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600',
+const variants = {
+  primary: 'btn-primary',
+  secondary: 'btn-secondary', 
+  success: 'btn-success',
+  danger: 'btn-danger',
+  ghost: 'btn-ghost',
 };
 
-export function Button({ variant = 'primary', className = '', type = 'button', ...props }: ButtonProps) {
-  const classes = [base, variants[variant], className].filter(Boolean).join(' ');
-  return <button type={type} className={classes} {...props} />;
+const sizes = {
+  sm: 'px-3 py-2 text-xs',
+  md: 'px-4 py-2.5 text-sm',
+  lg: 'px-6 py-3 text-base',
+};
+
+export function Button({ 
+  variant = 'primary', 
+  size = 'md',
+  loading = false,
+  leftIcon,
+  rightIcon,
+  className = '', 
+  children,
+  disabled,
+  ...props 
+}: ButtonProps) {
+  const isDisabled = disabled || loading;
+  
+  return (
+    <button 
+      className={cn(
+        'btn',
+        variants[variant],
+        sizes[size],
+        loading && 'relative text-transparent',
+        className
+      )}
+      disabled={isDisabled}
+      {...props}
+    >
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      {leftIcon && !loading && <span className="mr-2">{leftIcon}</span>}
+      {children}
+      {rightIcon && !loading && <span className="ml-2">{rightIcon}</span>}
+    </button>
+  );
 }

@@ -65,41 +65,90 @@ export default function Stats({ drinks, goals }: Props) {
   }
 
   return (
-    <>
-      <dl className="space-y-2">
-        <TopSection data={data} goals={goals} nf1={nf1} t={t} />
-        <BehaviorSection data={data} t={t} />
-        <SpendSection data={data} goals={goals} cf={cf} t={t} />
-      </dl>
-      {showCharts && (
-        <Suspense fallback={null}>
-          <WeeklyChart />
-          <MonthlyTrend />
-        </Suspense>
-      )}
-      <div className="mt-4 space-x-2">
-        {!showCharts && (
-          <Button onClick={() => setShowCharts(true)} aria-label={t('stats.showCharts')}>
-            {t('stats.showCharts')}
-          </Button>
-        )}
-        <Button onClick={share} aria-label={t('stats.shareProgressDesc')}>
-          {t('stats.shareProgress')}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={exportStats}
-          aria-label={t('stats.exportStats')}
-        >
-          {t('stats.exportStats')}
-        </Button>
-        <a ref={exportRef} className="hidden" />
+    <div className="card">
+      <div className="card-header">
+        <h2 className="text-xl font-semibold flex items-center">
+          <span className="w-2 h-2 bg-success-500 rounded-full mr-3"></span>
+          {t('stats.title')}
+        </h2>
       </div>
-      {status && (
-        <p role="status" className="mt-2 text-sm text-gray-600">
-          {status}
-        </p>
-      )}
-    </>
+      
+      <div className="card-content space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <TopSection data={data} goals={goals} nf1={nf1} t={t} />
+        </div>
+        
+        <div className="space-y-4">
+          <BehaviorSection data={data} t={t} />
+          <SpendSection data={data} goals={goals} cf={cf} t={t} />
+        </div>
+        
+        {showCharts && (
+          <div className="space-y-6 pt-6 border-t border-neutral-200 dark:border-neutral-700">
+            <Suspense fallback={
+              <div className="space-y-4">
+                <div className="skeleton h-64 w-full rounded-lg"></div>
+                <div className="skeleton h-64 w-full rounded-lg"></div>
+              </div>
+            }>
+              <WeeklyChart />
+              <MonthlyTrend />
+            </Suspense>
+          </div>
+        )}
+      </div>
+      
+      <div className="card-footer">
+        <div className="flex flex-wrap gap-3">
+          {!showCharts && (
+            <Button 
+              onClick={() => setShowCharts(true)} 
+              aria-label={t('stats.showCharts')}
+              leftIcon={
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              }
+            >
+              {t('stats.showCharts')}
+            </Button>
+          )}
+          
+          <Button 
+            variant="secondary"
+            onClick={share} 
+            aria-label={t('stats.shareProgressDesc')}
+            leftIcon={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+              </svg>
+            }
+          >
+            {t('stats.shareProgress')}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            onClick={exportStats}
+            aria-label={t('stats.exportStats')}
+            leftIcon={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            }
+          >
+            {t('stats.exportStats')}
+          </Button>
+        </div>
+        
+        <a ref={exportRef} className="hidden" />
+        
+        {status && (
+          <div className="mt-4 p-3 bg-success-50 border border-success-200 text-success-800 rounded-lg text-sm dark:bg-success-900/50 dark:border-success-800 dark:text-success-300" role="status">
+            {status}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
