@@ -3,7 +3,8 @@ import { useLanguage } from '../../i18n';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../goals/GoalSettings';
 import InsightCard from './InsightCard';
-import { generateInsights, ChartIcon } from './insightGenerators';
+import { getCurrentStreak, analyzeWeekendPattern, analyzeCravingTrend } from './lib';
+import { ChartIcon } from './insightGenerators';
 
 interface Props {
   drinks: Drink[];
@@ -14,7 +15,49 @@ export default function InsightsPanel({ drinks, goals }: Props) {
   const { t } = useLanguage();
 
   const insights = useMemo(() => {
-    return generateInsights(drinks, goals);
+    if (drinks.length === 0) return [];
+    
+    const insights = [];
+    const streak = getCurrentStreak(drinks);
+    const weekendPattern = analyzeWeekendPattern(drinks);
+    const cravingTrend = analyzeCravingTrend(drinks);
+    
+    // Streak achievement
+    if (streak > 0) {
+      insights.push({
+        title: streak >= 7 ? `🎉 ${streak} Day Streak!` : `💪 ${streak} Days Strong`,
+        description: streak >= 7 ? 'Amazing work! Keep this momentum going!' : 'Building great habits one day at a time.',
+        type: 'achievement',
+        icon: <ChartIcon />,
+        priority: streak >= 7 ? 3 : 2
+      });
+    }
+    
+    // Weekend pattern
+    if (weekendPattern.hasPattern) {
+      insights.push({
+        title: 'Weekend Pattern Detected',
+        description: `You drink ${weekendPattern.percentage}% more on weekends. Consider planning alcohol-free weekend activities.`,
+        type: 'pattern',
+        icon: <ChartIcon />,
+        priority: 2
+      });
+    }
+    
+    // Craving trend
+    if (cravingTrend.direction !== 'stable') {
+      insights.push({
+        title: cravingTrend.direction === 'improving' ? 'Cravings Improving' : 'Cravings Increasing',
+        description: cravingTrend.direction === 'improving' 
+          ? `Great news! Your cravings have decreased by ${cravingTrend.percentage.toFixed(0)}%.`
+          : `Your cravings have increased by ${cravingTrend.percentage.toFixed(0)}%. Consider stress management techniques.`,
+        type: cravingTrend.direction === 'improving' ? 'achievement' : 'warning',
+        icon: <ChartIcon />,
+        priority: 2
+      });
+    }
+    
+    return insights.sort((a, b) => b.priority - a.priority);
   }, [drinks, goals]);
 
   return (
