@@ -10,14 +10,18 @@ if (process.env.BUNDLE_REPORT === '1') {
 
 export default defineConfig(() => {
   const plugins = [react()];
-  if (process.env.CI !== 'true') {
-    plugins.push(
-      VitePWA({
-        injectRegister: null,
-        strategies: 'generateSW',
-        registerType: 'autoUpdate',
-        includeAssets: ['icons/icon.svg'],
-        manifest: {
+  
+  // Always enable PWA in production builds - this was the issue Codex identified
+  plugins.push(
+    VitePWA({
+      injectRegister: 'auto',
+      strategies: 'generateSW',
+      registerType: 'autoUpdate',
+      includeAssets: ['icons/icon.svg'],
+      devOptions: {
+        enabled: process.env.NODE_ENV === 'development'
+      },
+      manifest: {
           name: 'Alchohalt - Smart Alcohol Tracker & Coach',
           short_name: 'Alchohalt',
           description: 'AI-powered alcohol tracking with personalized insights, smart recommendations, and goal management. 100% offline and private.',
@@ -103,6 +107,8 @@ export default defineConfig(() => {
     if (visualizer) {
       plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }));
     }
+  if (visualizer) {
+    plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }));
   }
 
   return {
