@@ -15,9 +15,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": [
-      "vite/client"
-    ],
+
     "lib": [
       "ES2020",
       "DOM",
