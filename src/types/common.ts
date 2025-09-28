@@ -8,7 +8,7 @@ export interface Drink {
   ts: number;
 }
 
-export type Intention = 'taste' | 'social' | 'cope' | 'habit';
+export type Intention = 'celebrate' | 'social' | 'taste' | 'bored' | 'cope' | 'other';
 export type Halt = 'hungry' | 'angry' | 'lonely' | 'tired';
 
 export interface DrinkPreset {

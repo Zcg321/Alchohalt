@@ -33,15 +33,40 @@ export async function loadInitialLang(): Promise<Lang> {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('en');
+  // Import store inside component to avoid circular deps
+  const [useDBStore, setUseDBStore] = useState<any>(null);
+  
+  useEffect(() => {
+    import('./store/db').then(({ useDB }) => {
+      setUseDBStore(() => useDB);
+    });
+  }, []);
 
   useEffect(() => {
     loadInitialLang().then(setLangState);
   }, []);
 
+  // Sync with store when available
+  useEffect(() => {
+    if (useDBStore) {
+      const storeLang = useDBStore.getState().db.settings.language;
+      if (storeLang && storeLang !== lang) {
+        loadLocale(storeLang as Lang).then(() => {
+          setLangState(storeLang as Lang);
+        });
+      }
+    }
+  }, [useDBStore, lang]);
+
   async function setLang(l: Lang) {
     await loadLocale(l);
     setLangState(l);
     setJSON('lang', l);
+    
+    // Also update the store if available
+    if (useDBStore) {
+      useDBStore.getState().setLanguage(l);
+    }
   }
 
   const t = (key: string) => (dictionaries[lang] ?? dictionaries['en'])?.[key] ?? key;
