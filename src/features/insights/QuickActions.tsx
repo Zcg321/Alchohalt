@@ -4,6 +4,7 @@ import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../goals/GoalSettings';
 import { stdDrinks } from '../../lib/calc';
 import { useAnalytics } from '../analytics/analytics';
+import { getCurrentStreak } from './lib';
 import MoodTracker from '../mood/MoodTracker';
 
 interface Props {
@@ -207,33 +208,6 @@ function CloseIcon() {
 }
 
 // Helper functions
-function getCurrentStreak(drinks: Drink[]): number {
-  const byDay: Record<string, number> = {};
-  drinks.forEach(d => {
-    const day = new Date(d.ts).toISOString().slice(0, 10);
-    byDay[day] = (byDay[day] || 0) + stdDrinks(d.volumeMl, d.abvPct);
-  });
-
-  let streak = 0;
-  const current = new Date();
-  let continueChecking = true;
-  while (continueChecking) {
-    const key = current.toISOString().slice(0, 10);
-    if (byDay[key] > 0) {
-      continueChecking = false;
-      break;
-    }
-    streak++;
-    current.setDate(current.getDate() - 1);
-    if (streak > 365) {
-      continueChecking = false;
-      break;
-    }
-  }
-
-  return streak;
-}
-
 function getMotivationalMessage(streak: number, isAlcoholFree: boolean): string {
   if (isAlcoholFree) {
     if (streak >= 30) return "Amazing month-long streak! 🏆";
