@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
@@ -66,7 +66,7 @@ export default function EnhancedMoodTracker({
   const [step, setStep] = useState<'emotion' | 'intensity' | 'triggers' | 'coping' | 'notes' | 'complete'>('emotion');
   const [showInsights, setShowInsights] = useState(false);
   
-  const { isPremium, canAccessAIInsights } = usePremiumFeatures();
+  const { isPremium } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
 
   const moodPattern = React.useMemo(() => {

@@ -1,19 +1,19 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 12886,
+    "__all__": 12965,
     "web": 58,
-    "config": 463,
-    "ts": 11761,
+    "config": 455,
+    "ts": 11848,
     "js": 100,
     "css": 420
   },
   "totals_by_module": {
-    "src": 11397,
+    "src": 11484,
     "tests": 494,
     ".": 432,
     "tools": 422,
-    ".github": 120,
+    ".github": 112,
     "public": 21
   },
   "top_20_largest_files": [
@@ -39,11 +39,15 @@
     ],
     [
       "src/features/achievements/lib/achievementSystem.ts",
-      335
+      340
     ],
     [
       "src/features/subscription/SubscriptionManager.tsx",
       327
+    ],
+    [
+      "src/features/insights/QuickActions.tsx",
+      325
     ],
     [
       "src/features/insights/ProgressVisualization.tsx",
@@ -67,11 +71,7 @@
     ],
     [
       "src/features/analytics/analytics.ts",
-      256
-    ],
-    [
-      "src/features/insights/QuickActions.tsx",
-      254
+      259
     ],
     [
       "src/features/mood/MoodTracker.tsx",
@@ -79,7 +79,7 @@
     ],
     [
       "src/features/drinks/DrinkDiscovery.tsx",
-      231
+      230
     ],
     [
       "src/features/insights/premiumInsights.ts",
@@ -91,7 +91,7 @@
     ],
     [
       "src/features/achievements/AchievementDisplay.tsx",
-      202
+      211
     ],
     [
       "src/features/homepage/PersonalizedDashboard.tsx",

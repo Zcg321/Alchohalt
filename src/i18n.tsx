@@ -34,7 +34,7 @@ export async function loadInitialLang(): Promise<Lang> {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('en');
   // Import store inside component to avoid circular deps
-  const [useDBStore, setUseDBStore] = useState<any>(null);
+  const [useDBStore, setUseDBStore] = useState<typeof import('./store/db').useDB | null>(null);
   
   useEffect(() => {
     import('./store/db').then(({ useDB }) => {

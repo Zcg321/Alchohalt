@@ -11,18 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up PNPM
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
+          cache: 'npm'
       - name: Install deps (best-effort)
         run: |
-          pnpm install || npm install || true
+          npm install || true
       - name: Repo Scan (Python)
         run: |
           python3 --version
@@ -31,9 +27,9 @@ jobs:
         run: SCAN_MAX_FILE=600 SCAN_MAX_FN=80 SCAN_COMPLEXITY=23 python3 repo_scan.py --fail
       - name: Lint / Typecheck / Tests (best-effort)
         run: |
-          pnpm run lint || true
-          pnpm run typecheck || true
-          pnpm run test || true
+          npm run lint || true
+          npm run typecheck || true
+          npm run test || true
       - name: Upload JSON report
         if: always()
         run: |

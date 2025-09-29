@@ -26,11 +26,11 @@ interface HealthInsight {
 }
 
 interface Props {
-  drinks: Drink[];
+  drinks?: Drink[];
   className?: string;
 }
 
-export default function PremiumWellnessDashboard({ drinks, className = '' }: Props) {
+export default function PremiumWellnessDashboard({ drinks = [], className = '' }: Props) {
   const { isPremium, canAccessAIInsights } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
 

@@ -66,8 +66,8 @@ export function usePWA() {
     // Check if app is already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isInStandaloneMode = (window.navigator as any).standalone;
-    setIsInstalled(isStandalone || (isIOS && isInStandaloneMode));
+    const isInStandaloneMode = (window.navigator as { standalone?: boolean }).standalone;
+    setIsInstalled(isStandalone || (isIOS && !!isInStandaloneMode));
 
     // Set up event listeners and return cleanup function
     return setupEventListeners(

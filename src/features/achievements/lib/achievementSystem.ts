@@ -226,7 +226,12 @@ const BASE_ACHIEVEMENTS: Omit<Achievement, 'unlocked' | 'unlockedAt' | 'progress
   }
 ];
 
-function getAchievementCurrent(achievementId: string, drinks: Drink[], goals: Goals, currentStreak: number, moodEntries: any[], savedMoney: number): number {
+interface MoodEntry {
+  ts: number;
+  mood: number;
+}
+
+function getAchievementCurrent(achievementId: string, drinks: Drink[], goals: Goals, currentStreak: number, moodEntries: MoodEntry[], savedMoney: number): number {
   switch (achievementId) {
     case 'first-day':
     case 'week-warrior':
@@ -247,12 +252,13 @@ function getAchievementCurrent(achievementId: string, drinks: Drink[], goals: Go
     case 'craving-conqueror':
       return drinks.filter(d => d.craving <= 2).length;
 
-    case 'zen-master':
+    case 'zen-master': {
       const last30Days = drinks.filter(d => d.ts > Date.now() - 30 * 24 * 60 * 60 * 1000);
       const avgCraving = last30Days.length > 0 
         ? last30Days.reduce((sum, d) => sum + d.craving, 0) / last30Days.length 
         : 0;
       return avgCraving <= 1.0 && last30Days.length >= 30 ? 30 : 0;
+    }
 
     case 'social-butterfly':
       return drinks.filter(d => d.intention === 'social' && d.alt).length;
@@ -277,7 +283,7 @@ function getAchievementCurrent(achievementId: string, drinks: Drink[], goals: Go
 export function calculateAchievementProgress(
   drinks: Drink[], 
   goals: Goals,
-  moodEntries: any[] = [],
+  moodEntries: MoodEntry[] = [],
   currentStreak: number = 0,
   savedMoney: number = 0
 ): AchievementState {

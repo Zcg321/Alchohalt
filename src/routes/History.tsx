@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDB, type HALT } from '../store/db';
+import { useDB, type HALT, type Entry } from '../store/db';
 import { useLanguage } from '../i18n';
 import { UndoToast } from '../components/UndoToast';
 
@@ -23,7 +23,7 @@ export default function History() {
     setToast(true);
   };
 
-  const startEdit = (entry: any) => {
+  const startEdit = (entry: Entry) => {
     setEditingId(entry.id);
     setEditForm({
       intention: entry.intention,

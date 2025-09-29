@@ -7,9 +7,9 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 
 interface Props {
-  drinks: Drink[];
-  goals: Goals;
-  onQuickAction: (action: string) => void;
+  drinks?: Drink[];
+  goals?: Goals;
+  onQuickAction?: (action: string) => void;
 }
 
 interface PersonalizationData {
@@ -20,8 +20,8 @@ interface PersonalizationData {
   engagementLevel: 'high' | 'medium' | 'low';
 }
 
-export default function PersonalizedDashboard({ drinks, goals, onQuickAction }: Props) {
-  const { isPremium, canAccessAIInsights } = usePremiumFeatures();
+export default function PersonalizedDashboard({ drinks = [], goals, onQuickAction = () => {} }: Props) {
+  const { isPremium } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
 
   const personalization = useMemo((): PersonalizationData => {
@@ -67,7 +67,7 @@ export default function PersonalizedDashboard({ drinks, goals, onQuickAction }: 
 
     // Determine personality type based on goals and behavior
     let personalityType: PersonalizationData['personalityType'] = 'casual';
-    if (goals.dailyCap > 0 || goals.weeklyGoal > 0) personalityType = 'goal-oriented';
+    if (goals && (goals.dailyCap > 0 || goals.weeklyGoal > 0)) personalityType = 'goal-oriented';
     if (last30Days.some(d => d.intention === 'social')) personalityType = 'social';
     if (last30Days.some(d => d.halt?.includes('angry') || d.halt?.includes('lonely'))) {
       personalityType = 'health-focused';
