@@ -5,6 +5,9 @@ import type { Goals } from '../goals/GoalSettings';
 import InsightCard from './InsightCard';
 import { getCurrentStreak, analyzeWeekendPattern, analyzeCravingTrend } from './lib';
 import { ChartIcon } from './insightGenerators';
+import { generatePremiumInsights } from './premiumInsights';
+import { usePremiumFeatures } from '../subscription/subscriptionStore';
+import { useDB } from '../../store/db';
 
 interface Props {
   drinks: Drink[];
@@ -13,18 +16,20 @@ interface Props {
 
 export default function InsightsPanel({ drinks, goals }: Props) {
   const { t } = useLanguage();
+  const { canAccessAIInsights } = usePremiumFeatures();
+  const { entries } = useDB();
 
   const insights = useMemo(() => {
     if (drinks.length === 0) return [];
     
-    const insights = [];
+    const basicInsights = [];
     const streak = getCurrentStreak(drinks);
     const weekendPattern = analyzeWeekendPattern(drinks);
     const cravingTrend = analyzeCravingTrend(drinks);
     
-    // Streak achievement
+    // Basic insights available to all users
     if (streak > 0) {
-      insights.push({
+      basicInsights.push({
         title: streak >= 7 ? `🎉 ${streak} Day Streak!` : `💪 ${streak} Days Strong`,
         description: streak >= 7 ? 'Amazing work! Keep this momentum going!' : 'Building great habits one day at a time.',
         type: 'achievement',
@@ -33,9 +38,9 @@ export default function InsightsPanel({ drinks, goals }: Props) {
       });
     }
     
-    // Weekend pattern
+    // Weekend pattern (basic version)
     if (weekendPattern.hasPattern) {
-      insights.push({
+      basicInsights.push({
         title: 'Weekend Pattern Detected',
         description: `You drink ${weekendPattern.percentage}% more on weekends. Consider planning alcohol-free weekend activities.`,
         type: 'pattern',
@@ -44,21 +49,35 @@ export default function InsightsPanel({ drinks, goals }: Props) {
       });
     }
     
-    // Craving trend
+    // Craving trend (basic version)
     if (cravingTrend.direction !== 'stable') {
-      insights.push({
+      basicInsights.push({
         title: cravingTrend.direction === 'improving' ? 'Cravings Improving' : 'Cravings Increasing',
         description: cravingTrend.direction === 'improving' 
-          ? `Great news! Your cravings have decreased by ${cravingTrend.percentage.toFixed(0)}%.`
-          : `Your cravings have increased by ${cravingTrend.percentage.toFixed(0)}%. Consider stress management techniques.`,
+          ? `Your cravings have decreased by ${cravingTrend.percentage.toFixed(0)}% recently. Great progress!`
+          : `Your cravings have increased by ${cravingTrend.percentage.toFixed(0)}% recently. Consider reviewing your coping strategies.`,
         type: cravingTrend.direction === 'improving' ? 'achievement' : 'warning',
         icon: <ChartIcon />,
-        priority: 2
+        priority: cravingTrend.direction === 'improving' ? 2 : 3
       });
     }
+
+    // Add premium insights if available
+    if (canAccessAIInsights && entries.length >= 7) {
+      const premiumInsights = generatePremiumInsights(entries);
+      // Convert premium insights to basic insight format
+      const convertedPremiumInsights = premiumInsights.map(insight => ({
+        ...insight,
+        icon: <ChartIcon />
+      }));
+      
+      return [...basicInsights, ...convertedPremiumInsights]
+        .sort((a, b) => (b.priority || 0) - (a.priority || 0))
+        .slice(0, 8); // Limit total insights
+    }
     
-    return insights.sort((a, b) => b.priority - a.priority);
-  }, [drinks, goals]);
+    return basicInsights.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+  }, [drinks, goals, canAccessAIInsights, entries]);
 
   return (
     <div className="card">
@@ -68,7 +87,7 @@ export default function InsightsPanel({ drinks, goals }: Props) {
           Personal Insights
         </h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-          AI-powered analysis of your drinking patterns
+          {canAccessAIInsights ? 'AI-powered analysis of your drinking patterns' : 'Basic pattern analysis - upgrade for advanced AI insights'}
         </p>
       </div>
       
