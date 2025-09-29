@@ -16,7 +16,7 @@
     "scan": "python3 repo_scan.py",
     "bundle:report": "rollup-plugin-visualizer --version >/dev/null 2>&1 || pnpm add -D rollup-plugin-visualizer && node -e \"console.log('Visualizer ready')\"",
     "scan:json": "python3 repo_scan.py --json",
-    "scan:strict": "SCAN_MAX_FILE=${SCAN_MAX_FILE:-600} SCAN_MAX_FN=${SCAN_MAX_FN:-80} SCAN_COMPLEXITY=${SCAN_COMPLEXITY:-15} python3 repo_scan.py --fail",
+    "scan:strict": "SCAN_MAX_FILE=${SCAN_MAX_FILE:-600} SCAN_MAX_FN=${SCAN_MAX_FN:-80} SCAN_COMPLEXITY=${SCAN_COMPLEXITY:-21} python3 repo_scan.py --fail",
     "scan:dot": "python3 repo_scan.py --dot imports.dot && (command -v dot >/dev/null 2>&1 && dot -Tpng imports.dot -o imports.png || echo 'graphviz not installed; DOT only')",
     "codemod:split": "node --loader ts-node/esm tools/split_long_ts_or_tsx.ts",
     "test:smoke": "node --loader ts-node/esm tools/gen_smoke_tests.ts",

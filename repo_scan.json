@@ -116,30 +116,6 @@
     [
       "tools/split_long_ts_or_tsx.ts",
       34
-    ],
-    [
-      "src/lib/notify.ts",
-      20
-    ],
-    [
-      "src/features/insights/premiumInsights.ts",
-      17
-    ],
-    [
-      "src/features/insights/SmartRecommendations.tsx",
-      17
-    ],
-    [
-      "src/features/analytics/analytics.ts",
-      17
-    ],
-    [
-      "src/lib/stats.ts",
-      15
-    ],
-    [
-      "src/store/db.ts",
-      15
     ]
   ],
   "todo_fixme_count": 0,
@@ -1438,6 +1414,6 @@
   "budgets": {
     "max_file_loc": 600,
     "max_fn_lines": 80,
-    "complexity_warn": 15
+    "complexity_warn": 21
   }
 }

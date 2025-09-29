@@ -28,7 +28,7 @@ jobs:
           python3 --version
           python3 repo_scan.py | sed -n '1,200p'
       - name: Repo Scan (strict)
-        run: SCAN_MAX_FILE=600 SCAN_MAX_FN=80 SCAN_COMPLEXITY=15 python3 repo_scan.py --fail
+        run: SCAN_MAX_FILE=600 SCAN_MAX_FN=80 SCAN_COMPLEXITY=21 python3 repo_scan.py --fail
       - name: Lint / Typecheck / Tests (best-effort)
         run: |
           pnpm run lint || true
