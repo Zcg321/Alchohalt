@@ -25,6 +25,8 @@ interface MainContentProps {
   onDeleteDrink: (drink: Drink) => void;
   onUndoDelete: () => void;
   onCancelEdit: () => void;
+  onOpenSettings?: () => void;
+  onOpenStats?: () => void;
 }
 
 export default function MainContent({
@@ -39,6 +41,8 @@ export default function MainContent({
   onDeleteDrink,
   onUndoDelete,
   onCancelEdit,
+  onOpenSettings,
+  onOpenStats,
 }: MainContentProps) {
   const { t } = useLanguage();
 
@@ -53,8 +57,8 @@ export default function MainContent({
             drinks={drinks}
             goals={goals}
             onAddDrink={onAddDrink}
-            onOpenSettings={() => {}}
-            onOpenStats={() => {}}
+            onOpenSettings={onOpenSettings || (() => {})}
+            onOpenStats={onOpenStats || (() => {})}
           />
         </Suspense>
       </div>

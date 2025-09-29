@@ -80,6 +80,21 @@ export function AlcoholCoachApp() {
     setSettings(settingsUpdate);
   }
 
+  // Navigation callbacks for QuickActions
+  function handleOpenSettings() {
+    const settingsElement = document.getElementById('settings-section');
+    if (settingsElement) {
+      settingsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function handleOpenStats() {
+    const statsElement = document.getElementById('stats-section');
+    if (statsElement) {
+      statsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   // Get current editing drink for UI
   const editingDrink = editing 
     ? entryToLegacyDrink(db.entries.find(e => e.id === editing)!)
@@ -113,6 +128,7 @@ export function AlcoholCoachApp() {
         drinks={drinks} 
         goals={goals} 
         onGoalsChange={onGoalsChange}
+        id="stats-section"
       />
 
       <MainContent
@@ -127,6 +143,8 @@ export function AlcoholCoachApp() {
         onDeleteDrink={deleteDrink}
         onUndoDelete={undoDelete}
         onCancelEdit={cancelEdit}
+        onOpenSettings={handleOpenSettings}
+        onOpenStats={handleOpenStats}
       />
 
       <ScrollTopButton />
