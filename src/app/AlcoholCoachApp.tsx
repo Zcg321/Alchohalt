@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import type { Drink, DrinkPreset, Goals } from '../types/common';
+import type { Drink, Goals } from '../types/common';
 import { useDB } from '../store/db';
 import { entryToLegacyDrink, settingsToLegacyGoals, legacyDrinkToEntry, legacyGoalsToSettings } from '../lib/data-bridge';
 import { migrateLegacyData } from '../lib/migrate-legacy';

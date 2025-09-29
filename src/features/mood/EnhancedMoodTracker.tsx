@@ -113,7 +113,7 @@ export default function EnhancedMoodTracker({
     } as MoodPattern;
   }, [recentEntries]);
 
-  const handleEmotionSelect = (emotion: typeof EMOTIONS[0]['key']) => {
+  const handleEmotionSelect = (emotion: 'happy' | 'calm' | 'excited' | 'stressed' | 'anxious' | 'sad' | 'angry' | 'bored') => {
     setCurrentState(prev => ({ ...prev, primaryEmotion: emotion }));
     setStep('intensity');
     trackFeatureUsage('mood_emotion_selected', { emotion });

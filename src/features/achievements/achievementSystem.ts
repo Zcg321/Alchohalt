@@ -236,7 +236,7 @@ export function calculateAchievementProgress(
   const achievements: Achievement[] = BASE_ACHIEVEMENTS.map(base => {
     let current = 0;
     let unlocked = false;
-    let unlockedAt: number | undefined;
+    let _unlockedAt: number | undefined;
 
     switch (base.id) {
       case 'first-day':
@@ -248,7 +248,7 @@ export function calculateAchievementProgress(
         break;
 
       case 'goal-setter':
-        current = (goals.dailyCap > 0 ? 1 : 0) + (goals.weeklyCap > 0 ? 1 : 0);
+        current = (goals.dailyCap > 0 ? 1 : 0) + (goals.weeklyGoal > 0 ? 1 : 0);
         break;
 
       case 'goal-crusher':
@@ -281,7 +281,7 @@ export function calculateAchievementProgress(
         break;
 
       case 'data-analyst':
-        current = drinks.filter(d => d.notes || d.cost || d.halt?.length).length;
+        current = drinks.filter(d => d.alt || d.halt?.length).length;
         break;
 
       case 'money-saver':

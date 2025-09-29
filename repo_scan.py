@@ -13,7 +13,7 @@ EXT_GROUPS = {
     ".md": "docs", ".css": "css", ".scss": "css", ".html": "web"
 }
 CODE_EXTS = set(k for k in EXT_GROUPS.keys() if k not in [".md"])
-IGNORE_DIRS = {".git", "node_modules", "build", "dist", "out", ".next", ".expo", ".idea", ".gradle", "android/.gradle"}
+IGNORE_DIRS = {".git", "node_modules", "build", "dist", "out", ".next", ".expo", ".idea", ".gradle", "android/.gradle", "dev-dist", "coverage"}
 
 MAX_FN_LINES_WARN = int(os.getenv("SCAN_MAX_FN", "80"))
 MAX_FILE_LOC_WARN = int(os.getenv("SCAN_MAX_FILE", "600"))
@@ -79,6 +79,9 @@ def scan(root):
     for fp in list_files(root):
         fp = os.path.relpath(fp, root)
         if not is_text_file(fp): 
+            continue
+        # Skip large generated/lock files  
+        if fp in {"package-lock.json", "repo_scan.json", "pnpm-lock.yaml"}:
             continue
         grp = ext_group(fp)
         ext = os.path.splitext(fp)[1].lower()

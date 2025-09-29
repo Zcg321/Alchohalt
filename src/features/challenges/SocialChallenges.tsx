@@ -221,8 +221,8 @@ interface Props {
 }
 
 export default function SocialChallenges({ 
-  drinks, 
-  currentStreak, 
+  drinks: _drinks, 
+  currentStreak: _currentStreak, 
   onJoinChallenge, 
   className = '' 
 }: Props) {

@@ -1,35 +1,22 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 32154,
+    "__all__": 12977,
     "web": 58,
-    "config": 14915,
+    "config": 462,
     "ts": 11856,
-    "js": 4824,
+    "js": 100,
     "css": 417
   },
   "totals_by_module": {
-    ".": 14885,
     "src": 11489,
-    "dev-dist": 4724,
     "tests": 494,
+    ".": 432,
     "tools": 422,
     ".github": 119,
     "public": 21
   },
   "top_20_largest_files": [
-    [
-      "package-lock.json",
-      13413
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      4619
-    ],
-    [
-      "repo_scan.json",
-      1040
-    ],
     [
       "src/features/subscription/PremiumSmartRecommendations.tsx",
       445
@@ -97,62 +84,26 @@
     [
       "src/features/drinks/DrinkDiscovery.tsx",
       232
+    ],
+    [
+      "src/features/insights/premiumInsights.ts",
+      228
+    ],
+    [
+      "src/app/MainContent.tsx",
+      213
+    ],
+    [
+      "src/features/achievements/AchievementDisplay.tsx",
+      202
     ]
   ],
   "top_20_longest_functions": [
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      1622,
-      2464,
-      843
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      2720,
-      3441,
-      722
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      3753,
-      4318,
-      566
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      1403,
-      1621,
-      219
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      3490,
-      3639,
-      150
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      4567,
-      4712,
-      146
-    ],
     [
       "src/features/drinks/DrinkForm/index.tsx",
       28,
       170,
       143
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      1132,
-      1270,
-      139
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      4319,
-      4455,
-      137
     ],
     [
       "tests/progress-visualization.test.ts",
@@ -211,10 +162,6 @@
   ],
   "top_20_most_complex_files": [
     [
-      "dev-dist/workbox-ecdd2ace.js",
-      469
-    ],
-    [
       "src/features/subscription/PremiumSmartRecommendations.tsx",
       38
     ],
@@ -251,69 +198,8 @@
       15
     ]
   ],
-  "todo_fixme_count": 12,
-  "todo_samples": [
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      770,
-      "// TODO(philipwalton): TypeScript errors without this typecast for"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      1145,
-      "// TODO: Remove this log message in v4."
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      1688,
-      "// TODO(philipwalton): the `__WB_REVISION__` param is a precaching"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      1778,
-      "// TODO(philipwalton): not sure why `any` is needed. It seems like"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      1800,
-      "// TODO(philipwalton): not sure why `any` is needed. It seems like"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      2796,
-      "// TODO(philipwalton): EdgeHTML doesn't support arrays as a keyPath, so we"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      2803,
-      "// TODO(philipwalton): once we don't have to support EdgeHTML, we can"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      2881,
-      "// TODO(philipwalton): once we can use a multi-key index, we"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      2887,
-      "// TODO(philipwalton): we should be able to delete the"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      2902,
-      "// TODO(philipwalton): once the Safari bug in the following issue is fixed,"
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      3555,
-      "// TODO: `state` should never be undefined..."
-    ],
-    [
-      "dev-dist/workbox-ecdd2ace.js",
-      3567,
-      "// TODO: `state` should never be undefined..."
-    ]
-  ],
+  "todo_fixme_count": 0,
+  "todo_samples": [],
   "ts_import_edges_count": 310,
   "ts_import_edges_full": [
     [
