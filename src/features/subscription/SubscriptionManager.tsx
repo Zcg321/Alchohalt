@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../i18n';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { useSubscriptionStore } from './subscriptionStore';
+import { useAnalytics } from '../analytics/analytics';
 
 export interface SubscriptionPlan {
   id: string;
@@ -30,7 +32,9 @@ const subscriptionPlans: SubscriptionPlan[] = [
       'Simple streak tracking',
       'Basic goal setting',
       'Limited insights (last 7 days)',
-      'Standard mood check-ins'
+      'Standard mood check-ins',
+      'Basic progress charts',
+      'Weekly summary reports'
     ]
   },
   {
@@ -47,6 +51,10 @@ const subscriptionPlans: SubscriptionPlan[] = [
       'Advanced progress visualization',
       'Data export (PDF, CSV)',
       'Smart recommendations',
+      'Craving pattern analysis',
+      'HALT trigger tracking',
+      'Correlation insights',
+      'Spending analysis & budgeting',
       'Priority customer support',
       'Ad-free experience'
     ]
@@ -62,7 +70,11 @@ const subscriptionPlans: SubscriptionPlan[] = [
       'Exclusive annual insights report',
       'Priority beta feature access',
       'Extended data history (unlimited)',
-      'Custom data analysis requests'
+      'Custom data analysis requests',
+      'Healthcare provider reports',
+      'Advanced wellness coaching',
+      'Personalized milestone celebrations',
+      'Early access to new features'
     ]
   }
 ];
@@ -80,9 +92,17 @@ export default function SubscriptionManager({
   onCancel, 
   className 
 }: Props) {
-  const { t } = useLanguage();
+  const { trackSubscriptionEvent } = useAnalytics();
+  const { setSubscription } = useSubscriptionStore();
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+
+  // Sync with store
+  useEffect(() => {
+    if (currentSubscription) {
+      setSubscription(currentSubscription);
+    }
+  }, [currentSubscription, setSubscription]);
 
   const isPremium = currentSubscription?.status === 'active' && 
                    (currentSubscription.plan === 'premium_monthly' || 
@@ -95,10 +115,14 @@ export default function SubscriptionManager({
   const handleSubscribe = async (planId: string) => {
     if (loading) return;
     setLoading(true);
+    setSelectedPlan(planId);
+    
     try {
       await onSubscribe(planId);
+      trackSubscriptionEvent('subscribed', planId);
     } finally {
       setLoading(false);
+      setSelectedPlan(null);
     }
   };
 
@@ -107,6 +131,7 @@ export default function SubscriptionManager({
     setLoading(true);
     try {
       await onCancel();
+      trackSubscriptionEvent('cancelled', currentSubscription?.plan);
     } finally {
       setLoading(false);
     }
