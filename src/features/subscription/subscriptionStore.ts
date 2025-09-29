@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { UserSubscription, SubscriptionPlan } from './SubscriptionManager';
+import { UserSubscription } from './SubscriptionManager';
 
 interface SubscriptionStore {
   currentSubscription?: UserSubscription;

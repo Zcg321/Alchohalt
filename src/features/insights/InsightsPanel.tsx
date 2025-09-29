@@ -15,7 +15,6 @@ interface Props {
 }
 
 export default function InsightsPanel({ drinks, goals }: Props) {
-  const { t } = useLanguage();
   const { canAccessAIInsights } = usePremiumFeatures();
   const { entries } = useDB();
 

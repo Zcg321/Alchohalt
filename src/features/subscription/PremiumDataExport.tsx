@@ -35,13 +35,13 @@ export default function PremiumDataExport() {
       
       switch (options.format) {
         case 'PDF':
-          await generatePDFReport(filteredEntries, options);
+          await generatePDFReport(filteredEntries);
           break;
         case 'CSV':
-          await generateCSVExport(filteredEntries, options);
+          await generateCSVExport(filteredEntries);
           break;
         case 'JSON':
-          await generateJSONExport(filteredEntries, options);
+          await generateJSONExport(filteredEntries);
           break;
       }
     } catch (error) {
@@ -244,18 +244,18 @@ function filterEntriesByDateRange(entries: Entry[], range: ExportOptions['dateRa
   return entries.filter(entry => entry.ts >= cutoff);
 }
 
-async function generatePDFReport(entries: Entry[], options: ExportOptions) {
+async function generatePDFReport(entries: Entry[]) {
   // Implementation would use a PDF library like jsPDF or Puppeteer
   // For now, we'll create a comprehensive text-based report
-  const reportData = generateReportData(entries, options);
+  const reportData = generateReportData(entries);
   
   // Create a downloadable blob
-  const content = generatePDFContent(reportData, options);
+  const content = generatePDFContent(reportData);
   const blob = new Blob([content], { type: 'text/plain' });
   downloadFile(blob, `alchohalt-report-${new Date().toISOString().slice(0, 10)}.txt`);
 }
 
-async function generateCSVExport(entries: Entry[], options: ExportOptions) {
+async function generateCSVExport(entries: Entry[]) {
   const csvHeaders = [
     'Date',
     'Time',
@@ -287,10 +287,9 @@ async function generateCSVExport(entries: Entry[], options: ExportOptions) {
   downloadFile(blob, `alchohalt-data-${new Date().toISOString().slice(0, 10)}.csv`);
 }
 
-async function generateJSONExport(entries: Entry[], options: ExportOptions) {
+async function generateJSONExport(entries: Entry[]) {
   const exportData = {
     exportDate: new Date().toISOString(),
-    dateRange: options.dateRange,
     totalEntries: entries.length,
     entries: entries.map(entry => ({
       ...entry,
@@ -303,7 +302,7 @@ async function generateJSONExport(entries: Entry[], options: ExportOptions) {
   downloadFile(blob, `alchohalt-data-${new Date().toISOString().slice(0, 10)}.json`);
 }
 
-function generateReportData(entries: Entry[], options: ExportOptions) {
+function generateReportData(entries: Entry[]) {
   // Calculate comprehensive statistics for the report
   const totalDrinks = entries.reduce((sum, e) => sum + e.stdDrinks, 0);
   const averageDrinks = totalDrinks / Math.max(1, entries.length);
@@ -335,13 +334,21 @@ function generateReportData(entries: Entry[], options: ExportOptions) {
   };
 }
 
-function generatePDFContent(reportData: any, options: ExportOptions): string {
+interface ReportData {
+  totalDrinks: number;
+  averageDrinks: number;
+  totalCost: number;
+  intentionStats: Record<string, number>;
+  haltStats: Record<string, number>;
+  entries: Entry[];
+}
+
+function generatePDFContent(reportData: ReportData): string {
   const { totalDrinks, averageDrinks, totalCost, intentionStats, haltStats } = reportData;
   
   return `
 ALCHOHALT WELLNESS REPORT
 Generated: ${new Date().toLocaleDateString()}
-Period: ${options.dateRange}
 
 SUMMARY STATISTICS
 ==================
@@ -362,14 +369,6 @@ Hunger: ${haltStats.H || 0} occasions
 Anger: ${haltStats.A || 0} occasions
 Loneliness: ${haltStats.L || 0} occasions
 Tiredness: ${haltStats.T || 0} occasions
-
-${options.healthcareFormat ? `
-HEALTHCARE PROVIDER NOTES
-==========================
-This report contains alcohol consumption data tracked by the individual using the Alchohalt wellness application. 
-Data includes drinking occasions, quantities, emotional states, and alternative coping strategies attempted.
-All data is self-reported and should be considered in the context of clinical assessment.
-` : ''}
 
 DETAILED LOG
 ============

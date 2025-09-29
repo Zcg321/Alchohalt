@@ -92,7 +92,6 @@ export default function SubscriptionManager({
   onCancel, 
   className 
 }: Props) {
-  const { t } = useLanguage();
   const { trackSubscriptionEvent } = useAnalytics();
   const { setSubscription } = useSubscriptionStore();
   const [loading, setLoading] = useState(false);

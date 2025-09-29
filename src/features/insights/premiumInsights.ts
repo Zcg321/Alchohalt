@@ -137,9 +137,6 @@ function analyzeCravingCorrelations(entries: Entry[]): PremiumInsight[] {
   
   if (cravingDrinkPairs.length > 0) {
     // Simple correlation analysis
-    const avgCraving = cravingDrinkPairs.reduce((sum, p) => sum + p.craving, 0) / cravingDrinkPairs.length;
-    const avgDrinks = cravingDrinkPairs.reduce((sum, p) => sum + p.drinks, 0) / cravingDrinkPairs.length;
-    
     const highCravingDays = cravingDrinkPairs.filter(p => p.craving >= 7);
     const lowCravingDays = cravingDrinkPairs.filter(p => p.craving <= 3);
     
@@ -236,11 +233,10 @@ function analyzeIntentionEffectiveness(entries: Entry[]): PremiumInsight[] {
   }, {} as Record<string, { count: number; totalDrinks: number; totalCraving: number }>);
 
   const intentionAnalysis = Object.entries(intentionStats)
-    .filter(([_, stats]) => stats.count >= 3)
+    .filter(([, stats]) => stats.count >= 3)
     .map(([intention, stats]) => ({
       intention,
       avgDrinks: stats.totalDrinks / stats.count,
-      avgCraving: stats.totalCraving / stats.count,
       count: stats.count
     }))
     .sort((a, b) => a.avgDrinks - b.avgDrinks);
