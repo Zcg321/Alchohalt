@@ -214,7 +214,7 @@ export default function MainContent({
       {/* Undo Toast */}
       {lastDeleted && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-slide-up">
-          <span className="text-sm">{t('deletedDrink')}</span>
+          <span className="text-sm">{t('drinkDeleted')}</span>
           <Button
             variant="ghost"
             size="sm"
