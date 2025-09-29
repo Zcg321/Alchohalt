@@ -1,19 +1,19 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 12286,
+    "__all__": 12886,
     "web": 58,
-    "config": 462,
-    "ts": 11162,
+    "config": 463,
+    "ts": 11761,
     "js": 100,
     "css": 420
   },
   "totals_by_module": {
-    "src": 10798,
+    "src": 11397,
     "tests": 494,
     ".": 432,
     "tools": 422,
-    ".github": 119,
+    ".github": 120,
     "public": 21
   },
   "top_20_largest_files": [
@@ -120,7 +120,7 @@
   ],
   "todo_fixme_count": 0,
   "todo_samples": [],
-  "ts_import_edges_count": 304,
+  "ts_import_edges_count": 363,
   "ts_import_edges_full": [
     [
       "tests/notifications.web.test.tsx",
@@ -231,6 +231,10 @@
       "./i18n"
     ],
     [
+      "src/types/__tests__/common.smoke.test.ts",
+      "../common.ts"
+    ],
+    [
       "src/types/__tests__/web-notification.d.smoke.test.ts",
       "../web-notification.d.ts"
     ],
@@ -287,6 +291,10 @@
       "../Label.tsx"
     ],
     [
+      "src/components/ui/__tests__/Skeleton.smoke.test.tsx",
+      "../Skeleton.tsx"
+    ],
+    [
       "src/components/ui/__tests__/Progress.smoke.test.tsx",
       "../Progress.tsx"
     ],
@@ -299,12 +307,24 @@
       "../StatRow.tsx"
     ],
     [
+      "src/components/ui/__tests__/Toggle.smoke.test.tsx",
+      "../Toggle.tsx"
+    ],
+    [
       "src/components/ui/__tests__/Input.smoke.test.tsx",
       "../Input.tsx"
     ],
     [
       "src/components/ui/__tests__/Badge.smoke.test.tsx",
       "../Badge.tsx"
+    ],
+    [
+      "src/components/ui/__tests__/Toast.smoke.test.tsx",
+      "../Toast.tsx"
+    ],
+    [
+      "src/components/ui/__tests__/Card.smoke.test.tsx",
+      "../Card.tsx"
     ],
     [
       "src/components/__tests__/UndoToast.smoke.test.tsx",
@@ -325,6 +345,10 @@
     [
       "src/components/__tests__/ScrollTopButton.smoke.test.tsx",
       "../ScrollTopButton.tsx"
+    ],
+    [
+      "src/components/__tests__/Card.smoke.test.tsx",
+      "../Card.tsx"
     ],
     [
       "src/lib/migrate.ts",
@@ -361,6 +385,10 @@
     [
       "src/lib/data-bridge.ts",
       "../store/db"
+    ],
+    [
+      "src/hooks/__tests__/usePWA.smoke.test.ts",
+      "../usePWA.ts"
     ],
     [
       "src/app/UpdateBanner.tsx",
@@ -467,8 +495,28 @@
       "../components/ui/Skeleton"
     ],
     [
+      "src/app/__tests__/MainContent.smoke.test.tsx",
+      "../MainContent.tsx"
+    ],
+    [
+      "src/app/__tests__/AppHeader.smoke.test.tsx",
+      "../AppHeader.tsx"
+    ],
+    [
+      "src/app/__tests__/PWAInstallBanner.smoke.test.tsx",
+      "../PWAInstallBanner.tsx"
+    ],
+    [
+      "src/app/__tests__/StatsAndGoals.smoke.test.tsx",
+      "../StatsAndGoals.tsx"
+    ],
+    [
       "src/app/__tests__/AlcoholCoachApp.smoke.test.tsx",
       "../AlcoholCoachApp.tsx"
+    ],
+    [
+      "src/app/__tests__/UpdateBanner.smoke.test.tsx",
+      "../UpdateBanner.tsx"
     ],
     [
       "src/store/db.ts",
@@ -611,6 +659,42 @@
       "../../../types/common"
     ],
     [
+      "src/features/goals/GoalSettings/__tests__/lib.smoke.test.ts",
+      "../lib.ts"
+    ],
+    [
+      "src/features/goals/GoalSettings/__tests__/SpendSection.smoke.test.tsx",
+      "../SpendSection.tsx"
+    ],
+    [
+      "src/features/goals/GoalSettings/__tests__/TopSection.smoke.test.tsx",
+      "../TopSection.tsx"
+    ],
+    [
+      "src/features/goals/GoalSettings/__tests__/BehaviorSection.smoke.test.tsx",
+      "../BehaviorSection.tsx"
+    ],
+    [
+      "src/features/goals/__tests__/GoalSettings.smoke.test.tsx",
+      "../GoalSettings.tsx"
+    ],
+    [
+      "src/features/goals/__tests__/types.smoke.test.ts",
+      "../types.ts"
+    ],
+    [
+      "src/features/goals/__tests__/AdvancedGoalSetting.smoke.test.tsx",
+      "../AdvancedGoalSetting.tsx"
+    ],
+    [
+      "src/features/goals/__tests__/AddGoalModal.smoke.test.tsx",
+      "../AddGoalModal.tsx"
+    ],
+    [
+      "src/features/goals/__tests__/GoalCard.smoke.test.tsx",
+      "../GoalCard.tsx"
+    ],
+    [
       "src/features/subscription/PremiumMoodTracking.tsx",
       "../../components/ui/Card"
     ],
@@ -695,6 +779,42 @@
       "./SpendSection"
     ],
     [
+      "src/features/subscription/PremiumSmartRecommendations/__tests__/lib.smoke.test.ts",
+      "../lib.ts"
+    ],
+    [
+      "src/features/subscription/PremiumSmartRecommendations/__tests__/SpendSection.smoke.test.tsx",
+      "../SpendSection.tsx"
+    ],
+    [
+      "src/features/subscription/PremiumSmartRecommendations/__tests__/TopSection.smoke.test.tsx",
+      "../TopSection.tsx"
+    ],
+    [
+      "src/features/subscription/PremiumSmartRecommendations/__tests__/BehaviorSection.smoke.test.tsx",
+      "../BehaviorSection.tsx"
+    ],
+    [
+      "src/features/subscription/__tests__/subscriptionStore.smoke.test.ts",
+      "../subscriptionStore.ts"
+    ],
+    [
+      "src/features/subscription/__tests__/SubscriptionManager.smoke.test.tsx",
+      "../SubscriptionManager.tsx"
+    ],
+    [
+      "src/features/subscription/__tests__/PremiumMoodTracking.smoke.test.tsx",
+      "../PremiumMoodTracking.tsx"
+    ],
+    [
+      "src/features/subscription/__tests__/PremiumDataExport.smoke.test.tsx",
+      "../PremiumDataExport.tsx"
+    ],
+    [
+      "src/features/subscription/__tests__/PremiumSmartRecommendations.smoke.test.tsx",
+      "../PremiumSmartRecommendations.tsx"
+    ],
+    [
       "src/features/homepage/PersonalizedDashboard.tsx",
       "../drinks/DrinkForm"
     ],
@@ -717,6 +837,10 @@
     [
       "src/features/homepage/PersonalizedDashboard.tsx",
       "../../components/ui/Badge"
+    ],
+    [
+      "src/features/homepage/__tests__/PersonalizedDashboard.smoke.test.tsx",
+      "../PersonalizedDashboard.tsx"
     ],
     [
       "src/features/insights/premiumInsights.ts",
@@ -841,6 +965,38 @@
     [
       "src/features/insights/SmartRecommendations.tsx",
       "../../components/ui/Button"
+    ],
+    [
+      "src/features/insights/__tests__/InsightCard.smoke.test.tsx",
+      "../InsightCard.tsx"
+    ],
+    [
+      "src/features/insights/__tests__/lib.smoke.test.ts",
+      "../lib.ts"
+    ],
+    [
+      "src/features/insights/__tests__/SmartRecommendations.smoke.test.tsx",
+      "../SmartRecommendations.tsx"
+    ],
+    [
+      "src/features/insights/__tests__/InsightsPanel.smoke.test.tsx",
+      "../InsightsPanel.tsx"
+    ],
+    [
+      "src/features/insights/__tests__/premiumInsights.smoke.test.ts",
+      "../premiumInsights.ts"
+    ],
+    [
+      "src/features/insights/__tests__/ProgressVisualization.smoke.test.tsx",
+      "../ProgressVisualization.tsx"
+    ],
+    [
+      "src/features/insights/__tests__/insightGenerators.smoke.test.tsx",
+      "../insightGenerators.tsx"
+    ],
+    [
+      "src/features/insights/__tests__/QuickActions.smoke.test.tsx",
+      "../QuickActions.tsx"
     ],
     [
       "src/features/drinks/DrinkChart.tsx",
@@ -1043,8 +1199,16 @@
       "../DrinkForm.tsx"
     ],
     [
+      "src/features/drinks/__tests__/drinkDatabase.smoke.test.ts",
+      "../drinkDatabase.ts"
+    ],
+    [
       "src/features/drinks/__tests__/ExportImport.smoke.test.tsx",
       "../ExportImport.tsx"
+    ],
+    [
+      "src/features/drinks/__tests__/DrinkDiscovery.smoke.test.tsx",
+      "../DrinkDiscovery.tsx"
     ],
     [
       "src/features/challenges/SocialChallenges.tsx",
@@ -1067,6 +1231,10 @@
       "../drinks/DrinkForm"
     ],
     [
+      "src/features/challenges/__tests__/SocialChallenges.smoke.test.tsx",
+      "../SocialChallenges.tsx"
+    ],
+    [
       "src/features/mood/EnhancedMoodTracker.tsx",
       "../../components/ui/Button"
     ],
@@ -1085,6 +1253,14 @@
     [
       "src/features/mood/MoodTracker.tsx",
       "../../components/ui/Button"
+    ],
+    [
+      "src/features/mood/__tests__/MoodTracker.smoke.test.tsx",
+      "../MoodTracker.tsx"
+    ],
+    [
+      "src/features/mood/__tests__/EnhancedMoodTracker.smoke.test.tsx",
+      "../EnhancedMoodTracker.tsx"
     ],
     [
       "src/features/settings/ClearData.tsx",
@@ -1151,6 +1327,10 @@
       "../About.tsx"
     ],
     [
+      "src/features/settings/__tests__/LegalLinks.smoke.test.tsx",
+      "../LegalLinks.tsx"
+    ],
+    [
       "src/features/settings/__tests__/ClearData.smoke.test.tsx",
       "../ClearData.tsx"
     ],
@@ -1189,6 +1369,10 @@
     [
       "src/features/wellness/PremiumWellnessDashboard.tsx",
       "../analytics/analytics"
+    ],
+    [
+      "src/features/wellness/__tests__/PremiumWellnessDashboard.smoke.test.tsx",
+      "../PremiumWellnessDashboard.tsx"
     ],
     [
       "src/features/coach/ReminderBanner.tsx",
@@ -1295,6 +1479,22 @@
       "./SpendSection"
     ],
     [
+      "src/features/rewards/Stats/index/__tests__/lib.smoke.test.ts",
+      "../lib.ts"
+    ],
+    [
+      "src/features/rewards/Stats/index/__tests__/SpendSection.smoke.test.tsx",
+      "../SpendSection.tsx"
+    ],
+    [
+      "src/features/rewards/Stats/index/__tests__/TopSection.smoke.test.tsx",
+      "../TopSection.tsx"
+    ],
+    [
+      "src/features/rewards/Stats/index/__tests__/BehaviorSection.smoke.test.tsx",
+      "../BehaviorSection.tsx"
+    ],
+    [
       "src/features/rewards/Stats/__tests__/lib.smoke.test.ts",
       "../lib.ts"
     ],
@@ -1309,6 +1509,30 @@
     [
       "src/features/analytics/ProductionErrorBoundary/index.tsx",
       "./SpendSection"
+    ],
+    [
+      "src/features/analytics/ProductionErrorBoundary/__tests__/lib.smoke.test.ts",
+      "../lib.ts"
+    ],
+    [
+      "src/features/analytics/ProductionErrorBoundary/__tests__/SpendSection.smoke.test.tsx",
+      "../SpendSection.tsx"
+    ],
+    [
+      "src/features/analytics/ProductionErrorBoundary/__tests__/TopSection.smoke.test.tsx",
+      "../TopSection.tsx"
+    ],
+    [
+      "src/features/analytics/ProductionErrorBoundary/__tests__/BehaviorSection.smoke.test.tsx",
+      "../BehaviorSection.tsx"
+    ],
+    [
+      "src/features/analytics/__tests__/ProductionErrorBoundary.smoke.test.tsx",
+      "../ProductionErrorBoundary.tsx"
+    ],
+    [
+      "src/features/analytics/__tests__/analytics.smoke.test.ts",
+      "../analytics.ts"
     ],
     [
       "src/features/achievements/AchievementDisplay.tsx",
@@ -1337,6 +1561,18 @@
     [
       "src/features/achievements/lib/achievementSystem.ts",
       "../../../types/common"
+    ],
+    [
+      "src/features/achievements/__tests__/AchievementDisplay.smoke.test.tsx",
+      "../AchievementDisplay.tsx"
+    ],
+    [
+      "src/features/achievements/__tests__/achievementSystem.smoke.test.ts",
+      "../achievementSystem.ts"
+    ],
+    [
+      "src/features/pwa/__tests__/virtual-pwa-register-stub.smoke.test.ts",
+      "../virtual-pwa-register-stub.ts"
     ]
   ],
   "ts_tangle_sources": [
@@ -1415,12 +1651,12 @@
       8
     ],
     [
-      "../analytics/analytics",
+      "../lib.ts",
       8
     ],
     [
-      "../i18n",
-      7
+      "../analytics/analytics",
+      8
     ]
   ],
   "budgets": {
