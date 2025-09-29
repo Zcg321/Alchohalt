@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import type { Goals } from './GoalSettings';
 import { goalTypes, type AdvancedGoal } from './types';
+import { useDB } from '../../store/db';
 import GoalCard from './GoalCard';
 import AddGoalModal from './AddGoalModal';
 
@@ -12,49 +13,21 @@ interface Props {
 
 export default function AdvancedGoalSetting({ goals }: Props) {
   const [showAddGoal, setShowAddGoal] = useState(false);
-  const [advancedGoals, setAdvancedGoals] = useState<AdvancedGoal[]>([
-    {
-      id: '1',
-      type: 'streak',
-      title: '30-Day Alcohol-Free Streak',
-      description: 'Go alcohol-free for 30 consecutive days',
-      target: 30,
-      current: 0,
-      unit: 'days',
-      deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      isActive: true
-    },
-    {
-      id: '2',
-      type: 'reduction',
-      title: 'Reduce Weekly Consumption by 50%',
-      description: 'Cut weekly alcohol consumption in half',
-      target: goals.weeklyGoal * 0.5,
-      current: goals.weeklyGoal,
-      unit: 'drinks',
-      isActive: false
-    }
-  ]);
+  
+  // Use the DB store instead of local state
+  const { db: { advancedGoals }, addAdvancedGoal, toggleAdvancedGoal, deleteAdvancedGoal } = useDB();
 
   const handleAddGoal = (newGoal: Omit<AdvancedGoal, 'id'>) => {
-    const goal: AdvancedGoal = {
-      ...newGoal,
-      id: Date.now().toString()
-    };
-    setAdvancedGoals([...advancedGoals, goal]);
+    addAdvancedGoal(newGoal);
     setShowAddGoal(false);
   };
 
-  const toggleGoal = (goalId: string) => {
-    setAdvancedGoals(goals => 
-      goals.map(g => 
-        g.id === goalId ? { ...g, isActive: !g.isActive } : g
-      )
-    );
+  const handleToggleGoal = (goalId: string) => {
+    toggleAdvancedGoal(goalId);
   };
 
-  const deleteGoal = (goalId: string) => {
-    setAdvancedGoals(goals => goals.filter(g => g.id !== goalId));
+  const handleDeleteGoal = (goalId: string) => {
+    deleteAdvancedGoal(goalId);
   };
 
   return (
@@ -76,8 +49,8 @@ export default function AdvancedGoalSetting({ goals }: Props) {
             <GoalCard 
               key={goal.id} 
               goal={goal} 
-              onToggle={() => toggleGoal(goal.id)}
-              onDelete={() => deleteGoal(goal.id)}
+              onToggle={() => handleToggleGoal(goal.id)}
+              onDelete={() => handleDeleteGoal(goal.id)}
             />
           ))}
         </div>
