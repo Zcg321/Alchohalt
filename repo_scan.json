@@ -1,15 +1,15 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 12977,
+    "__all__": 13017,
     "web": 58,
     "config": 462,
-    "ts": 11856,
+    "ts": 11893,
     "js": 100,
-    "css": 417
+    "css": 420
   },
   "totals_by_module": {
-    "src": 11489,
+    "src": 11529,
     "tests": 494,
     ".": 432,
     "tools": 422,
@@ -31,7 +31,7 @@
     ],
     [
       "src/index.css",
-      386
+      389
     ],
     [
       "src/features/subscription/PremiumDataExport.tsx",
@@ -83,7 +83,7 @@
     ],
     [
       "src/features/drinks/DrinkDiscovery.tsx",
-      232
+      231
     ],
     [
       "src/features/insights/premiumInsights.ts",
@@ -99,12 +99,6 @@
     ]
   ],
   "top_20_longest_functions": [
-    [
-      "src/features/drinks/DrinkForm/index.tsx",
-      28,
-      170,
-      143
-    ],
     [
       "tests/progress-visualization.test.ts",
       32,
