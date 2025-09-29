@@ -1,7 +1,7 @@
 // Production-ready analytics and error tracking
 interface AnalyticsEvent {
   name: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   timestamp?: number;
   userId?: string;
 }
@@ -13,7 +13,7 @@ interface ErrorReport {
   userAgent?: string;
   timestamp: number;
   userId?: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 class AnalyticsService {
@@ -88,7 +88,7 @@ class AnalyticsService {
   }
 
   // Track user events
-  track(eventName: string, properties?: Record<string, any>) {
+  track(eventName: string, properties?: Record<string, unknown>) {
     const event: AnalyticsEvent = {
       name: eventName,
       properties: {
@@ -147,7 +147,7 @@ class AnalyticsService {
     });
   }
 
-  trackFeatureUsage(feature: string, context?: Record<string, any>) {
+  trackFeatureUsage(feature: string, context?: Record<string, unknown>) {
     this.track('feature_used', {
       feature_name: feature,
       ...context,

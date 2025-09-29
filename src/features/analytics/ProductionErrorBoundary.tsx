@@ -35,7 +35,7 @@ function DefaultErrorFallback({ error, resetError, errorId }: ErrorFallbackProps
               Something went wrong
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              We encountered an unexpected error. Don't worry, your data is safe.
+              We encountered an unexpected error. Don&apos;t worry, your data is safe.
             </p>
           </div>
           
@@ -154,7 +154,7 @@ export class ProductionErrorBoundary extends React.Component<Props, State> {
 
 // Hook for handling async errors in components
 export function useErrorHandler() {
-  return (error: Error, context?: Record<string, any>) => {
+  return (error: Error, context?: Record<string, unknown>) => {
     const errorId = 'async-err-' + Date.now().toString(36) + Math.random().toString(36).substr(2);
     
     analytics.captureError({

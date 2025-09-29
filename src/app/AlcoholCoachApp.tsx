@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import type { Drink, Intention, Halt, DrinkPreset, Goals } from '../types/common';
-import { haltOptions } from '../features/drinks/DrinkForm/lib';
-import { useLanguage } from '../i18n';
+import type { Drink, DrinkPreset, Goals } from '../types/common';
 import { useDB } from '../store/db';
 import { entryToLegacyDrink, settingsToLegacyGoals, legacyDrinkToEntry, legacyGoalsToSettings } from '../lib/data-bridge';
 import { migrateLegacyData } from '../lib/migrate-legacy';
@@ -17,12 +15,11 @@ export function AlcoholCoachApp() {
   // Use unified store instead of separate state
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null); // Track entry ID instead of drink object
-  const [presets, setPresets] = useState<DrinkPreset[]>([]); // Keep presets in local state for now
+  const [presets] = useState<DrinkPreset[]>([]); // Keep presets in local state for now
   const [lastDeleted, setLastDeleted] = useState<string | null>(null); // Track entry ID
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const undoTimer = useRef<number>();
-  const { t } = useLanguage();
   const { isInstallable, isOnline, updateAvailable, promptInstall, updateApp } = usePWA();
 
   // Convert store data to legacy format for compatibility with existing UI components

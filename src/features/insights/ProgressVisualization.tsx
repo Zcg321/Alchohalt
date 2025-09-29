@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useLanguage } from '../../i18n';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../goals/GoalSettings';
 import { stdDrinks } from '../../lib/calc';
@@ -30,7 +29,6 @@ interface ProgressData {
 }
 
 export default function ProgressVisualization({ drinks, goals }: Props) {
-  const { t } = useLanguage();
 
   const progressData = useMemo((): ProgressData => {
     const now = Date.now();
@@ -298,12 +296,19 @@ function getCurrentStreak(drinks: Drink[]): number {
 
   let streak = 0;
   const current = new Date();
-  while (true) {
+  let continueChecking = true;
+  while (continueChecking) {
     const key = current.toISOString().slice(0, 10);
-    if (byDay[key] > 0) break;
+    if (byDay[key] > 0) {
+      continueChecking = false;
+      break;
+    }
     streak++;
     current.setDate(current.getDate() - 1);
-    if (streak > 365) break;
+    if (streak > 365) {
+      continueChecking = false;
+      break;
+    }
   }
 
   return streak;

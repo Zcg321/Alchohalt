@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useLanguage } from '../../i18n';
 import { Button } from '../../components/ui/Button';
 
 interface MoodEntry {
@@ -74,7 +73,6 @@ const commonTriggers = [
 ];
 
 export default function MoodTracker({ onComplete, className }: Props) {
-  const { t } = useLanguage();
   const [step, setStep] = useState<'mood' | 'intensity' | 'triggers' | 'notes'>('mood');
   const [selectedMood, setSelectedMood] = useState<MoodEntry['mood'] | null>(null);
   const [intensity, setIntensity] = useState(3);

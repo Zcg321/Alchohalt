@@ -1,6 +1,5 @@
 // Bridge to unify persistence between legacy AlcoholCoachApp and useDB store
-import { nanoid } from 'nanoid';
-import type { Drink as LegacyDrink, Goals as LegacyGoals, DrinkPreset } from '../types/common';
+import type { Drink as LegacyDrink, Goals as LegacyGoals } from '../types/common';
 import type { Entry, Settings, HALT, Intention as StoreIntention } from '../store/db';
 
 // Convert legacy volumeMl + abvPct to standard drinks (US: 14g ethanol = 1 std drink)
