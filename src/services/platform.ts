@@ -62,7 +62,7 @@ export class CapacitorNotificationService implements NotificationService {
 
   async requestPermissions(): Promise<boolean> {
     const localNotifications = await this.getLocalNotifications();
-    const result = await localNotifications.requestPermissions();
+    const result = await (localNotifications as any).requestPermissions();
     return result.display === 'granted';
   }
 
@@ -73,17 +73,17 @@ export class CapacitorNotificationService implements NotificationService {
     schedule: { at: Date } | { repeats: boolean; every: string };
   }>): Promise<void> {
     const localNotifications = await this.getLocalNotifications();
-    await localNotifications.schedule({ notifications });
+    await (localNotifications as any).schedule({ notifications });
   }
 
   async cancel(ids: number[]): Promise<void> {
     const localNotifications = await this.getLocalNotifications();
-    await localNotifications.cancel({ notifications: ids.map(id => ({ id })) });
+    await (localNotifications as any).cancel({ notifications: ids.map(id => ({ id })) });
   }
 
   async cancelAll(): Promise<void> {
     const localNotifications = await this.getLocalNotifications();
-    await localNotifications.cancelAll();
+    await (localNotifications as any).cancelAll();
   }
 }
 

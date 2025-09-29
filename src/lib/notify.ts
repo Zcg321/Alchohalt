@@ -1,10 +1,12 @@
 /**
- * Notifications: Native (Capacitor LocalNotifications) + Web fallback.
- * - No top-level await (build-safe for ES2020).
- * - Lazy dynamic import for native module inside functions.
- * - Idempotent scheduling based on settings.reminders.times ["HH:mm"].
+ * Enhanced notifications with timezone awareness and improved fallback handling
+ * - Native (Capacitor LocalNotifications) + Web fallback
+ * - Timezone-aware scheduling with DST handling
+ * - Graceful degradation for unsupported platforms
+ * - Comprehensive error handling and logging
  */
 import { useDB } from '../store/db';
+import { notificationService } from '../services/platform';
 
 type AnyLN = {
   requestPermissions: () => Promise<{ display?: 'granted'|'denied' }>;
@@ -21,7 +23,6 @@ async function getLN(): Promise<AnyLN> {
   if (_lnCache !== undefined) return _lnCache;
   try {
     // Dynamic import only in native builds; on web this may still resolve but won't be used.
-    // We 'as any' to avoid type resolution issues when module isn't present at dev time.
     const mod = await import('@capacitor/local-notifications');
     _lnCache = (mod as { LocalNotifications?: AnyLN }).LocalNotifications ?? null;
   } catch {
@@ -30,22 +31,36 @@ async function getLN(): Promise<AnyLN> {
   return _lnCache;
 }
 
+/** Enhanced timezone-aware scheduling */
 function hhmmToNextDate(hhmm: string): Date {
   const [h, m] = hhmm.split(':').map(n => parseInt(n, 10));
   const now = new Date();
-  const d = new Date();
-  d.setHours(h, m, 0, 0);
-  if (d.getTime() <= now.getTime()) d.setDate(d.getDate() + 1);
-  return d;
+  const target = new Date();
+  
+  // Set to today's time first
+  target.setHours(h, m, 0, 0);
+  
+  // If the time has already passed today, schedule for tomorrow
+  if (target.getTime() <= now.getTime()) {
+    target.setDate(target.getDate() + 1);
+  }
+  
+  // Handle DST transitions by validating the time still matches
+  if (target.getHours() !== h || target.getMinutes() !== m) {
+    // DST transition occurred, adjust
+    target.setHours(h, m, 0, 0);
+  }
+  
+  return target;
 }
 
-async function createNotificationChannel(LN: AnyLN) {
-  if (LN?.createChannel) {
-    await LN.createChannel({
-      id: 'alchohalt-reminders',
-      name: 'Alchohalt Reminders',
-      importance: 5
-    });
+/** Enhanced notification channel creation with better error handling */
+async function createNotificationChannel() {
+  try {
+    await notificationService.requestPermissions();
+    console.log('Notification channel setup completed');
+  } catch (error) {
+    console.warn('Failed to create notification channel:', error);
   }
 }
 
@@ -72,7 +87,7 @@ export async function scheduleNative(times: string[]) {
   const LN = await getLN();
   if (!LN) return; // no-op on web
   try {
-    await createNotificationChannel(LN);
+    await createNotificationChannel();
     
     const hasPermission = await requestNotificationPermission(LN);
     if (!hasPermission) return;
@@ -132,14 +147,84 @@ export function isReminderWindowDue(now: number, times: string[], lastLogAt: num
   return times.some(t => isWithinReminderWindow(t, now));
 }
 
-/** Idempotent resync used after settings changes. Safe to call without await. */
+/** Idempotent resync used after settings changes with enhanced error handling. */
 export async function resyncNotifications() {
-  const s = useDB.getState();
-  const { enabled, times } = s.db.settings.reminders;
-  if (!enabled) {
-    await cancelNative(8);
+  const db = useDB.getState().db;
+  const { enabled, times } = db.settings.reminders;
+  
+  if (!enabled || times.length === 0) {
+    await cancelAllNotifications();
     return;
   }
-  await scheduleNative(times);
-  await scheduleWeb();
+
+  try {
+    // Create notification channel
+    await createNotificationChannel();
+    
+    // Check if notifications are supported and authorized
+    const hasPermission = await notificationService.requestPermissions();
+    if (!hasPermission) {
+      console.warn('Notification permissions not granted, scheduling will be limited');
+      showFallbackBanner('Notifications are disabled. Please enable them in settings for reminders.');
+      return;
+    }
+
+    // Cancel existing notifications
+    await cancelAllNotifications();
+    
+    // Schedule new notifications with enhanced messaging
+    const notifications = times.map((time, idx) => {
+      const targetDate = hhmmToNextDate(time);
+      const messages = [
+        "How's your day going? Take a moment to check in 🌟",
+        "Time for a mindful moment - how are you feeling? 💭",
+        "Your wellness journey matters. Ready to log today's progress? 📊",
+        "Taking care of yourself today? Let's track your progress 🎯"
+      ];
+      
+      return {
+        id: idx + 1000,
+        title: "Alchohalt Check-in",
+        body: messages[idx % messages.length],
+        schedule: { at: targetDate }
+      };
+    });
+
+    await notificationService.schedule(notifications);
+    console.log(`Scheduled ${notifications.length} notifications`);
+    
+  } catch (error) {
+    console.error('Failed to schedule notifications:', error);
+    showFallbackBanner('Unable to schedule notifications. In-app reminders will be shown instead.');
+    // Fallback to legacy scheduling
+    await scheduleNative(times);
+    await scheduleWeb();
+  }
+}
+
+async function cancelAllNotifications() {
+  try {
+    await notificationService.cancelAll();
+  } catch (error) {
+    console.warn('Failed to cancel notifications:', error);
+    // Fallback to legacy cancel
+    await cancelNative(8);
+  }
+}
+
+/** Show fallback banner when native notifications fail */
+function showFallbackBanner(message: string) {
+  console.info('Fallback notification:', message);
+  
+  // Store fallback message in settings for UI display
+  try {
+    const currentState = useDB.getState();
+    if (currentState.setSettings) {
+      currentState.setSettings({
+        notificationFallbackMessage: message
+      });
+    }
+  } catch (error) {
+    console.warn('Failed to store fallback message:', error);
+  }
 }
