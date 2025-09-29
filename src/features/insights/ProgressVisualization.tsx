@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../../types/common';
 import { stdDrinks } from '../../lib/calc';
+import { useLanguage } from '../../i18n';
 
 interface Props {
   drinks: Drink[];
@@ -28,7 +29,11 @@ interface ProgressData {
   };
 }
 
-export default function ProgressVisualization({ drinks, goals }: Props) {
+export default function ProgressVisualization({ 
+  drinks = [], 
+  goals = { dailyCap: 2, weeklyGoal: 10, pricePerStd: 3, baselineMonthlySpend: 150 } 
+}: Props) {
+  const { t } = useLanguage();
 
   const progressData = useMemo((): ProgressData => {
     const now = Date.now();
@@ -92,13 +97,13 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
       {/* Daily & Weekly Progress */}
       <div className="card">
         <div className="card-header">
-          <h2 className="text-xl font-semibold">Goal Progress</h2>
+          <h2 className="text-xl font-semibold">{t('progressVisualization.goalProgress')}</h2>
         </div>
         <div className="card-content space-y-6">
           {/* Daily Progress */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">Daily Limit</span>
+              <span className="text-sm font-medium">{t('progressVisualization.dailyLimit')}</span>
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
                 {progressData.dailyProgress.toFixed(0)}%
               </span>
@@ -116,9 +121,13 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               />
             </div>
             <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-              {progressData.dailyProgress <= 100 
-                ? `${(goals.dailyCap - (goals.dailyCap * progressData.dailyProgress / 100)).toFixed(1)} drinks remaining`
-                : `Exceeded by ${(progressData.dailyProgress - 100).toFixed(0)}%`
+              {progressData.dailyProgress <= 100
+                ? t('progressVisualization.dailyRemaining', {
+                    count: (goals.dailyCap - (goals.dailyCap * progressData.dailyProgress / 100)).toFixed(1)
+                  })
+                : t('progressVisualization.dailyExceeded', {
+                    percent: (progressData.dailyProgress - 100).toFixed(0)
+                  })
               }
             </div>
           </div>
@@ -126,7 +135,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
           {/* Weekly Progress */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">Weekly Goal</span>
+              <span className="text-sm font-medium">{t('progressVisualization.weeklyGoal')}</span>
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
                 {progressData.weeklyProgress.toFixed(0)}%
               </span>
@@ -144,9 +153,13 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               />
             </div>
             <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-              {progressData.weeklyProgress <= 100 
-                ? `${(goals.weeklyGoal - (goals.weeklyGoal * progressData.weeklyProgress / 100)).toFixed(1)} drinks remaining this week`
-                : `Exceeded by ${(progressData.weeklyProgress - 100).toFixed(0)}%`
+              {progressData.weeklyProgress <= 100
+                ? t('progressVisualization.weeklyRemaining', {
+                    count: (goals.weeklyGoal - (goals.weeklyGoal * progressData.weeklyProgress / 100)).toFixed(1)
+                  })
+                : t('progressVisualization.weeklyExceeded', {
+                    percent: (progressData.weeklyProgress - 100).toFixed(0)
+                  })
               }
             </div>
           </div>
@@ -156,7 +169,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
       {/* Streak Milestone */}
       <div className="card">
         <div className="card-header">
-          <h2 className="text-xl font-semibold">Streak Milestone</h2>
+          <h2 className="text-xl font-semibold">{t('progressVisualization.streakMilestone')}</h2>
         </div>
         <div className="card-content">
           <div className="text-center mb-4">
@@ -164,13 +177,17 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               {progressData.streakMilestones.current}
             </div>
             <div className="text-sm text-neutral-600 dark:text-neutral-400">
-              Days alcohol-free
+              {t('progressVisualization.daysAlcoholFree')}
             </div>
           </div>
-          
+
           <div className="mb-2">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm">Next milestone: {progressData.streakMilestones.next} days</span>
+              <span className="text-sm">
+                {t('progressVisualization.nextMilestone', {
+                  days: progressData.streakMilestones.next
+                })}
+              </span>
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
                 {Math.round(progressData.streakMilestones.progress)}%
               </span>
@@ -182,9 +199,11 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               />
             </div>
           </div>
-          
+
           <div className="text-xs text-center text-neutral-500 dark:text-neutral-400">
-            {progressData.streakMilestones.next - progressData.streakMilestones.current} days to go!
+            {t('progressVisualization.daysToGo', {
+              count: progressData.streakMilestones.next - progressData.streakMilestones.current
+            })}
           </div>
         </div>
       </div>
@@ -192,7 +211,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
       {/* Spending Analysis */}
       <div className="card">
         <div className="card-header">
-          <h2 className="text-xl font-semibold">Monthly Spending</h2>
+          <h2 className="text-xl font-semibold">{t('progressVisualization.monthlySpending')}</h2>
         </div>
         <div className="card-content">
           <div className="grid grid-cols-2 gap-4 mb-4">
@@ -201,7 +220,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
                 ${progressData.monthlySpending.actual.toFixed(0)}
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                Spent this month
+                {t('progressVisualization.spentThisMonth')}
               </div>
             </div>
             <div className="text-center">
@@ -209,14 +228,14 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
                 ${progressData.monthlySpending.savings.toFixed(0)}
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                Potential savings
+                {t('progressVisualization.potentialSavings')}
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm">Budget usage</span>
+              <span className="text-sm">{t('progressVisualization.budgetUsage')}</span>
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
                 {((progressData.monthlySpending.actual / progressData.monthlySpending.budget) * 100).toFixed(0)}%
               </span>
@@ -242,7 +261,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
       {/* Health Metrics */}
       <div className="card">
         <div className="card-header">
-          <h2 className="text-xl font-semibold">Health Insights</h2>
+          <h2 className="text-xl font-semibold">{t('progressVisualization.healthInsights')}</h2>
         </div>
         <div className="card-content">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -251,32 +270,32 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
                 {progressData.healthMetrics.alcoholFreeDays}
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                AF days this month
+                {t('progressVisualization.afDaysThisMonth')}
               </div>
             </div>
-            
+
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                 {progressData.healthMetrics.averageCraving.toFixed(1)}
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                Avg. craving level
+                {t('progressVisualization.avgCravingLevel')}
               </div>
             </div>
-            
+
             <div className="text-center">
               <div className={`text-2xl font-bold mb-1 ${
-                progressData.healthMetrics.improvementTrend === 'improving' 
+                progressData.healthMetrics.improvementTrend === 'improving'
                   ? 'text-green-600 dark:text-green-400'
                   : progressData.healthMetrics.improvementTrend === 'declining'
                   ? 'text-red-600 dark:text-red-400'
                   : 'text-yellow-600 dark:text-yellow-400'
               }`}>
-                {progressData.healthMetrics.improvementTrend === 'improving' ? '📈' : 
+                {progressData.healthMetrics.improvementTrend === 'improving' ? '📈' :
                  progressData.healthMetrics.improvementTrend === 'declining' ? '📉' : '➡️'}
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                Overall trend
+                {t('progressVisualization.overallTrend')}
               </div>
             </div>
           </div>

@@ -4,8 +4,41 @@ import en from './locales/en.json';
 
 export type Lang = 'en' | 'es';
 
-type Dictionary = Record<string, string>;
+type Dictionary = Record<string, string | Dictionary>;
 export const dictionaries: Partial<Record<Lang, Dictionary>> = { en: en as Dictionary };
+
+export type TranslationValues = Record<string, string | number>;
+
+function interpolate(template: string, vars?: TranslationValues): string {
+  if (!vars) return template;
+  return template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => {
+    if (Object.prototype.hasOwnProperty.call(vars, key)) {
+      return String(vars[key]);
+    }
+    return '';
+  });
+}
+
+function resolve(dictionary: Dictionary | undefined, key: string): string | undefined {
+  if (!dictionary) return undefined;
+
+  if (Object.prototype.hasOwnProperty.call(dictionary, key)) {
+    const direct = dictionary[key];
+    return typeof direct === 'string' ? direct : undefined;
+  }
+
+  const parts = key.split('.');
+  let current: string | Dictionary | undefined = dictionary;
+  for (const part of parts) {
+    if (current && typeof current === 'object' && Object.prototype.hasOwnProperty.call(current, part)) {
+      current = (current as Dictionary)[part] as string | Dictionary;
+    } else {
+      return undefined;
+    }
+  }
+
+  return typeof current === 'string' ? current : undefined;
+}
 
 export async function loadLocale(lng: Lang) {
   if (dictionaries[lng]) return;
@@ -13,14 +46,17 @@ export async function loadLocale(lng: Lang) {
   dictionaries[lng] = (res.default || res) as Dictionary;
 }
 
-const LanguageContext = createContext<{
+export const LanguageContext = createContext<{
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (k: string) => string;
+  t: (k: string, vars?: TranslationValues) => string;
 }>({
   lang: 'en',
   setLang: () => {},
-  t: (k: string) => (dictionaries['en']?.[k] || k),
+  t: (k: string, vars?: TranslationValues) => {
+    const template = resolve(dictionaries['en'], k) ?? k;
+    return interpolate(template, vars);
+  },
 });
 
 export async function loadInitialLang(): Promise<Lang> {
@@ -34,7 +70,7 @@ export async function loadInitialLang(): Promise<Lang> {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('en');
   // Import store inside component to avoid circular deps
-  const [useDBStore, setUseDBStore] = useState<typeof import('./store/db').useDB | null>(null);
+  const [useDBStore, setUseDBStore] = useState<any>(null);
   
   useEffect(() => {
     import('./store/db').then(({ useDB }) => {
@@ -69,7 +105,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const t = (key: string) => (dictionaries[lang] ?? dictionaries['en'])?.[key] ?? key;
+  const t = (key: string, vars?: TranslationValues) => {
+    const template = resolve(dictionaries[lang], key) ?? resolve(dictionaries['en'], key) ?? key;
+    return interpolate(template, vars);
+  };
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t }}>

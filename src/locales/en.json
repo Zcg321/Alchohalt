@@ -72,7 +72,6 @@
   "craving.high": "High",
   "haltLabel": "HALT",
   "alternative": "Alternative action",
-  "alternativePlaceholder": "e.g. take a walk",
   "intention_celebrate": "celebrate",
   "intention_social": "social",
   "intention_taste": "taste",
@@ -97,10 +96,6 @@
   "goals.afStreak": "AF Streak",
   "goals.longestStreak": "Longest AF Streak",
   "history.title": "History",
-  "noDrinksTitle": "No drinks logged",
-  "drinkHistory": "Drink history",
-  "entry": "entry",
-  "entries": "entries",
   "history.date": "Date",
   "history.kind": "Type",
   "history.intention": "Intention",
@@ -115,7 +110,118 @@
   "status.online": "Online",
   "status.offline": "Offline",
   "history.deleted": "Entry deleted",
+  "deletedDrink": "Drink deleted",
   "toast.undo": "Undo",
   "reminder.prompt": "Reminder: log your day?",
-  "reminder.log": "Log now"
+  "reminder.log": "Log now",
+  "quickActions": {
+    "daysAlcoholFreeLabel": "Days alcohol-free",
+    "todayDrinksLabel": "Today's drinks",
+    "todayDrinksProgress": "{{consumed}} / {{limit}}",
+    "title": "Quick Actions",
+    "actions": {
+      "moodCheckIn": "Mood Check-In",
+      "viewProgress": "View Progress",
+      "settings": "Settings",
+      "afToday": "AF Today!",
+      "logDrink": "Log Drink"
+    },
+    "quickLog": {
+      "title": "Quick Log",
+      "subtitle": "Tap to log common drinks",
+      "standardDrinks": "{{count}} std"
+    },
+    "drinks": {
+      "beer": "Beer ({{volume}}ml, {{abv}}%)",
+      "wine": "Wine ({{volume}}ml, {{abv}}%)",
+      "cocktail": "Cocktail ({{volume}}ml, {{abv}}%)",
+      "custom": "Custom Entry"
+    },
+    "motivation": {
+      "amazingMonth": "Amazing month-long streak! 🏆",
+      "weekStrong": "Week-long streak going strong! 💪",
+      "buildingMomentum": "Building momentum! 🚀",
+      "anotherDay": "Another alcohol-free day! ⭐",
+      "startingFresh": "Starting fresh today! 🌅",
+      "everyStep": "Every step counts! 🌟"
+    },
+    "motivationSubtext": {
+      "alcoholFree": "Keep going! Each alcohol-free day builds your strength and resilience.",
+      "limitReached": "You've reached your limit for today. Tomorrow is a new opportunity.",
+      "remaining": "You have {{remaining}} drinks remaining in today's limit."
+    }
+  },
+  "smartRecommendations": {
+    "title": "Smart Recommendations",
+    "subtitle": "Personalized suggestions based on your patterns",
+    "emptyState": "Great job! No urgent recommendations right now. Keep up the good work!",
+    "approachingDailyLimit": {
+      "title": "Approaching Daily Limit",
+      "description": "You've consumed {{consumed}} of your {{limit}} daily limit. Consider switching to alcohol-free alternatives for the rest of today."
+    },
+    "dailyLimitReached": {
+      "title": "Daily Limit Reached",
+      "description": "You've reached your daily limit. Taking a break now will help you stay on track with your goals."
+    },
+    "weekendStrategy": {
+      "title": "Weekend Strategy Needed",
+      "description": "You tend to drink more on weekends. Consider planning alcohol-free activities or setting a specific weekend limit.",
+      "action": "Set Weekend Goal"
+    },
+    "cravingManagement": {
+      "title": "Craving Management Tips",
+      "description": "You've experienced high cravings recently. Try the 10-minute rule: wait 10 minutes before drinking and engage in a different activity."
+    },
+    "keepStreak": {
+      "title": "Keep Your Streak Going!",
+      "description": "You're {{count}} days alcohol-free. You're doing great! Each day gets easier."
+    },
+    "alternativeActivities": {
+      "title": "Try Alternative Activities",
+      "description": "Consider planning enjoyable alternatives when you feel like drinking: go for a walk, call a friend, or try a new hobby."
+    },
+    "budgetAlert": {
+      "title": "Budget Alert",
+      "description": "You've spent ${{spend}} on alcohol this month, which is over your ${{budget}} budget."
+    },
+    "halt": {
+      "hungry": {
+        "title": "Manage Hunger-Triggered Drinking",
+        "description": "Keep healthy snacks ready and eat regular meals. Low blood sugar can trigger alcohol cravings."
+      },
+      "angry": {
+        "title": "Channel Your Anger Differently",
+        "description": "Try physical exercise, deep breathing, or journaling when you feel angry instead of reaching for alcohol."
+      },
+      "lonely": {
+        "title": "Combat Loneliness Proactively",
+        "description": "Schedule regular social activities or video calls with friends. Loneliness is a common drinking trigger."
+      },
+      "tired": {
+        "title": "Address Fatigue First",
+        "description": "Prioritize sleep hygiene and rest. Being tired makes it harder to resist cravings."
+      }
+    }
+  },
+  "progressVisualization": {
+    "goalProgress": "Goal Progress",
+    "dailyLimit": "Daily Limit",
+    "dailyRemaining": "{{count}} drinks remaining",
+    "dailyExceeded": "Exceeded by {{percent}}%",
+    "weeklyGoal": "Weekly Goal",
+    "weeklyRemaining": "{{count}} drinks remaining this week",
+    "weeklyExceeded": "Exceeded by {{percent}}%",
+    "streakMilestone": "Streak Milestone",
+    "daysAlcoholFree": "Days alcohol-free",
+    "nextMilestone": "Next milestone: {{days}} days",
+    "daysToGo": "{{count}} days to go!",
+    "monthlySpending": "Monthly Spending",
+    "spentThisMonth": "Spent this month",
+    "potentialSavings": "Potential savings",
+    "budgetUsage": "Budget usage",
+    "healthInsights": "Health Insights",
+    "afDaysThisMonth": "AF days this month",
+    "avgCravingLevel": "Avg. craving level",
+    "overallTrend": "Overall trend"
+  }
 }
