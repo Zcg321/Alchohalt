@@ -392,7 +392,7 @@
     ],
     [
       "src/app/StatsAndGoals.tsx",
-      "../features/goals/GoalSettings"
+      "../types/common"
     ],
     [
       "src/app/AlcoholCoachApp.tsx",
@@ -576,7 +576,7 @@
     ],
     [
       "src/features/goals/AdvancedGoalSetting.tsx",
-      "./GoalSettings"
+      "../../types/common"
     ],
     [
       "src/features/goals/AdvancedGoalSetting.tsx",
@@ -696,7 +696,7 @@
     ],
     [
       "src/features/homepage/PersonalizedDashboard.tsx",
-      "../goals/GoalSettings"
+      "../../types/common"
     ],
     [
       "src/features/homepage/PersonalizedDashboard.tsx",
@@ -732,7 +732,7 @@
     ],
     [
       "src/features/insights/QuickActions.tsx",
-      "../goals/GoalSettings"
+      "../../types/common"
     ],
     [
       "src/features/insights/QuickActions.tsx",
@@ -764,7 +764,7 @@
     ],
     [
       "src/features/insights/InsightsPanel.tsx",
-      "../goals/GoalSettings"
+      "../../types/common"
     ],
     [
       "src/features/insights/InsightsPanel.tsx",
@@ -796,7 +796,7 @@
     ],
     [
       "src/features/insights/ProgressVisualization.tsx",
-      "../goals/GoalSettings"
+      "../../types/common"
     ],
     [
       "src/features/insights/ProgressVisualization.tsx",
@@ -816,7 +816,7 @@
     ],
     [
       "src/features/insights/insightGenerators.tsx",
-      "../goals/GoalSettings"
+      "../../types/common"
     ],
     [
       "src/features/insights/insightGenerators.tsx",
@@ -828,7 +828,7 @@
     ],
     [
       "src/features/insights/SmartRecommendations.tsx",
-      "../goals/GoalSettings"
+      "../../types/common"
     ],
     [
       "src/features/insights/SmartRecommendations.tsx",
@@ -1220,7 +1220,7 @@
     ],
     [
       "src/features/rewards/Stats/lib.ts",
-      "../../goals/GoalSettings"
+      "../../../types/common"
     ],
     [
       "src/features/rewards/Stats/BehaviorSection.tsx",
@@ -1260,7 +1260,7 @@
     ],
     [
       "src/features/rewards/Stats/TopSection.tsx",
-      "../../goals/GoalSettings"
+      "../../../types/common"
     ],
     [
       "src/features/rewards/Stats/SpendSection.tsx",
@@ -1276,7 +1276,7 @@
     ],
     [
       "src/features/rewards/Stats/SpendSection.tsx",
-      "../../goals/GoalSettings"
+      "../../../types/common"
     ],
     [
       "src/features/rewards/Stats/index/index.tsx",

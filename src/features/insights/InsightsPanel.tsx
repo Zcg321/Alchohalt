@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import type { Drink } from '../drinks/DrinkForm';
-import type { Goals } from '../goals/GoalSettings';
+import type { Goals } from '../../types/common';
 import InsightCard from './InsightCard';
 import { getCurrentStreak, analyzeWeekendPattern, analyzeCravingTrend, type Insight } from './lib';
 import { ChartIcon } from './insightGenerators';

@@ -1,9 +1,9 @@
 import React from 'react';
 import { stdDrinks } from '../lib/calc';
-import { GoalSettings } from '../features/goals/GoalSettings';
+import GoalSettings from '../features/goals/GoalSettings';
 import AdvancedGoalSetting from '../features/goals/AdvancedGoalSetting';
 import type { Drink } from '../features/drinks/DrinkForm';
-import type { Goals } from '../features/goals/GoalSettings';
+import type { Goals } from '../types/common';
 
 interface Props {
   drinks: Drink[];
