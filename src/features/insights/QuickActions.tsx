@@ -112,7 +112,7 @@ function QuickActionButtons({
 
 function QuickDrinkLogging({ quickDrinks, onQuickLog }: {
   quickDrinks: Array<{ name: string; volumeMl: number; abvPct: number; }>;
-  onQuickLog: (drink: any) => void;
+  onQuickLog: (drink: { name: string; volumeMl: number; abvPct: number; }) => void;
 }) {
   return (
     <div className="card">
