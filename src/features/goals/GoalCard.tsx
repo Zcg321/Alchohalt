@@ -8,7 +8,9 @@ interface Props {
 }
 
 export default function GoalCard({ goal, onToggle, onDelete }: Props) {
-  const progressPercentage = Math.min((goal.current / goal.target) * 100, 100);
+  const progressPercentage = goal.target > 0 
+    ? Math.min((goal.current / goal.target) * 100, 100)
+    : 0;
   const isCompleted = goal.current >= goal.target;
 
   const typeColors = {

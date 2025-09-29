@@ -12,6 +12,14 @@ interface Props {
   onDelete?: (ts: number) => void;
 }
 
+// Timezone-safe date formatting to avoid UTC interpretation issues
+function formatDateSafe(isoDateString: string): string {
+  // Parse the ISO date string manually to avoid timezone issues
+  const [year, month, day] = isoDateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-indexed
+  return date.toLocaleDateString();
+}
+
 export default function DayGroup({ day, drinks, dailyCap, onEdit, onDelete }: Props) {
   const dailyTotal = drinks.reduce((sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct), 0);
   const exceed = dailyCap !== undefined && dailyCap > 0 && dailyTotal > dailyCap;
@@ -19,7 +27,7 @@ export default function DayGroup({ day, drinks, dailyCap, onEdit, onDelete }: Pr
   return (
     <div>
       <div className={`font-semibold ${exceed ? 'text-red-600' : ''}`}>
-        {new Date(day).toLocaleDateString()} – {dailyTotal.toFixed(2)} std
+        {formatDateSafe(day)} – {dailyTotal.toFixed(2)} std
         {dailyCap !== undefined && ` / ${dailyCap}`}
         {dailyCap !== undefined && (
           <div className="mt-1 w-full bg-gray-200 h-1 rounded">

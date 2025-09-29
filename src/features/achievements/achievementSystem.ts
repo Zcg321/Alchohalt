@@ -299,7 +299,9 @@ export function calculateAchievementProgress(
     }
 
     unlocked = current >= base.requirement;
-    const progress = Math.min(100, Math.floor((current / base.requirement) * 100));
+    const progress = base.requirement > 0 
+      ? Math.min(100, Math.floor((current / base.requirement) * 100))
+      : 0;
 
     return {
       ...base,
