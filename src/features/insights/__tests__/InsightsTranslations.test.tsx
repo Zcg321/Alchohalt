@@ -21,14 +21,26 @@ vi.mock('../../mood/MoodTracker', () => ({
   default: () => <div data-testid="mood-tracker" />
 }));
 
-const dictionaries = { en, es } as const;
+type TranslationDict = { [key: string]: string | TranslationDict };
 
-function resolve(dict: any, key: string): string | undefined {
+const dictionaries: Record<Lang, TranslationDict> = {
+  en: en as TranslationDict,
+  es: es as TranslationDict
+};
+
+function resolve(dict: TranslationDict | undefined, key: string): string | undefined {
+  if (!dict) return undefined;
+
+  if (Object.prototype.hasOwnProperty.call(dict, key)) {
+    const direct = dict[key];
+    return typeof direct === 'string' ? direct : undefined;
+  }
+
   const parts = key.split('.');
-  let current: any = dict;
+  let current: string | TranslationDict | undefined = dict;
   for (const part of parts) {
-    if (current && typeof current === 'object' && part in current) {
-      current = current[part];
+    if (current && typeof current === 'object' && Object.prototype.hasOwnProperty.call(current, part)) {
+      current = (current as TranslationDict)[part];
     } else {
       return undefined;
     }
