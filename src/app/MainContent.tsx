@@ -53,7 +53,7 @@ export default function MainContent({
   const { t } = useLanguage();
 
   return (
-    <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
+    <main id="main" className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
       <ReminderBanner />
       
       {/* Personalized Dashboard - New Feature */}
