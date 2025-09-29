@@ -174,12 +174,19 @@ function undo(set: any, get: any) {
   }
 }
 
+function applyThemeToDocument(theme: Theme) {
+  const root = document.documentElement;
+  root.classList.remove('light','dark'); 
+  if (theme !== 'system') {
+    root.classList.add(theme);
+  }
+}
+
 function setThemeFn(set: any, get: any, theme: Theme) {
   const db = { ...get().db, settings: { ...get().db.settings, theme } };
   set({ db }); get()._recompute();
   if (typeof document !== 'undefined') {
-    const root = document.documentElement;
-    root.classList.remove('light','dark'); if (theme !== 'system') root.classList.add(theme);
+    applyThemeToDocument(theme);
   }
 }
 

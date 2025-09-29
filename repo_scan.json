@@ -1,15 +1,15 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 13031,
+    "__all__": 11948,
     "web": 58,
     "config": 462,
-    "ts": 11907,
+    "ts": 10824,
     "js": 100,
     "css": 420
   },
   "totals_by_module": {
-    "src": 11543,
+    "src": 10460,
     "tests": 494,
     ".": 432,
     "tools": 422,
@@ -17,10 +17,6 @@
     "public": 21
   },
   "top_20_largest_files": [
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      445
-    ],
     [
       "src/features/challenges/SocialChallenges.tsx",
       445
@@ -38,10 +34,6 @@
       353
     ],
     [
-      "src/features/achievements/achievementSystem.ts",
-      349
-    ],
-    [
       "src/features/wellness/PremiumWellnessDashboard.tsx",
       343
     ],
@@ -55,7 +47,7 @@
     ],
     [
       "src/store/db.ts",
-      309
+      315
     ],
     [
       "src/features/subscription/PremiumMoodTracking.tsx",
@@ -96,6 +88,14 @@
     [
       "src/features/achievements/AchievementDisplay.tsx",
       202
+    ],
+    [
+      "src/features/homepage/PersonalizedDashboard.tsx",
+      200
+    ],
+    [
+      "src/features/drinks/DrinkForm/index.tsx",
+      194
     ]
   ],
   "top_20_longest_functions": [
@@ -110,56 +110,12 @@
       26,
       135,
       110
-    ],
-    [
-      "src/features/rewards/Stats/index.tsx",
-      49,
-      154,
-      106
-    ],
-    [
-      "src/features/analytics/ProductionErrorBoundary.tsx",
-      23,
-      128,
-      106
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      316,
-      404,
-      89
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      176,
-      263,
-      88
-    ],
-    [
-      "src/features/goals/GoalSettings.tsx",
-      30,
-      110,
-      81
-    ],
-    [
-      "src/features/achievements/achievementSystem.ts",
-      251,
-      331,
-      81
     ]
   ],
   "top_20_most_complex_files": [
     [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      38
-    ],
-    [
       "tools/split_long_ts_or_tsx.ts",
       34
-    ],
-    [
-      "src/features/achievements/achievementSystem.ts",
-      23
     ],
     [
       "src/lib/notify.ts",
@@ -188,7 +144,7 @@
   ],
   "todo_fixme_count": 0,
   "todo_samples": [],
-  "ts_import_edges_count": 310,
+  "ts_import_edges_count": 301,
   "ts_import_edges_full": [
     [
       "tests/notifications.web.test.tsx",
@@ -663,12 +619,16 @@
       "./AddGoalModal"
     ],
     [
-      "src/features/goals/GoalSettings.tsx",
-      "../../components/ui/Input"
+      "src/features/goals/GoalSettings/index.tsx",
+      "./TopSection"
     ],
     [
-      "src/features/goals/GoalSettings.tsx",
-      "../../components/ui/Label"
+      "src/features/goals/GoalSettings/index.tsx",
+      "./BehaviorSection"
+    ],
+    [
+      "src/features/goals/GoalSettings/index.tsx",
+      "./SpendSection"
     ],
     [
       "src/features/subscription/PremiumMoodTracking.tsx",
@@ -727,34 +687,6 @@
       "../../store/db"
     ],
     [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      "../../components/ui/Card"
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      "../../components/ui/Button"
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      "../../components/ui/Badge"
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      "../subscription/subscriptionStore"
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      "../subscription/SubscriptionManager"
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      "../../store/db"
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
-      "../../store/db"
-    ],
-    [
       "src/features/subscription/SubscriptionManager.tsx",
       "../../components/ui/Button"
     ],
@@ -769,6 +701,18 @@
     [
       "src/features/subscription/SubscriptionManager.tsx",
       "../analytics/analytics"
+    ],
+    [
+      "src/features/subscription/PremiumSmartRecommendations/index.tsx",
+      "./TopSection"
+    ],
+    [
+      "src/features/subscription/PremiumSmartRecommendations/index.tsx",
+      "./BehaviorSection"
+    ],
+    [
+      "src/features/subscription/PremiumSmartRecommendations/index.tsx",
+      "./SpendSection"
     ],
     [
       "src/features/homepage/PersonalizedDashboard.tsx",
@@ -1303,104 +1247,88 @@
       "../../goals/GoalSettings"
     ],
     [
-      "src/features/rewards/Stats/index.tsx",
-      "../../../components/ui/Button"
+      "src/features/rewards/Stats/BehaviorSection.tsx",
+      "../../../components/ui/Badge"
     ],
     [
-      "src/features/rewards/Stats/index.tsx",
-      "../../../i18n"
+      "src/features/rewards/Stats/BehaviorSection.tsx",
+      "../../../components/ui/Progress"
     ],
     [
-      "src/features/rewards/Stats/index.tsx",
+      "src/features/rewards/Stats/BehaviorSection.tsx",
+      "../../../components/ui/StatRow"
+    ],
+    [
+      "src/features/rewards/Stats/BehaviorSection.tsx",
+      "./lib"
+    ],
+    [
+      "src/features/rewards/Stats/BehaviorSection.tsx",
+      "../../drinks/DrinkForm"
+    ],
+    [
+      "src/features/rewards/Stats/TopSection.tsx",
+      "../../../components/ui/Badge"
+    ],
+    [
+      "src/features/rewards/Stats/TopSection.tsx",
+      "../../../components/ui/Progress"
+    ],
+    [
+      "src/features/rewards/Stats/TopSection.tsx",
+      "../../../components/ui/StatRow"
+    ],
+    [
+      "src/features/rewards/Stats/TopSection.tsx",
+      "./lib"
+    ],
+    [
+      "src/features/rewards/Stats/TopSection.tsx",
+      "../../goals/GoalSettings"
+    ],
+    [
+      "src/features/rewards/Stats/SpendSection.tsx",
+      "../../../components/ui/Progress"
+    ],
+    [
+      "src/features/rewards/Stats/SpendSection.tsx",
+      "../../../components/ui/StatRow"
+    ],
+    [
+      "src/features/rewards/Stats/SpendSection.tsx",
+      "./lib"
+    ],
+    [
+      "src/features/rewards/Stats/SpendSection.tsx",
+      "../../goals/GoalSettings"
+    ],
+    [
+      "src/features/rewards/Stats/index/index.tsx",
       "./TopSection"
     ],
     [
-      "src/features/rewards/Stats/index.tsx",
+      "src/features/rewards/Stats/index/index.tsx",
       "./BehaviorSection"
     ],
     [
-      "src/features/rewards/Stats/index.tsx",
+      "src/features/rewards/Stats/index/index.tsx",
       "./SpendSection"
-    ],
-    [
-      "src/features/rewards/Stats/index.tsx",
-      "./lib"
-    ],
-    [
-      "src/features/rewards/Stats/index.tsx",
-      "../../drinks/DrinkForm"
-    ],
-    [
-      "src/features/rewards/Stats/index.tsx",
-      "../../goals/GoalSettings"
-    ],
-    [
-      "src/features/rewards/Stats/BehaviorSection.tsx",
-      "../../../components/ui/Badge"
-    ],
-    [
-      "src/features/rewards/Stats/BehaviorSection.tsx",
-      "../../../components/ui/Progress"
-    ],
-    [
-      "src/features/rewards/Stats/BehaviorSection.tsx",
-      "../../../components/ui/StatRow"
-    ],
-    [
-      "src/features/rewards/Stats/BehaviorSection.tsx",
-      "./lib"
-    ],
-    [
-      "src/features/rewards/Stats/BehaviorSection.tsx",
-      "../../drinks/DrinkForm"
-    ],
-    [
-      "src/features/rewards/Stats/TopSection.tsx",
-      "../../../components/ui/Badge"
-    ],
-    [
-      "src/features/rewards/Stats/TopSection.tsx",
-      "../../../components/ui/Progress"
-    ],
-    [
-      "src/features/rewards/Stats/TopSection.tsx",
-      "../../../components/ui/StatRow"
-    ],
-    [
-      "src/features/rewards/Stats/TopSection.tsx",
-      "./lib"
-    ],
-    [
-      "src/features/rewards/Stats/TopSection.tsx",
-      "../../goals/GoalSettings"
-    ],
-    [
-      "src/features/rewards/Stats/SpendSection.tsx",
-      "../../../components/ui/Progress"
-    ],
-    [
-      "src/features/rewards/Stats/SpendSection.tsx",
-      "../../../components/ui/StatRow"
-    ],
-    [
-      "src/features/rewards/Stats/SpendSection.tsx",
-      "./lib"
-    ],
-    [
-      "src/features/rewards/Stats/SpendSection.tsx",
-      "../../goals/GoalSettings"
     ],
     [
       "src/features/rewards/Stats/__tests__/lib.smoke.test.ts",
       "../lib.ts"
     ],
     [
-      "src/features/analytics/ProductionErrorBoundary.tsx",
-      "../../components/ui/Button"
+      "src/features/analytics/ProductionErrorBoundary/index.tsx",
+      "./TopSection"
     ],
     [
-      "src/features/analytics/ProductionErrorBoundary.tsx",
-      "../analytics/analytics"
+      "src/features/analytics/ProductionErrorBoundary/index.tsx",
+      "./BehaviorSection"
+    ],
+    [
+      "src/features/analytics/ProductionErrorBoundary/index.tsx",
+      "./SpendSection"
     ],
     [
       "src/features/achievements/AchievementDisplay.tsx",
@@ -1421,14 +1349,6 @@
     [
       "src/features/achievements/AchievementDisplay.tsx",
       "../analytics/analytics"
-    ],
-    [
-      "src/features/achievements/achievementSystem.ts",
-      "../drinks/DrinkForm"
-    ],
-    [
-      "src/features/achievements/achievementSystem.ts",
-      "../goals/GoalSettings"
     ]
   ],
   "ts_tangle_sources": [
@@ -1445,15 +1365,7 @@
       8
     ],
     [
-      "src/features/rewards/Stats/index.tsx",
-      8
-    ],
-    [
       "src/features/subscription/PremiumMoodTracking.tsx",
-      7
-    ],
-    [
-      "src/features/subscription/PremiumSmartRecommendations.tsx",
       7
     ],
     [
@@ -1471,20 +1383,28 @@
     [
       "src/app/MainContent.tsx",
       6
+    ],
+    [
+      "src/features/goals/AdvancedGoalSetting.tsx",
+      6
+    ],
+    [
+      "src/features/subscription/PremiumDataExport.tsx",
+      6
     ]
   ],
   "ts_tangle_sinks": [
     [
       "../../components/ui/Button",
-      19
-    ],
-    [
-      "../../store/db",
       17
     ],
     [
+      "../../store/db",
+      15
+    ],
+    [
       "./lib",
-      14
+      13
     ],
     [
       "../store/db",
@@ -1492,22 +1412,22 @@
     ],
     [
       "../../components/ui/Badge",
-      10
+      9
     ],
     [
       "../subscription/subscriptionStore",
-      10
+      9
     ],
     [
       "../drinks/DrinkForm",
-      10
-    ],
-    [
-      "../analytics/analytics",
       9
     ],
     [
       "../../lib/utils",
+      8
+    ],
+    [
+      "../analytics/analytics",
       8
     ],
     [

@@ -46,6 +46,21 @@ export function computeStats(entries: Entry[], _settings: Settings) {
   };
 }
 
+function updateStreakCounters(cur: number, max: number, longest: 0|1, drank: boolean): { cur: number; max: number } {
+  if (!drank) {
+    cur++;
+    if (cur > max) max = cur;
+  } else {
+    if (longest === 0) {
+      cur = 0;
+    } else {
+      if (cur > max) max = cur;
+      cur = 0;
+    }
+  }
+  return { cur, max };
+}
+
 function calcAFStreak(entries: Entry[], longest: 0|1) {
   const days = new Map<number, number>();
   entries.forEach(e=>{ const d = startOfDay(e.ts); days.set(d, (days.get(d)??0)+e.stdDrinks); });
@@ -54,8 +69,9 @@ function calcAFStreak(entries: Entry[], longest: 0|1) {
   for (let i=1000;i>=0;i--) {
     const day = today0 - i*86400000;
     const drank = (days.get(day) ?? 0) > 0;
-    if (!drank) { cur++; if (cur>max) max=cur; }
-    else { if (longest===0) cur=0; else { if (cur>max) max=cur; cur=0; } }
+    const result = updateStreakCounters(cur, max, longest, drank);
+    cur = result.cur;
+    max = result.max;
   }
   return longest?max:cur;
 }
@@ -66,9 +82,10 @@ export function monthlyBreakdown(entries: Entry[]) {
   const map = new Map<number, number>();
   for (const e of entries) {
     const d = startOfDay(e.ts);
-    if (!isSameMonth(d, Date.now())) continue;
-    map.set(d, (map.get(d)??0) + (e.cost??0));
+    if (isSameMonth(d, Date.now())) {
+      map.set(d, (map.get(d)??0) + (e.cost??0));
     }
+  }
   const arr = Array.from(map.entries()).map(([d,c])=>({ day:new Date(d), cost:Number(c.toFixed(2)) }));
   arr.sort((a,b)=>b.cost-a.cost);
   return arr;
