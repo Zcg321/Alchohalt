@@ -8,6 +8,7 @@ import { computeStats, startOfDay, isSameDay } from '../lib/stats';
 import { migrateDB } from '../lib/migrate';
 import { resyncNotifications } from '../lib/notify';
 import type { AdvancedGoal } from '../features/goals/types';
+import type { DrinkPreset } from '../types/common';
 
 export type UUID = string;
 export type Language = 'en' | 'es';
@@ -49,6 +50,7 @@ export interface DB {
   trash: { id: UUID; snapshot: Entry; deletedAt: number }[];
   settings: Settings;
   advancedGoals: AdvancedGoal[];
+  presets: DrinkPreset[];
   meta: { lastUndo?: Undo; reminderSuppressedUntil?: number };
   _lastLogAt?: number; // derived
 }
@@ -75,6 +77,12 @@ function defaults(): DB {
       showBAC: false
     },
     advancedGoals: [],
+    presets: [
+      { name: 'Beer (12oz)', volumeMl: 355, abvPct: 5.0 },
+      { name: 'Wine (5oz)', volumeMl: 148, abvPct: 12.0 },
+      { name: 'Shot (1.5oz)', volumeMl: 44, abvPct: 40.0 },
+      { name: 'Light Beer (12oz)', volumeMl: 355, abvPct: 4.2 }
+    ],
     meta: {},
     _lastLogAt: undefined
   };
@@ -101,6 +109,10 @@ type Store = {
   editAdvancedGoal(id: string, patch: Partial<AdvancedGoal>): void;
   deleteAdvancedGoal(id: string): void;
   toggleAdvancedGoal(id: string): void;
+  // Preset CRUD
+  addPreset(preset: DrinkPreset): void;
+  editPreset(name: string, preset: DrinkPreset): void;
+  deletePreset(name: string): void;
   _recompute(): void;
 };
 
@@ -241,6 +253,32 @@ function toggleAdvancedGoal(set: any, get: any, id: string) {
   set({ db }); get()._recompute();
 }
 
+// Preset CRUD operations
+function addPreset(set: any, get: any, preset: DrinkPreset) {
+  // Check if preset with same name already exists
+  const exists = get().db.presets.find(p => p.name === preset.name);
+  if (exists) return; // Don't add duplicates
+  
+  const db = { ...get().db, presets: [...get().db.presets, preset] };
+  set({ db }); get()._recompute();
+}
+
+function editPreset(set: any, get: any, name: string, preset: DrinkPreset) {
+  const db = {
+    ...get().db,
+    presets: get().db.presets.map(p => p.name === name ? preset : p)
+  };
+  set({ db }); get()._recompute();
+}
+
+function deletePreset(set: any, get: any, name: string) {
+  const db = {
+    ...get().db,
+    presets: get().db.presets.filter(p => p.name !== name)
+  };
+  set({ db }); get()._recompute();
+}
+
 function createStore(set: any, get: any) {
   const base = defaults();
   const d = derive(base);
@@ -279,6 +317,10 @@ function createStore(set: any, get: any) {
     editAdvancedGoal: (id: string, patch: Partial<AdvancedGoal>) => editAdvancedGoal(set, get, id, patch),
     deleteAdvancedGoal: (id: string) => deleteAdvancedGoal(set, get, id),
     toggleAdvancedGoal: (id: string) => toggleAdvancedGoal(set, get, id),
+    // Preset CRUD
+    addPreset: (preset: DrinkPreset) => addPreset(set, get, preset),
+    editPreset: (name: string, preset: DrinkPreset) => editPreset(set, get, name, preset),
+    deletePreset: (name: string) => deletePreset(set, get, name),
     _recompute: () => recompute(set, get),
   } as Store;
 }

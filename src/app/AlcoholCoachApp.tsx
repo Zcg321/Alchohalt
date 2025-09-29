@@ -15,7 +15,6 @@ export function AlcoholCoachApp() {
   // Use unified store instead of separate state
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null); // Track entry ID instead of drink object
-  const [presets] = useState<DrinkPreset[]>([]); // Keep presets in local state for now
   const [lastDeleted, setLastDeleted] = useState<string | null>(null); // Track entry ID
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
@@ -120,7 +119,7 @@ export function AlcoholCoachApp() {
         drinks={drinks}
         editing={editingDrink}
         goals={goals}
-        presets={presets}
+        presets={db.presets}
         lastDeleted={lastDeleted ? entryToLegacyDrink(db.entries.find(e => e.id === lastDeleted)!) : null}
         onAddDrink={addDrink}
         onSaveDrink={saveDrink}
