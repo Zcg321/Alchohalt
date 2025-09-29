@@ -21,15 +21,22 @@ function interpolate(template: string, vars?: TranslationValues): string {
 
 function resolve(dictionary: Dictionary | undefined, key: string): string | undefined {
   if (!dictionary) return undefined;
+
+  if (Object.prototype.hasOwnProperty.call(dictionary, key)) {
+    const direct = dictionary[key];
+    return typeof direct === 'string' ? direct : undefined;
+  }
+
   const parts = key.split('.');
   let current: string | Dictionary | undefined = dictionary;
   for (const part of parts) {
-    if (current && typeof current === 'object' && part in current) {
-      current = current[part] as string | Dictionary;
+    if (current && typeof current === 'object' && Object.prototype.hasOwnProperty.call(current, part)) {
+      current = (current as Dictionary)[part] as string | Dictionary;
     } else {
       return undefined;
     }
   }
+
   return typeof current === 'string' ? current : undefined;
 }
 
