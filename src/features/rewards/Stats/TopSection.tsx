@@ -4,7 +4,7 @@ import { Badge } from '../../../components/ui/Badge';
 import { Progress } from '../../../components/ui/Progress';
 import { StatRow } from '../../../components/ui/StatRow';
 import type { StatsData } from './lib';
-import type { Goals } from '../../goals/GoalSettings';
+import type { Goals } from '../../../types/common';
 interface Props {
   data: StatsData;
   goals: Goals;

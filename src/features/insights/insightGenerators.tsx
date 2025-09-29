@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Drink } from '../drinks/DrinkForm';
-import type { Goals } from '../goals/GoalSettings';
+import type { Goals } from '../../types/common';
 import type { Insight } from './lib';
 import { 
   getCurrentStreak, 

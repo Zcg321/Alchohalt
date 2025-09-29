@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/ui/Button';
-import type { Goals } from './GoalSettings';
+import type { Goals } from '../../types/common';
 import { goalTypes, type AdvancedGoal } from './types';
 import { useDB } from '../../store/db';
 import GoalCard from './GoalCard';

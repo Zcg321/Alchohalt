@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import type { Drink } from '../drinks/DrinkForm';
-import type { Goals } from '../goals/GoalSettings';
+import type { Goals } from '../../types/common';
 import { stdDrinks } from '../../lib/calc';
 import { useAnalytics } from '../analytics/analytics';
 import { getCurrentStreak } from './lib';

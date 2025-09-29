@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import type { Drink } from '../drinks/DrinkForm';
-import type { Goals } from '../goals/GoalSettings';
+import type { Goals } from '../../types/common';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
 import { Button } from '../../components/ui/Button';

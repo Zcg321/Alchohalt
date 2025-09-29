@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { stdDrinks, computeStreak, computeLongestStreak, computePoints } from '../../../lib/calc';
 import type { Drink, Halt } from '../../drinks/DrinkForm';
-import type { Goals } from '../../goals/GoalSettings';
+import type { Goals } from '../../../types/common';
 
 export interface StatsData {
   streak: number;

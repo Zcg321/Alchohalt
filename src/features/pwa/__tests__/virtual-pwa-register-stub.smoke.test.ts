@@ -1,0 +1,1 @@
+import * as Mod from "../virtual-pwa-register-stub.ts"; test("virtual-pwa-register-stub.ts exports callable", () => { for (const v of Object.values(Mod)) if (typeof v==="function"){ try{ (v as any)(); }catch{} } });

@@ -39,33 +39,48 @@ function hhmmToNextDate(hhmm: string): Date {
   return d;
 }
 
+async function createNotificationChannel(LN: AnyLN) {
+  if (LN?.createChannel) {
+    await LN.createChannel({
+      id: 'alchohalt-reminders',
+      name: 'Alchohalt Reminders',
+      importance: 5
+    });
+  }
+}
+
+async function requestNotificationPermission(LN: AnyLN): Promise<boolean> {
+  if (!LN) return false;
+  const perm = await LN.requestPermissions();
+  return (perm.display ?? 'denied') === 'granted';
+}
+
+function createNotifications(times: string[]) {
+  return times.map((t, i) => {
+    const at = hhmmToNextDate(t);
+    return {
+      id: 100 + i,
+      title: 'Alchohalt',
+      body: 'Reminder: log your day?',
+      schedule: { at, repeats: true, every: 'day' },
+      channelId: 'alchohalt-reminders'
+    };
+  });
+}
+
 export async function scheduleNative(times: string[]) {
   const LN = await getLN();
   if (!LN) return; // no-op on web
   try {
-    if (LN.createChannel) {
-      await LN.createChannel({
-        id: 'alchohalt-reminders',
-        name: 'Alchohalt Reminders',
-        importance: 5
-      });
-    }
-    const perm = await LN.requestPermissions();
-    if ((perm.display ?? 'denied') !== 'granted') return;
+    await createNotificationChannel(LN);
+    
+    const hasPermission = await requestNotificationPermission(LN);
+    if (!hasPermission) return;
 
     // Cancel previous (ids 100..)
     await LN.cancel({ notifications: times.map((_, i) => ({ id: 100 + i })) });
 
-    const notifications = times.map((t, i) => {
-      const at = hhmmToNextDate(t);
-      return {
-        id: 100 + i,
-        title: 'Alchohalt',
-        body: 'Reminder: log your day?',
-        schedule: { at, repeats: true, every: 'day' },
-        channelId: 'alchohalt-reminders'
-      };
-    });
+    const notifications = createNotifications(times);
     await LN.schedule({ notifications });
   } catch {
     // ignore native scheduling errors to avoid crashing the app
@@ -96,17 +111,25 @@ export async function scheduleWeb() {
   }
 }
 
+function checkReminderNeeded(lastLogAt: number | undefined, now: number): boolean {
+  const today0 = new Date(now); 
+  today0.setHours(0, 0, 0, 0);
+  return !lastLogAt || lastLogAt < today0.getTime();
+}
+
+function isWithinReminderWindow(time: string, now: number): boolean {
+  const thirty = 30 * 60 * 1000;
+  const [h, m] = time.split(':').map(n => parseInt(n, 10));
+  const tgt = new Date(now); 
+  tgt.setHours(h, m, 0, 0);
+  return Math.abs(tgt.getTime() - now) <= thirty;
+}
+
 /** True if within ±30m of any reminder time and user hasn't logged today. */
 export function isReminderWindowDue(now: number, times: string[], lastLogAt: number | undefined): boolean {
   if (!times.length) return false;
-  const thirty = 30 * 60 * 1000;
-  const today0 = new Date(now); today0.setHours(0, 0, 0, 0);
-  if (lastLogAt && lastLogAt >= today0.getTime()) return false;
-  return times.some(t => {
-    const [h, m] = t.split(':').map(n => parseInt(n, 10));
-    const tgt = new Date(now); tgt.setHours(h, m, 0, 0);
-    return Math.abs(tgt.getTime() - now) <= thirty;
-  });
+  if (!checkReminderNeeded(lastLogAt, now)) return false;
+  return times.some(t => isWithinReminderWindow(t, now));
 }
 
 /** Idempotent resync used after settings changes. Safe to call without await. */
