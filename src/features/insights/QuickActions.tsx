@@ -29,6 +29,10 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
   
   const currentStreak = getCurrentStreak(drinks);
   const isAlcoholFree = todayStd === 0;
+  const todayProgressLabel = t('quickActions.todayDrinksProgress', {
+    consumed: todayStd.toFixed(1),
+    limit: goals.dailyCap,
+  });
 
   // Quick drink presets
   const quickDrinks = [
@@ -80,7 +84,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
         <div className="card text-center">
           <div className="card-content">
             <div className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-              {todayStd.toFixed(1)} / {goals.dailyCap}
+              {todayProgressLabel}
             </div>
             <div className="text-sm text-neutral-600 dark:text-neutral-400">
               {t('quickActions.todayDrinksLabel')}

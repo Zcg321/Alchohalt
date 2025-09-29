@@ -116,6 +116,7 @@
   "quickActions": {
     "daysAlcoholFreeLabel": "Días sin alcohol",
     "todayDrinksLabel": "Bebidas de hoy",
+    "todayDrinksProgress": "{{consumed}} / {{limit}}",
     "title": "Acciones rápidas",
     "actions": {
       "moodCheckIn": "Revisión de ánimo",

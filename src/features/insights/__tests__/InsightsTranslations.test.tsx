@@ -131,6 +131,12 @@ describe('insights components translations', () => {
       expect(screen.getByText(translate(lang, 'quickActions.title'))).toBeInTheDocument();
       expect(screen.queryByText('quickActions.title')).not.toBeInTheDocument();
 
+      const todayProgress = translate(lang, 'quickActions.todayDrinksProgress', {
+        consumed: '0.0',
+        limit: sampleGoals.dailyCap,
+      });
+      expect(screen.getByText(todayProgress)).toBeInTheDocument();
+
       expect(screen.getByText(translate(lang, 'smartRecommendations.subtitle'))).toBeInTheDocument();
 
       const nextText = translate(lang, 'progressVisualization.nextMilestone', { days: nextMilestone });
