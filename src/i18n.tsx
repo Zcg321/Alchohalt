@@ -4,7 +4,9 @@ import en from './locales/en.json';
 
 export type Lang = 'en' | 'es';
 
-type Dictionary = Record<string, string | Dictionary>;
+interface Dictionary {
+  [key: string]: string | Dictionary;
+}
 export const dictionaries: Partial<Record<Lang, Dictionary>> = { en: en as Dictionary };
 
 export type TranslationValues = Record<string, string | number>;
