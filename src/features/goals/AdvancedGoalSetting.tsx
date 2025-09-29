@@ -11,7 +11,7 @@ interface Props {
   onChange: (goals: Goals) => void;
 }
 
-export default function AdvancedGoalSetting({ goals }: Props) {
+export default function AdvancedGoalSetting({ goals, onChange }: Props) {
   const [showAddGoal, setShowAddGoal] = useState(false);
   
   // Use the DB store instead of local state
@@ -20,14 +20,20 @@ export default function AdvancedGoalSetting({ goals }: Props) {
   const handleAddGoal = (newGoal: Omit<AdvancedGoal, 'id'>) => {
     addAdvancedGoal(newGoal);
     setShowAddGoal(false);
+    // Notify parent of changes - advanced goals affect overall goal state
+    onChange(goals);
   };
 
   const handleToggleGoal = (goalId: string) => {
     toggleAdvancedGoal(goalId);
+    // Notify parent of changes
+    onChange(goals);
   };
 
   const handleDeleteGoal = (goalId: string) => {
     deleteAdvancedGoal(goalId);
+    // Notify parent of changes
+    onChange(goals);
   };
 
   return (

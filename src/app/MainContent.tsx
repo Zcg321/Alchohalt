@@ -133,8 +133,8 @@ export default function MainContent({
                 drinks={drinks}
                 goals={goals}
                 onAddDrink={onAddDrink}
-                onOpenSettings={() => {}}
-                onOpenStats={() => {}}
+                onOpenSettings={onOpenSettings || (() => {})}
+                onOpenStats={onOpenStats || (() => {})}
               />
             </Suspense>
           </div>

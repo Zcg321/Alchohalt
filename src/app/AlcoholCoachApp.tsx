@@ -10,6 +10,7 @@ import MainContent from './MainContent';
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import { usePWA } from '../hooks/usePWA';
+import { useLanguage } from '../i18n';
 
 export function AlcoholCoachApp() {
   // Use unified store instead of separate state
@@ -20,6 +21,7 @@ export function AlcoholCoachApp() {
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const undoTimer = useRef<number>();
   const { isInstallable, isOnline, updateAvailable, promptInstall, updateApp } = usePWA();
+  const { t } = useLanguage();
 
   // Convert store data to legacy format for compatibility with existing UI components
   const drinks = db.entries.map(entryToLegacyDrink);
@@ -118,8 +120,8 @@ export function AlcoholCoachApp() {
       {/* Online Status Indicator */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} animate-pulse`} />
-        <span className="text-xs text-gray-600 bg-white/90 px-2 py-1 rounded shadow">
-          {isOnline ? 'Online' : 'Offline'}
+        <span className="text-xs text-gray-600 bg-white/90 px-2 py-1 rounded shadow" role="status" aria-live="polite">
+          {isOnline ? t('status.online') : t('status.offline')}
         </span>
       </div>
 

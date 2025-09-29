@@ -107,6 +107,8 @@
   "history.edit": "Editar",
   "history.delete": "Eliminar",
   "history.undo": "Deshacer",
+  "status.online": "En línea",
+  "status.offline": "Desconectado",
   "history.deleted": "Entrada eliminada",
   "toast.undo": "Deshacer",
   "reminder.prompt": "¿Registrar tu día?",

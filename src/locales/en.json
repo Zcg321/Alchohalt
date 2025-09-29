@@ -107,6 +107,8 @@
   "history.edit": "Edit",
   "history.delete": "Delete",
   "history.undo": "Undo",
+  "status.online": "Online",
+  "status.offline": "Offline",
   "history.deleted": "Entry deleted",
   "toast.undo": "Undo",
   "reminder.prompt": "Reminder: log your day?",
