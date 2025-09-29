@@ -15,9 +15,20 @@ describe('i18n utilities', () => {
 
   describe('loadInitialLang', () => {
     it('returns "en" as default when no navigator language', async () => {
-      // Mock navigator to not have language
+      // Mock navigator to not have language property
       Object.defineProperty(global, 'navigator', {
-        value: {},
+        value: { language: undefined },
+        writable: true
+      });
+
+      const lang = await loadInitialLang();
+      expect(lang).toBe('en');
+    });
+
+    it('returns "en" as default when navigator is undefined', async () => {
+      // Mock navigator to be undefined
+      Object.defineProperty(global, 'navigator', {
+        value: undefined,
         writable: true
       });
 

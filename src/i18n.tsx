@@ -71,7 +71,7 @@ export const LanguageContext = createContext<{
 
 export async function loadInitialLang(): Promise<Lang> {
   const stored = await getJSON<Lang | null>('lang', null);
-  const nav = typeof navigator !== 'undefined' ? navigator.language.slice(0, 2) : 'en';
+  const nav = typeof navigator !== 'undefined' && navigator.language ? navigator.language.slice(0, 2) : 'en';
   const lang: Lang = (stored ?? (nav === 'es' ? 'es' : 'en')) as Lang;
   if (lang !== 'en') await loadLocale(lang);
   return lang;
