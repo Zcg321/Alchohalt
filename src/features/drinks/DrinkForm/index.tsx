@@ -64,7 +64,7 @@ export default function DrinkForm({ onSubmit, initial, submitLabel, onCancel, pr
             type="number" 
             value={volume} 
             onChange={(e) => setVolume(e.target.value)}
-            placeholder="e.g. 355"
+            placeholder={t('volume.placeholder')}
             rightIcon={
               <span className="text-xs text-neutral-400">mL</span>
             }
@@ -79,7 +79,7 @@ export default function DrinkForm({ onSubmit, initial, submitLabel, onCancel, pr
             step="0.1"
             value={abv} 
             onChange={(e) => setAbv(e.target.value)}
-            placeholder="e.g. 5.0"
+            placeholder={t('abv.placeholder')}
             rightIcon={
               <span className="text-xs text-neutral-400">%</span>
             }
@@ -124,8 +124,8 @@ export default function DrinkForm({ onSubmit, initial, submitLabel, onCancel, pr
             }}
           />
           <div className="flex justify-between text-xs text-neutral-500 mt-1">
-            <span>Low</span>
-            <span>High</span>
+            <span>{t('craving.low')}</span>
+            <span>{t('craving.high')}</span>
           </div>
         </div>
       </div>

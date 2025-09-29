@@ -15,8 +15,7 @@ export function AlcoholCoachApp() {
   // Use unified store instead of separate state
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null); // Track entry ID instead of drink object
-  const [presets] = useState<DrinkPreset[]>([]); // Keep presets in local state for now
-  const [lastDeleted, setLastDeleted] = useState<string | null>(null); // Track entry ID
+  const [lastDeleted, setLastDeleted] = useState<Drink | null>(null); // Store deleted drink snapshot
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const undoTimer = useRef<number>();
@@ -48,8 +47,9 @@ export function AlcoholCoachApp() {
     // Find entry by timestamp since it's the stable identifier
     const entry = db.entries.find(e => e.ts === drink.ts);
     if (entry) {
+      // Store the drink snapshot before deletion
+      setLastDeleted(drink);
       deleteEntry(entry.id);
-      setLastDeleted(entry.id);
       
       if (undoTimer.current) clearTimeout(undoTimer.current);
       undoTimer.current = window.setTimeout(() => {
@@ -79,6 +79,21 @@ export function AlcoholCoachApp() {
   function onGoalsChange(newGoals: Goals) {
     const settingsUpdate = legacyGoalsToSettings(newGoals);
     setSettings(settingsUpdate);
+  }
+
+  // Navigation callbacks for QuickActions
+  function handleOpenSettings() {
+    const settingsElement = document.getElementById('settings-section');
+    if (settingsElement) {
+      settingsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function handleOpenStats() {
+    const statsElement = document.getElementById('stats-section');
+    if (statsElement) {
+      statsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   // Get current editing drink for UI
@@ -114,20 +129,23 @@ export function AlcoholCoachApp() {
         drinks={drinks} 
         goals={goals} 
         onGoalsChange={onGoalsChange}
+        id="stats-section"
       />
 
       <MainContent
         drinks={drinks}
         editing={editingDrink}
         goals={goals}
-        presets={presets}
-        lastDeleted={lastDeleted ? entryToLegacyDrink(db.entries.find(e => e.id === lastDeleted)!) : null}
+        presets={db.presets}
+        lastDeleted={lastDeleted}
         onAddDrink={addDrink}
         onSaveDrink={saveDrink}
         onStartEdit={startEdit}
         onDeleteDrink={deleteDrink}
         onUndoDelete={undoDelete}
         onCancelEdit={cancelEdit}
+        onOpenSettings={handleOpenSettings}
+        onOpenStats={handleOpenStats}
       />
 
       <ScrollTopButton />

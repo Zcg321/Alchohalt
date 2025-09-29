@@ -7,6 +7,8 @@ import { nanoid } from 'nanoid';
 import { computeStats, startOfDay, isSameDay } from '../lib/stats';
 import { migrateDB } from '../lib/migrate';
 import { resyncNotifications } from '../lib/notify';
+import type { AdvancedGoal } from '../features/goals/types';
+import type { DrinkPreset } from '../types/common';
 
 export type UUID = string;
 export type Language = 'en' | 'es';
@@ -47,6 +49,8 @@ export interface DB {
   entries: Entry[];
   trash: { id: UUID; snapshot: Entry; deletedAt: number }[];
   settings: Settings;
+  advancedGoals: AdvancedGoal[];
+  presets: DrinkPreset[];
   meta: { lastUndo?: Undo; reminderSuppressedUntil?: number };
   _lastLogAt?: number; // derived
 }
@@ -72,6 +76,13 @@ function defaults(): DB {
       reminders: { enabled: false, times: [] },
       showBAC: false
     },
+    advancedGoals: [],
+    presets: [
+      { name: 'Beer (12oz)', volumeMl: 355, abvPct: 5.0 },
+      { name: 'Wine (5oz)', volumeMl: 148, abvPct: 12.0 },
+      { name: 'Shot (1.5oz)', volumeMl: 44, abvPct: 40.0 },
+      { name: 'Light Beer (12oz)', volumeMl: 355, abvPct: 4.2 }
+    ],
     meta: {},
     _lastLogAt: undefined
   };
@@ -93,6 +104,15 @@ type Store = {
   setRemindersEnabled(enabled: boolean): void;
   dismissReminderUntil(ts: number): void;
   wipeAll(confirm: boolean): void;
+  // Advanced Goals CRUD
+  addAdvancedGoal(goal: Omit<AdvancedGoal, 'id'>): void;
+  editAdvancedGoal(id: string, patch: Partial<AdvancedGoal>): void;
+  deleteAdvancedGoal(id: string): void;
+  toggleAdvancedGoal(id: string): void;
+  // Preset CRUD
+  addPreset(preset: DrinkPreset): void;
+  editPreset(name: string, preset: DrinkPreset): void;
+  deletePreset(name: string): void;
   _recompute(): void;
 };
 
@@ -200,6 +220,65 @@ function recompute(set: any, get: any) {
   set({ stats: d.stats, todayTotal: d.todayTotal, weekTotal: d.weekTotal, db: { ...get().db, _lastLogAt: d.lastLog } });
 }
 
+// Advanced Goals CRUD operations
+function addAdvancedGoal(set: any, get: any, goal: Omit<AdvancedGoal, 'id'>) {
+  const newGoal: AdvancedGoal = { ...goal, id: nanoid() };
+  const db = { ...get().db, advancedGoals: [...get().db.advancedGoals, newGoal] };
+  set({ db }); get()._recompute();
+}
+
+function editAdvancedGoal(set: any, get: any, id: string, patch: Partial<AdvancedGoal>) {
+  const db = {
+    ...get().db,
+    advancedGoals: get().db.advancedGoals.map(g => g.id === id ? { ...g, ...patch } : g)
+  };
+  set({ db }); get()._recompute();
+}
+
+function deleteAdvancedGoal(set: any, get: any, id: string) {
+  const db = {
+    ...get().db,
+    advancedGoals: get().db.advancedGoals.filter(g => g.id !== id)
+  };
+  set({ db }); get()._recompute();
+}
+
+function toggleAdvancedGoal(set: any, get: any, id: string) {
+  const db = {
+    ...get().db,
+    advancedGoals: get().db.advancedGoals.map(g => 
+      g.id === id ? { ...g, isActive: !g.isActive } : g
+    )
+  };
+  set({ db }); get()._recompute();
+}
+
+// Preset CRUD operations
+function addPreset(set: any, get: any, preset: DrinkPreset) {
+  // Check if preset with same name already exists
+  const exists = get().db.presets.find(p => p.name === preset.name);
+  if (exists) return; // Don't add duplicates
+  
+  const db = { ...get().db, presets: [...get().db.presets, preset] };
+  set({ db }); get()._recompute();
+}
+
+function editPreset(set: any, get: any, name: string, preset: DrinkPreset) {
+  const db = {
+    ...get().db,
+    presets: get().db.presets.map(p => p.name === name ? preset : p)
+  };
+  set({ db }); get()._recompute();
+}
+
+function deletePreset(set: any, get: any, name: string) {
+  const db = {
+    ...get().db,
+    presets: get().db.presets.filter(p => p.name !== name)
+  };
+  set({ db }); get()._recompute();
+}
+
 function createStore(set: any, get: any) {
   const base = defaults();
   const d = derive(base);
@@ -233,6 +312,15 @@ function createStore(set: any, get: any) {
     setRemindersEnabled: (e: boolean) => setRemindersEnabledFn(set, get, e),
     dismissReminderUntil: (ts: number) => dismissReminderUntilFn(set, get, ts),
     wipeAll: (c: boolean) => wipeAllFn(set, get, c),
+    // Advanced Goals CRUD
+    addAdvancedGoal: (goal: Omit<AdvancedGoal, 'id'>) => addAdvancedGoal(set, get, goal),
+    editAdvancedGoal: (id: string, patch: Partial<AdvancedGoal>) => editAdvancedGoal(set, get, id, patch),
+    deleteAdvancedGoal: (id: string) => deleteAdvancedGoal(set, get, id),
+    toggleAdvancedGoal: (id: string) => toggleAdvancedGoal(set, get, id),
+    // Preset CRUD
+    addPreset: (preset: DrinkPreset) => addPreset(set, get, preset),
+    editPreset: (name: string, preset: DrinkPreset) => editPreset(set, get, name, preset),
+    deletePreset: (name: string) => deletePreset(set, get, name),
     _recompute: () => recompute(set, get),
   } as Store;
 }

@@ -77,15 +77,15 @@ export default function History() {
                       onChange={(ev) => setEditForm(prev => ({ ...prev, intention: ev.target.value }))}
                       className="w-full px-2 py-1 border rounded text-sm"
                     >
-                      <option value="celebrate">Celebrate</option>
-                      <option value="social">Social</option>
-                      <option value="taste">Taste</option>
-                      <option value="bored">Bored</option>
-                      <option value="cope">Cope</option>
-                      <option value="other">Other</option>
+                      <option value="celebrate">{t('intention_celebrate')}</option>
+                      <option value="social">{t('intention_social')}</option>
+                      <option value="taste">{t('intention_taste')}</option>
+                      <option value="bored">{t('intention_bored')}</option>
+                      <option value="cope">{t('intention_cope')}</option>
+                      <option value="other">{t('intention_other')}</option>
                     </select>
                   ) : (
-                    e.intention
+                    t(`intention_${e.intention}`)
                   )}
                 </td>
                 <td className="p-2">

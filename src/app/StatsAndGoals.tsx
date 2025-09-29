@@ -9,16 +9,17 @@ interface Props {
   drinks: Drink[];
   goals: Goals;
   onGoalsChange: (goals: Goals) => void;
+  id?: string;
 }
 
-export default function StatsAndGoals({ drinks, goals, onGoalsChange }: Props) {
+export default function StatsAndGoals({ drinks, goals, onGoalsChange, id }: Props) {
   const totalStd = drinks.reduce(
     (sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct),
     0
   );
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+    <section id={id} className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
       <div className="card text-center lg:col-span-1">
         <div className="card-content">
           <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
@@ -31,7 +32,9 @@ export default function StatsAndGoals({ drinks, goals, onGoalsChange }: Props) {
       </div>
       
       <div className="lg:col-span-2 space-y-4">
-        <GoalSettings goals={goals} onChange={onGoalsChange} />
+        <div id="settings-section">
+          <GoalSettings goals={goals} onChange={onGoalsChange} />
+        </div>
         <AdvancedGoalSetting goals={goals} onChange={onGoalsChange} />
       </div>
     </section>
