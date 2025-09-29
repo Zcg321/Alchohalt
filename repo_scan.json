@@ -1,15 +1,15 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 13017,
+    "__all__": 13031,
     "web": 58,
     "config": 462,
-    "ts": 11893,
+    "ts": 11907,
     "js": 100,
     "css": 420
   },
   "totals_by_module": {
-    "src": 11529,
+    "src": 11543,
     "tests": 494,
     ".": 432,
     "tools": 422,
@@ -122,12 +122,6 @@
       23,
       128,
       106
-    ],
-    [
-      "src/hooks/usePWA.ts",
-      11,
-      105,
-      95
     ],
     [
       "src/features/subscription/PremiumSmartRecommendations.tsx",
