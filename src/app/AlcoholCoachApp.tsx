@@ -15,7 +15,7 @@ export function AlcoholCoachApp() {
   // Use unified store instead of separate state
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null); // Track entry ID instead of drink object
-  const [lastDeleted, setLastDeleted] = useState<string | null>(null); // Track entry ID
+  const [lastDeleted, setLastDeleted] = useState<Drink | null>(null); // Store deleted drink snapshot
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const undoTimer = useRef<number>();
@@ -47,8 +47,9 @@ export function AlcoholCoachApp() {
     // Find entry by timestamp since it's the stable identifier
     const entry = db.entries.find(e => e.ts === drink.ts);
     if (entry) {
+      // Store the drink snapshot before deletion
+      setLastDeleted(drink);
       deleteEntry(entry.id);
-      setLastDeleted(entry.id);
       
       if (undoTimer.current) clearTimeout(undoTimer.current);
       undoTimer.current = window.setTimeout(() => {
@@ -136,7 +137,7 @@ export function AlcoholCoachApp() {
         editing={editingDrink}
         goals={goals}
         presets={db.presets}
-        lastDeleted={lastDeleted ? entryToLegacyDrink(db.entries.find(e => e.id === lastDeleted)!) : null}
+        lastDeleted={lastDeleted}
         onAddDrink={addDrink}
         onSaveDrink={saveDrink}
         onStartEdit={startEdit}
