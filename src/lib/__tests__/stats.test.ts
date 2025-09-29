@@ -75,9 +75,9 @@ describe('stats utilities', () => {
 
       const stats = computeStats(entries, settings);
       
-      expect(stats.weeks).toHaveLength(1);
-      expect(stats.weeks[0].stdDrinks).toBe(3.5); // 2 + 1.5
-      expect(stats.weeks[0].cost).toBe(18); // 10 + 8
+      expect(stats.weekly).toHaveLength(1);
+      expect(stats.weekly[0].stdDrinks).toBe(3.5); // 2 + 1.5
+      expect(stats.weekly[0].cost).toBe(18); // 10 + 8
     });
 
     it('handles empty entries array', () => {
@@ -93,8 +93,8 @@ describe('stats utilities', () => {
 
       const stats = computeStats([], settings);
       
-      expect(stats.weeks).toHaveLength(0);
-      expect(stats.line).toHaveLength(30); // Should still have 30 days of zero data
+      expect(stats.weekly).toHaveLength(0);
+      expect(stats.line30).toHaveLength(30); // Should still have 30 days of zero data
     });
 
     it('computes 30-day line data', () => {
@@ -127,10 +127,28 @@ describe('stats utilities', () => {
 
       const stats = computeStats(entries, settings);
       
-      expect(stats.line).toHaveLength(30);
+      expect(stats.line30).toHaveLength(30);
       // Most days should have 0, but one day should have 2
-      const totalStd = stats.line.reduce((sum, day) => sum + day.stdDrinks, 0);
+      const totalStd = stats.line30.reduce((sum, day) => sum + day.stdDrinks, 0);
       expect(totalStd).toBe(2);
+    });
+
+    it('computes streaks', () => {
+      const settings: Settings = {
+        dailyCap: 2,
+        weeklyGoal: 10,
+        pricePerStd: 5,
+        baselineMonthlySpend: 150,
+        profileEnabled: false,
+        weightKg: 70,
+        sex: 'male'
+      };
+
+      const stats = computeStats([], settings);
+      
+      expect(typeof stats.currentAFStreak).toBe('number');
+      expect(typeof stats.longestAFStreak).toBe('number');
+      expect(typeof stats.monthlySpend).toBe('number');
     });
   });
 });

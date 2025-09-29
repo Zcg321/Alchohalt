@@ -2,14 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getJSON, setJSON, setJSONDebounced } from '../storage';
 
 // Mock the capacitor preferences
-const mockPreferences = {
-  get: vi.fn(),
-  set: vi.fn(),
-};
-
-vi.mock('@/shared/capacitor', () => ({
-  getPreferences: vi.fn().mockResolvedValue(mockPreferences),
-}));
+vi.mock('@/shared/capacitor', () => {
+  const mockPreferences = {
+    get: vi.fn(),
+    set: vi.fn(),
+  };
+  return {
+    getPreferences: vi.fn().mockResolvedValue(mockPreferences),
+  };
+});
 
 describe('storage utilities', () => {
   beforeEach(() => {
@@ -21,6 +22,8 @@ describe('storage utilities', () => {
   describe('getJSON', () => {
     it('returns parsed JSON when value exists', async () => {
       const testData = { name: 'test', value: 42 };
+      const { getPreferences } = await import('@/shared/capacitor');
+      const mockPreferences = await getPreferences();
       mockPreferences.get.mockResolvedValue({ value: JSON.stringify(testData) });
 
       const result = await getJSON('test-key', {});
@@ -29,6 +32,8 @@ describe('storage utilities', () => {
     });
 
     it('returns default value when no value exists', async () => {
+      const { getPreferences } = await import('@/shared/capacitor');
+      const mockPreferences = await getPreferences();
       mockPreferences.get.mockResolvedValue({ value: null });
       const defaultValue = { default: true };
 
@@ -37,6 +42,8 @@ describe('storage utilities', () => {
     });
 
     it('returns default value when JSON parsing fails', async () => {
+      const { getPreferences } = await import('@/shared/capacitor');
+      const mockPreferences = await getPreferences();
       mockPreferences.get.mockResolvedValue({ value: 'invalid-json' });
       const defaultValue = { default: true };
 
@@ -47,6 +54,8 @@ describe('storage utilities', () => {
 
   describe('setJSON', () => {
     it('stringifies and stores value', async () => {
+      const { getPreferences } = await import('@/shared/capacitor');
+      const mockPreferences = await getPreferences();
       const testData = { name: 'test', value: 42 };
       
       await setJSON('test-key', testData);
@@ -60,6 +69,8 @@ describe('storage utilities', () => {
 
   describe('setJSONDebounced', () => {
     it('debounces multiple calls', async () => {
+      const { getPreferences } = await import('@/shared/capacitor');
+      const mockPreferences = await getPreferences();
       const testData1 = { value: 1 };
       const testData2 = { value: 2 };
       
@@ -82,6 +93,8 @@ describe('storage utilities', () => {
     });
 
     it('uses default delay of 300ms', async () => {
+      const { getPreferences } = await import('@/shared/capacitor');
+      const mockPreferences = await getPreferences();
       const testData = { value: 'test' };
       
       setJSONDebounced('test-key', testData);

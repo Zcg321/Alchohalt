@@ -42,6 +42,14 @@ function resolve(dictionary: Dictionary | undefined, key: string): string | unde
   return typeof current === 'string' ? current : undefined;
 }
 
+export function getLanguageDisplayName(lang: Lang): string {
+  const displayNames: Record<Lang, string> = {
+    'en': 'English',
+    'es': 'Español'
+  };
+  return displayNames[lang] || lang;
+}
+
 export async function loadLocale(lng: Lang) {
   if (dictionaries[lng]) return;
   const res = await import(`./locales/${lng}.json`);

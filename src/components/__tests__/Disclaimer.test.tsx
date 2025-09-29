@@ -54,7 +54,7 @@ describe('Disclaimer', () => {
       </LanguageContext.Provider>
     );
 
-    const svg = screen.getByTestId('warning-icon') || document.querySelector('svg');
+    const svg = document.querySelector('svg');
     expect(svg).toBeInTheDocument();
   });
 
