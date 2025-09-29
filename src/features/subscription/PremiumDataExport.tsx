@@ -17,7 +17,7 @@ interface ExportOptions {
 
 export default function PremiumDataExport() {
   const { canExportData } = usePremiumFeatures();
-  const { entries } = useDB();
+  const { db } = useDB();
   const [isExporting, setIsExporting] = useState(false);
   const [options, setOptions] = useState<ExportOptions>({
     format: 'PDF',
@@ -31,7 +31,7 @@ export default function PremiumDataExport() {
   const handleExport = async () => {
     setIsExporting(true);
     try {
-      const filteredEntries = filterEntriesByDateRange(entries, options.dateRange);
+      const filteredEntries = filterEntriesByDateRange(db.entries, options.dateRange);
       
       switch (options.format) {
         case 'PDF':
@@ -198,18 +198,18 @@ export default function PremiumDataExport() {
         <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-blue-600">{entries.length}</div>
+              <div className="text-2xl font-bold text-blue-600">{db.entries.length}</div>
               <div className="text-sm text-gray-600">Total Entries</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-600">
-                {Math.round((Date.now() - Math.min(...entries.map(e => e.ts))) / (1000 * 60 * 60 * 24))}
+                {Math.round((Date.now() - Math.min(...db.entries.map(e => e.ts))) / (1000 * 60 * 60 * 24))}
               </div>
               <div className="text-sm text-gray-600">Days Tracked</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-600">
-                {entries.filter(e => e.cost).length}
+                {db.entries.filter(e => e.cost).length}
               </div>
               <div className="text-sm text-gray-600">With Cost Data</div>
             </div>

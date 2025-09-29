@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateInsights } from '../src/features/insights/lib';
+import { generateInsights } from '../src/features/insights/insightGenerators';
 import type { Drink } from '../src/features/drinks/DrinkForm';
 import type { Goals } from '../src/features/goals/GoalSettings';
 
@@ -16,7 +16,7 @@ const mockDrinks: Drink[] = [
   {
     volumeMl: 148,
     abvPct: 12.0,
-    intention: 'stress',
+    intention: 'cope',
     craving: 5,
     halt: ['tired'],
     alt: 'went for a walk',

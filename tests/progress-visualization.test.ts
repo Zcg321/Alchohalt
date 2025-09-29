@@ -95,7 +95,7 @@ describe('Progress Visualization Calculations', () => {
       {
         volumeMl: 355,
         abvPct: 5.0,
-        intention: 'stress',
+        intention: 'cope',
         craving: 5,
         halt: [],
         alt: '',

@@ -1,5 +1,5 @@
 // Bridge to unify persistence between legacy AlcoholCoachApp and useDB store
-import type { Drink as LegacyDrink, Goals as LegacyGoals } from '../types/common';
+import type { Drink as LegacyDrink, Goals as LegacyGoals, Halt } from '../types/common';
 import type { Entry, Settings, HALT, Intention as StoreIntention } from '../store/db';
 
 // Convert legacy volumeMl + abvPct to standard drinks (US: 14g ethanol = 1 std drink)
@@ -19,8 +19,8 @@ export function legacyHaltToHALT(halt: string[]): HALT {
 }
 
 // Convert HALT object to legacy halt array
-export function HALTToLegacyHalt(halt: HALT): string[] {
-  const result: string[] = [];
+export function HALTToLegacyHalt(halt: HALT): Halt[] {
+  const result: Halt[] = [];
   if (halt.H) result.push('hungry');
   if (halt.A) result.push('angry');
   if (halt.L) result.push('lonely');

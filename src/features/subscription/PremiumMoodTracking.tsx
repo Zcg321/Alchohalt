@@ -23,14 +23,14 @@ interface MoodPattern {
 
 export default function PremiumMoodTracking() {
   const { canTrackMoodTriggers } = usePremiumFeatures();
-  const { entries } = useDB();
+  const { db } = useDB();
   const [selectedTriggers, setSelectedTriggers] = useState<MoodTrigger[]>([]);
   const [customTrigger, setCustomTrigger] = useState('');
 
   // Analyze mood patterns from existing data
   const moodPatterns = useMemo(() => {
-    return analyzeMoodPatterns(entries);
-  }, [entries]);
+    return analyzeMoodPatterns(db.entries);
+  }, [db.entries]);
 
   const predefinedTriggers: MoodTrigger[] = [
     { name: 'Work Stress', category: 'situation', severity: 8 },
@@ -138,7 +138,7 @@ export default function PremiumMoodTracking() {
             HALT Trigger Correlations
           </h3>
           
-          <HALTCorrelationView entries={entries} />
+          <HALTCorrelationView entries={db.entries} />
         </Card>
 
         {/* Trigger Selection */}
