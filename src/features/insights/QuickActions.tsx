@@ -79,7 +79,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
               {todayStd.toFixed(1)} / {goals.dailyCap}
             </div>
             <div className="text-sm text-neutral-600 dark:text-neutral-400">
-              Today's drinks
+              Today&apos;s drinks
             </div>
           </div>
         </div>
@@ -230,7 +230,7 @@ function getMotivationalSubtext(streak: number, todayStd: number, dailyCap: numb
   }
   
   const remaining = dailyCap - todayStd;
-  return `You have ${remaining.toFixed(1)} drinks remaining in today's limit.`;
+  return `You have ${remaining.toFixed(1)} drinks remaining in today&apos;s limit.`;
 }
 
 // Icon components

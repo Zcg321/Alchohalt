@@ -22,7 +22,7 @@ export default function DrinkDiscovery({ onSelectDrink, className = '' }: Props)
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showDetails, setShowDetails] = useState<string | null>(null);
-  const { isPremium, canAccessAIInsights } = usePremiumFeatures();
+  const { isPremium } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
 
   const filteredDrinks = useMemo(() => {
@@ -64,7 +64,6 @@ export default function DrinkDiscovery({ onSelectDrink, className = '' }: Props)
 
   const DrinkCard = ({ drink }: { drink: DrinkInfo }) => (
     <div 
-      key={drink.id}
       className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 overflow-hidden group cursor-pointer"
       onClick={() => showDetails === drink.id ? setShowDetails(null) : setShowDetails(drink.id)}
     >

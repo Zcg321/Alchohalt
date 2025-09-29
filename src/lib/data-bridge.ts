@@ -63,7 +63,7 @@ export function entryToLegacyDrink(entry: Entry): LegacyDrink {
   return {
     volumeMl: Math.min(volumeMl, 1000), // Cap at reasonable volume
     abvPct: Math.min(abvPct, 50), // Cap at reasonable ABV
-    intention: entry.intention as any, // Types are now compatible
+    intention: entry.intention as StoreIntention, // Types are now compatible
     craving: entry.craving,
     halt: HALTToLegacyHalt(entry.halt),
     alt: entry.altAction || '',

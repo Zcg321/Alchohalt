@@ -2,7 +2,7 @@
 import { getJSON } from './storage';
 import { useDB } from '../store/db';
 import { legacyDrinkToEntry, legacyGoalsToSettings } from './data-bridge';
-import type { Drink as LegacyDrink, Goals as LegacyGoals, DrinkPreset } from '../types/common';
+import type { Drink as LegacyDrink, Goals as LegacyGoals } from '../types/common';
 
 let migrationCompleted = false;
 

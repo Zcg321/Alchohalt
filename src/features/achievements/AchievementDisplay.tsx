@@ -57,7 +57,6 @@ export default function AchievementDisplay({
 
   const AchievementCard = ({ achievement }: { achievement: Achievement }) => (
     <div 
-      key={achievement.id}
       className={`relative p-4 rounded-lg border transition-all duration-200 cursor-pointer group ${
         achievement.unlocked 
           ? 'bg-white dark:bg-gray-800 border-green-200 dark:border-green-800 shadow-sm hover:shadow-md' 

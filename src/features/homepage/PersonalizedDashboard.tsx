@@ -21,7 +21,7 @@ interface PersonalizationData {
 }
 
 export default function PersonalizedDashboard({ drinks, goals, onQuickAction }: Props) {
-  const { isPremium, canAccessAIInsights } = usePremiumFeatures();
+  const { isPremium } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
 
   const personalization = useMemo((): PersonalizationData => {
