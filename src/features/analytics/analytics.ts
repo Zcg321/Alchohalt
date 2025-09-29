@@ -262,6 +262,10 @@ export function measurePerformance<T>(
   name: string, 
   fn: () => T | Promise<T>
 ): T | Promise<T> {
+  if (!fn || typeof fn !== 'function') {
+    throw new Error(`Performance measurement failed: function is required for "${name}"`);
+  }
+  
   const start = performance.now();
   
   try {

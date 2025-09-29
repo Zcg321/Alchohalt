@@ -6,7 +6,7 @@ import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
 
 interface Props {
-  achievementState: AchievementState;
+  achievementState?: AchievementState;
   onUpgrade?: () => void;
   showAll?: boolean;
   className?: string;
@@ -20,6 +20,17 @@ export default function AchievementDisplay({
 }: Props) {
   const { isPremium } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
+
+  // Provide default values if achievementState is undefined
+  if (!achievementState) {
+    return (
+      <div className={`p-4 ${className}`}>
+        <div className="text-center text-gray-500 dark:text-gray-400">
+          No achievement data available
+        </div>
+      </div>
+    );
+  }
 
   const { achievements, totalPoints, unlockedCount, level, nextLevelPoints } = achievementState;
 

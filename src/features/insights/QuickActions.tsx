@@ -8,14 +8,20 @@ import { getCurrentStreak } from './lib';
 import MoodTracker from '../mood/MoodTracker';
 
 interface Props {
-  drinks: Drink[];
-  goals: Goals;
-  onAddDrink: (drink: Drink) => void;
-  onOpenSettings: () => void;
-  onOpenStats: () => void;
+  drinks?: Drink[];
+  goals?: Goals;
+  onAddDrink?: (drink: Drink) => void;
+  onOpenSettings?: () => void;
+  onOpenStats?: () => void;
 }
 
-export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings, onOpenStats }: Props) {
+export default function QuickActions({ 
+  drinks = [], 
+  goals = { dailyCap: 0, weeklyGoal: 0, pricePerStd: 0, baselineMonthlySpend: 0 }, 
+  onAddDrink = () => {}, 
+  onOpenSettings = () => {}, 
+  onOpenStats = () => {} 
+}: Props) {
   const [showMoodCheck, setShowMoodCheck] = useState(false);
   const { trackFeatureUsage } = useAnalytics();
 
