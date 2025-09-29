@@ -33,9 +33,9 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       
       isTrialActive: () => {
         const subscription = get().currentSubscription;
-        return subscription?.status === 'trial' && 
+        return !!(subscription?.status === 'trial' && 
                subscription.trialEndsAt && 
-               new Date() < subscription.trialEndsAt;
+               new Date() < subscription.trialEndsAt);
       },
       
       getRemainingTrialDays: () => {

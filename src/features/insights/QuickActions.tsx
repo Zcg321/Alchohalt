@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useLanguage } from '../../i18n';
 import { Button } from '../../components/ui/Button';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../goals/GoalSettings';
@@ -16,9 +15,8 @@ interface Props {
 }
 
 export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings, onOpenStats }: Props) {
-  const { t } = useLanguage();
   const [showMoodCheck, setShowMoodCheck] = useState(false);
-  const { trackFeatureUsage, trackMoodCheckin } = useAnalytics();
+  const { trackFeatureUsage } = useAnalytics();
 
   const todayStart = new Date().setHours(0, 0, 0, 0);
   const todayDrinks = drinks.filter(d => d.ts >= todayStart);
@@ -57,12 +55,6 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
   const handleMoodCheckIn = () => {
     setShowMoodCheck(true);
     trackFeatureUsage('mood_check_opened', { source: 'quick_actions' });
-  };
-
-  const submitMoodCheck = (mood: 'good' | 'stressed' | 'craving' | 'bored') => {
-    setShowMoodCheck(false);
-    trackMoodCheckin(mood, 3); // Default intensity for simple check-in
-    // Could trigger different recommendations based on mood
   };
 
   return (
@@ -224,12 +216,19 @@ function getCurrentStreak(drinks: Drink[]): number {
 
   let streak = 0;
   const current = new Date();
-  while (true) {
+  let continueChecking = true;
+  while (continueChecking) {
     const key = current.toISOString().slice(0, 10);
-    if (byDay[key] > 0) break;
+    if (byDay[key] > 0) {
+      continueChecking = false;
+      break;
+    }
     streak++;
     current.setDate(current.getDate() - 1);
-    if (streak > 365) break;
+    if (streak > 365) {
+      continueChecking = false;
+      break;
+    }
   }
 
   return streak;
@@ -253,7 +252,7 @@ function getMotivationalSubtext(streak: number, todayStd: number, dailyCap: numb
   }
   
   if (todayStd >= dailyCap) {
-    return "You've reached your limit for today. Tomorrow is a new opportunity.";
+    return "You&apos;ve reached your limit for today. Tomorrow is a new opportunity.";
   }
   
   const remaining = dailyCap - todayStd;

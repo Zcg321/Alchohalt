@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useLanguage } from '../../i18n';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../goals/GoalSettings';
 import { stdDrinks } from '../../lib/calc';
@@ -22,16 +21,13 @@ interface Recommendation {
 }
 
 export default function SmartRecommendations({ drinks, goals }: Props) {
-  const { t } = useLanguage();
 
   const recommendations = useMemo(() => {
     const now = Date.now();
     const todayStart = new Date().setHours(0, 0, 0, 0);
-    const weekStart = now - 7 * 24 * 60 * 60 * 1000;
     const monthStart = now - 30 * 24 * 60 * 60 * 1000;
 
     const todayDrinks = drinks.filter(d => d.ts >= todayStart);
-    const weekDrinks = drinks.filter(d => d.ts >= weekStart);
     const monthDrinks = drinks.filter(d => d.ts >= monthStart);
 
     const recommendations: Recommendation[] = [];
@@ -218,12 +214,19 @@ function getCurrentStreak(drinks: Drink[]): number {
 
   let streak = 0;
   const current = new Date();
-  while (true) {
+  let continueChecking = true;
+  while (continueChecking) {
     const key = current.toISOString().slice(0, 10);
-    if (byDay[key] > 0) break;
+    if (byDay[key] > 0) {
+      continueChecking = false;
+      break;
+    }
     streak++;
     current.setDate(current.getDate() - 1);
-    if (streak > 365) break;
+    if (streak > 365) {
+      continueChecking = false;
+      break;
+    }
   }
 
   return streak;

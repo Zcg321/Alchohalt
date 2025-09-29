@@ -49,7 +49,7 @@ export function ChartIcon() {
   );
 }
 
-export function generateInsights(drinks: Drink[], goals: Goals): Insight[] {
+export function generateInsights(drinks: Drink[], _goals: Goals): Insight[] {
   const now = Date.now();
   const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
   

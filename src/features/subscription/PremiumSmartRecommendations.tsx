@@ -21,11 +21,11 @@ interface SmartRecommendation {
 
 export default function PremiumSmartRecommendations() {
   const { canAccessAIInsights } = usePremiumFeatures();
-  const { entries } = useDB();
+  const { db } = useDB();
 
   const recommendations = useMemo(() => {
-    return generateSmartRecommendations(entries);
-  }, [entries]);
+    return generateSmartRecommendations(db.entries);
+  }, [db.entries]);
 
   const freeUserFallback = (
     <Card className="p-6 text-center">
@@ -251,7 +251,7 @@ function generateHALTRecommendations(entries: Entry[]): SmartRecommendation[] {
             };
             break;
           default:
-            continue;
+            return;
         }
         
         recommendations.push(recommendation);

@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
-import { useLanguage } from '../../i18n';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../goals/GoalSettings';
 import InsightCard from './InsightCard';
-import { getCurrentStreak, analyzeWeekendPattern, analyzeCravingTrend } from './lib';
+import { getCurrentStreak, analyzeWeekendPattern, analyzeCravingTrend, type Insight } from './lib';
 import { ChartIcon } from './insightGenerators';
 import { generatePremiumInsights } from './premiumInsights';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
@@ -16,12 +15,12 @@ interface Props {
 
 export default function InsightsPanel({ drinks, goals }: Props) {
   const { canAccessAIInsights } = usePremiumFeatures();
-  const { entries } = useDB();
+  const { db } = useDB();
 
   const insights = useMemo(() => {
     if (drinks.length === 0) return [];
     
-    const basicInsights = [];
+    const basicInsights: Insight[] = [];
     const streak = getCurrentStreak(drinks);
     const weekendPattern = analyzeWeekendPattern(drinks);
     const cravingTrend = analyzeCravingTrend(drinks);
@@ -62,8 +61,8 @@ export default function InsightsPanel({ drinks, goals }: Props) {
     }
 
     // Add premium insights if available
-    if (canAccessAIInsights && entries.length >= 7) {
-      const premiumInsights = generatePremiumInsights(entries);
+    if (canAccessAIInsights && db.entries.length >= 7) {
+      const premiumInsights = generatePremiumInsights(db.entries);
       // Convert premium insights to basic insight format
       const convertedPremiumInsights = premiumInsights.map(insight => ({
         ...insight,
@@ -76,7 +75,7 @@ export default function InsightsPanel({ drinks, goals }: Props) {
     }
     
     return basicInsights.sort((a, b) => (b.priority || 0) - (a.priority || 0));
-  }, [drinks, goals, canAccessAIInsights, entries]);
+  }, [drinks, goals, canAccessAIInsights, db.entries]);
 
   return (
     <div className="card">

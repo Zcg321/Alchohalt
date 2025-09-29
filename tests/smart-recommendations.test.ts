@@ -78,7 +78,7 @@ describe('Smart Recommendations Logic', () => {
       {
         volumeMl: 148,
         abvPct: 12.0,
-        intention: 'stress',
+        intention: 'cope',
         craving: 2,
         halt: [],
         alt: '',

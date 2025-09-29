@@ -12,7 +12,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className = '', error, success, leftIcon, rightIcon, ...props }, ref) => {
     const hasError = !!error;
     const hasSuccess = !!success;
-    const hasIcons = leftIcon || rightIcon;
     
     return (
       <div className="relative">
@@ -29,8 +28,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             'input',
             hasError && 'border-danger-300 focus:border-danger-500 focus:ring-danger-500',
             hasSuccess && 'border-success-300 focus:border-success-500 focus:ring-success-500',
-            leftIcon && 'pl-10',
-            rightIcon && 'pr-10',
+            leftIcon ? 'pl-10' : '',
+            rightIcon ? 'pr-10' : '',
             className
           )}
           {...props}

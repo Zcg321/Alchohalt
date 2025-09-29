@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useLanguage } from '../../i18n';
 import { Button } from '../../components/ui/Button';
 import type { Goals } from './GoalSettings';
 import { goalTypes, type AdvancedGoal } from './types';
@@ -11,8 +10,7 @@ interface Props {
   onChange: (goals: Goals) => void;
 }
 
-export default function AdvancedGoalSetting({ goals, onChange }: Props) {
-  const { t } = useLanguage();
+export default function AdvancedGoalSetting({ goals }: Props) {
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [advancedGoals, setAdvancedGoals] = useState<AdvancedGoal[]>([
     {
