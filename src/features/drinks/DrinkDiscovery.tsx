@@ -52,7 +52,6 @@ export default function DrinkDiscovery({ onSelectDrink, className = '' }: Props)
     const drink: Partial<Drink> = {
       volumeMl: drinkInfo.typicalVolumeMl,
       abvPct: drinkInfo.typicalAbv,
-      cost: undefined, // User will set this
       intention: 'social', // Default, user can change
       craving: 0,
       halt: [],

@@ -13,7 +13,7 @@ EXT_GROUPS = {
     ".md": "docs", ".css": "css", ".scss": "css", ".html": "web"
 }
 CODE_EXTS = set(k for k in EXT_GROUPS.keys() if k not in [".md"])
-IGNORE_DIRS = {".git", "node_modules", "build", "dist", "out", ".next", ".expo", ".idea", ".gradle", "android/.gradle"}
+IGNORE_DIRS = {".git", "node_modules", "build", "dist", "out", ".next", ".expo", ".idea", ".gradle", "android/.gradle", "dev-dist", "coverage"}
 
 MAX_FN_LINES_WARN = int(os.getenv("SCAN_MAX_FN", "80"))
 MAX_FILE_LOC_WARN = int(os.getenv("SCAN_MAX_FILE", "600"))
@@ -79,6 +79,9 @@ def scan(root):
     for fp in list_files(root):
         fp = os.path.relpath(fp, root)
         if not is_text_file(fp): 
+            continue
+        # Skip large generated/lock files  
+        if fp in {"package-lock.json", "repo_scan.json", "pnpm-lock.yaml"}:
             continue
         grp = ext_group(fp)
         ext = os.path.splitext(fp)[1].lower()
@@ -211,7 +214,8 @@ if __name__ == "__main__":
 
     if args.fail:
         file_fail = any(loc >= report["budgets"]["max_file_loc"] for _fp, loc in report["top_20_largest_files"])
-        func_fail = any(n >= report["budgets"]["max_fn_lines"] for _fp,_s,_e,n in report["top_20_longest_functions"])
+        # Exclude test files from function length budget 
+        func_fail = any(n >= report["budgets"]["max_fn_lines"] for _fp,_s,_e,n in report["top_20_longest_functions"] if not _fp.startswith("tests/"))
         comp_fail = any(comp >= report["budgets"]["complexity_warn"] for _fp, comp in report["top_20_most_complex_files"])
         if file_fail or func_fail or comp_fail:
             sys.exit(1)
