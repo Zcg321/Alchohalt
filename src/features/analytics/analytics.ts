@@ -34,7 +34,11 @@ class AnalyticsService {
   }
 
   private generateUserId(): string {
-    const id = 'user-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // Generate a cryptographically secure random user ID
+    const bytes = new Uint8Array(16);
+    window.crypto.getRandomValues(bytes);
+    const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    const id = 'user-' + hex;
     localStorage.setItem('analytics-user-id', id);
     return id;
   }
