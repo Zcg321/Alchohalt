@@ -1,3 +1,3 @@
 // AUTO-SPLIT BY CODEX
-export { default } from "./index";
-export * from "./index";
+export { default } from "./index/index";
+export * from "./index/index";

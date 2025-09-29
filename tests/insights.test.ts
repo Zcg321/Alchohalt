@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateInsights } from '../src/features/insights/insightGenerators';
 import type { Drink } from '../src/features/drinks/DrinkForm';
-import type { Goals } from '../src/features/goals/GoalSettings';
+import type { Goals } from '../src/types/common';
 
 const mockDrinks: Drink[] = [
   {

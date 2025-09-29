@@ -3,7 +3,7 @@ import React from "react";
 import TopSection from "./TopSection";
 import BehaviorSection from "./BehaviorSection";
 import SpendSection from "./SpendSection";
-export type defaultProps = { children?: React.ReactNode };
-export default function default(props: defaultProps){
-  return (<div data-testid="index-root"><TopSection/><BehaviorSection/><SpendSection/>{props.children}</div>);
+export type StatsProps = { children?: React.ReactNode };
+export default function Stats(props: StatsProps){
+  return (<div data-testid="Stats-root"><TopSection/><BehaviorSection/><SpendSection/>{props.children}</div>);
 }

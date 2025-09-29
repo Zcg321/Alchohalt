@@ -1,15 +1,15 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 11948,
+    "__all__": 12286,
     "web": 58,
     "config": 462,
-    "ts": 10824,
+    "ts": 11162,
     "js": 100,
     "css": 420
   },
   "totals_by_module": {
-    "src": 10460,
+    "src": 10798,
     "tests": 494,
     ".": 432,
     "tools": 422,
@@ -36,6 +36,10 @@
     [
       "src/features/wellness/PremiumWellnessDashboard.tsx",
       343
+    ],
+    [
+      "src/features/achievements/lib/achievementSystem.ts",
+      335
     ],
     [
       "src/features/subscription/SubscriptionManager.tsx",
@@ -92,10 +96,6 @@
     [
       "src/features/homepage/PersonalizedDashboard.tsx",
       200
-    ],
-    [
-      "src/features/drinks/DrinkForm/index.tsx",
-      194
     ]
   ],
   "top_20_longest_functions": [
@@ -120,7 +120,7 @@
   ],
   "todo_fixme_count": 0,
   "todo_samples": [],
-  "ts_import_edges_count": 301,
+  "ts_import_edges_count": 304,
   "ts_import_edges_full": [
     [
       "tests/notifications.web.test.tsx",
@@ -132,7 +132,7 @@
     ],
     [
       "tests/smart-recommendations.test.ts",
-      "../src/features/goals/GoalSettings"
+      "../src/types/common"
     ],
     [
       "tests/smart-recommendations.test.ts",
@@ -152,7 +152,7 @@
     ],
     [
       "tests/progress-visualization.test.ts",
-      "../src/features/goals/GoalSettings"
+      "../src/types/common"
     ],
     [
       "tests/progress-visualization.test.ts",
@@ -168,7 +168,7 @@
     ],
     [
       "tests/insights.test.ts",
-      "../src/features/goals/GoalSettings"
+      "../src/types/common"
     ],
     [
       "tests/charts.series.test.ts",
@@ -605,6 +605,10 @@
     [
       "src/features/goals/GoalSettings/index.tsx",
       "./SpendSection"
+    ],
+    [
+      "src/features/goals/GoalSettings/index.tsx",
+      "../../../types/common"
     ],
     [
       "src/features/subscription/PremiumMoodTracking.tsx",
@@ -1325,6 +1329,14 @@
     [
       "src/features/achievements/AchievementDisplay.tsx",
       "../analytics/analytics"
+    ],
+    [
+      "src/features/achievements/lib/achievementSystem.ts",
+      "../../drinks/DrinkForm"
+    ],
+    [
+      "src/features/achievements/lib/achievementSystem.ts",
+      "../../../types/common"
     ]
   ],
   "ts_tangle_sources": [
@@ -1414,6 +1426,6 @@
   "budgets": {
     "max_file_loc": 600,
     "max_fn_lines": 80,
-    "complexity_warn": 21
+    "complexity_warn": 23
   }
 }

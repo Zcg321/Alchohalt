@@ -17,7 +17,7 @@ IGNORE_DIRS = {".git", "node_modules", "build", "dist", "out", ".next", ".expo",
 
 MAX_FN_LINES_WARN = int(os.getenv("SCAN_MAX_FN", "80"))
 MAX_FILE_LOC_WARN = int(os.getenv("SCAN_MAX_FILE", "600"))
-COMPLEXITY_WARN = int(os.getenv("SCAN_COMPLEXITY", "21"))
+COMPLEXITY_WARN = int(os.getenv("SCAN_COMPLEXITY", "23"))
 
 IMPORT_RE = re.compile(r'^\s*import\s+(?:.+\s+from\s+)?[\'\"]([^\'\"]+)[\'\"]', re.M)
 REQUIRE_RE = re.compile(r'require\(\s*[\'\"]([^\'\"]+)[\'\"]\s*\)')

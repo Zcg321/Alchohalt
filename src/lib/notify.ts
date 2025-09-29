@@ -50,6 +50,7 @@ async function createNotificationChannel(LN: AnyLN) {
 }
 
 async function requestNotificationPermission(LN: AnyLN): Promise<boolean> {
+  if (!LN) return false;
   const perm = await LN.requestPermissions();
   return (perm.display ?? 'denied') === 'granted';
 }

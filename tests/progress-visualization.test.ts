@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Drink } from '../src/features/drinks/DrinkForm';
-import type { Goals } from '../src/features/goals/GoalSettings';
+import type { Goals } from '../src/types/common';
 import { stdDrinks } from '../src/lib/calc';
 
 // Progress calculation functions for testing

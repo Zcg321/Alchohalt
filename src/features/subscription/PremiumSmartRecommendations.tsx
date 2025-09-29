@@ -1,3 +1,3 @@
 // AUTO-SPLIT BY CODEX
-export { default } from "./PremiumSmartRecommendations";
-export * from "./PremiumSmartRecommendations";
+export { default } from "./PremiumSmartRecommendations/index";
+export * from "./PremiumSmartRecommendations/index";
