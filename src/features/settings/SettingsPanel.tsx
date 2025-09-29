@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDB } from '../../store/db';
 import type { Theme, Language } from '../../store/db';
-import { resyncNotifications } from '../../lib/notify';
 import { Button } from '../../components/ui/Button';
 import DevTools from './DevTools';
 import ExportImport from '../drinks/ExportImport';
@@ -17,7 +16,7 @@ export default function SettingsPanel() {
   const add = () => {
     if (!/^\d{2}:\d{2}$/.test(time)) return;
     const t = Array.from(new Set([...(settings.reminders.times||[]), time])).sort();
-    setReminderTimes(t); resyncNotifications();
+    setReminderTimes(t); // Store already handles resyncNotifications
   };
   const remove = (t:string) => { setReminderTimes((settings.reminders.times||[]).filter(x=>x!==t)); };
 

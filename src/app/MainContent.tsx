@@ -12,6 +12,12 @@ const InsightsPanel = React.lazy(() => import('../features/insights/InsightsPane
 const SmartRecommendations = React.lazy(() => import('../features/insights/SmartRecommendations'));
 const QuickActions = React.lazy(() => import('../features/insights/QuickActions'));
 const ProgressVisualization = React.lazy(() => import('../features/insights/ProgressVisualization'));
+const PersonalizedDashboard = React.lazy(() => import('../features/homepage/PersonalizedDashboard'));
+const DrinkDiscovery = React.lazy(() => import('../features/drinks/DrinkDiscovery'));
+const AchievementDisplay = React.lazy(() => import('../features/achievements/AchievementDisplay'));
+const SocialChallenges = React.lazy(() => import('../features/challenges/SocialChallenges'));
+const EnhancedMoodTracker = React.lazy(() => import('../features/mood/EnhancedMoodTracker'));
+const PremiumWellnessDashboard = React.lazy(() => import('../features/wellness/PremiumWellnessDashboard'));
 
 interface MainContentProps {
   drinks: Drink[];
@@ -49,6 +55,24 @@ export default function MainContent({
   return (
     <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
       <ReminderBanner />
+      
+      {/* Personalized Dashboard - New Feature */}
+      <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
+        <PersonalizedDashboard 
+          drinks={drinks}
+          goals={goals}
+          onQuickAction={(action) => {
+            // Handle personalized actions
+            if (action === 'upgrade') {
+              // Handle upgrade flow
+            } else if (action.includes('Goal')) {
+              onOpenSettings?.();
+            } else if (action.includes('Mood')) {
+              // Handle mood check-in
+            }
+          }}
+        />
+      </Suspense>
       
       {/* Quick Actions - Priority on mobile */}
       <div className="block lg:hidden">
@@ -93,6 +117,15 @@ export default function MainContent({
             />
           </Suspense>
 
+          {/* Drink Discovery - New Feature */}
+          <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+            <DrinkDiscovery
+              onSelectDrink={(drinkData) => {
+                onAddDrink(drinkData as Drink);
+              }}
+            />
+          </Suspense>
+
           {/* Quick Actions - Desktop */}
           <div className="hidden lg:block">
             <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
@@ -100,8 +133,8 @@ export default function MainContent({
                 drinks={drinks}
                 goals={goals}
                 onAddDrink={onAddDrink}
-                onOpenSettings={() => {}}
-                onOpenStats={() => {}}
+                onOpenSettings={onOpenSettings || (() => {})}
+                onOpenStats={onOpenStats || (() => {})}
               />
             </Suspense>
           </div>
@@ -127,6 +160,55 @@ export default function MainContent({
             />
           </Suspense>
         </div>
+      </div>
+
+      {/* New Features Section */}
+      <div className="space-y-8">
+        {/* Achievements Section */}
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <AchievementDisplay
+            achievementState={{
+              achievements: [],
+              totalPoints: 0,
+              unlockedCount: 0,
+              level: 1,
+              nextLevelPoints: 100
+            }}
+            onUpgrade={() => {
+              // Handle upgrade flow
+            }}
+          />
+        </Suspense>
+
+        {/* Social Challenges Section */}
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <SocialChallenges
+            drinks={drinks}
+            currentStreak={0}
+            onJoinChallenge={(challengeId) => {
+              // Handle joining challenge
+              console.log('Joined challenge:', challengeId);
+            }}
+          />
+        </Suspense>
+
+        {/* Enhanced Mood Tracking Section */}
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <EnhancedMoodTracker
+            onComplete={(emotionalState) => {
+              // Handle mood tracking completion
+              console.log('Mood tracking completed:', emotionalState);
+            }}
+            onPatternUpdate={(pattern) => {
+              console.log('Mood pattern updated:', pattern);
+            }}
+          />
+        </Suspense>
+
+        {/* Premium Wellness Dashboard */}
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <PremiumWellnessDashboard drinks={drinks} />
+        </Suspense>
       </div>
 
       {/* Undo Toast */}
