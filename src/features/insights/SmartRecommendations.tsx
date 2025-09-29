@@ -3,6 +3,9 @@ import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../../types/common';
 import { stdDrinks } from '../../lib/calc';
 import { Button } from '../../components/ui/Button';
+import { useLanguage, type TranslationValues } from '../../i18n';
+
+type Translator = (key: string, vars?: TranslationValues) => string;
 
 interface Props {
   drinks: Drink[];
@@ -21,6 +24,7 @@ interface Recommendation {
 }
 
 export default function SmartRecommendations({ drinks, goals }: Props) {
+  const { t } = useLanguage();
 
   const recommendations = useMemo(() => {
     const now = Date.now();
@@ -36,15 +40,18 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const todayStd = todayDrinks.reduce((sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct), 0);
     if (todayStd >= goals.dailyCap * 0.8 && todayStd < goals.dailyCap) {
       recommendations.push({
-        title: 'Approaching Daily Limit',
-        description: `You've consumed ${todayStd.toFixed(1)} of your ${goals.dailyCap} daily limit. Consider switching to alcohol-free alternatives for the rest of today.`,
+        title: t('smartRecommendations.approachingDailyLimit.title'),
+        description: t('smartRecommendations.approachingDailyLimit.description', {
+          consumed: todayStd.toFixed(1),
+          limit: goals.dailyCap
+        }),
         type: 'prevention',
         urgency: 'medium'
       });
     } else if (todayStd >= goals.dailyCap) {
       recommendations.push({
-        title: 'Daily Limit Reached',
-        description: 'You\'ve reached your daily limit. Taking a break now will help you stay on track with your goals.',
+        title: t('smartRecommendations.dailyLimitReached.title'),
+        description: t('smartRecommendations.dailyLimitReached.description'),
         type: 'prevention',
         urgency: 'high'
       });
@@ -54,10 +61,10 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const today = new Date().getDay();
     if ((today === 5 || today === 6) && hasWeekendPattern(drinks)) {
       recommendations.push({
-        title: 'Weekend Strategy Needed',
-        description: 'You tend to drink more on weekends. Consider planning alcohol-free activities or setting a specific weekend limit.',
+        title: t('smartRecommendations.weekendStrategy.title'),
+        description: t('smartRecommendations.weekendStrategy.description'),
         action: {
-          label: 'Set Weekend Goal',
+          label: t('smartRecommendations.weekendStrategy.action'),
           onClick: () => {/* Open goal setting */}
         },
         type: 'planning',
@@ -69,15 +76,15 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const recentHighCravings = monthDrinks.filter(d => d.craving >= 7).length;
     if (recentHighCravings > 5) {
       recommendations.push({
-        title: 'Craving Management Tips',
-        description: 'You\'ve experienced high cravings recently. Try the 10-minute rule: wait 10 minutes before drinking and engage in a different activity.',
+        title: t('smartRecommendations.cravingManagement.title'),
+        description: t('smartRecommendations.cravingManagement.description'),
         type: 'health',
         urgency: 'medium'
       });
     }
 
     // HALT-specific recommendations
-    const haltRecommendation = getHaltRecommendation(monthDrinks);
+    const haltRecommendation = getHaltRecommendation(monthDrinks, t);
     if (haltRecommendation) {
       recommendations.push(haltRecommendation);
     }
@@ -86,8 +93,8 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const currentStreak = getCurrentStreak(drinks);
     if (currentStreak >= 3 && currentStreak < 7) {
       recommendations.push({
-        title: 'Keep Your Streak Going!',
-        description: `You're ${currentStreak} days alcohol-free. You're doing great! Each day gets easier.`,
+        title: t('smartRecommendations.keepStreak.title'),
+        description: t('smartRecommendations.keepStreak.description', { count: currentStreak }),
         type: 'motivation',
         urgency: 'low'
       });
@@ -96,8 +103,8 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     // Alternative activity suggestion
     if (getAlternativeUsage(monthDrinks) < 30 && monthDrinks.length > 0) {
       recommendations.push({
-        title: 'Try Alternative Activities',
-        description: 'Consider planning enjoyable alternatives when you feel like drinking: go for a walk, call a friend, or try a new hobby.',
+        title: t('smartRecommendations.alternativeActivities.title'),
+        description: t('smartRecommendations.alternativeActivities.description'),
         type: 'planning',
         urgency: 'low'
       });
@@ -107,8 +114,11 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const monthlySpend = calculateMonthlySpend(monthDrinks, goals.pricePerStd);
     if (monthlySpend > goals.baselineMonthlySpend * 1.2) {
       recommendations.push({
-        title: 'Budget Alert',
-        description: `You've spent $${monthlySpend.toFixed(2)} on alcohol this month, which is over your $${goals.baselineMonthlySpend} budget.`,
+        title: t('smartRecommendations.budgetAlert.title'),
+        description: t('smartRecommendations.budgetAlert.description', {
+          spend: monthlySpend.toFixed(2),
+          budget: goals.baselineMonthlySpend.toFixed(2)
+        }),
         type: 'health',
         urgency: 'medium'
       });
@@ -118,7 +128,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
       const urgencyOrder = { high: 3, medium: 2, low: 1 };
       return urgencyOrder[b.urgency] - urgencyOrder[a.urgency];
     });
-  }, [drinks, goals]);
+  }, [drinks, goals, t]);
 
   const urgencyColors = {
     high: 'border-red-200 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300',
@@ -137,10 +147,10 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
       <div className="card-header">
         <h2 className="text-xl font-semibold flex items-center">
           <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-          Smart Recommendations
+          {t('smartRecommendations.title')}
         </h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-          Personalized suggestions based on your patterns
+          {t('smartRecommendations.subtitle')}
         </p>
       </div>
 
@@ -151,7 +161,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
               <CheckCircleIcon />
             </div>
             <p className="text-neutral-600 dark:text-neutral-400">
-              Great job! No urgent recommendations right now. Keep up the good work!
+              {t('smartRecommendations.emptyState')}
             </p>
           </div>
         ) : (
@@ -232,7 +242,7 @@ function getCurrentStreak(drinks: Drink[]): number {
   return streak;
 }
 
-function getHaltRecommendation(drinks: Drink[]): Recommendation | null {
+function getHaltRecommendation(drinks: Drink[], t: Translator): Recommendation | null {
   const haltCounts = { hungry: 0, angry: 0, lonely: 0, tired: 0 };
   drinks.forEach(d => {
     d.halt.forEach(h => haltCounts[h]++);
@@ -248,22 +258,22 @@ function getHaltRecommendation(drinks: Drink[]): Recommendation | null {
 
   const haltStrategies = {
     hungry: {
-      title: 'Manage Hunger-Triggered Drinking',
-      description: 'Keep healthy snacks ready and eat regular meals. Low blood sugar can trigger alcohol cravings.'
+      title: t('smartRecommendations.halt.hungry.title'),
+      description: t('smartRecommendations.halt.hungry.description')
     },
     angry: {
-      title: 'Channel Your Anger Differently',
-      description: 'Try physical exercise, deep breathing, or journaling when you feel angry instead of reaching for alcohol.'
+      title: t('smartRecommendations.halt.angry.title'),
+      description: t('smartRecommendations.halt.angry.description')
     },
     lonely: {
-      title: 'Combat Loneliness Proactively',
-      description: 'Schedule regular social activities or video calls with friends. Loneliness is a common drinking trigger.'
+      title: t('smartRecommendations.halt.lonely.title'),
+      description: t('smartRecommendations.halt.lonely.description')
     },
     tired: {
-      title: 'Address Fatigue First',
-      description: 'Prioritize sleep hygiene and rest. Being tired makes it harder to resist cravings.'
+      title: t('smartRecommendations.halt.tired.title'),
+      description: t('smartRecommendations.halt.tired.description')
     }
-  };
+  } satisfies Record<keyof typeof haltCounts, { title: string; description: string }>;
 
   const strategy = haltStrategies[topHalt[0] as keyof typeof haltStrategies];
   return {

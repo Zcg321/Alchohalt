@@ -112,5 +112,114 @@
   "history.deleted": "Entrada eliminada",
   "toast.undo": "Deshacer",
   "reminder.prompt": "¿Registrar tu día?",
-  "reminder.log": "Registrar ahora"
+  "reminder.log": "Registrar ahora",
+  "quickActions": {
+    "daysAlcoholFreeLabel": "Días sin alcohol",
+    "todayDrinksLabel": "Bebidas de hoy",
+    "title": "Acciones rápidas",
+    "actions": {
+      "moodCheckIn": "Revisión de ánimo",
+      "viewProgress": "Ver progreso",
+      "settings": "Configuración",
+      "afToday": "¡Sin alcohol hoy!",
+      "logDrink": "Registrar bebida"
+    },
+    "quickLog": {
+      "title": "Registro rápido",
+      "subtitle": "Toca para registrar bebidas comunes",
+      "standardDrinks": "{{count}} beb est."
+    },
+    "drinks": {
+      "beer": "Cerveza ({{volume}}ml, {{abv}}%)",
+      "wine": "Vino ({{volume}}ml, {{abv}}%)",
+      "cocktail": "Coctel ({{volume}}ml, {{abv}}%)",
+      "custom": "Entrada personalizada"
+    },
+    "motivation": {
+      "amazingMonth": "¡Impresionante racha de un mes! 🏆",
+      "weekStrong": "¡Racha de una semana en marcha! 💪",
+      "buildingMomentum": "¡Generando impulso! 🚀",
+      "anotherDay": "¡Otro día sin alcohol! ⭐",
+      "startingFresh": "¡Comenzando fresco hoy! 🌅",
+      "everyStep": "¡Cada paso cuenta! 🌟"
+    },
+    "motivationSubtext": {
+      "alcoholFree": "¡Sigue así! Cada día sin alcohol fortalece tu resistencia.",
+      "limitReached": "Has llegado a tu límite hoy. Mañana es una nueva oportunidad.",
+      "remaining": "Te quedan {{remaining}} bebidas dentro del límite de hoy."
+    }
+  },
+  "smartRecommendations": {
+    "title": "Recomendaciones inteligentes",
+    "subtitle": "Sugerencias personalizadas según tus patrones",
+    "emptyState": "¡Buen trabajo! No hay recomendaciones urgentes ahora. ¡Sigue así!",
+    "approachingDailyLimit": {
+      "title": "Acercándote al límite diario",
+      "description": "Has consumido {{consumed}} de tu límite diario de {{limit}}. Considera opciones sin alcohol para el resto del día."
+    },
+    "dailyLimitReached": {
+      "title": "Límite diario alcanzado",
+      "description": "Has alcanzado tu límite diario. Tomar un descanso ahora te ayudará a mantener tus metas."
+    },
+    "weekendStrategy": {
+      "title": "Se necesita estrategia para el fin de semana",
+      "description": "Sueles beber más los fines de semana. Planea actividades sin alcohol o fija un límite específico.",
+      "action": "Definir meta de fin de semana"
+    },
+    "cravingManagement": {
+      "title": "Consejos para manejar las ansias",
+      "description": "Has tenido ansias altas recientemente. Prueba la regla de los 10 minutos: espera y realiza otra actividad."
+    },
+    "keepStreak": {
+      "title": "¡Mantén tu racha!",
+      "description": "Llevas {{count}} días sin alcohol. ¡Lo haces muy bien! Cada día es más fácil."
+    },
+    "alternativeActivities": {
+      "title": "Prueba actividades alternativas",
+      "description": "Planea alternativas agradables cuando tengas ganas de beber: caminar, llamar a un amigo o probar un pasatiempo."
+    },
+    "budgetAlert": {
+      "title": "Alerta de presupuesto",
+      "description": "Has gastado ${{spend}} en alcohol este mes, lo que supera tu presupuesto de ${{budget}}."
+    },
+    "halt": {
+      "hungry": {
+        "title": "Gestiona la bebida por hambre",
+        "description": "Ten bocadillos saludables y come regularmente. El azúcar baja puede provocar ansias de alcohol."
+      },
+      "angry": {
+        "title": "Canaliza la ira de otra forma",
+        "description": "Prueba ejercicio, respiración profunda o escribir cuando estés enojado en vez de beber."
+      },
+      "lonely": {
+        "title": "Combate la soledad de forma proactiva",
+        "description": "Programa actividades sociales o videollamadas frecuentes. La soledad es un disparador común."
+      },
+      "tired": {
+        "title": "Atiende el cansancio primero",
+        "description": "Prioriza el descanso y la higiene del sueño. Estar cansado dificulta resistir las ansias."
+      }
+    }
+  },
+  "progressVisualization": {
+    "goalProgress": "Progreso de la meta",
+    "dailyLimit": "Límite diario",
+    "dailyRemaining": "Quedan {{count}} bebidas",
+    "dailyExceeded": "Excedido en {{percent}}%",
+    "weeklyGoal": "Meta semanal",
+    "weeklyRemaining": "Quedan {{count}} bebidas esta semana",
+    "weeklyExceeded": "Excedido en {{percent}}%",
+    "streakMilestone": "Hito de racha",
+    "daysAlcoholFree": "Días sin alcohol",
+    "nextMilestone": "Próximo hito: {{days}} días",
+    "daysToGo": "¡Faltan {{count}} días!",
+    "monthlySpending": "Gasto mensual",
+    "spentThisMonth": "Gastado este mes",
+    "potentialSavings": "Ahorro potencial",
+    "budgetUsage": "Uso del presupuesto",
+    "healthInsights": "Información de salud",
+    "afDaysThisMonth": "Días sin alcohol este mes",
+    "avgCravingLevel": "Nivel promedio de ansia",
+    "overallTrend": "Tendencia general"
+  }
 }

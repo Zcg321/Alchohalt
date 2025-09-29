@@ -6,6 +6,9 @@ import { stdDrinks } from '../../lib/calc';
 import { useAnalytics } from '../analytics/analytics';
 import { getCurrentStreak } from './lib';
 import MoodTracker from '../mood/MoodTracker';
+import { useLanguage, type TranslationValues } from '../../i18n';
+
+type Translator = (key: string, vars?: TranslationValues) => string;
 
 interface Props {
   drinks: Drink[];
@@ -18,6 +21,7 @@ interface Props {
 export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings, onOpenStats }: Props) {
   const [showMoodCheck, setShowMoodCheck] = useState(false);
   const { trackFeatureUsage } = useAnalytics();
+  const { t } = useLanguage();
 
   const todayStart = new Date().setHours(0, 0, 0, 0);
   const todayDrinks = drinks.filter(d => d.ts >= todayStart);
@@ -28,10 +32,10 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
 
   // Quick drink presets
   const quickDrinks = [
-    { name: 'Beer (355ml, 5%)', volumeMl: 355, abvPct: 5.0 },
-    { name: 'Wine (148ml, 12%)', volumeMl: 148, abvPct: 12.0 },
-    { name: 'Cocktail (44ml, 40%)', volumeMl: 44, abvPct: 40.0 },
-    { name: 'Custom Entry', volumeMl: 0, abvPct: 0 },
+    { name: t('quickActions.drinks.beer', { volume: 355, abv: 5 }), volumeMl: 355, abvPct: 5.0 },
+    { name: t('quickActions.drinks.wine', { volume: 148, abv: 12 }), volumeMl: 148, abvPct: 12.0 },
+    { name: t('quickActions.drinks.cocktail', { volume: 44, abv: 40 }), volumeMl: 44, abvPct: 40.0 },
+    { name: t('quickActions.drinks.custom'), volumeMl: 0, abvPct: 0 },
   ];
 
   const handleQuickLog = (preset: typeof quickDrinks[0]) => {
@@ -68,7 +72,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
               {currentStreak}
             </div>
             <div className="text-sm text-neutral-600 dark:text-neutral-400">
-              Days alcohol-free
+              {t('quickActions.daysAlcoholFreeLabel')}
             </div>
           </div>
         </div>
@@ -79,7 +83,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
               {todayStd.toFixed(1)} / {goals.dailyCap}
             </div>
             <div className="text-sm text-neutral-600 dark:text-neutral-400">
-              Today's drinks
+              {t('quickActions.todayDrinksLabel')}
             </div>
           </div>
         </div>
@@ -88,7 +92,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
       {/* Quick Actions */}
       <div className="card">
         <div className="card-header">
-          <h3 className="font-semibold">Quick Actions</h3>
+          <h3 className="font-semibold">{t('quickActions.title')}</h3>
         </div>
         <div className="card-content">
           <div className="grid grid-cols-2 gap-3">
@@ -99,7 +103,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
               onClick={handleMoodCheckIn}
               leftIcon={<HeartIcon />}
             >
-              Mood Check-In
+              {t('quickActions.actions.moodCheckIn')}
             </Button>
             
             <Button
@@ -109,7 +113,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
               onClick={onOpenStats}
               leftIcon={<ChartIcon />}
             >
-              View Progress
+              {t('quickActions.actions.viewProgress')}
             </Button>
             
             <Button
@@ -119,7 +123,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
               onClick={onOpenSettings}
               leftIcon={<SettingsIcon />}
             >
-              Settings
+              {t('quickActions.actions.settings')}
             </Button>
             
             <Button
@@ -128,7 +132,7 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
               className="h-12"
               leftIcon={isAlcoholFree ? <CheckIcon /> : <CalendarIcon />}
             >
-              {isAlcoholFree ? 'AF Today!' : 'Log Drink'}
+              {isAlcoholFree ? t('quickActions.actions.afToday') : t('quickActions.actions.logDrink')}
             </Button>
           </div>
         </div>
@@ -137,9 +141,9 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
       {/* Quick Drink Logging */}
       <div className="card">
         <div className="card-header">
-          <h3 className="font-semibold">Quick Log</h3>
+          <h3 className="font-semibold">{t('quickActions.quickLog.title')}</h3>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            Tap to log common drinks
+            {t('quickActions.quickLog.subtitle')}
           </p>
         </div>
         <div className="card-content">
@@ -154,7 +158,9 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
                 <span>{drink.name}</span>
                 {drink.volumeMl > 0 && (
                   <span className="text-sm opacity-70">
-                    {stdDrinks(drink.volumeMl, drink.abvPct).toFixed(1)} std
+                    {t('quickActions.quickLog.standardDrinks', {
+                      count: stdDrinks(drink.volumeMl, drink.abvPct).toFixed(1)
+                    })}
                   </span>
                 )}
               </Button>
@@ -170,10 +176,10 @@ export default function QuickActions({ drinks, goals, onAddDrink, onOpenSettings
             <StarIcon />
           </div>
           <h3 className="font-semibold mb-2">
-            {getMotivationalMessage(currentStreak, isAlcoholFree)}
+            {getMotivationalMessage(t, currentStreak, isAlcoholFree)}
           </h3>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            {getMotivationalSubtext(currentStreak, todayStd, goals.dailyCap)}
+            {getMotivationalSubtext(t, todayStd, goals.dailyCap)}
           </p>
         </div>
       </div>
@@ -208,29 +214,29 @@ function CloseIcon() {
 }
 
 // Helper functions
-function getMotivationalMessage(streak: number, isAlcoholFree: boolean): string {
+function getMotivationalMessage(t: Translator, streak: number, isAlcoholFree: boolean): string {
   if (isAlcoholFree) {
-    if (streak >= 30) return "Amazing month-long streak! 🏆";
-    if (streak >= 7) return "Week-long streak going strong! 💪";
-    if (streak >= 3) return "Building momentum! 🚀";
-    if (streak >= 1) return "Another alcohol-free day! ⭐";
-    return "Starting fresh today! 🌅";
+    if (streak >= 30) return t('quickActions.motivation.amazingMonth');
+    if (streak >= 7) return t('quickActions.motivation.weekStrong');
+    if (streak >= 3) return t('quickActions.motivation.buildingMomentum');
+    if (streak >= 1) return t('quickActions.motivation.anotherDay');
+    return t('quickActions.motivation.startingFresh');
   }
 
-  return "Every step counts! 🌟";
+  return t('quickActions.motivation.everyStep');
 }
 
-function getMotivationalSubtext(streak: number, todayStd: number, dailyCap: number): string {
+function getMotivationalSubtext(t: Translator, todayStd: number, dailyCap: number): string {
   if (todayStd === 0) {
-    return "Keep going! Each alcohol-free day builds your strength and resilience.";
+    return t('quickActions.motivationSubtext.alcoholFree');
   }
-  
+
   if (todayStd >= dailyCap) {
-    return "You&apos;ve reached your limit for today. Tomorrow is a new opportunity.";
+    return t('quickActions.motivationSubtext.limitReached');
   }
-  
+
   const remaining = dailyCap - todayStd;
-  return `You have ${remaining.toFixed(1)} drinks remaining in today's limit.`;
+  return t('quickActions.motivationSubtext.remaining', { remaining: remaining.toFixed(1) });
 }
 
 // Icon components
