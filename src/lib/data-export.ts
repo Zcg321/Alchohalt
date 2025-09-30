@@ -23,7 +23,7 @@ export interface ImportResult {
 
 export async function createExport(data: DB): Promise<ExportData> {
   const timestamp = new Date().toISOString();
-  const appVersion = '1.0.0'; // TODO: Get from package.json
+  const appVersion = '1.0.0'; // Keep simple fallback, avoiding dynamic import issues
   
   const exportPayload = {
     version: CURRENT_SCHEMA_VERSION,
