@@ -34,7 +34,7 @@ export function getCurrentStreak(drinks: Drink[]): number {
     }
     streak++;
     current.setDate(current.getDate() - 1);
-    if (streak > 365) {
+    if (streak >= 365) {
       continueChecking = false;
       break;
     } // Safety limit
