@@ -1,0 +1,171 @@
+{
+  "immediateHelp": [
+    {
+      "id": "samhsa",
+      "name": "SAMHSA National Helpline",
+      "description": "Free, confidential, 24/7 treatment referral and information service",
+      "phone": "1-800-662-4357",
+      "type": "hotline",
+      "available": "24/7",
+      "languages": ["English", "Spanish"]
+    },
+    {
+      "id": "aa",
+      "name": "Alcoholics Anonymous",
+      "description": "Find local AA meetings and support groups",
+      "url": "https://www.aa.org",
+      "phone": "Check website for local numbers",
+      "type": "support-group",
+      "available": "Varies by location"
+    },
+    {
+      "id": "crisis-text",
+      "name": "Crisis Text Line",
+      "description": "Text with a trained crisis counselor",
+      "phone": "Text HOME to 741741",
+      "type": "text-support",
+      "available": "24/7",
+      "languages": ["English", "Spanish"]
+    }
+  ],
+  "educational": [
+    {
+      "id": "niaaa",
+      "name": "NIAAA - Rethinking Drinking",
+      "description": "Science-based information about alcohol and health",
+      "url": "https://www.rethinkingdrinking.niaaa.nih.gov",
+      "type": "educational",
+      "topics": ["health-effects", "moderate-drinking", "assessment-tools"]
+    },
+    {
+      "id": "cdc-alcohol",
+      "name": "CDC - Alcohol and Public Health",
+      "description": "Facts about alcohol consumption and its effects",
+      "url": "https://www.cdc.gov/alcohol",
+      "type": "educational",
+      "topics": ["statistics", "health-risks", "prevention"]
+    },
+    {
+      "id": "smart-recovery",
+      "name": "SMART Recovery",
+      "description": "Self-empowerment and science-based addiction recovery support",
+      "url": "https://www.smartrecovery.org",
+      "type": "educational",
+      "topics": ["self-help", "cbt-techniques", "online-meetings"]
+    }
+  ],
+  "professionalHelp": [
+    {
+      "id": "psychology-today",
+      "name": "Psychology Today - Find a Therapist",
+      "description": "Search for therapists specializing in alcohol use",
+      "url": "https://www.psychologytoday.com/us/therapists/alcohol-use",
+      "type": "directory",
+      "filters": ["location", "insurance", "specialty"]
+    },
+    {
+      "id": "samhsa-treatment-locator",
+      "name": "SAMHSA Treatment Locator",
+      "description": "Find treatment facilities near you",
+      "url": "https://findtreatment.gov",
+      "type": "directory",
+      "filters": ["location", "payment-options", "treatment-type"]
+    },
+    {
+      "id": "betterhelp",
+      "name": "BetterHelp",
+      "description": "Online therapy platform with licensed therapists",
+      "url": "https://www.betterhelp.com",
+      "type": "online-therapy",
+      "note": "Paid service with subscription options"
+    }
+  ],
+  "copingStrategies": [
+    {
+      "id": "meditation",
+      "name": "Mindfulness Meditation",
+      "description": "Practice mindfulness to manage cravings and stress",
+      "techniques": [
+        "Focus on your breath for 5 minutes",
+        "Body scan meditation",
+        "Observe cravings without judgment"
+      ],
+      "type": "self-help",
+      "difficulty": "easy"
+    },
+    {
+      "id": "exercise",
+      "name": "Physical Exercise",
+      "description": "Use exercise to reduce stress and improve mood",
+      "techniques": [
+        "Take a 15-minute walk",
+        "Do 10 minutes of stretching",
+        "Try high-intensity interval training"
+      ],
+      "type": "self-help",
+      "difficulty": "easy"
+    },
+    {
+      "id": "journaling",
+      "name": "Reflective Journaling",
+      "description": "Write about your feelings and triggers",
+      "techniques": [
+        "Identify what triggered the craving",
+        "Write about alternative actions",
+        "Reflect on your progress"
+      ],
+      "type": "self-help",
+      "difficulty": "easy"
+    },
+    {
+      "id": "social-support",
+      "name": "Reach Out to Support",
+      "description": "Connect with friends, family, or support groups",
+      "techniques": [
+        "Call a trusted friend",
+        "Attend a support group meeting",
+        "Join an online recovery community"
+      ],
+      "type": "social",
+      "difficulty": "moderate"
+    }
+  ],
+  "triggerSpecific": {
+    "stress": {
+      "title": "Managing Stress-Related Drinking",
+      "resources": ["meditation", "exercise", "professional-counseling"],
+      "tips": [
+        "Practice deep breathing exercises",
+        "Identify stress triggers and plan alternatives",
+        "Consider therapy for stress management"
+      ]
+    },
+    "social": {
+      "title": "Navigating Social Situations",
+      "resources": ["aa", "smart-recovery"],
+      "tips": [
+        "Prepare non-alcoholic drink orders in advance",
+        "Bring a supportive friend",
+        "Plan an exit strategy if needed"
+      ]
+    },
+    "loneliness": {
+      "title": "Coping with Loneliness",
+      "resources": ["social-support", "aa", "crisis-text"],
+      "tips": [
+        "Join online support communities",
+        "Volunteer in your community",
+        "Schedule regular video calls with friends"
+      ]
+    },
+    "boredom": {
+      "title": "Finding Alternative Activities",
+      "resources": ["exercise", "journaling"],
+      "tips": [
+        "Develop a new hobby",
+        "Create a list of go-to activities",
+        "Practice mindful activities like cooking or art"
+      ]
+    }
+  }
+}
