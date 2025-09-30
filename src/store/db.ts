@@ -27,6 +27,8 @@ export interface Settings {
   reminders: { enabled: boolean; times: string[] };
   showBAC: boolean;
   profile?: { weightKg?: number; sex?: 'm'|'f'|'other' };
+  notificationFallbackMessage?: string;
+  hasCompletedOnboarding?: boolean;
 }
 
 export interface Entry {

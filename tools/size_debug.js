@@ -1,6 +1,5 @@
 import path from "path";
-import glob from "glob";
-const globSync = glob.sync;
+import { globSync } from "glob";
 import fs from "fs";
 
 function list(pattern){

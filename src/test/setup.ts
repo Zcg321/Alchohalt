@@ -12,6 +12,22 @@ if (!(global as any).crypto) {
     }
   };
 }
+
+// Add Web Crypto API mock for SHA-256 testing
+if (!(global as any).crypto.subtle) {
+  const nodeCrypto = require("crypto");
+  (global as any).crypto.subtle = {
+    digest: async (algorithm: string, data: Uint8Array) => {
+      if (algorithm === 'SHA-256') {
+        const hash = nodeCrypto.createHash('sha256');
+        hash.update(Buffer.from(data));
+        return hash.digest().buffer;
+      }
+      throw new Error(`Unsupported algorithm: ${algorithm}`);
+    }
+  };
+}
+
 (global as any).TextEncoder = (global as any).TextEncoder ?? require("util").TextEncoder;
 (global as any).TextDecoder = (global as any).TextDecoder ?? require("util").TextDecoder;
 

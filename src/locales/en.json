@@ -117,5 +117,71 @@
   "history.deleted": "Entry deleted",
   "toast.undo": "Undo",
   "reminder.prompt": "Reminder: log your day?",
-  "reminder.log": "Log now"
+  "reminder.log": "Log now",
+  
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to Alchohalt",
+      "description": "Your personal, private wellness companion for building healthier drinking habits."
+    },
+    "privacy": {
+      "title": "Your Privacy Matters", 
+      "description": "All your data stays on your device. We never collect, store, or share your personal information."
+    },
+    "tracking": {
+      "title": "Smart Tracking",
+      "description": "Log drinks with intentions, HALT triggers, and craving levels to understand your patterns."
+    },
+    "insights": {
+      "title": "Personalized Insights",
+      "description": "Get AI-powered insights about your habits, triggers, and progress over time."
+    },
+    "goals": {
+      "title": "Set Your Goals",
+      "description": "Create personalized goals and track your progress with motivating streak counters."
+    },
+    "ready": {
+      "title": "You're All Set!",
+      "description": "Ready to start your wellness journey? Your first log is just a tap away."
+    },
+    "quickTips": {
+      "title": "Quick Tips",
+      "tip1": "Start with small, achievable goals",
+      "tip2": "Log honestly for better insights", 
+      "tip3": "Check your progress regularly",
+      "tip4": "Export your data anytime for backup"
+    },
+    "back": "Back",
+    "skip": "Skip", 
+    "next": "Next",
+    "getStarted": "Get Started"
+  },
+
+  "medicalDisclaimer": {
+    "title": "Important Medical Disclaimer",
+    "content": "Alchohalt is a personal tracking tool and does not provide medical advice, diagnosis, or treatment. This app is not a substitute for professional medical care.",
+    "emergency": "If you are experiencing a medical emergency or need immediate help with substance use, please contact emergency services or a healthcare professional immediately."
+  },
+
+  "privacy": {
+    "title": "Your Privacy is Protected",
+    "onDevice": "All your data is stored locally on your device using secure, encrypted storage. We never collect, transmit, or store your personal information on external servers.",
+    "dataControl": "You have complete control over your data. You can export, import, or delete all information at any time from the Settings panel."
+  },
+
+  "support": {
+    "title": "Support & Feedback", 
+    "description": "We're here to help you on your wellness journey. Your feedback helps us improve the app."
+  },
+
+  "subscription": {
+    "title": "Subscription Information",
+    "coreFeatures": "Core habit tracking features remain free forever. Premium features enhance your experience with advanced analytics and insights.",
+    "cancellation": "Subscriptions can be cancelled anytime through your device's subscription settings. No data is lost when downgrading."
+  },
+
+  "openSource": {
+    "title": "Open Source",
+    "description": "Alchohalt is open source software. You can review our code, contribute improvements, or build your own version."
+  }
 }

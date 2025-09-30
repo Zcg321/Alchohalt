@@ -9,6 +9,7 @@ import StatsAndGoals from './StatsAndGoals';
 import MainContent from './MainContent';
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
+import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import { usePWA } from '../hooks/usePWA';
 import { useLanguage } from '../i18n';
 
@@ -105,6 +106,8 @@ export function AlcoholCoachApp() {
 
   return (
     <>
+      <OnboardingFlow />
+      
       <PWAInstallBanner
         isInstallable={isInstallable && showInstallBanner}
         promptInstall={promptInstall}

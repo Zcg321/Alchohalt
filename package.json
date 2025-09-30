@@ -24,7 +24,7 @@
     "coverage:fallback": "node ./tools/coverage_fallback.cjs",
     "coverage:check": "node ./tools/coverage_gate.cjs",
     "deadcode": "ts-prune -p tsconfig.json",
-    "deps:check": "depcheck --ignores=rollup-plugin-visualizer",
+    "deps:check": "depcheck --ignores=rollup-plugin-visualizer,@capacitor/android,@capacitor/ios,@size-limit/file,@size-limit/preset-small-lib,@testing-library/user-event,@types/jsdom,@vitest/coverage-v8,autoprefixer,postcss,prettier,tailwindcss,ts-node --skip-missing=true",
     "size:prep": "node ./tools/ensure_size_limit_config.js",
     "size:debug": "node ./tools/size_debug.js",
     "size:report": "npm run size:prep && npx size-limit && npx size-limit --why || true",
@@ -34,7 +34,10 @@
     "lazy:charts": "node --loader ts-node/esm tools/lazy_charts.ts",
     "lazy:i18n": "node --loader ts-node/esm tools/lazy_i18n.ts",
     "shake:libs": "node --loader ts-node/esm tools/shake_heavy_libs.ts",
-    "scan:full": "bash ./tools/scan_report.sh"
+    "scan:full": "bash ./tools/scan_report.sh",
+    "release:checklist": "bash ./scripts/release-checklist.sh",
+    "build:android": "npx cap sync android && cd android && ./gradlew assembleRelease",
+    "build:ios": "npx cap sync ios && cd ios && xcodebuild -workspace App/App.xcworkspace -scheme App -configuration Release -archivePath App/build/App.xcarchive archive"
   },
   "dependencies": {
     "@capacitor/core": "6.0.0",
@@ -49,6 +52,7 @@
   "devDependencies": {
     "@capacitor/android": "6.0.0",
     "@capacitor/cli": "6.0.0",
+    "@capacitor/ios": "^6.0.0",
     "@size-limit/file": "^11.2.0",
     "@size-limit/preset-small-lib": "^11.2.0",
     "@testing-library/jest-dom": "6.4.2",

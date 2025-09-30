@@ -1,20 +1,25 @@
 {
   "totals_by_group": {
-    "docs": 84,
-    "__all__": 12965,
+    "docs": 179,
+    "__all__": 15201,
     "web": 58,
-    "config": 455,
-    "ts": 11848,
-    "js": 100,
-    "css": 420
+    "ts": 13237,
+    "config": 572,
+    "android_build": 114,
+    "android": 38,
+    "android_res": 293,
+    "js": 99,
+    "css": 611
   },
   "totals_by_module": {
-    "src": 11484,
+    "src": 13094,
     "tests": 494,
-    ".": 432,
-    "tools": 422,
+    ".": 476,
+    "android": 445,
+    "tools": 421,
+    "public": 116,
     ".github": 112,
-    "public": 21
+    "ios": 43
   },
   "top_20_largest_files": [
     [
@@ -42,12 +47,12 @@
       340
     ],
     [
-      "src/features/subscription/SubscriptionManager.tsx",
-      327
-    ],
-    [
       "src/features/insights/QuickActions.tsx",
       325
+    ],
+    [
+      "src/features/subscription/SubscriptionManager.tsx",
+      322
     ],
     [
       "src/features/insights/ProgressVisualization.tsx",
@@ -55,7 +60,7 @@
     ],
     [
       "src/store/db.ts",
-      315
+      317
     ],
     [
       "src/features/subscription/PremiumMoodTracking.tsx",
@@ -86,16 +91,16 @@
       228
     ],
     [
+      "src/styles/theme.css",
+      222
+    ],
+    [
       "src/app/MainContent.tsx",
       213
     ],
     [
       "src/features/achievements/AchievementDisplay.tsx",
       211
-    ],
-    [
-      "src/features/homepage/PersonalizedDashboard.tsx",
-      200
     ]
   ],
   "top_20_longest_functions": [
@@ -120,7 +125,7 @@
   ],
   "todo_fixme_count": 0,
   "todo_samples": [],
-  "ts_import_edges_count": 363,
+  "ts_import_edges_count": 385,
   "ts_import_edges_full": [
     [
       "tests/notifications.web.test.tsx",
@@ -243,11 +248,27 @@
       "../capacitor-local-notifications.d.ts"
     ],
     [
+      "src/types/__tests__/common.test.ts",
+      "../common"
+    ],
+    [
+      "src/services/theme.ts",
+      "../store/db"
+    ],
+    [
+      "src/services/__tests__/platform.smoke.test.ts",
+      "../platform"
+    ],
+    [
       "src/components/UndoToast.tsx",
       "../store/db"
     ],
     [
       "src/components/UndoToast.tsx",
+      "../i18n"
+    ],
+    [
+      "src/components/A11ySkipLink.tsx",
       "../i18n"
     ],
     [
@@ -363,6 +384,22 @@
       "../store/db"
     ],
     [
+      "src/lib/notify.ts",
+      "../services/platform"
+    ],
+    [
+      "src/lib/data-export.ts",
+      "./sha256"
+    ],
+    [
+      "src/lib/data-export.ts",
+      "./schema"
+    ],
+    [
+      "src/lib/data-export.ts",
+      "../store/db"
+    ],
+    [
       "src/lib/migrate-legacy.ts",
       "./storage"
     ],
@@ -385,6 +422,22 @@
     [
       "src/lib/data-bridge.ts",
       "../store/db"
+    ],
+    [
+      "src/lib/__tests__/utils.test.ts",
+      "../utils"
+    ],
+    [
+      "src/lib/__tests__/data-integrity.test.ts",
+      "../data-export"
+    ],
+    [
+      "src/lib/__tests__/data-integrity.test.ts",
+      "../schema"
+    ],
+    [
+      "src/lib/__tests__/data-integrity.test.ts",
+      "../../store/db"
     ],
     [
       "src/hooks/__tests__/usePWA.smoke.test.ts",
@@ -461,6 +514,10 @@
     [
       "src/app/AlcoholCoachApp.tsx",
       "./UpdateBanner"
+    ],
+    [
+      "src/app/AlcoholCoachApp.tsx",
+      "../features/onboarding/OnboardingFlow"
     ],
     [
       "src/app/AlcoholCoachApp.tsx",
@@ -585,6 +642,10 @@
     [
       "src/shared/__tests__/charts.smoke.test.tsx",
       "../charts.tsx"
+    ],
+    [
+      "src/shared/__tests__/capacitor.test.ts",
+      "../capacitor"
     ],
     [
       "src/shared/__tests__/capacitor.smoke.test.ts",
@@ -1016,7 +1077,7 @@
     ],
     [
       "src/features/drinks/ExportImport.tsx",
-      "../../lib/sha256"
+      "../../lib/data-export"
     ],
     [
       "src/features/drinks/DrinkDiscovery.tsx",
@@ -1284,7 +1345,7 @@
     ],
     [
       "src/features/settings/ThemeToggle.tsx",
-      "../../store/db"
+      "../../services/theme"
     ],
     [
       "src/features/settings/ThemeToggle.tsx",
@@ -1349,6 +1410,22 @@
     [
       "src/features/settings/__tests__/SettingsPanel.smoke.test.tsx",
       "../SettingsPanel.tsx"
+    ],
+    [
+      "src/features/onboarding/OnboardingFlow.tsx",
+      "../../components/ui/Button"
+    ],
+    [
+      "src/features/onboarding/OnboardingFlow.tsx",
+      "../../store/db"
+    ],
+    [
+      "src/features/onboarding/OnboardingFlow.tsx",
+      "../../i18n"
+    ],
+    [
+      "src/features/onboarding/__tests__/OnboardingFlow.smoke.test.tsx",
+      "../OnboardingFlow"
     ],
     [
       "src/features/wellness/PremiumWellnessDashboard.tsx",
@@ -1571,6 +1648,22 @@
       "../achievementSystem.ts"
     ],
     [
+      "src/features/legal/TermsOfService.tsx",
+      "../../i18n"
+    ],
+    [
+      "src/features/legal/PrivacyPolicy.tsx",
+      "../../i18n"
+    ],
+    [
+      "src/features/legal/__tests__/TermsOfService.smoke.test.tsx",
+      "../TermsOfService"
+    ],
+    [
+      "src/features/legal/__tests__/PrivacyPolicy.smoke.test.tsx",
+      "../PrivacyPolicy"
+    ],
+    [
       "src/features/pwa/__tests__/virtual-pwa-register-stub.smoke.test.ts",
       "../virtual-pwa-register-stub.ts"
     ]
@@ -1578,7 +1671,7 @@
   "ts_tangle_sources": [
     [
       "src/app/AlcoholCoachApp.tsx",
-      12
+      13
     ],
     [
       "src/features/insights/InsightsPanel.tsx",
@@ -1620,11 +1713,11 @@
   "ts_tangle_sinks": [
     [
       "../../components/ui/Button",
-      17
+      18
     ],
     [
       "../../store/db",
-      15
+      16
     ],
     [
       "./lib",
@@ -1632,7 +1725,7 @@
     ],
     [
       "../store/db",
-      10
+      12
     ],
     [
       "../../components/ui/Badge",
@@ -1647,15 +1740,15 @@
       9
     ],
     [
+      "../i18n",
+      8
+    ],
+    [
       "../../lib/utils",
       8
     ],
     [
       "../lib.ts",
-      8
-    ],
-    [
-      "../analytics/analytics",
       8
     ]
   ],

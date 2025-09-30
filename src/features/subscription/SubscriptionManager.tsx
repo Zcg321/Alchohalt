@@ -27,53 +27,48 @@ const subscriptionPlans: SubscriptionPlan[] = [
     price: 0,
     interval: 'month',
     features: [
-      'Basic drink logging',
+      'Basic drink logging with intentions',
       'Simple streak tracking',
-      'Basic goal setting',
-      'Limited insights (last 7 days)',
+      'Basic goal setting (daily/weekly)',
+      'Last 7 days insights',
       'Standard mood check-ins',
       'Basic progress charts',
-      'Weekly summary reports'
+      'Weekly summary reports',
+      'Export/import data'
     ]
   },
   {
-    id: 'premium_monthly',
-    name: 'Premium',
-    price: 9.99,
+    id: 'essential',
+    name: 'Essential',
+    price: 4.99,
     interval: 'month',
     popular: true,
     features: [
       'Everything in Free',
-      'Advanced AI insights & pattern analysis',
-      'Detailed mood tracking with triggers',
-      'Custom goal types & deadlines',
-      'Advanced progress visualization',
-      'Data export (PDF, CSV)',
-      'Smart recommendations',
-      'Craving pattern analysis',
-      'HALT trigger tracking',
-      'Correlation insights',
-      'Spending analysis & budgeting',
-      'Priority customer support',
-      'Ad-free experience'
+      'Extended 30-day insights & trends',
+      'HALT trigger tracking & analytics',
+      'Advanced craving pattern analysis',
+      'Custom goal types & deadlines', 
+      'Enhanced progress visualization',
+      'Personalized recommendations',
+      'Priority customer support'
     ]
   },
   {
-    id: 'premium_yearly',
-    name: 'Premium Annual',
-    price: 79.99,
-    interval: 'year',
+    id: 'premium',
+    name: 'Premium',
+    price: 9.99,
+    interval: 'month',
     features: [
-      'Everything in Premium Monthly',
-      '33% savings vs monthly',
-      'Exclusive annual insights report',
-      'Priority beta feature access',
-      'Extended data history (unlimited)',
-      'Custom data analysis requests',
-      'Healthcare provider reports',
-      'Advanced wellness coaching',
-      'Personalized milestone celebrations',
-      'Early access to new features'
+      'Everything in Essential',
+      'AI-powered insights & predictions',
+      'Detailed mood tracking with triggers',
+      'Advanced streak badges & achievements',
+      'Spending analysis & budget alerts',
+      'Comprehensive wellness dashboard',
+      'Multi-device sync (coming soon)',
+      'Premium community access',
+      'Advanced export formats'
     ]
   }
 ];

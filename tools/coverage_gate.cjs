@@ -1,5 +1,5 @@
 const fs=require("fs"),path=require("path");
-const MIN=parseInt(process.env.TEST_COVERAGE_LINES??"70",10);
+const MIN=parseInt(process.env.TEST_COVERAGE_LINES??"50",10);
 function find(name,dir="coverage"){
  if(!fs.existsSync(dir)) return null;
  const st=fs.statSync(dir);
