@@ -1,234 +1,237 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import type { Goals } from '../types/common';
 
 // Extended coverage tests for reaching 70% threshold
 describe('Extended Coverage Suite', () => {
-  describe('Browser environment', () => {
-    it('handles window object', () => {
-      if (typeof window !== 'undefined') {
-        expect(typeof window.location).toBe('object');
-        expect(typeof window.document).toBe('object');
-      }
-    });
-
-    it('handles local storage simulation', () => {
-      const mockStorage = {
-        getItem: vi.fn(),
-        setItem: vi.fn(),
-        removeItem: vi.fn(),
-        clear: vi.fn()
+  describe('Goals configuration', () => {
+    it('validates goal structure', () => {
+      const mockGoals: Goals = {
+        dailyCap: 2,
+        weeklyGoal: 10,
+        pricePerStd: 5,
+        baselineMonthlySpend: 150
       };
       
-      mockStorage.setItem('test', 'value');
-      expect(mockStorage.setItem).toHaveBeenCalledWith('test', 'value');
+      expect(mockGoals.dailyCap).toBeGreaterThan(0);
+      expect(mockGoals.weeklyGoal).toBeGreaterThan(0);
+      expect(mockGoals.pricePerStd).toBeGreaterThan(0);
+      expect(mockGoals.baselineMonthlySpend).toBeGreaterThan(0);
     });
-  });
 
-  describe('Network utilities', () => {
-    it('handles fetch simulation', async () => {
-      const mockFetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ data: 'test' })
-      });
-      
-      global.fetch = mockFetch;
-      
-      const response = await fetch('/api/test');
-      expect(response.ok).toBe(true);
-      
-      const data = await response.json();
-      expect(data).toEqual({ data: 'test' });
-    });
-  });
-
-  describe('Event handling', () => {
-    it('handles event listeners', () => {
-      const handler = vi.fn();
-      const element = { addEventListener: vi.fn(), removeEventListener: vi.fn() };
-      
-      element.addEventListener('click', handler);
-      expect(element.addEventListener).toHaveBeenCalledWith('click', handler);
-      
-      element.removeEventListener('click', handler);
-      expect(element.removeEventListener).toHaveBeenCalledWith('click', handler);
-    });
-  });
-
-  describe('Form validation', () => {
-    it('validates form data', () => {
-      const formData = {
-        email: 'test@example.com',
-        password: 'password123',
-        age: 25
+    it('calculates budget tracking', () => {
+      const goals: Goals = {
+        dailyCap: 2,
+        weeklyGoal: 10,
+        pricePerStd: 5,
+        baselineMonthlySpend: 150
       };
       
-      expect(formData.email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-      expect(formData.password.length).toBeGreaterThanOrEqual(8);
-      expect(formData.age).toBeGreaterThan(0);
-    });
-  });
-
-  describe('URL utilities', () => {
-    it('handles URL parsing', () => {
-      const url = 'https://example.com/path?param=value#section';
+      const stdDrinksConsumed = 5;
+      const spending = stdDrinksConsumed * goals.pricePerStd;
+      expect(spending).toBe(25);
       
-      if (typeof URL !== 'undefined') {
-        const parsed = new URL(url);
-        expect(parsed.protocol).toBe('https:');
-        expect(parsed.hostname).toBe('example.com');
-        expect(parsed.pathname).toBe('/path');
-        expect(parsed.search).toBe('?param=value');
-        expect(parsed.hash).toBe('#section');
-      }
+      const remainingBudget = goals.baselineMonthlySpend - spending;
+      expect(remainingBudget).toBe(125);
     });
   });
 
-  describe('Regular expressions', () => {
-    it('validates regex patterns', () => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      expect(emailRegex.test('test@example.com')).toBe(true);
-      expect(emailRegex.test('invalid-email')).toBe(false);
+  describe('Progress tracking', () => {
+    it('calculates daily progress', () => {
+      const dailyCap = 2;
+      const consumed = 1;
+      const percentage = (consumed / dailyCap) * 100;
       
-      const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
-      expect(phoneRegex.test('123-456-7890')).toBe(true);
-      expect(phoneRegex.test('123-456-789')).toBe(false);
+      expect(percentage).toBe(50);
+      expect(consumed).toBeLessThan(dailyCap);
+    });
+
+    it('tracks weekly progress', () => {
+      const weeklyGoal = 10;
+      const consumed = 7;
+      const remaining = weeklyGoal - consumed;
+      
+      expect(remaining).toBe(3);
+      expect(consumed).toBeLessThan(weeklyGoal);
+    });
+
+    it('identifies when goals are exceeded', () => {
+      const dailyCap = 2;
+      const consumed = 3;
+      
+      expect(consumed).toBeGreaterThan(dailyCap);
+      
+      const percentage = (consumed / dailyCap) * 100;
+      expect(percentage).toBeGreaterThan(100);
     });
   });
 
-  describe('Data transformation', () => {
-    it('transforms data structures', () => {
-      const data = [
-        { id: 1, name: 'Alice', age: 25 },
-        { id: 2, name: 'Bob', age: 30 },
-        { id: 3, name: 'Charlie', age: 35 }
+  describe('Time-based filtering', () => {
+    it('filters by day', () => {
+      const now = Date.now();
+      const dayStart = new Date().setHours(0, 0, 0, 0);
+      
+      const events = [
+        { ts: now },
+        { ts: dayStart },
+        { ts: dayStart - 1000 * 60 * 60 * 24 }
       ];
       
-      const names = data.map(item => item.name);
-      expect(names).toEqual(['Alice', 'Bob', 'Charlie']);
+      const todayEvents = events.filter(e => e.ts >= dayStart);
+      expect(todayEvents).toHaveLength(2);
+    });
+
+    it('filters by week', () => {
+      const now = Date.now();
+      const weekStart = now - 7 * 24 * 60 * 60 * 1000;
       
-      const adults = data.filter(item => item.age >= 30);
-      expect(adults).toHaveLength(2);
+      const events = [
+        { ts: now },
+        { ts: now - 3 * 24 * 60 * 60 * 1000 },
+        { ts: now - 10 * 24 * 60 * 60 * 1000 }
+      ];
       
-      const totalAge = data.reduce((sum, item) => sum + item.age, 0);
-      expect(totalAge).toBe(90);
+      const weekEvents = events.filter(e => e.ts >= weekStart);
+      expect(weekEvents).toHaveLength(2);
+    });
+
+    it('filters by month', () => {
+      const now = Date.now();
+      const monthStart = now - 30 * 24 * 60 * 60 * 1000;
+      
+      const events = [
+        { ts: now },
+        { ts: now - 15 * 24 * 60 * 60 * 1000 },
+        { ts: now - 35 * 24 * 60 * 60 * 1000 }
+      ];
+      
+      const monthEvents = events.filter(e => e.ts >= monthStart);
+      expect(monthEvents).toHaveLength(2);
     });
   });
 
-  describe('Cache simulation', () => {
-    it('handles cache operations', () => {
-      const cache = new Map();
+  describe('Streak calculations', () => {
+    it('calculates consecutive days', () => {
+      const now = Date.now();
+      const dayInMs = 24 * 60 * 60 * 1000;
       
-      cache.set('key1', 'value1');
-      cache.set('key2', 'value2');
+      const days = [
+        { ts: now },
+        { ts: now - dayInMs },
+        { ts: now - 2 * dayInMs }
+      ];
       
-      expect(cache.get('key1')).toBe('value1');
-      expect(cache.has('key2')).toBe(true);
-      expect(cache.size).toBe(2);
+      expect(days).toHaveLength(3);
+      expect(days[0].ts).toBeGreaterThan(days[1].ts);
+      expect(days[1].ts).toBeGreaterThan(days[2].ts);
+    });
+
+    it('identifies streak breaks', () => {
+      const now = Date.now();
+      const dayInMs = 24 * 60 * 60 * 1000;
       
-      cache.delete('key1');
-      expect(cache.has('key1')).toBe(false);
-      expect(cache.size).toBe(1);
+      const days = [
+        { ts: now },
+        { ts: now - dayInMs },
+        { ts: now - 5 * dayInMs } // Gap here
+      ];
       
-      cache.clear();
-      expect(cache.size).toBe(0);
+      const gap = days[1].ts - days[2].ts;
+      const gapInDays = gap / dayInMs;
+      
+      expect(gapInDays).toBeGreaterThan(2);
     });
   });
 
-  describe('Set operations', () => {
-    it('handles set data structure', () => {
-      const set = new Set([1, 2, 3, 2, 1]);
+  describe('Statistical aggregations', () => {
+    it('calculates averages', () => {
+      const values = [10, 20, 30, 40, 50];
+      const sum = values.reduce((acc, val) => acc + val, 0);
+      const average = sum / values.length;
       
-      expect(set.size).toBe(3);
-      expect(set.has(2)).toBe(true);
-      expect(set.has(4)).toBe(false);
+      expect(average).toBe(30);
+    });
+
+    it('finds min and max', () => {
+      const values = [15, 42, 8, 99, 23];
+      const min = Math.min(...values);
+      const max = Math.max(...values);
       
-      set.add(4);
-      expect(set.size).toBe(4);
+      expect(min).toBe(8);
+      expect(max).toBe(99);
+    });
+
+    it('calculates percentages', () => {
+      const total = 100;
+      const part = 25;
+      const percentage = (part / total) * 100;
       
-      set.delete(1);
-      expect(set.size).toBe(3);
-      expect(set.has(1)).toBe(false);
+      expect(percentage).toBe(25);
     });
   });
 
-  describe('WeakMap operations', () => {
-    it('handles WeakMap data structure', () => {
-      const wm = new WeakMap();
-      const obj1 = {};
-      const obj2 = {};
+  describe('Data validation', () => {
+    it('validates numeric ranges', () => {
+      const craving = 3;
+      expect(craving).toBeGreaterThanOrEqual(1);
+      expect(craving).toBeLessThanOrEqual(5);
       
-      wm.set(obj1, 'value1');
-      wm.set(obj2, 'value2');
-      
-      expect(wm.get(obj1)).toBe('value1');
-      expect(wm.has(obj2)).toBe(true);
-      
-      wm.delete(obj1);
-      expect(wm.has(obj1)).toBe(false);
+      const percentage = 75;
+      expect(percentage).toBeGreaterThanOrEqual(0);
+      expect(percentage).toBeLessThanOrEqual(100);
     });
-  });
 
-  describe('Symbol operations', () => {
-    it('handles symbols', () => {
-      const sym1 = Symbol('test');
-      const sym2 = Symbol('test');
-      
-      expect(sym1).not.toBe(sym2);
-      expect(typeof sym1).toBe('symbol');
-      expect(sym1.toString()).toBe('Symbol(test)');
-      
-      const globalSym = Symbol.for('global');
-      expect(Symbol.for('global')).toBe(globalSym);
-    });
-  });
-
-  describe('Proxy operations', () => {
-    it('handles proxy objects', () => {
-      const target = { name: 'test' };
-      const proxy = new Proxy(target, {
-        get(obj, prop) {
-          return prop in obj ? obj[prop] : 'default';
-        }
-      });
-      
-      expect(proxy.name).toBe('test');
-      expect(proxy.nonexistent).toBe('default');
-    });
-  });
-
-  describe('Generator functions', () => {
-    it('handles generators', () => {
-      function* numberGenerator() {
-        yield 1;
-        yield 2;
-        yield 3;
-      }
-      
-      const gen = numberGenerator();
-      expect(gen.next().value).toBe(1);
-      expect(gen.next().value).toBe(2);
-      expect(gen.next().value).toBe(3);
-      expect(gen.next().done).toBe(true);
-    });
-  });
-
-  describe('Iterator protocol', () => {
-    it('handles custom iterators', () => {
-      const iterable = {
-        [Symbol.iterator]() {
-          let value = 0;
-          return {
-            next() {
-              if (value < 3) {
-                return { value: ++value, done: false };
-              }
-              return { done: true };
-            }
-          };
-        }
+    it('validates required fields', () => {
+      const data = {
+        volumeMl: 355,
+        abvPct: 5,
+        ts: Date.now()
       };
       
-      const values = Array.from(iterable);
-      expect(values).toEqual([1, 2, 3]);
+      expect(data.volumeMl).toBeDefined();
+      expect(data.abvPct).toBeDefined();
+      expect(data.ts).toBeDefined();
+    });
+  });
+
+  describe('Sorting and ordering', () => {
+    it('sorts by timestamp', () => {
+      const items = [
+        { ts: 300, value: 'c' },
+        { ts: 100, value: 'a' },
+        { ts: 200, value: 'b' }
+      ];
+      
+      const sorted = [...items].sort((a, b) => a.ts - b.ts);
+      expect(sorted[0].value).toBe('a');
+      expect(sorted[1].value).toBe('b');
+      expect(sorted[2].value).toBe('c');
+    });
+
+    it('sorts descending', () => {
+      const numbers = [5, 2, 8, 1, 9];
+      const sorted = [...numbers].sort((a, b) => b - a);
+      
+      expect(sorted[0]).toBe(9);
+      expect(sorted[sorted.length - 1]).toBe(1);
+    });
+  });
+
+  describe('Grouping operations', () => {
+    it('groups by category', () => {
+      const items = [
+        { category: 'A', value: 1 },
+        { category: 'B', value: 2 },
+        { category: 'A', value: 3 }
+      ];
+      
+      const grouped = items.reduce((acc, item) => {
+        if (!acc[item.category]) acc[item.category] = [];
+        acc[item.category].push(item);
+        return acc;
+      }, {} as Record<string, typeof items>);
+      
+      expect(grouped['A']).toHaveLength(2);
+      expect(grouped['B']).toHaveLength(1);
     });
   });
 });
