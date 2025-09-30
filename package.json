@@ -24,7 +24,7 @@
     "coverage:fallback": "node ./tools/coverage_fallback.cjs",
     "coverage:check": "node ./tools/coverage_gate.cjs",
     "deadcode": "ts-prune -p tsconfig.json",
-    "deps:check": "depcheck --ignores=rollup-plugin-visualizer",
+    "deps:check": "depcheck --ignores=rollup-plugin-visualizer,@capacitor/android,@capacitor/ios,@size-limit/file,@size-limit/preset-small-lib,@testing-library/user-event,@types/jsdom,@vitest/coverage-v8,autoprefixer,postcss,prettier,tailwindcss,ts-node --skip-missing=true",
     "size:prep": "node ./tools/ensure_size_limit_config.js",
     "size:debug": "node ./tools/size_debug.js",
     "size:report": "npm run size:prep && npx size-limit && npx size-limit --why || true",

@@ -1,9 +1,9 @@
 {
   "totals_by_group": {
     "docs": 179,
-    "__all__": 15188,
+    "__all__": 15202,
     "web": 58,
-    "ts": 13223,
+    "ts": 13237,
     "config": 572,
     "android_build": 114,
     "android": 38,
@@ -12,7 +12,7 @@
     "css": 611
   },
   "totals_by_module": {
-    "src": 13080,
+    "src": 13094,
     "tests": 494,
     ".": 476,
     "android": 445,

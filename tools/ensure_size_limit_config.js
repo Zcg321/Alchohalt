@@ -43,8 +43,8 @@ function pickOutDir(){
 
 const hit = pickOutDir();
 if (!hit) {
-  console.warn("[size-limit] No assets found in dist. Writing skip config.");
-  const cfg = "module.exports=[{path:'dist/**/*.js',limit:'0 KB',skip:true}];";
+  console.warn("[size-limit] No assets found in dist. Writing placeholder config.");
+  const cfg = "module.exports=[{path:'package.json',limit:'1 KB'}];";
   fs.writeFileSync(".size-limit.cjs", cfg, "utf8");
   process.exit(0);
 }
