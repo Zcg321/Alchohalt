@@ -32,7 +32,8 @@ export function mockCoverageFunction5(num: number) {
   return 'large';
 }
 
-describe('Coverage improvement tests', () => {
+// Test helper functions to keep within line limits
+function testBasicFunctionality() {
   describe('mockCoverageFunction1', () => {
     it('stringifies data correctly', () => {
       const result = mockCoverageFunction1();
@@ -51,7 +52,9 @@ describe('Coverage improvement tests', () => {
       expect(result).toBeNull();
     });
   });
+}
 
+function testArrayAndStringFunctions() {
   describe('mockCoverageFunction3', () => {
     it('processes array correctly', () => {
       const result = mockCoverageFunction3([1, 2, { value: 3 }, null, undefined]);
@@ -76,7 +79,9 @@ describe('Coverage improvement tests', () => {
       expect(mockCoverageFunction4('a')).toBe('a');
     });
   });
+}
 
+function testNumericCategorization() {
   describe('mockCoverageFunction5', () => {
     it('categorizes numbers', () => {
       expect(mockCoverageFunction5(-5)).toBe('negative');
@@ -86,7 +91,9 @@ describe('Coverage improvement tests', () => {
       expect(mockCoverageFunction5(500)).toBe('large');
     });
   });
+}
 
+function testEdgeCases() {
   describe('edge cases and error handling', () => {
     it('handles various input types', () => {
       expect(mockCoverageFunction2('')).toBeNull();
@@ -106,7 +113,9 @@ describe('Coverage improvement tests', () => {
       expect(result).toBe(499500); // Sum of 0 to 999
     });
   });
+}
 
+function testCombinationsAndBoundaries() {
   describe('additional coverage scenarios', () => {
     it('tests multiple function combinations', () => {
       const data = mockCoverageFunction1();
@@ -129,16 +138,10 @@ describe('Coverage improvement tests', () => {
 
     it('tests array processing with mixed types', () => {
       const mixedArray = [
-        1,
-        2,
-        { value: 3 },
-        { notValue: 4 },
-        null,
-        undefined,
-        0
+        1, 2, { value: 3 }, { notValue: 4 }, null, undefined, 0
       ];
       const result = mockCoverageFunction3(mixedArray);
-      expect(result).toBe(6); // 1 + 2 + 3 + 0 + 0
+      expect(result).toBe(6); // 1 + 2 + 3 + 0
     });
   });
 
@@ -182,4 +185,12 @@ describe('Coverage improvement tests', () => {
       expect(parsed).not.toBeNull();
     });
   });
+}
+
+describe('Coverage improvement tests', () => {
+  testBasicFunctionality();
+  testArrayAndStringFunctions();  
+  testNumericCategorization();
+  testEdgeCases();
+  testCombinationsAndBoundaries();
 });

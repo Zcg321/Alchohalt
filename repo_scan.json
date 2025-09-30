@@ -1,15 +1,15 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 13540,
+    "__all__": 14423,
     "web": 58,
     "config": 677,
-    "ts": 12201,
+    "ts": 13084,
     "js": 100,
     "css": 420
   },
   "totals_by_module": {
-    "src": 12059,
+    "src": 12942,
     "tests": 494,
     ".": 432,
     "tools": 422,
@@ -120,7 +120,7 @@
   ],
   "todo_fixme_count": 0,
   "todo_samples": [],
-  "ts_import_edges_count": 379,
+  "ts_import_edges_count": 393,
   "ts_import_edges_full": [
     [
       "tests/notifications.web.test.tsx",
@@ -339,6 +339,22 @@
       "../UndoToast.tsx"
     ],
     [
+      "src/components/__tests__/A11ySkipLink.test.tsx",
+      "../A11ySkipLink"
+    ],
+    [
+      "src/components/__tests__/A11ySkipLink.test.tsx",
+      "../../i18n"
+    ],
+    [
+      "src/components/__tests__/Disclaimer.test.tsx",
+      "../Disclaimer"
+    ],
+    [
+      "src/components/__tests__/Disclaimer.test.tsx",
+      "../../i18n"
+    ],
+    [
       "src/components/__tests__/Disclaimer.smoke.test.tsx",
       "../Disclaimer.tsx"
     ],
@@ -357,6 +373,10 @@
     [
       "src/components/__tests__/Card.smoke.test.tsx",
       "../Card.tsx"
+    ],
+    [
+      "src/components/__tests__/ErrorBoundary.test.tsx",
+      "../ErrorBoundary"
     ],
     [
       "src/lib/migrate.ts",
@@ -393,6 +413,18 @@
     [
       "src/lib/data-bridge.ts",
       "../store/db"
+    ],
+    [
+      "src/lib/__tests__/stats.test.ts",
+      "../stats"
+    ],
+    [
+      "src/lib/__tests__/stats.test.ts",
+      "../../store/db"
+    ],
+    [
+      "src/lib/__tests__/storage.test.ts",
+      "../storage"
     ],
     [
       "src/lib/__tests__/utils.test.ts",
@@ -520,6 +552,10 @@
     ],
     [
       "src/app/__tests__/StatsAndGoals.smoke.test.tsx",
+      "../../components/ErrorBoundary"
+    ],
+    [
+      "src/app/__tests__/StatsAndGoals.smoke.test.tsx",
       "../StatsAndGoals.tsx"
     ],
     [
@@ -583,14 +619,6 @@
       "../i18n"
     ],
     [
-      "src/routes/__tests__/Goals.smoke.test.tsx",
-      "../Goals.tsx"
-    ],
-    [
-      "src/routes/__tests__/History.smoke.test.tsx",
-      "../History.tsx"
-    ],
-    [
       "src/shared/__tests__/i18n-lazy.smoke.test.ts",
       "../i18n-lazy.ts"
     ],
@@ -613,6 +641,10 @@
     [
       "src/__tests__/vite-env.d.smoke.test.ts",
       "../vite-env.d.ts"
+    ],
+    [
+      "src/__tests__/i18n.test.ts",
+      "../i18n"
     ],
     [
       "src/features/goals/GoalCard.tsx",
@@ -827,6 +859,14 @@
       "../PremiumDataExport.tsx"
     ],
     [
+      "src/features/subscription/__tests__/subscriptionStore.test.ts",
+      "../subscriptionStore"
+    ],
+    [
+      "src/features/subscription/__tests__/subscriptionStore.test.ts",
+      "../SubscriptionManager"
+    ],
+    [
       "src/features/subscription/__tests__/PremiumSmartRecommendations.smoke.test.tsx",
       "../PremiumSmartRecommendations.tsx"
     ],
@@ -996,6 +1036,10 @@
     ],
     [
       "src/features/insights/__tests__/InsightCard.smoke.test.tsx",
+      "../../../components/ErrorBoundary"
+    ],
+    [
+      "src/features/insights/__tests__/InsightCard.smoke.test.tsx",
       "../InsightCard.tsx"
     ],
     [
@@ -1005,6 +1049,10 @@
     [
       "src/features/insights/__tests__/SmartRecommendations.smoke.test.tsx",
       "../SmartRecommendations.tsx"
+    ],
+    [
+      "src/features/insights/__tests__/InsightsPanel.smoke.test.tsx",
+      "../../../components/ErrorBoundary"
     ],
     [
       "src/features/insights/__tests__/InsightsPanel.smoke.test.tsx",
@@ -1025,6 +1073,14 @@
     [
       "src/features/insights/__tests__/QuickActions.smoke.test.tsx",
       "../QuickActions.tsx"
+    ],
+    [
+      "src/features/insights/__tests__/lib.test.ts",
+      "../lib"
+    ],
+    [
+      "src/features/insights/__tests__/lib.test.ts",
+      "../../drinks/DrinkForm"
     ],
     [
       "src/features/insights/__tests__/InsightsTranslations.test.tsx",
@@ -1688,7 +1744,7 @@
     ],
     [
       "../../store/db",
-      15
+      16
     ],
     [
       "./lib",
@@ -1697,6 +1753,14 @@
     [
       "../store/db",
       10
+    ],
+    [
+      "../i18n",
+      9
+    ],
+    [
+      "../../i18n",
+      9
     ],
     [
       "../../components/ui/Badge",
@@ -1711,15 +1775,7 @@
       9
     ],
     [
-      "../i18n",
-      8
-    ],
-    [
       "../../lib/utils",
-      8
-    ],
-    [
-      "../lib.ts",
       8
     ]
   ],
