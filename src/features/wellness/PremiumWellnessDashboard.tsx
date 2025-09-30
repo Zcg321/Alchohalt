@@ -4,6 +4,8 @@ import { Button } from '../../components/ui/Button';
 import type { Drink } from '../drinks/DrinkForm';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
+import { useDB } from '../../store/db';
+import { FEATURE_FLAGS } from '../../config/features';
 
 interface WellnessMetric {
   id: string;
@@ -33,6 +35,10 @@ interface Props {
 export default function PremiumWellnessDashboard({ drinks = [], className = '' }: Props) {
   const { isPremium, canAccessAIInsights } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
+  const { db } = useDB();
+  
+  // Get health metrics from store if health integration is enabled
+  const healthMetrics = FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION ? (db.healthMetrics || []) : [];
 
   const wellnessMetrics = useMemo((): WellnessMetric[] => {
     const last30Days = drinks.filter(d => d.ts > Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -72,7 +78,23 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     const weeklyUnits = last7Days.reduce((sum, d) => sum + (d.volumeMl * d.abvPct / 1000), 0);
     const liverScore = Math.max(0, 100 - (weeklyUnits * 5));
 
-    return [
+    // Get recent health metrics if available
+    const last7DaysDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const todayDate = new Date().toISOString().split('T')[0];
+    const recentHealthMetrics = healthMetrics.filter(m => m.date >= last7DaysDate && m.date <= todayDate);
+    
+    // Calculate average health metrics
+    const avgSteps = recentHealthMetrics.length > 0
+      ? Math.round(recentHealthMetrics.reduce((sum, m) => sum + (m.steps || 0), 0) / recentHealthMetrics.filter(m => m.steps).length)
+      : 0;
+    const avgSleep = recentHealthMetrics.length > 0
+      ? (recentHealthMetrics.reduce((sum, m) => sum + (m.sleepHours || 0), 0) / recentHealthMetrics.filter(m => m.sleepHours).length).toFixed(1)
+      : 0;
+    const avgHeartRate = recentHealthMetrics.length > 0
+      ? Math.round(recentHealthMetrics.reduce((sum, m) => sum + (m.heartRate || 0), 0) / recentHealthMetrics.filter(m => m.heartRate).length)
+      : 0;
+
+    const baseMetrics = [
       {
         id: 'alcohol-free-days',
         name: 'Alcohol-Free Days',
@@ -134,7 +156,51 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         icon: '🫀'
       }
     ];
-  }, [drinks]);
+    
+    // Add health integration metrics if available
+    const healthIntegrationMetrics: WellnessMetric[] = [];
+    if (FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION && recentHealthMetrics.length > 0) {
+      if (avgSteps > 0) {
+        healthIntegrationMetrics.push({
+          id: 'daily-steps',
+          name: 'Daily Steps',
+          value: avgSteps.toLocaleString(),
+          unit: 'avg/day',
+          trend: avgSteps >= 8000 ? 'up' : avgSteps >= 5000 ? 'stable' : 'down',
+          status: avgSteps >= 10000 ? 'excellent' : avgSteps >= 7000 ? 'good' : avgSteps >= 5000 ? 'fair' : 'poor',
+          description: 'Average daily steps from health app',
+          icon: '👟'
+        });
+      }
+      if (avgSleep > 0) {
+        const sleepNum = parseFloat(avgSleep.toString());
+        healthIntegrationMetrics.push({
+          id: 'sleep-hours',
+          name: 'Sleep Duration',
+          value: avgSleep,
+          unit: 'hrs/night',
+          trend: sleepNum >= 7.5 ? 'up' : sleepNum >= 6.5 ? 'stable' : 'down',
+          status: sleepNum >= 8 ? 'excellent' : sleepNum >= 7 ? 'good' : sleepNum >= 6 ? 'fair' : 'poor',
+          description: 'Average sleep duration from health app',
+          icon: '🛌'
+        });
+      }
+      if (avgHeartRate > 0) {
+        healthIntegrationMetrics.push({
+          id: 'heart-rate',
+          name: 'Resting Heart Rate',
+          value: avgHeartRate,
+          unit: 'bpm',
+          trend: avgHeartRate <= 70 ? 'up' : avgHeartRate <= 80 ? 'stable' : 'down',
+          status: avgHeartRate <= 60 ? 'excellent' : avgHeartRate <= 70 ? 'good' : avgHeartRate <= 80 ? 'fair' : 'poor',
+          description: 'Average resting heart rate from health app',
+          icon: '💓'
+        });
+      }
+    }
+    
+    return [...baseMetrics, ...healthIntegrationMetrics];
+  }, [drinks, healthMetrics]);
 
   const healthInsights = useMemo((): HealthInsight[] => {
     if (!canAccessAIInsights) return [];
