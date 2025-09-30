@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UserSubscription } from './SubscriptionManager';
+import { FEATURE_FLAGS } from '../../config/features';
 
 interface SubscriptionStore {
   currentSubscription?: UserSubscription;
@@ -25,6 +26,9 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       },
       
       isPremium: () => {
+        // For MVP release: always return false if subscriptions are disabled
+        if (!FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS) return false;
+        
         const subscription = get().currentSubscription;
         return subscription?.status === 'active' && 
                (subscription.plan === 'premium_monthly' || 
@@ -32,6 +36,9 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       },
       
       isTrialActive: () => {
+        // For MVP release: always return false if subscriptions are disabled
+        if (!FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS) return false;
+        
         const subscription = get().currentSubscription;
         return !!(subscription?.status === 'trial' && 
                subscription.trialEndsAt && 
@@ -84,14 +91,14 @@ export function usePremiumFeatures() {
     isPremium: isPremium(),
     isTrialActive: isTrialActive(),
     hasFeature,
-    // Premium feature flags
-    canExportData: isPremium() || isTrialActive(),
-    canViewAdvancedAnalytics: isPremium() || isTrialActive(),
-    canSetCustomGoals: isPremium() || isTrialActive(),
-    canAccessAIInsights: isPremium() || isTrialActive(),
-    canTrackMoodTriggers: isPremium() || isTrialActive(),
-    hasUnlimitedHistory: isPremium() || isTrialActive(),
-    hasPrioritySupport: isPremium(),
-    hasAdFreeExperience: isPremium() || isTrialActive()
+    // Premium feature flags - for MVP all return false when subscriptions disabled
+    canExportData: FEATURE_FLAGS.ENABLE_DATA_EXPORT, // Basic JSON export available to all
+    canViewAdvancedAnalytics: FEATURE_FLAGS.ENABLE_PREMIUM_FEATURES && (isPremium() || isTrialActive()),
+    canSetCustomGoals: true, // Basic goals available to all in MVP
+    canAccessAIInsights: FEATURE_FLAGS.ENABLE_PREMIUM_FEATURES && (isPremium() || isTrialActive()),
+    canTrackMoodTriggers: true, // HALT tracking available to all in MVP
+    hasUnlimitedHistory: true, // No limits in MVP
+    hasPrioritySupport: FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && isPremium(),
+    hasAdFreeExperience: true // No ads in MVP
   };
 }
