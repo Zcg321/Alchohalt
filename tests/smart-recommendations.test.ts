@@ -51,7 +51,7 @@ const mockGoals: Goals = {
   baselineMonthlySpend: 150
 };
 
-describe('Smart Recommendations Logic', () => {
+function testWeekendPatternDetection() {
   it('detects weekend drinking patterns', () => {
     // Create drinks with more weekend consumption
     const weekendDrinks: Drink[] = [
@@ -90,6 +90,23 @@ describe('Smart Recommendations Logic', () => {
     expect(hasPattern).toBe(true);
   });
 
+  it('does not detect weekend pattern with even distribution', () => {
+    const evenDrinks: Drink[] = Array.from({ length: 14 }, (_, i) => ({
+      volumeMl: 355,
+      abvPct: 5.0,
+      intention: 'social',
+      craving: 3,
+      halt: [],
+      alt: '',
+      ts: Date.now() - i * 24 * 60 * 60 * 1000
+    }));
+
+    const hasPattern = hasWeekendPattern(evenDrinks);
+    expect(hasPattern).toBe(false);
+  });
+}
+
+function testStreakCalculations() {
   it('calculates current alcohol-free streak correctly', () => {
     const now = new Date();
     const yesterday = new Date(now);
@@ -117,19 +134,9 @@ describe('Smart Recommendations Logic', () => {
     const streak = getCurrentStreak([]);
     expect(streak).toBeGreaterThanOrEqual(0);
   });
+}
 
-  it('does not detect weekend pattern with even distribution', () => {
-    const evenDrinks: Drink[] = Array.from({ length: 14 }, (_, i) => ({
-      volumeMl: 355,
-      abvPct: 5.0,
-      intention: 'social',
-      craving: 3,
-      halt: [],
-      alt: '',
-      ts: Date.now() - i * 24 * 60 * 60 * 1000
-    }));
-
-    const hasPattern = hasWeekendPattern(evenDrinks);
-    expect(hasPattern).toBe(false);
-  });
+describe('Smart Recommendations Logic', () => {
+  testWeekendPatternDetection();
+  testStreakCalculations();
 });

@@ -51,7 +51,7 @@ const mockGoals: Goals = {
   baselineMonthlySpend: 150
 };
 
-describe('Progress Visualization Calculations', () => {
+function testDailyProgressCalculations() {
   it('calculates daily progress correctly', () => {
     const todayDrinks: Drink[] = [
       {
@@ -107,7 +107,9 @@ describe('Progress Visualization Calculations', () => {
     expect(progress.isExceeded).toBe(true);
     expect(progress.percentage).toBe(100); // Capped at 100%
   });
+}
 
+function testWeeklyProgressCalculations() {
   it('calculates weekly progress correctly', () => {
     const weekDrinks: Drink[] = Array.from({ length: 5 }, (_, i) => ({
       volumeMl: 355,
@@ -125,7 +127,9 @@ describe('Progress Visualization Calculations', () => {
     expect(progress.percentage).toBeCloseTo(50, 0);
     expect(progress.isExceeded).toBe(false);
   });
+}
 
+function testMonthlySpendingCalculations() {
   it('calculates monthly spending analysis', () => {
     const monthDrinks: Drink[] = Array.from({ length: 10 }, (_, i) => ({
       volumeMl: 355,
@@ -143,7 +147,9 @@ describe('Progress Visualization Calculations', () => {
     expect(analysis.difference).toBeLessThan(0); // Under budget
     expect(analysis.isOverBudget).toBe(false);
   });
+}
 
+function testEmptyArrayHandling() {
   it('handles empty drinks array', () => {
     const dailyProgress = calculateDailyProgress([], mockGoals);
     expect(dailyProgress.consumed).toBe(0);
@@ -159,4 +165,11 @@ describe('Progress Visualization Calculations', () => {
     expect(spendingAnalysis.actual).toBe(0);
     expect(spendingAnalysis.isOverBudget).toBe(false);
   });
+}
+
+describe('Progress Visualization Calculations', () => {
+  testDailyProgressCalculations();
+  testWeeklyProgressCalculations();
+  testMonthlySpendingCalculations();
+  testEmptyArrayHandling();
 });

@@ -115,8 +115,8 @@ function testEdgeCases() {
   });
 }
 
-function testCombinationsAndBoundaries() {
-  describe('additional coverage scenarios', () => {
+function testBasicCoverage() {
+  describe('basic coverage tests', () => {
     it('tests multiple function combinations', () => {
       const data = mockCoverageFunction1();
       const parsed = mockCoverageFunction2(data);
@@ -144,7 +144,9 @@ function testCombinationsAndBoundaries() {
       expect(result).toBe(6); // 1 + 2 + 3 + 0
     });
   });
+}
 
+function testComprehensiveCoverage() {
   describe('comprehensive coverage tests', () => {
     it('covers all code paths systematically', () => {
       // Test function 1
@@ -192,5 +194,6 @@ describe('Coverage improvement tests', () => {
   testArrayAndStringFunctions();  
   testNumericCategorization();
   testEdgeCases();
-  testCombinationsAndBoundaries();
+  testBasicCoverage();
+  testComprehensiveCoverage();
 });

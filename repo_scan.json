@@ -1,16 +1,16 @@
 {
   "totals_by_group": {
     "docs": 84,
-    "__all__": 14423,
+    "__all__": 14586,
     "web": 58,
     "config": 677,
-    "ts": 13084,
+    "ts": 13247,
     "js": 100,
     "css": 420
   },
   "totals_by_module": {
-    "src": 12942,
-    "tests": 494,
+    "src": 13087,
+    "tests": 512,
     ".": 432,
     "tools": 422,
     ".github": 112,
@@ -98,20 +98,7 @@
       213
     ]
   ],
-  "top_20_longest_functions": [
-    [
-      "tests/progress-visualization.test.ts",
-      32,
-      162,
-      131
-    ],
-    [
-      "tests/smart-recommendations.test.ts",
-      26,
-      135,
-      110
-    ]
-  ],
+  "top_20_longest_functions": [],
   "top_20_most_complex_files": [
     [
       "tools/split_long_ts_or_tsx.ts",
@@ -120,7 +107,7 @@
   ],
   "todo_fixme_count": 0,
   "todo_samples": [],
-  "ts_import_edges_count": 393,
+  "ts_import_edges_count": 395,
   "ts_import_edges_full": [
     [
       "tests/notifications.web.test.tsx",
@@ -431,6 +418,10 @@
       "../utils"
     ],
     [
+      "src/lib/__tests__/calc.test.ts",
+      "../calc"
+    ],
+    [
       "src/hooks/__tests__/usePWA.smoke.test.ts",
       "../usePWA.ts"
     ],
@@ -633,6 +624,10 @@
     [
       "src/shared/__tests__/capacitor.smoke.test.ts",
       "../capacitor.ts"
+    ],
+    [
+      "src/__tests__/shared-utils.test.ts",
+      "../lib/utils"
     ],
     [
       "src/__tests__/virtual-pwa.d.smoke.test.ts",
