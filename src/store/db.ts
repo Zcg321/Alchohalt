@@ -28,6 +28,7 @@ export interface Settings {
   showBAC: boolean;
   profile?: { weightKg?: number; sex?: 'm'|'f'|'other' };
   notificationFallbackMessage?: string;
+  hasCompletedOnboarding?: boolean;
 }
 
 export interface Entry {
