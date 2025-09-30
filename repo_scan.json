@@ -1,14 +1,14 @@
 {
   "totals_by_group": {
     "docs": 179,
-    "__all__": 15202,
+    "__all__": 15201,
     "web": 58,
     "ts": 13237,
     "config": 572,
     "android_build": 114,
     "android": 38,
     "android_res": 293,
-    "js": 100,
+    "js": 99,
     "css": 611
   },
   "totals_by_module": {
@@ -16,7 +16,7 @@
     "tests": 494,
     ".": 476,
     "android": 445,
-    "tools": 422,
+    "tools": 421,
     "public": 116,
     ".github": 112,
     "ios": 43
