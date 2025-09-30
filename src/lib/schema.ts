@@ -6,8 +6,8 @@
 export interface SchemaVersion {
   version: number;
   description: string;
-  migrateFrom?: (data: any) => any;
-  rollback?: (data: any) => any;
+  migrateFrom?: (data: unknown) => unknown;
+  rollback?: (data: unknown) => unknown;
 }
 
 export const SCHEMA_VERSIONS: SchemaVersion[] = [
@@ -18,12 +18,13 @@ export const SCHEMA_VERSIONS: SchemaVersion[] = [
   {
     version: 2,
     description: 'Enhanced subscription support and advanced analytics',
-    migrateFrom: (data: any) => {
+    migrateFrom: (data: unknown) => {
       // Add subscription fields to settings
+      const typedData = data as Record<string, unknown>;
       return {
-        ...data,
+        ...typedData,
         settings: {
-          ...data.settings,
+          ...(typedData.settings as Record<string, unknown>),
           subscription: {
             plan: 'free',
             status: 'inactive',
@@ -34,12 +35,15 @@ export const SCHEMA_VERSIONS: SchemaVersion[] = [
         version: 2
       };
     },
-    rollback: (data: any) => {
+    rollback: (data: unknown) => {
       // Remove subscription fields for v1 compatibility
-      const { subscription, ...settings } = data.settings;
+      const typedData = data as Record<string, unknown>;
+      const settings = typedData.settings as Record<string, unknown>;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { subscription: _subscription, ...restSettings } = settings;
       return {
-        ...data,
-        settings,
+        ...typedData,
+        settings: restSettings,
         version: 1
       };
     }
@@ -48,12 +52,13 @@ export const SCHEMA_VERSIONS: SchemaVersion[] = [
 
 export const CURRENT_SCHEMA_VERSION = Math.max(...SCHEMA_VERSIONS.map(v => v.version));
 
-export function migrateToVersion(data: any, targetVersion: number): any {
+export function migrateToVersion(data: unknown, targetVersion: number): unknown {
   if (!data || typeof data !== 'object') {
     throw new Error('Invalid data provided for migration');
   }
 
-  const currentVersion = data.version || 1;
+  const typedData = data as Record<string, unknown>;
+  const currentVersion = (typedData.version as number) || 1;
   
   if (currentVersion === targetVersion) {
     return data;
@@ -80,7 +85,7 @@ export function migrateToVersion(data: any, targetVersion: number): any {
   return data;
 }
 
-export function validateSchema(data: any): { valid: boolean; errors: string[] } {
+export function validateSchema(data: unknown): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
 
   if (!data || typeof data !== 'object') {
@@ -88,19 +93,21 @@ export function validateSchema(data: any): { valid: boolean; errors: string[] } 
     return { valid: false, errors };
   }
 
-  if (typeof data.version !== 'number') {
+  const typedData = data as Record<string, unknown>;
+
+  if (typeof typedData.version !== 'number') {
     errors.push('Missing or invalid version number');
   }
 
-  if (!Array.isArray(data.entries)) {
+  if (!Array.isArray(typedData.entries)) {
     errors.push('Missing or invalid entries array');
   }
 
-  if (!data.settings || typeof data.settings !== 'object') {
+  if (!typedData.settings || typeof typedData.settings !== 'object') {
     errors.push('Missing or invalid settings object');
   }
 
-  if (!Array.isArray(data.presets)) {
+  if (!Array.isArray(typedData.presets)) {
     errors.push('Missing or invalid presets array');
   }
 

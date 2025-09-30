@@ -41,7 +41,7 @@ export async function createExport(data: DB): Promise<ExportData> {
   };
 }
 
-export async function validateImport(importData: any): Promise<ImportResult> {
+export async function validateImport(importData: unknown): Promise<ImportResult> {
   try {
     // Basic structure validation
     if (!importData || typeof importData !== 'object') {
