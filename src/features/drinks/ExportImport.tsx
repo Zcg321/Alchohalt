@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useDB } from '../../store/db';
-import type { DB } from '../../store/db';
 import { createExport, validateImport, processImport, downloadData } from '../../lib/data-export';
+import type { ExportData } from '../../lib/data-export';
 
 export default function ExportImport() {
   const aRef = useRef<HTMLAnchorElement>(null);
@@ -50,7 +50,7 @@ export default function ExportImport() {
       }
 
       // Process import and check for conflicts
-      const { migratedData, conflicts } = await processImport(parsed as any, db);
+      const { migratedData, conflicts } = await processImport(parsed as ExportData, db);
       
       if (conflicts.length > 0) {
         const proceed = confirm(

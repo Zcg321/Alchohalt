@@ -23,7 +23,7 @@ async function getLN(): Promise<AnyLN> {
   if (_lnCache !== undefined) return _lnCache;
   try {
     const mod = await import('@capacitor/local-notifications');
-    _lnCache = (mod as any).LocalNotifications ?? null;
+    _lnCache = (mod as { LocalNotifications: AnyLN }).LocalNotifications ?? null;
   } catch {
     _lnCache = null;
   }

@@ -53,16 +53,26 @@ export class CapacitorDataService implements DataPersistenceService {
 }
 
 /**
+ * Type for Capacitor LocalNotifications API
+ */
+interface LocalNotificationsAPI {
+  requestPermissions(): Promise<{ display?: 'granted' | 'denied' }>;
+  schedule(options: { notifications: Array<{ id: number; title: string; body: string; schedule: { at: Date } | { repeats: boolean; every: string } }> }): Promise<void>;
+  cancel(options: { notifications: Array<{ id: number }> }): Promise<void>;
+  cancelAll(): Promise<void>;
+}
+
+/**
  * Capacitor-based implementation of notifications
  */
 export class CapacitorNotificationService implements NotificationService {
-  private async getLocalNotifications() {
-    return (await import("@capacitor/local-notifications")).LocalNotifications;
+  private async getLocalNotifications(): Promise<LocalNotificationsAPI> {
+    return (await import("@capacitor/local-notifications")).LocalNotifications as LocalNotificationsAPI;
   }
 
   async requestPermissions(): Promise<boolean> {
     const localNotifications = await this.getLocalNotifications();
-    const result = await (localNotifications as any).requestPermissions();
+    const result = await localNotifications.requestPermissions();
     return result.display === 'granted';
   }
 
@@ -73,17 +83,17 @@ export class CapacitorNotificationService implements NotificationService {
     schedule: { at: Date } | { repeats: boolean; every: string };
   }>): Promise<void> {
     const localNotifications = await this.getLocalNotifications();
-    await (localNotifications as any).schedule({ notifications });
+    await localNotifications.schedule({ notifications });
   }
 
   async cancel(ids: number[]): Promise<void> {
     const localNotifications = await this.getLocalNotifications();
-    await (localNotifications as any).cancel({ notifications: ids.map(id => ({ id })) });
+    await localNotifications.cancel({ notifications: ids.map(id => ({ id })) });
   }
 
   async cancelAll(): Promise<void> {
     const localNotifications = await this.getLocalNotifications();
-    await (localNotifications as any).cancelAll();
+    await localNotifications.cancelAll();
   }
 }
 
