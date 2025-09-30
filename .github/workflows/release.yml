@@ -1,4 +1,6 @@
 name: Release Checklist
+permissions:
+  contents: read
 
 on:
   push:
