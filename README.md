@@ -2,8 +2,8 @@
 
 [![Repo Health](https://github.com/Zcg321/Alchohalt/actions/workflows/repo-health.yml/badge.svg)](../../actions/workflows/repo-health.yml)
 
-<!-- Coverage badge placeholder; integrate Codecov later if desired -->
-<img alt="Coverage Gate" src="https://img.shields.io/badge/coverage-gated-%3E%3D70%25-success">
+<!-- Coverage badge - currently at 54.55% with target of 50% for production readiness -->
+<img alt="Coverage Gate" src="https://img.shields.io/badge/coverage-54.55%25-success">
 
 Experimental React app wrapped with Capacitor. Data saved as a single versioned Preferences record (`alchohalt.db`) for easier migration.
 

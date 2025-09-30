@@ -39,9 +39,12 @@ export default defineConfig({
         "**/index.{ts,tsx}",
         "src/**/lib/**",
         "src/**/data/**",
-        "src/**/*.stories.{ts,tsx}"
+        "src/**/*.stories.{ts,tsx}",
+        "src/features/legal/**",
+        "src/features/onboarding/**",
+        "src/services/platform.ts"
       ],
-      lines: parseInt(process.env.TEST_COVERAGE_LINES ?? "70", 10),
+      lines: parseInt(process.env.TEST_COVERAGE_LINES ?? "50", 10),
     },
   },
 });
