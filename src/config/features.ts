@@ -26,6 +26,14 @@ export const FEATURE_FLAGS = {
   ENABLE_MULTI_DEVICE_SYNC: false,
   ENABLE_PDF_CSV_EXPORT: false,
   ENABLE_CLOUD_BACKUP: false,
+  
+  // New Enhanced Features
+  ENABLE_HEALTH_INTEGRATION: import.meta.env.VITE_ENABLE_HEALTH_INTEGRATION === 'true' || false,
+  ENABLE_VOICE_LOGGING: import.meta.env.VITE_ENABLE_VOICE_LOGGING === 'true' || false,
+  ENABLE_SOCIAL_FEATURES: import.meta.env.VITE_ENABLE_SOCIAL_FEATURES === 'true' || false,
+  ENABLE_AI_RECOMMENDATIONS: import.meta.env.VITE_ENABLE_AI_RECOMMENDATIONS === 'true' || false,
+  ENABLE_JOURNALING: import.meta.env.VITE_ENABLE_JOURNALING === 'true' || false,
+  ENABLE_THERAPY_RESOURCES: import.meta.env.VITE_ENABLE_THERAPY_RESOURCES === 'true' || false,
 } as const;
 
 /**

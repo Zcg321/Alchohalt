@@ -29,6 +29,14 @@ export interface Settings {
   profile?: { weightKg?: number; sex?: 'm'|'f'|'other' };
   notificationFallbackMessage?: string;
   hasCompletedOnboarding?: boolean;
+  // Enhanced features
+  healthPermissionsGranted?: boolean;
+  voicePermissionsGranted?: boolean;
+  privacySettings?: {
+    shareWithFriends?: boolean;
+    shareDetailedLogs?: boolean;
+    syncJournalEntries?: boolean;
+  };
 }
 
 export interface Entry {
@@ -43,6 +51,18 @@ export interface Entry {
   altAction?: string;
   notes?: string;
   editedAt?: number;
+  // Enhanced features
+  journal?: string;  // Free-form journaling text
+  mood?: 'happy' | 'sad' | 'anxious' | 'stressed' | 'calm' | 'excited' | 'neutral';
+  voiceTranscript?: string;  // Original voice input if logged via voice
+}
+
+export interface HealthMetric {
+  date: string; // YYYY-MM-DD format
+  steps?: number;
+  sleepHours?: number;
+  heartRate?: number;
+  source: 'manual' | 'apple-health' | 'google-fit';
 }
 
 export interface Undo { action: 'delete'; payload: unknown; expiresAt: number; }
@@ -53,6 +73,7 @@ export interface DB {
   settings: Settings;
   advancedGoals: AdvancedGoal[];
   presets: DrinkPreset[];
+  healthMetrics?: HealthMetric[];  // Optional health data from integrations
   meta: { lastUndo?: Undo; reminderSuppressedUntil?: number };
   _lastLogAt?: number; // derived
 }
@@ -85,6 +106,7 @@ function defaults(): DB {
       { name: 'Shot (1.5oz)', volumeMl: 44, abvPct: 40.0 },
       { name: 'Light Beer (12oz)', volumeMl: 355, abvPct: 4.2 }
     ],
+    healthMetrics: [],
     meta: {},
     _lastLogAt: undefined
   };
@@ -115,6 +137,9 @@ type Store = {
   addPreset(preset: DrinkPreset): void;
   editPreset(name: string, preset: DrinkPreset): void;
   deletePreset(name: string): void;
+  // Health metrics
+  addHealthMetric(metric: HealthMetric): void;
+  getHealthMetricsForDateRange(startDate: string, endDate: string): HealthMetric[];
   _recompute(): void;
 };
 
@@ -288,6 +313,20 @@ function deletePreset(set: any, get: any, name: string) {
   set({ db }); get()._recompute();
 }
 
+// Health metrics operations
+function addHealthMetric(set: any, get: any, metric: HealthMetric) {
+  const metrics = get().db.healthMetrics || [];
+  // Replace existing metric for the same date
+  const filtered = metrics.filter(m => m.date !== metric.date);
+  const db = { ...get().db, healthMetrics: [...filtered, metric] };
+  set({ db });
+}
+
+function getHealthMetricsForDateRange(get: any, startDate: string, endDate: string): HealthMetric[] {
+  const metrics = get().db.healthMetrics || [];
+  return metrics.filter(m => m.date >= startDate && m.date <= endDate);
+}
+
 function createStore(set: any, get: any) {
   const base = defaults();
   const d = derive(base);
@@ -330,6 +369,9 @@ function createStore(set: any, get: any) {
     addPreset: (preset: DrinkPreset) => addPreset(set, get, preset),
     editPreset: (name: string, preset: DrinkPreset) => editPreset(set, get, name, preset),
     deletePreset: (name: string) => deletePreset(set, get, name),
+    // Health metrics
+    addHealthMetric: (metric: HealthMetric) => addHealthMetric(set, get, metric),
+    getHealthMetricsForDateRange: (startDate: string, endDate: string) => getHealthMetricsForDateRange(get, startDate, endDate),
     _recompute: () => recompute(set, get),
   } as Store;
 }
