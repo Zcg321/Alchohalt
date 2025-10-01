@@ -1,4 +1,6 @@
 name: Post-Merge Health Scan
+permissions:
+  contents: read
 
 # This workflow runs a comprehensive health scan after every PR merge to main
 # It generates detailed reports and uploads them as artifacts for review
