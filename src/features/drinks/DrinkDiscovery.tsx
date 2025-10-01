@@ -12,6 +12,7 @@ import {
 } from './drinkDatabase';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
+import { FEATURE_FLAGS } from '../../config/features';
 
 interface Props {
   onSelectDrink: (drink: Partial<Drink>) => void;
@@ -232,8 +233,8 @@ export default function DrinkDiscovery({ onSelectDrink, className = '' }: Props)
         </div>
       )}
 
-      {/* Premium Upsell */}
-      {!isPremium && filteredDrinks.length >= 6 && (
+      {/* Premium Upsell - only show when subscriptions are enabled */}
+      {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && !isPremium && filteredDrinks.length >= 6 && (
         <div className="mt-6 p-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg text-center">
           <h3 className="font-semibold mb-1">🚀 Unlock Full Drink Database</h3>
           <p className="text-sm opacity-90 mb-3">

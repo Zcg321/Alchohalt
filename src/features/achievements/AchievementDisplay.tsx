@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/Button';
 import type { Achievement, AchievementState } from './achievementSystem';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
+import { FEATURE_FLAGS } from '../../config/features';
 
 interface Props {
   achievementState?: AchievementState;
@@ -207,7 +208,7 @@ export default function AchievementDisplay({
       )}
 
       {/* Premium Upsell */}
-      {!isPremium && achievements.some(a => a.premium) && (
+      {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && !isPremium && achievements.some(a => a.premium) && (
         <div className="mt-6 p-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg text-center">
           <h3 className="font-semibold mb-1">🏆 Premium Achievement Collection</h3>
           <p className="text-sm opacity-90 mb-3">

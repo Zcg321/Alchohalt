@@ -1,6 +1,7 @@
 import React from 'react';
 import pkg from '../../../package.json' with { type: 'json' };
 import { useLanguage } from '../../i18n';
+import { FEATURE_FLAGS } from '../../config/features';
 
 export default function About() {
   const { t } = useLanguage();
@@ -55,12 +56,7 @@ export default function About() {
             {t('support.description', 'We\'re here to help you on your wellness journey. Your feedback helps us improve the app.')}
           </p>
           <div className="flex flex-col gap-2 mt-3">
-            <a 
-              href="mailto:support@alchohalt.com" 
-              className="text-primary-600 hover:text-primary-700 underline"
-            >
-              📧 support@alchohalt.com
-            </a>
+            {/* TODO: Update with real support email before public release */}
             <a 
               href="https://github.com/Zcg321/Alchohalt/issues" 
               className="text-primary-600 hover:text-primary-700 underline"
@@ -69,40 +65,50 @@ export default function About() {
             >
               🐛 Report Issues on GitHub
             </a>
+            <a 
+              href="https://github.com/Zcg321/Alchohalt/discussions" 
+              className="text-primary-600 hover:text-primary-700 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              💬 Community Discussions
+            </a>
           </div>
         </div>
       </div>
 
-      {/* Subscription Terms */}
-      <div className="p-4 border border-default rounded-xl bg-surface">
-        <h3 className="font-medium text-primary mb-2">
-          💳 {t('subscription.title', 'Subscription Information')}
-        </h3>
-        <div className="text-sm text-secondary space-y-2">
-          <p>
-            {t('subscription.coreFeatures', 'Core habit tracking features remain free forever. Premium features enhance your experience with advanced analytics and insights.')}
-          </p>
-          <p>
-            {t('subscription.cancellation', 'Subscriptions can be cancelled anytime through your device\'s subscription settings. No data is lost when downgrading.')}
-          </p>
-          <div className="mt-3 space-y-1">
-            <a 
-              href="#" 
-              className="block text-primary-600 hover:text-primary-700 underline text-xs"
-              onClick={(e) => { e.preventDefault(); /* Open terms modal */ }}
-            >
-              📄 Terms of Service
-            </a>
-            <a 
-              href="#" 
-              className="block text-primary-600 hover:text-primary-700 underline text-xs"
-              onClick={(e) => { e.preventDefault(); /* Open privacy modal */ }}
-            >
-              🔒 Privacy Policy
-            </a>
+      {/* Subscription Terms - only show when subscriptions are enabled */}
+      {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && (
+        <div className="p-4 border border-default rounded-xl bg-surface">
+          <h3 className="font-medium text-primary mb-2">
+            💳 {t('subscription.title', 'Subscription Information')}
+          </h3>
+          <div className="text-sm text-secondary space-y-2">
+            <p>
+              {t('subscription.coreFeatures', 'Core habit tracking features remain free forever. Premium features enhance your experience with advanced analytics and insights.')}
+            </p>
+            <p>
+              {t('subscription.cancellation', 'Subscriptions can be cancelled anytime through your device\'s subscription settings. No data is lost when downgrading.')}
+            </p>
+            <div className="mt-3 space-y-1">
+              <a 
+                href="#" 
+                className="block text-primary-600 hover:text-primary-700 underline text-xs"
+                onClick={(e) => { e.preventDefault(); /* Open terms modal */ }}
+              >
+                📄 Terms of Service
+              </a>
+              <a 
+                href="#" 
+                className="block text-primary-600 hover:text-primary-700 underline text-xs"
+                onClick={(e) => { e.preventDefault(); /* Open privacy modal */ }}
+              >
+                🔒 Privacy Policy
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Open Source */}
       <div className="p-4 border border-default rounded-xl bg-surface">
