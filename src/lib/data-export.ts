@@ -48,12 +48,14 @@ export async function validateImport(importData: unknown): Promise<ImportResult>
       return { success: false, error: 'Invalid import file format' };
     }
 
-    if (!importData.data || !importData.checksum) {
+    const data = importData as Partial<ExportData>;
+    
+    if (!data.data || !data.checksum) {
       return { success: false, error: 'Missing required fields in import file' };
     }
 
     // Checksum verification
-    const { checksum, ...dataForVerification } = importData;
+    const { checksum, ...dataForVerification } = data;
     const dataString = JSON.stringify(dataForVerification);
     const calculatedChecksum = await sha256(dataString);
 
@@ -62,7 +64,7 @@ export async function validateImport(importData: unknown): Promise<ImportResult>
     }
 
     // Schema validation
-    const schemaValidation = validateSchema(importData.data);
+    const schemaValidation = validateSchema(data.data);
     if (!schemaValidation.valid) {
       return { 
         success: false, 
@@ -73,7 +75,7 @@ export async function validateImport(importData: unknown): Promise<ImportResult>
     // Version compatibility check
     const warnings: string[] = [];
     const currentVersion = CURRENT_SCHEMA_VERSION;
-    const importVersion = importData.version || importData.data.version || 1;
+    const importVersion = data.version || (data.data as Record<string, unknown>).version as number || 1;
 
     if (importVersion > currentVersion) {
       warnings.push(`Import data is from a newer app version (v${importVersion}). Some features may not be available.`);
@@ -100,7 +102,7 @@ export async function processImport(importData: ExportData, currentData: DB): Pr
 
   // Migrate data if needed
   if (importData.version !== CURRENT_SCHEMA_VERSION) {
-    dataToImport = migrateToVersion(dataToImport, CURRENT_SCHEMA_VERSION);
+    dataToImport = migrateToVersion(dataToImport, CURRENT_SCHEMA_VERSION) as DB;
   }
 
   // Check for data conflicts

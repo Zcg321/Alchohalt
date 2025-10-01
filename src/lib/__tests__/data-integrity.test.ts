@@ -105,13 +105,13 @@ describe('Schema Migration', () => {
 
   it('should migrate to current version', () => {
     const v1Data = { ...mockDB, version: 1 };
-    const migrated = migrateToVersion(v1Data, CURRENT_SCHEMA_VERSION);
+    const migrated = migrateToVersion(v1Data, CURRENT_SCHEMA_VERSION) as any;
     expect(migrated.version).toBe(CURRENT_SCHEMA_VERSION);
   });
 
   it('should handle forward migration', () => {
     const oldData = { ...mockDB, version: 1 };
-    const migrated = migrateToVersion(oldData, 2);
+    const migrated = migrateToVersion(oldData, 2) as any;
     expect(migrated.version).toBe(2);
     if (migrated.settings) {
       expect(migrated.settings).toHaveProperty('subscription');
@@ -127,7 +127,7 @@ describe('Schema Migration', () => {
         subscription: { plan: 'free', status: 'inactive' }
       }
     };
-    const rolledBack = migrateToVersion(newData, 1);
+    const rolledBack = migrateToVersion(newData, 1) as any;
     expect(rolledBack.version).toBe(1);
     expect(rolledBack.settings.subscription).toBeUndefined();
   });

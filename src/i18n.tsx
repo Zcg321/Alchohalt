@@ -5,7 +5,7 @@ import en from './locales/en.json';
 export type Lang = 'en' | 'es';
 
 type Dictionary = Record<string, string>;
-export const dictionaries: Partial<Record<Lang, Dictionary>> = { en: en as Dictionary };
+export const dictionaries: Partial<Record<Lang, Dictionary>> = { en: en as unknown as Dictionary };
 
 export async function loadLocale(lng: Lang) {
   if (dictionaries[lng]) return;
@@ -16,11 +16,11 @@ export async function loadLocale(lng: Lang) {
 const LanguageContext = createContext<{
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (k: string) => string;
+  t: (k: string, fallback?: string) => string;
 }>({
   lang: 'en',
   setLang: () => {},
-  t: (k: string) => (dictionaries['en']?.[k] || k),
+  t: (k: string, fallback?: string) => (dictionaries['en']?.[k] || fallback || k),
 });
 
 export async function loadInitialLang(): Promise<Lang> {
@@ -69,7 +69,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const t = (key: string) => (dictionaries[lang] ?? dictionaries['en'])?.[key] ?? key;
+  const t = (key: string, fallback?: string) => (dictionaries[lang] ?? dictionaries['en'])?.[key] ?? fallback ?? key;
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t }}>

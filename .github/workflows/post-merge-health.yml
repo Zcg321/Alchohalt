@@ -1,0 +1,62 @@
+name: Post-Merge Health Scan
+permissions:
+  contents: read
+
+# This workflow runs a comprehensive health scan after every PR merge to main
+# It generates detailed reports and uploads them as artifacts for review
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  # Can also be triggered manually
+  workflow_dispatch:
+
+jobs:
+  health-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Run comprehensive health scan
+        run: npm run health:scan
+        continue-on-error: true
+        
+      - name: Upload health scan reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-scan-reports
+          path: |
+            repo_scan_human.txt
+            repo_scan.json
+            imports.dot
+            imports.png
+            deadcode_report.txt
+            deps_report.txt
+            size_report.txt
+            apk_size_report.txt
+            security_audit.txt
+            outdated_packages.txt
+          retention-days: 30
+          
+      - name: Comment on commit (optional)
+        if: failure()
+        run: |
+          echo "Health scan found issues. Review the uploaded artifacts for details."
+          echo "Reports are available in the Actions artifacts."

@@ -172,7 +172,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
           icon: '👟'
         });
       }
-      if (avgSleep > 0) {
+      if (typeof avgSleep === 'number' && avgSleep > 0) {
         const sleepNum = parseFloat(avgSleep.toString());
         healthIntegrationMetrics.push({
           id: 'sleep-hours',
@@ -199,7 +199,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       }
     }
     
-    return [...baseMetrics, ...healthIntegrationMetrics];
+    return [...baseMetrics, ...healthIntegrationMetrics] as WellnessMetric[];
   }, [drinks, healthMetrics]);
 
   const healthInsights = useMemo((): HealthInsight[] => {

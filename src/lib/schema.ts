@@ -111,7 +111,7 @@ export function validateSchema(data: unknown): { valid: boolean; errors: string[
     errors.push('Missing or invalid presets array');
   }
 
-  if (!Array.isArray(data.advancedGoals)) {
+  if (!Array.isArray(typedData.advancedGoals)) {
     errors.push('Missing or invalid advancedGoals array');
   }
 

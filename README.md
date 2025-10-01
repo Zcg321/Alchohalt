@@ -41,6 +41,7 @@ Enable optional daily check-in reminders from Settings. Times are stored locally
 - `npm run typecheck`
 - `npm test`
 - `npm run build`
+- `npm run health:scan` - Comprehensive health scan (see [QUICKSTART_HEALTH_SCAN.md](./QUICKSTART_HEALTH_SCAN.md))
 
 ## Spending Dashboard
 - Budget vs. actual spend with variance bar
@@ -54,6 +55,23 @@ Enable optional daily check-in reminders from Settings. Times are stored locally
 
 ## Data Management (checksummed)
 Export creates a JSON with a SHA-256 checksum. Import verifies version + checksum before replacing local DB.
+
+## Repository Health
+
+Run comprehensive health scan:
+```bash
+npm run health:scan
+```
+
+This checks:
+- Code quality (linting, type checking)
+- Test coverage
+- Bundle size & performance
+- Security vulnerabilities
+- Dead code & dependency health
+- Build verification
+
+See [QUICKSTART_HEALTH_SCAN.md](./QUICKSTART_HEALTH_SCAN.md) for quick reference or [HEALTH_SCAN_GUIDE.md](./HEALTH_SCAN_GUIDE.md) for complete documentation.
 
 ## Release Checklist
 - npm run verify:release
