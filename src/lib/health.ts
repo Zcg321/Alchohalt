@@ -120,7 +120,8 @@ export async function getSteps(startDate: Date, endDate: Date): Promise<number> 
 
   try {
     const platform = isIOS() ? 'ios' : isAndroid() ? 'android' : null;
-    if (!platform) return Math.floor(Math.random() * 5001) + 5000;
+    // Return fixed mock value for development/web (not using Math.random for security)
+    if (!platform) return 7500;
 
     const result = await fetchHealthData(
       platform,
@@ -164,7 +165,8 @@ export async function getSleepHours(date: Date): Promise<number> {
     endOfDay.setHours(23, 59, 59, 999);
 
     const platform = isIOS() ? 'ios' : isAndroid() ? 'android' : null;
-    if (!platform) return Math.random() * 3 + 6; // Mock: 6-9 hours
+    // Return fixed mock value for development/web (not using Math.random for security)
+    if (!platform) return 7.5;
 
     const result = await fetchHealthData(
       platform,
@@ -234,8 +236,8 @@ export async function getHeartRate(date: Date): Promise<number> {
     if (isIOS()) return await fetchIOSHeartRate(startOfDay, endOfDay);
     if (isAndroid()) return await fetchAndroidHeartRate(startOfDay, endOfDay);
     
-    // Mock data for development/testing
-    return Math.floor(Math.random() * 20) + 60; // 60-80 bpm
+    // Return fixed mock value for development/web (not using Math.random for security)
+    return 72; // 72 bpm
   } catch (error) {
     console.error('Failed to fetch heart rate:', error);
     return 0;
