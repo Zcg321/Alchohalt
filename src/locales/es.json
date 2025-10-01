@@ -117,5 +117,65 @@
   "history.deleted": "Entrada eliminada",
   "toast.undo": "Deshacer",
   "reminder.prompt": "¿Registrar tu día?",
-  "reminder.log": "Registrar ahora"
+  "reminder.log": "Registrar ahora",
+  "medicalDisclaimer": {
+    "title": "Descargo de Responsabilidad Médica Importante",
+    "content": "Alchohalt es una herramienta de seguimiento personal y no proporciona asesoramiento médico, diagnóstico o tratamiento. Esta aplicación no sustituye la atención médica profesional.",
+    "emergency": "Si experimenta una emergencia médica o necesita ayuda inmediata con el uso de sustancias, comuníquese con los servicios de emergencia o un profesional de la salud de inmediato."
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Bienvenido a Alchohalt",
+      "description": "Tu compañero personal y privado de bienestar para construir hábitos de consumo más saludables."
+    },
+    "privacy": {
+      "title": "Tu Privacidad Importa",
+      "description": "Todos tus datos permanecen en tu dispositivo. Nunca recopilamos, almacenamos ni compartimos tu información personal."
+    },
+    "tracking": {
+      "title": "Seguimiento Inteligente",
+      "description": "Registra bebidas con intenciones, activadores HALT y niveles de antojo para comprender tus patrones."
+    },
+    "insights": {
+      "title": "Perspectivas Personalizadas",
+      "description": "Obtén perspectivas impulsadas por IA sobre tus hábitos, activadores y progreso a lo largo del tiempo."
+    },
+    "goals": {
+      "title": "Establece Tus Metas",
+      "description": "Crea metas personalizadas y realiza un seguimiento de tu progreso con contadores de rachas motivadores."
+    },
+    "ready": {
+      "title": "¡Estás Listo!",
+      "description": "¿Listo para comenzar tu viaje de bienestar? Tu primer registro está a solo un toque de distancia."
+    },
+    "quickTips": {
+      "title": "Consejos Rápidos",
+      "tip1": "Comienza con metas pequeñas y alcanzables",
+      "tip2": "Registra honestamente para mejores perspectivas",
+      "tip3": "Revisa tu progreso regularmente",
+      "tip4": "Exporta tus datos en cualquier momento para respaldo"
+    },
+    "back": "Atrás",
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "getStarted": "Comenzar"
+  },
+  "openSource": {
+    "title": "Código Abierto",
+    "description": "Alchohalt es software de código abierto. Puedes revisar nuestro código, contribuir mejoras o construir tu propia versión."
+  },
+  "privacy": {
+    "title": "Tu Privacidad Está Protegida",
+    "onDevice": "Todos tus datos se almacenan localmente en tu dispositivo utilizando almacenamiento seguro y encriptado. Nunca recopilamos, transmitimos ni almacenamos tu información personal en servidores externos.",
+    "dataControl": "Tienes control completo sobre tus datos. Puedes exportar, importar o eliminar toda la información en cualquier momento desde el panel de Configuración."
+  },
+  "subscription": {
+    "title": "Información de Suscripción",
+    "coreFeatures": "Las funciones básicas de seguimiento de hábitos permanecen gratuitas para siempre. Las funciones premium mejoran tu experiencia con análisis e información avanzados.",
+    "cancellation": "Las suscripciones se pueden cancelar en cualquier momento a través de la configuración de suscripciones de tu dispositivo. No se pierden datos al cambiar a un plan inferior."
+  },
+  "support": {
+    "title": "Soporte y Comentarios",
+    "description": "Estamos aquí para ayudarte en tu viaje de bienestar. Tus comentarios nos ayudan a mejorar la aplicación."
+  }
 }
