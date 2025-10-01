@@ -49,6 +49,11 @@
     "recharts": "2.12.0",
     "zustand": "^4.5.2"
   },
+  "optionalDependencies": {
+    "@capacitor-community/apple-health-kit": "^0.1.0",
+    "@capacitor-community/fitness-activity": "^0.1.0",
+    "@capacitor-community/speech-recognition": "^6.0.1"
+  },
   "devDependencies": {
     "@capacitor/android": "6.0.0",
     "@capacitor/cli": "6.0.0",
