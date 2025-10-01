@@ -42,19 +42,43 @@ export default function TherapyResources({ className = '', trigger }: Props) {
   ];
 
   const handleCall = (phone: string) => {
-    if (phone.startsWith('Text ')) {
-      // SMS link
-      const smsNumber = phone.replace('Text ', '').split(' to ')[1];
-      const smsMessage = phone.replace('Text ', '').split(' to ')[0];
-      window.location.href = `sms:${smsNumber}?body=${encodeURIComponent(smsMessage)}`;
+    // Sanitize phone input to prevent injection attacks
+    const sanitizedPhone = phone.trim();
+    
+    if (sanitizedPhone.startsWith('Text ')) {
+      // SMS link - extract and validate components
+      const parts = sanitizedPhone.replace('Text ', '').split(' to ');
+      if (parts.length === 2) {
+        const smsMessage = parts[0].trim();
+        const smsNumber = parts[1].trim().replace(/[^0-9]/g, '');
+        
+        // Only proceed if we have a valid number
+        if (smsNumber && /^\d+$/.test(smsNumber)) {
+          window.location.href = `sms:${smsNumber}?body=${encodeURIComponent(smsMessage)}`;
+        }
+      }
     } else {
-      // Regular phone call
-      window.location.href = `tel:${phone.replace(/[^0-9]/g, '')}`;
+      // Regular phone call - extract only digits
+      const phoneNumber = sanitizedPhone.replace(/[^0-9]/g, '');
+      
+      // Validate phone number (must be 10-15 digits)
+      if (phoneNumber && /^\d{10,15}$/.test(phoneNumber)) {
+        window.location.href = `tel:${phoneNumber}`;
+      }
     }
   };
 
   const handleOpenUrl = (url: string) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
+    // Validate URL before opening to prevent javascript: or data: URIs
+    try {
+      const urlObj = new URL(url);
+      // Only allow http: and https: protocols
+      if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    } catch (e) {
+      console.error('Invalid URL:', url);
+    }
   };
 
   const renderResource = (resource: Resource) => (

@@ -8,7 +8,7 @@
 
 import type { HealthMetric } from '../store/db';
 import { FEATURE_FLAGS } from '../config/features';
-import { randomInt } from 'crypto';
+
 // Mock interfaces matching expected plugin APIs
 interface HealthKitData {
   quantity: number;
@@ -121,7 +121,7 @@ export async function getSteps(startDate: Date, endDate: Date): Promise<number> 
     }
     
     // Mock data for development/testing
-    return randomInt(5000, 10001); // 5000-10000 steps using cryptographically secure RNG
+    return Math.floor(Math.random() * 5001) + 5000; // 5000-10000 steps
   } catch (error) {
     console.error('Failed to fetch steps:', error);
     return 0;
