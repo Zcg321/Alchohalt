@@ -99,26 +99,17 @@ export async function isHealthIntegrationAvailable(): Promise<boolean> {
   return false;
 }
 
-// Helper: Fetch iOS steps
-async function fetchIOSSteps(startDate: Date, endDate: Date): Promise<number> {
-  if (!mockHealthKit) return 0;
-  const data = await mockHealthKit.query({
-    dataType: 'stepCount',
-    from: startDate,
-    to: endDate
-  });
-  return data.reduce((sum, d) => sum + d.quantity, 0);
-}
-
-// Helper: Fetch Android steps
-async function fetchAndroidSteps(startDate: Date, endDate: Date): Promise<number> {
-  if (!mockGoogleFit) return 0;
-  const data = await mockGoogleFit.readData({
-    dataType: 'com.google.step_count.delta',
-    startTime: startDate.getTime(),
-    endTime: endDate.getTime()
-  });
-  return data.points.reduce((sum, p) => sum + p.value, 0);
+// Generic helper for fetching health data
+async function fetchHealthData<T>(
+  platform: 'ios' | 'android',
+  iosQuery: () => Promise<T>,
+  androidQuery: () => Promise<T>
+): Promise<T | null> {
+  try {
+    return platform === 'ios' ? await iosQuery() : await androidQuery();
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -128,39 +119,36 @@ export async function getSteps(startDate: Date, endDate: Date): Promise<number> 
   if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) return 0;
 
   try {
-    if (isIOS()) return await fetchIOSSteps(startDate, endDate);
-    if (isAndroid()) return await fetchAndroidSteps(startDate, endDate);
+    const platform = isIOS() ? 'ios' : isAndroid() ? 'android' : null;
+    if (!platform) return Math.floor(Math.random() * 5001) + 5000;
+
+    const result = await fetchHealthData(
+      platform,
+      async () => {
+        if (!mockHealthKit) return 0;
+        const data = await mockHealthKit.query({
+          dataType: 'stepCount',
+          from: startDate,
+          to: endDate
+        });
+        return data.reduce((sum, d) => sum + d.quantity, 0);
+      },
+      async () => {
+        if (!mockGoogleFit) return 0;
+        const data = await mockGoogleFit.readData({
+          dataType: 'com.google.step_count.delta',
+          startTime: startDate.getTime(),
+          endTime: endDate.getTime()
+        });
+        return data.points.reduce((sum, p) => sum + p.value, 0);
+      }
+    );
     
-    // Mock data for development/testing
-    return Math.floor(Math.random() * 5001) + 5000; // 5000-10000 steps
+    return result ?? 0;
   } catch (error) {
     console.error('Failed to fetch steps:', error);
     return 0;
   }
-}
-
-// Helper: Fetch iOS sleep
-async function fetchIOSSleep(startOfDay: Date, endOfDay: Date): Promise<number> {
-  if (!mockHealthKit) return 0;
-  const data = await mockHealthKit.query({
-    dataType: 'sleepAnalysis',
-    from: startOfDay,
-    to: endOfDay
-  });
-  // Convert sleep minutes to hours
-  return data.reduce((sum, d) => sum + d.quantity, 0) / 60;
-}
-
-// Helper: Fetch Android sleep
-async function fetchAndroidSleep(startOfDay: Date, endOfDay: Date): Promise<number> {
-  if (!mockGoogleFit) return 0;
-  const data = await mockGoogleFit.readData({
-    dataType: 'com.google.sleep.segment',
-    startTime: startOfDay.getTime(),
-    endTime: endOfDay.getTime()
-  });
-  // Convert sleep minutes to hours
-  return data.points.reduce((sum, p) => sum + p.value, 0) / 60;
 }
 
 /**
@@ -175,11 +163,32 @@ export async function getSleepHours(date: Date): Promise<number> {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    if (isIOS()) return await fetchIOSSleep(startOfDay, endOfDay);
-    if (isAndroid()) return await fetchAndroidSleep(startOfDay, endOfDay);
+    const platform = isIOS() ? 'ios' : isAndroid() ? 'android' : null;
+    if (!platform) return Math.random() * 3 + 6; // Mock: 6-9 hours
+
+    const result = await fetchHealthData(
+      platform,
+      async () => {
+        if (!mockHealthKit) return 0;
+        const data = await mockHealthKit.query({
+          dataType: 'sleepAnalysis',
+          from: startOfDay,
+          to: endOfDay
+        });
+        return data.reduce((sum, d) => sum + d.quantity, 0) / 60; // Convert minutes to hours
+      },
+      async () => {
+        if (!mockGoogleFit) return 0;
+        const data = await mockGoogleFit.readData({
+          dataType: 'com.google.sleep.segment',
+          startTime: startOfDay.getTime(),
+          endTime: endOfDay.getTime()
+        });
+        return data.points.reduce((sum, p) => sum + p.value, 0) / 60; // Convert minutes to hours
+      }
+    );
     
-    // Mock data for development/testing
-    return Math.random() * 3 + 6; // 6-9 hours
+    return result ?? 0;
   } catch (error) {
     console.error('Failed to fetch sleep hours:', error);
     return 0;
