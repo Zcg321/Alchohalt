@@ -13,4 +13,15 @@ coverage
 npm-debug.log*
 
 !public/icons/*.png
+
+# Health scan reports
 repo_scan.json
+repo_scan_human.txt
+imports.dot
+imports.png
+deadcode_report.txt
+deps_report.txt
+size_report.txt
+apk_size_report.txt
+security_audit.txt
+outdated_packages.txt
