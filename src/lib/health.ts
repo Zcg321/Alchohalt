@@ -29,17 +29,19 @@ interface GoogleFitPlugin {
 }
 
 // Platform detection
-function isIOS(): boolean {
-  return typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-function isAndroid(): boolean {
-  return typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
-}
+const isIOS = (): boolean => typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isAndroid = (): boolean => typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
 
 // Mock plugin instances (would be replaced with actual imports)
 let mockHealthKit: HealthKitPlugin | null = null;
 let mockGoogleFit: GoogleFitPlugin | null = null;
+
+// Helper: Get platform source identifier
+const getPlatformSource = (): 'apple-health' | 'google-fit' | 'manual' => {
+  if (isIOS()) return 'apple-health';
+  if (isAndroid()) return 'google-fit';
+  return 'manual';
+};
 
 /**
  * Request health data permissions from the user
@@ -56,7 +58,9 @@ export async function requestHealthPermissions(): Promise<boolean> {
         read: ['stepCount', 'sleepAnalysis', 'heartRate']
       });
       return true;
-    } else if (isAndroid() && mockGoogleFit) {
+    }
+    
+    if (isAndroid() && mockGoogleFit) {
       await mockGoogleFit.requestPermissions({
         permissions: ['FITNESS_ACTIVITY_READ', 'FITNESS_SLEEP_READ', 'FITNESS_HEART_RATE_READ']
       });
@@ -76,15 +80,15 @@ export async function requestHealthPermissions(): Promise<boolean> {
  * Check if health integration is available on this platform
  */
 export async function isHealthIntegrationAvailable(): Promise<boolean> {
-  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) {
-    return false;
-  }
+  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) return false;
 
   try {
     if (isIOS() && mockHealthKit) {
       const result = await mockHealthKit.isAvailable();
       return result.available;
-    } else if (isAndroid() && mockGoogleFit) {
+    }
+    
+    if (isAndroid() && mockGoogleFit) {
       const result = await mockGoogleFit.isAvailable();
       return result.available;
     }
@@ -95,30 +99,37 @@ export async function isHealthIntegrationAvailable(): Promise<boolean> {
   return false;
 }
 
+// Helper: Fetch iOS steps
+async function fetchIOSSteps(startDate: Date, endDate: Date): Promise<number> {
+  if (!mockHealthKit) return 0;
+  const data = await mockHealthKit.query({
+    dataType: 'stepCount',
+    from: startDate,
+    to: endDate
+  });
+  return data.reduce((sum, d) => sum + d.quantity, 0);
+}
+
+// Helper: Fetch Android steps
+async function fetchAndroidSteps(startDate: Date, endDate: Date): Promise<number> {
+  if (!mockGoogleFit) return 0;
+  const data = await mockGoogleFit.readData({
+    dataType: 'com.google.step_count.delta',
+    startTime: startDate.getTime(),
+    endTime: endDate.getTime()
+  });
+  return data.points.reduce((sum, p) => sum + p.value, 0);
+}
+
 /**
  * Fetch step count for a date range
  */
 export async function getSteps(startDate: Date, endDate: Date): Promise<number> {
-  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) {
-    return 0;
-  }
+  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) return 0;
 
   try {
-    if (isIOS() && mockHealthKit) {
-      const data = await mockHealthKit.query({
-        dataType: 'stepCount',
-        from: startDate,
-        to: endDate
-      });
-      return data.reduce((sum, d) => sum + d.quantity, 0);
-    } else if (isAndroid() && mockGoogleFit) {
-      const data = await mockGoogleFit.readData({
-        dataType: 'com.google.step_count.delta',
-        startTime: startDate.getTime(),
-        endTime: endDate.getTime()
-      });
-      return data.points.reduce((sum, p) => sum + p.value, 0);
-    }
+    if (isIOS()) return await fetchIOSSteps(startDate, endDate);
+    if (isAndroid()) return await fetchAndroidSteps(startDate, endDate);
     
     // Mock data for development/testing
     return Math.floor(Math.random() * 5001) + 5000; // 5000-10000 steps
@@ -128,13 +139,35 @@ export async function getSteps(startDate: Date, endDate: Date): Promise<number> 
   }
 }
 
+// Helper: Fetch iOS sleep
+async function fetchIOSSleep(startOfDay: Date, endOfDay: Date): Promise<number> {
+  if (!mockHealthKit) return 0;
+  const data = await mockHealthKit.query({
+    dataType: 'sleepAnalysis',
+    from: startOfDay,
+    to: endOfDay
+  });
+  // Convert sleep minutes to hours
+  return data.reduce((sum, d) => sum + d.quantity, 0) / 60;
+}
+
+// Helper: Fetch Android sleep
+async function fetchAndroidSleep(startOfDay: Date, endOfDay: Date): Promise<number> {
+  if (!mockGoogleFit) return 0;
+  const data = await mockGoogleFit.readData({
+    dataType: 'com.google.sleep.segment',
+    startTime: startOfDay.getTime(),
+    endTime: endOfDay.getTime()
+  });
+  // Convert sleep minutes to hours
+  return data.points.reduce((sum, p) => sum + p.value, 0) / 60;
+}
+
 /**
  * Fetch sleep hours for a specific date
  */
 export async function getSleepHours(date: Date): Promise<number> {
-  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) {
-    return 0;
-  }
+  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) return 0;
 
   try {
     const startOfDay = new Date(date);
@@ -142,23 +175,8 @@ export async function getSleepHours(date: Date): Promise<number> {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    if (isIOS() && mockHealthKit) {
-      const data = await mockHealthKit.query({
-        dataType: 'sleepAnalysis',
-        from: startOfDay,
-        to: endOfDay
-      });
-      // Convert sleep minutes to hours
-      return data.reduce((sum, d) => sum + d.quantity, 0) / 60;
-    } else if (isAndroid() && mockGoogleFit) {
-      const data = await mockGoogleFit.readData({
-        dataType: 'com.google.sleep.segment',
-        startTime: startOfDay.getTime(),
-        endTime: endOfDay.getTime()
-      });
-      // Convert sleep minutes to hours
-      return data.points.reduce((sum, p) => sum + p.value, 0) / 60;
-    }
+    if (isIOS()) return await fetchIOSSleep(startOfDay, endOfDay);
+    if (isAndroid()) return await fetchAndroidSleep(startOfDay, endOfDay);
     
     // Mock data for development/testing
     return Math.random() * 3 + 6; // 6-9 hours
@@ -168,13 +186,35 @@ export async function getSleepHours(date: Date): Promise<number> {
   }
 }
 
+// Helper: Fetch iOS heart rate
+async function fetchIOSHeartRate(startOfDay: Date, endOfDay: Date): Promise<number> {
+  if (!mockHealthKit) return 0;
+  const data = await mockHealthKit.query({
+    dataType: 'heartRate',
+    from: startOfDay,
+    to: endOfDay
+  });
+  if (data.length === 0) return 0;
+  return data.reduce((sum, d) => sum + d.quantity, 0) / data.length;
+}
+
+// Helper: Fetch Android heart rate
+async function fetchAndroidHeartRate(startOfDay: Date, endOfDay: Date): Promise<number> {
+  if (!mockGoogleFit) return 0;
+  const data = await mockGoogleFit.readData({
+    dataType: 'com.google.heart_rate.bpm',
+    startTime: startOfDay.getTime(),
+    endTime: endOfDay.getTime()
+  });
+  if (data.points.length === 0) return 0;
+  return data.points.reduce((sum, p) => sum + p.value, 0) / data.points.length;
+}
+
 /**
  * Fetch average heart rate for a date
  */
 export async function getHeartRate(date: Date): Promise<number> {
-  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) {
-    return 0;
-  }
+  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) return 0;
 
   try {
     const startOfDay = new Date(date);
@@ -182,23 +222,8 @@ export async function getHeartRate(date: Date): Promise<number> {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    if (isIOS() && mockHealthKit) {
-      const data = await mockHealthKit.query({
-        dataType: 'heartRate',
-        from: startOfDay,
-        to: endOfDay
-      });
-      if (data.length === 0) return 0;
-      return data.reduce((sum, d) => sum + d.quantity, 0) / data.length;
-    } else if (isAndroid() && mockGoogleFit) {
-      const data = await mockGoogleFit.readData({
-        dataType: 'com.google.heart_rate.bpm',
-        startTime: startOfDay.getTime(),
-        endTime: endOfDay.getTime()
-      });
-      if (data.points.length === 0) return 0;
-      return data.points.reduce((sum, p) => sum + p.value, 0) / data.points.length;
-    }
+    if (isIOS()) return await fetchIOSHeartRate(startOfDay, endOfDay);
+    if (isAndroid()) return await fetchAndroidHeartRate(startOfDay, endOfDay);
     
     // Mock data for development/testing
     return Math.floor(Math.random() * 20) + 60; // 60-80 bpm
@@ -212,9 +237,7 @@ export async function getHeartRate(date: Date): Promise<number> {
  * Import health metrics for a date range
  */
 export async function importHealthMetrics(startDate: Date, endDate: Date): Promise<HealthMetric[]> {
-  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) {
-    return [];
-  }
+  if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) return [];
 
   const metrics: HealthMetric[] = [];
   const current = new Date(startDate);
@@ -229,13 +252,12 @@ export async function importHealthMetrics(startDate: Date, endDate: Date): Promi
     ]);
 
     if (steps > 0 || sleepHours > 0 || heartRate > 0) {
-      const source = isIOS() ? 'apple-health' : isAndroid() ? 'google-fit' : 'manual';
       metrics.push({
         date: dateStr,
         steps: steps || undefined,
         sleepHours: sleepHours || undefined,
         heartRate: heartRate || undefined,
-        source
+        source: getPlatformSource()
       });
     }
 

@@ -1,10 +1,10 @@
 {
   "totals_by_group": {
-    "docs": 179,
-    "__all__": 15201,
+    "docs": 1804,
+    "__all__": 18699,
     "web": 58,
-    "ts": 13237,
-    "config": 572,
+    "ts": 14842,
+    "config": 840,
     "android_build": 114,
     "android": 38,
     "android_res": 293,
@@ -12,16 +12,20 @@
     "css": 611
   },
   "totals_by_module": {
-    "src": 13094,
+    "src": 14870,
+    ".": 2096,
     "tests": 494,
-    ".": 476,
     "android": 445,
     "tools": 421,
-    "public": 116,
-    ".github": 112,
+    ".github": 204,
+    "public": 126,
     "ios": 43
   },
   "top_20_largest_files": [
+    [
+      "ENHANCED_FEATURES.md",
+      499
+    ],
     [
       "src/features/challenges/SocialChallenges.tsx",
       445
@@ -31,16 +35,24 @@
       404
     ],
     [
+      "src/features/wellness/PremiumWellnessDashboard.tsx",
+      404
+    ],
+    [
       "src/index.css",
       389
     ],
     [
-      "src/features/subscription/PremiumDataExport.tsx",
-      353
+      "IMPLEMENTATION_SUMMARY.md",
+      372
     ],
     [
-      "src/features/wellness/PremiumWellnessDashboard.tsx",
-      343
+      "src/store/db.ts",
+      356
+    ],
+    [
+      "src/features/subscription/PremiumDataExport.tsx",
+      353
     ],
     [
       "src/features/achievements/lib/achievementSystem.ts",
@@ -59,10 +71,6 @@
       321
     ],
     [
-      "src/store/db.ts",
-      317
-    ],
-    [
       "src/features/subscription/PremiumMoodTracking.tsx",
       296
     ],
@@ -75,6 +83,10 @@
       279
     ],
     [
+      "src/lib/ai-recommendations.ts",
+      264
+    ],
+    [
       "src/features/analytics/analytics.ts",
       259
     ],
@@ -83,24 +95,12 @@
       243
     ],
     [
+      "MANUAL_TESTING_CHECKLIST.md",
+      236
+    ],
+    [
       "src/features/drinks/DrinkDiscovery.tsx",
       230
-    ],
-    [
-      "src/features/insights/premiumInsights.ts",
-      228
-    ],
-    [
-      "src/styles/theme.css",
-      222
-    ],
-    [
-      "src/app/MainContent.tsx",
-      213
-    ],
-    [
-      "src/features/achievements/AchievementDisplay.tsx",
-      211
     ]
   ],
   "top_20_longest_functions": [
@@ -119,13 +119,25 @@
   ],
   "top_20_most_complex_files": [
     [
+      "src/lib/health.ts",
+      36
+    ],
+    [
       "tools/split_long_ts_or_tsx.ts",
       34
+    ],
+    [
+      "src/lib/voice.ts",
+      30
+    ],
+    [
+      "src/lib/ai-recommendations.ts",
+      29
     ]
   ],
   "todo_fixme_count": 0,
   "todo_samples": [],
-  "ts_import_edges_count": 385,
+  "ts_import_edges_count": 414,
   "ts_import_edges_full": [
     [
       "tests/notifications.web.test.tsx",
@@ -372,8 +384,24 @@
       "../Card.tsx"
     ],
     [
+      "src/lib/voice.ts",
+      "../config/features"
+    ],
+    [
       "src/lib/migrate.ts",
       "../store/db"
+    ],
+    [
+      "src/lib/ai-recommendations.ts",
+      "../store/db"
+    ],
+    [
+      "src/lib/ai-recommendations.ts",
+      "../config/features"
+    ],
+    [
+      "src/lib/ai-recommendations.ts",
+      "./stats"
     ],
     [
       "src/lib/stats.ts",
@@ -386,6 +414,14 @@
     [
       "src/lib/notify.ts",
       "../services/platform"
+    ],
+    [
+      "src/lib/health.ts",
+      "../store/db"
+    ],
+    [
+      "src/lib/health.ts",
+      "../config/features"
     ],
     [
       "src/lib/data-export.ts",
@@ -437,6 +473,18 @@
     ],
     [
       "src/lib/__tests__/data-integrity.test.ts",
+      "../../store/db"
+    ],
+    [
+      "src/lib/__tests__/voice.test.ts",
+      "../voice"
+    ],
+    [
+      "src/lib/__tests__/ai-recommendations.test.ts",
+      "../ai-recommendations"
+    ],
+    [
+      "src/lib/__tests__/ai-recommendations.test.ts",
       "../../store/db"
     ],
     [
@@ -788,6 +836,10 @@
       "./SubscriptionManager"
     ],
     [
+      "src/features/subscription/subscriptionStore.ts",
+      "../../config/features"
+    ],
+    [
       "src/features/subscription/PremiumDataExport.tsx",
       "../../components/ui/Button"
     ],
@@ -902,6 +954,38 @@
     [
       "src/features/homepage/__tests__/PersonalizedDashboard.smoke.test.tsx",
       "../PersonalizedDashboard.tsx"
+    ],
+    [
+      "src/features/voice/VoiceInput.tsx",
+      "../../components/ui/Button"
+    ],
+    [
+      "src/features/voice/VoiceInput.tsx",
+      "../../config/features"
+    ],
+    [
+      "src/features/voice/__tests__/VoiceInput.smoke.test.tsx",
+      "../VoiceInput"
+    ],
+    [
+      "src/features/resources/TherapyResources.tsx",
+      "../../components/ui/Button"
+    ],
+    [
+      "src/features/resources/TherapyResources.tsx",
+      "../../components/ui/Badge"
+    ],
+    [
+      "src/features/resources/TherapyResources.tsx",
+      "../../config/features"
+    ],
+    [
+      "src/features/resources/TherapyResources.tsx",
+      "../../data/therapy-resources.json"
+    ],
+    [
+      "src/features/resources/__tests__/TherapyResources.smoke.test.tsx",
+      "../TherapyResources"
     ],
     [
       "src/features/insights/premiumInsights.ts",
@@ -1073,7 +1157,7 @@
     ],
     [
       "src/features/drinks/ExportImport.tsx",
-      "../../store/db"
+      "../../lib/data-export"
     ],
     [
       "src/features/drinks/ExportImport.tsx",
@@ -1296,6 +1380,18 @@
       "../SocialChallenges.tsx"
     ],
     [
+      "src/features/journal/JournalEntry.tsx",
+      "../../components/ui/Button"
+    ],
+    [
+      "src/features/journal/JournalEntry.tsx",
+      "../../components/ui/Badge"
+    ],
+    [
+      "src/features/journal/__tests__/JournalEntry.smoke.test.tsx",
+      "../JournalEntry"
+    ],
+    [
       "src/features/mood/EnhancedMoodTracker.tsx",
       "../../components/ui/Button"
     ],
@@ -1446,6 +1542,14 @@
     [
       "src/features/wellness/PremiumWellnessDashboard.tsx",
       "../analytics/analytics"
+    ],
+    [
+      "src/features/wellness/PremiumWellnessDashboard.tsx",
+      "../../store/db"
+    ],
+    [
+      "src/features/wellness/PremiumWellnessDashboard.tsx",
+      "../../config/features"
     ],
     [
       "src/features/wellness/__tests__/PremiumWellnessDashboard.smoke.test.tsx",
@@ -1648,6 +1752,30 @@
       "../achievementSystem.ts"
     ],
     [
+      "src/features/recommendations/GoalRecommendations.tsx",
+      "../../components/ui/Button"
+    ],
+    [
+      "src/features/recommendations/GoalRecommendations.tsx",
+      "../../components/ui/Badge"
+    ],
+    [
+      "src/features/recommendations/GoalRecommendations.tsx",
+      "../../config/features"
+    ],
+    [
+      "src/features/recommendations/GoalRecommendations.tsx",
+      "../../lib/ai-recommendations"
+    ],
+    [
+      "src/features/recommendations/GoalRecommendations.tsx",
+      "../../store/db"
+    ],
+    [
+      "src/features/recommendations/__tests__/GoalRecommendations.smoke.test.tsx",
+      "../GoalRecommendations"
+    ],
+    [
       "src/features/legal/TermsOfService.tsx",
       "../../i18n"
     ],
@@ -1694,6 +1822,10 @@
       7
     ],
     [
+      "src/features/wellness/PremiumWellnessDashboard.tsx",
+      7
+    ],
+    [
       "src/main.tsx",
       6
     ],
@@ -1704,32 +1836,28 @@
     [
       "src/features/goals/AdvancedGoalSetting.tsx",
       6
-    ],
-    [
-      "src/features/subscription/PremiumDataExport.tsx",
-      6
     ]
   ],
   "ts_tangle_sinks": [
     [
       "../../components/ui/Button",
-      18
+      22
     ],
     [
       "../../store/db",
-      16
+      18
+    ],
+    [
+      "../store/db",
+      14
     ],
     [
       "./lib",
       13
     ],
     [
-      "../store/db",
-      12
-    ],
-    [
       "../../components/ui/Badge",
-      9
+      12
     ],
     [
       "../subscription/subscriptionStore",
