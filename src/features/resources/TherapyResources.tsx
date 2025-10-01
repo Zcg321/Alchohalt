@@ -54,7 +54,10 @@ export default function TherapyResources({ className = '', trigger }: Props) {
         
         // Only proceed if we have a valid number
         if (smsNumber && /^\d+$/.test(smsNumber)) {
-          window.location.href = `sms:${smsNumber}?body=${encodeURIComponent(smsMessage)}`;
+          // Create and click a temporary link (safer than direct window.location assignment)
+          const link = document.createElement('a');
+          link.href = `sms:${smsNumber}?body=${encodeURIComponent(smsMessage)}`;
+          link.click();
         }
       }
     } else {
@@ -63,7 +66,10 @@ export default function TherapyResources({ className = '', trigger }: Props) {
       
       // Validate phone number (must be 10-15 digits)
       if (phoneNumber && /^\d{10,15}$/.test(phoneNumber)) {
-        window.location.href = `tel:${phoneNumber}`;
+        // Create and click a temporary link (safer than direct window.location assignment)
+        const link = document.createElement('a');
+        link.href = `tel:${phoneNumber}`;
+        link.click();
       }
     }
   };
