@@ -25,3 +25,4 @@ size_report.txt
 apk_size_report.txt
 security_audit.txt
 outdated_packages.txt
+__pycache__/

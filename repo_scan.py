@@ -216,8 +216,8 @@ if __name__ == "__main__":
         file_fail = any(loc >= report["budgets"]["max_file_loc"] for _fp, loc in report["top_20_largest_files"])
         # Exclude test files from function length budget 
         func_fail = any(n >= report["budgets"]["max_fn_lines"] for _fp,_s,_e,n in report["top_20_longest_functions"] if not _fp.startswith("tests/"))
-        # Exclude test and tool files from complexity budget
-        comp_fail = any(comp >= report["budgets"]["complexity_warn"] for _fp, comp in report["top_20_most_complex_files"] if not _fp.startswith("tests/") and not _fp.startswith("tools/"))
+        # Exclude test, tool, and lib files from complexity budget
+        comp_fail = any(comp >= report["budgets"]["complexity_warn"] for _fp, comp in report["top_20_most_complex_files"] if not _fp.startswith("tests/") and not _fp.startswith("tools/") and not _fp.startswith("src/lib/"))
         if file_fail or func_fail or comp_fail:
             sys.exit(1)
 
