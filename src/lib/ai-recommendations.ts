@@ -122,7 +122,6 @@ function recommendWeeklyLimit(entries: Entry[], currentGoal: number, readiness: 
   if (recentWeeks.length === 0) return null;
 
   const avgWeekly = recentWeeks.reduce((sum, w) => sum + w.stdDrinks, 0) / recentWeeks.length;
-  const maxWeekly = Math.max(...recentWeeks.map(w => w.stdDrinks));
 
   let suggestedValue = Math.round(avgWeekly * 0.8); // Reduce by 20%
   let difficulty: 'easy' | 'moderate' | 'challenging' = 'moderate';

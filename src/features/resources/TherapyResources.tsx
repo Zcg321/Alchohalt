@@ -152,7 +152,15 @@ export default function TherapyResources({ className = '', trigger }: Props) {
     </div>
   );
 
-  const renderCopingStrategy = (strategy: any) => (
+  interface CopingStrategy {
+    id: string;
+    name: string;
+    description: string;
+    techniques?: string[];
+    difficulty?: string;
+  }
+
+  const renderCopingStrategy = (strategy: CopingStrategy) => (
     <div key={strategy.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-semibold text-lg">{strategy.name}</h3>
@@ -216,7 +224,7 @@ export default function TherapyResources({ className = '', trigger }: Props) {
         {categories.map((cat) => (
           <button
             key={cat.id}
-            onClick={() => setActiveCategory(cat.id as any)}
+            onClick={() => setActiveCategory(cat.id as 'immediate' | 'educational' | 'professional' | 'coping')}
             className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
               activeCategory === cat.id
                 ? 'bg-primary-600 text-white'
