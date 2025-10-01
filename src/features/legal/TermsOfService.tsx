@@ -125,12 +125,11 @@ export default function TermsOfService() {
         </h2>
         <div className="prose prose-gray dark:prose-invert">
           <p>
-            {t('terms.contact.content', 'For questions about these terms, please contact us:')}
+            {t('terms.contact.content', 'For questions about these terms, please contact us at:')}
           </p>
-          {/* TODO: Add real contact email before public release */}
           <p>
-            <a href="https://github.com/Zcg321/Alchohalt/issues" className="text-primary-600 hover:text-primary-700 underline" target="_blank" rel="noopener noreferrer">
-              GitHub Issues
+            <a href="mailto:legal@alchohalt.com" className="text-primary-600 hover:text-primary-700 underline">
+              legal@alchohalt.com
             </a>
           </p>
         </div>

@@ -6,7 +6,6 @@ import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { PremiumFeatureGate } from '../subscription/SubscriptionManager';
 import { useDB } from '../../store/db';
 import type { Entry, HALT } from '../../store/db';
-import { FEATURE_FLAGS } from '../../config/features';
 
 interface MoodTrigger {
   name: string;
@@ -74,17 +73,11 @@ export default function PremiumMoodTracking() {
       <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
         <span className="text-blue-600 text-2xl">🧠</span>
       </div>
-      <h3 className="text-lg font-semibold mb-2">
-        {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS ? 'Premium Mood & Trigger Tracking' : 'Advanced Mood & Trigger Tracking'}
-      </h3>
+      <h3 className="text-lg font-semibold mb-2">Premium Mood & Trigger Tracking</h3>
       <p className="text-gray-600 dark:text-gray-400 mb-4">
-        {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS 
-          ? 'Identify your drinking triggers and get personalized insights about mood patterns and correlations.'
-          : 'This feature is coming soon. Stay tuned for advanced mood pattern analysis and trigger identification.'}
+        Identify your drinking triggers and get personalized insights about mood patterns and correlations.
       </p>
-      {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && (
-        <Button variant="primary">Upgrade to Premium</Button>
-      )}
+      <Button variant="primary">Upgrade to Premium</Button>
     </Card>
   );
 

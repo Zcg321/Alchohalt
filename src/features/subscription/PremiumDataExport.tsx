@@ -5,7 +5,6 @@ import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { PremiumFeatureGate } from '../subscription/SubscriptionManager';
 import { useDB } from '../../store/db';
 import type { Entry } from '../../store/db';
-import { FEATURE_FLAGS } from '../../config/features';
 
 interface ExportOptions {
   format: 'PDF' | 'CSV' | 'JSON';
@@ -59,17 +58,11 @@ export default function PremiumDataExport() {
         <div className="w-16 h-16 mx-auto bg-orange-100 rounded-full flex items-center justify-center mb-4">
           <span className="text-orange-600 text-2xl">📊</span>
         </div>
-        <h3 className="text-lg font-semibold mb-2">
-          {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS ? 'Premium Data Export' : 'Advanced Data Export'}
-        </h3>
+        <h3 className="text-lg font-semibold mb-2">Premium Data Export</h3>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
-          {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS 
-            ? 'Export your progress data in multiple formats for healthcare providers, personal records, or analysis.'
-            : 'PDF and CSV export features are coming soon. Use the JSON export available in Settings for now.'}
+          Export your progress data in multiple formats for healthcare providers, personal records, or analysis.
         </p>
-        {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && (
-          <Button variant="primary">Upgrade to Premium</Button>
-        )}
+        <Button variant="primary">Upgrade to Premium</Button>
       </div>
     </Card>
   );

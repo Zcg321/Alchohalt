@@ -4,7 +4,6 @@ import { Badge } from '../../components/ui/Badge';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
 import type { Drink } from '../drinks/DrinkForm';
-import { FEATURE_FLAGS } from '../../config/features';
 
 export interface Challenge {
   id: string;
@@ -450,8 +449,8 @@ export default function SocialChallenges({
         </div>
       )}
 
-      {/* Premium Upsell - only show when subscriptions are enabled */}
-      {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && !isPremium && ACTIVE_CHALLENGES.some(c => c.premium) && (
+      {/* Premium Upsell */}
+      {!isPremium && ACTIVE_CHALLENGES.some(c => c.premium) && (
         <div className="mt-6 p-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg text-center">
           <h3 className="font-semibold mb-1">🚀 Premium Challenge Collection</h3>
           <p className="text-sm opacity-90 mb-3">

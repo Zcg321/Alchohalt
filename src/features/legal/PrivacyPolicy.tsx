@@ -103,12 +103,11 @@ export default function PrivacyPolicy() {
         </h2>
         <div className="prose prose-gray dark:prose-invert">
           <p>
-            {t('privacy.policy.contact.content', 'If you have questions about this privacy policy, please contact us:')}
+            {t('privacy.policy.contact.content', 'If you have questions about this privacy policy, please contact us at:')}
           </p>
-          {/* TODO: Add real contact email before public release */}
           <p>
-            <a href="https://github.com/Zcg321/Alchohalt/issues" className="text-primary-600 hover:text-primary-700 underline" target="_blank" rel="noopener noreferrer">
-              GitHub Issues
+            <a href="mailto:privacy@alchohalt.com" className="text-primary-600 hover:text-primary-700 underline">
+              privacy@alchohalt.com
             </a>
           </p>
         </div>

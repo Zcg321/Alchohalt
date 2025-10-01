@@ -75,7 +75,7 @@ export async function validateImport(importData: unknown): Promise<ImportResult>
     // Version compatibility check
     const warnings: string[] = [];
     const currentVersion = CURRENT_SCHEMA_VERSION;
-    const importVersion = data.version || ((data.data as unknown) as Record<string, unknown>).version as number || 1;
+    const importVersion = data.version || (data.data as Record<string, unknown>).version as number || 1;
 
     if (importVersion > currentVersion) {
       warnings.push(`Import data is from a newer app version (v${importVersion}). Some features may not be available.`);
