@@ -13,3 +13,4 @@ coverage
 npm-debug.log*
 
 !public/icons/*.png
+repo_scan.json
