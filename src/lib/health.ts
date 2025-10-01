@@ -99,18 +99,12 @@ export async function isHealthIntegrationAvailable(): Promise<boolean> {
   return false;
 }
 
-// Generic helper for fetching health data
-async function fetchHealthData<T>(
-  platform: 'ios' | 'android',
-  iosQuery: () => Promise<T>,
-  androidQuery: () => Promise<T>
-): Promise<T | null> {
-  try {
-    return platform === 'ios' ? await iosQuery() : await androidQuery();
-  } catch {
-    return null;
-  }
-}
+// Fixed mock values for development/web (not using Math.random for security)
+const MOCK_VALUES = {
+  steps: 7500,
+  sleep: 7.5,
+  heartRate: 72
+};
 
 /**
  * Fetch step count for a date range
@@ -119,33 +113,28 @@ export async function getSteps(startDate: Date, endDate: Date): Promise<number> 
   if (!FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION) return 0;
 
   try {
-    const platform = isIOS() ? 'ios' : isAndroid() ? 'android' : null;
-    // Return fixed mock value for development/web (not using Math.random for security)
-    if (!platform) return 7500;
+    // iOS path
+    if (isIOS() && mockHealthKit) {
+      const data = await mockHealthKit.query({
+        dataType: 'stepCount',
+        from: startDate,
+        to: endDate
+      });
+      return data.reduce((sum, d) => sum + d.quantity, 0);
+    }
 
-    const result = await fetchHealthData(
-      platform,
-      async () => {
-        if (!mockHealthKit) return 0;
-        const data = await mockHealthKit.query({
-          dataType: 'stepCount',
-          from: startDate,
-          to: endDate
-        });
-        return data.reduce((sum, d) => sum + d.quantity, 0);
-      },
-      async () => {
-        if (!mockGoogleFit) return 0;
-        const data = await mockGoogleFit.readData({
-          dataType: 'com.google.step_count.delta',
-          startTime: startDate.getTime(),
-          endTime: endDate.getTime()
-        });
-        return data.points.reduce((sum, p) => sum + p.value, 0);
-      }
-    );
-    
-    return result ?? 0;
+    // Android path
+    if (isAndroid() && mockGoogleFit) {
+      const data = await mockGoogleFit.readData({
+        dataType: 'com.google.step_count.delta',
+        startTime: startDate.getTime(),
+        endTime: endDate.getTime()
+      });
+      return data.points.reduce((sum, p) => sum + p.value, 0);
+    }
+
+    // Mock value for development/web
+    return MOCK_VALUES.steps;
   } catch (error) {
     console.error('Failed to fetch steps:', error);
     return 0;
@@ -164,61 +153,32 @@ export async function getSleepHours(date: Date): Promise<number> {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const platform = isIOS() ? 'ios' : isAndroid() ? 'android' : null;
-    // Return fixed mock value for development/web (not using Math.random for security)
-    if (!platform) return 7.5;
+    // iOS path
+    if (isIOS() && mockHealthKit) {
+      const data = await mockHealthKit.query({
+        dataType: 'sleepAnalysis',
+        from: startOfDay,
+        to: endOfDay
+      });
+      return data.reduce((sum, d) => sum + d.quantity, 0) / 60; // Convert minutes to hours
+    }
 
-    const result = await fetchHealthData(
-      platform,
-      async () => {
-        if (!mockHealthKit) return 0;
-        const data = await mockHealthKit.query({
-          dataType: 'sleepAnalysis',
-          from: startOfDay,
-          to: endOfDay
-        });
-        return data.reduce((sum, d) => sum + d.quantity, 0) / 60; // Convert minutes to hours
-      },
-      async () => {
-        if (!mockGoogleFit) return 0;
-        const data = await mockGoogleFit.readData({
-          dataType: 'com.google.sleep.segment',
-          startTime: startOfDay.getTime(),
-          endTime: endOfDay.getTime()
-        });
-        return data.points.reduce((sum, p) => sum + p.value, 0) / 60; // Convert minutes to hours
-      }
-    );
-    
-    return result ?? 0;
+    // Android path
+    if (isAndroid() && mockGoogleFit) {
+      const data = await mockGoogleFit.readData({
+        dataType: 'com.google.sleep.segment',
+        startTime: startOfDay.getTime(),
+        endTime: endOfDay.getTime()
+      });
+      return data.points.reduce((sum, p) => sum + p.value, 0) / 60; // Convert minutes to hours
+    }
+
+    // Mock value for development/web
+    return MOCK_VALUES.sleep;
   } catch (error) {
     console.error('Failed to fetch sleep hours:', error);
     return 0;
   }
-}
-
-// Helper: Fetch iOS heart rate
-async function fetchIOSHeartRate(startOfDay: Date, endOfDay: Date): Promise<number> {
-  if (!mockHealthKit) return 0;
-  const data = await mockHealthKit.query({
-    dataType: 'heartRate',
-    from: startOfDay,
-    to: endOfDay
-  });
-  if (data.length === 0) return 0;
-  return data.reduce((sum, d) => sum + d.quantity, 0) / data.length;
-}
-
-// Helper: Fetch Android heart rate
-async function fetchAndroidHeartRate(startOfDay: Date, endOfDay: Date): Promise<number> {
-  if (!mockGoogleFit) return 0;
-  const data = await mockGoogleFit.readData({
-    dataType: 'com.google.heart_rate.bpm',
-    startTime: startOfDay.getTime(),
-    endTime: endOfDay.getTime()
-  });
-  if (data.points.length === 0) return 0;
-  return data.points.reduce((sum, p) => sum + p.value, 0) / data.points.length;
 }
 
 /**
@@ -233,11 +193,30 @@ export async function getHeartRate(date: Date): Promise<number> {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    if (isIOS()) return await fetchIOSHeartRate(startOfDay, endOfDay);
-    if (isAndroid()) return await fetchAndroidHeartRate(startOfDay, endOfDay);
-    
-    // Return fixed mock value for development/web (not using Math.random for security)
-    return 72; // 72 bpm
+    // iOS path
+    if (isIOS() && mockHealthKit) {
+      const data = await mockHealthKit.query({
+        dataType: 'heartRate',
+        from: startOfDay,
+        to: endOfDay
+      });
+      if (data.length === 0) return 0;
+      return data.reduce((sum, d) => sum + d.quantity, 0) / data.length;
+    }
+
+    // Android path
+    if (isAndroid() && mockGoogleFit) {
+      const data = await mockGoogleFit.readData({
+        dataType: 'com.google.heart_rate.bpm',
+        startTime: startOfDay.getTime(),
+        endTime: endOfDay.getTime()
+      });
+      if (data.points.length === 0) return 0;
+      return data.points.reduce((sum, p) => sum + p.value, 0) / data.points.length;
+    }
+
+    // Mock value for development/web
+    return MOCK_VALUES.heartRate;
   } catch (error) {
     console.error('Failed to fetch heart rate:', error);
     return 0;
