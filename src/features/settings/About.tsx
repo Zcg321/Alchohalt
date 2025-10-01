@@ -55,12 +55,7 @@ export default function About() {
             {t('support.description', 'We\'re here to help you on your wellness journey. Your feedback helps us improve the app.')}
           </p>
           <div className="flex flex-col gap-2 mt-3">
-            <a 
-              href="mailto:support@alchohalt.com" 
-              className="text-primary-600 hover:text-primary-700 underline"
-            >
-              📧 support@alchohalt.com
-            </a>
+            {/* TODO: Update with real support email before public release */}
             <a 
               href="https://github.com/Zcg321/Alchohalt/issues" 
               className="text-primary-600 hover:text-primary-700 underline"
@@ -68,6 +63,14 @@ export default function About() {
               rel="noopener noreferrer"
             >
               🐛 Report Issues on GitHub
+            </a>
+            <a 
+              href="https://github.com/Zcg321/Alchohalt/discussions" 
+              className="text-primary-600 hover:text-primary-700 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              💬 Community Discussions
             </a>
           </div>
         </div>
