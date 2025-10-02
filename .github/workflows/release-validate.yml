@@ -1,0 +1,91 @@
+name: Release Validation
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-artifacts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Verify code quality
+        run: npm run verify
+      
+      - name: Build web bundle
+        run: npm run build
+      
+      - name: Zip web distribution
+        run: |
+          cd dist
+          zip -r ../alchohalt-web-dist-${{ github.ref_name }}.zip .
+          cd ..
+      
+      - name: Upload web build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: alchohalt-web-dist-${{ github.ref_name }}
+          path: |
+            dist/**
+            alchohalt-web-dist-${{ github.ref_name }}.zip
+          retention-days: 30
+      
+      - name: Set up Java for Android
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Sync Capacitor
+        run: npx cap sync android
+      
+      - name: Build Android APK (unsigned)
+        working-directory: android
+        run: ./gradlew assembleRelease
+        continue-on-error: true
+      
+      - name: Upload Android APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alchohalt-android-apk-${{ github.ref_name }}
+          path: android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+      
+      - name: iOS build setup note
+        run: |
+          echo "iOS build requires macOS runner and signing certificates."
+          echo "Skipping iOS build on Linux runner."
+          echo "For iOS builds, use: npm run build:ios on macOS with Xcode."
+      
+      - name: Create release summary
+        run: |
+          echo "# Release Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ Completed" >> $GITHUB_STEP_SUMMARY
+          echo "- Web bundle built successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- Code quality checks passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Web build uploaded" >> $GITHUB_STEP_SUMMARY
+          echo "- Android APK uploaded (if build succeeded)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ℹ️ Note" >> $GITHUB_STEP_SUMMARY
+          echo "iOS builds require macOS runner with Xcode and signing certificates." >> $GITHUB_STEP_SUMMARY
+          echo "No signing secrets are required for this dry-run build." >> $GITHUB_STEP_SUMMARY

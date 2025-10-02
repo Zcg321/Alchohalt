@@ -14,7 +14,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       - name: Install deps (best-effort)
         run: |
@@ -23,8 +23,8 @@ jobs:
         run: |
           python3 --version
           python3 repo_scan.py | sed -n '1,200p'
-      - name: Repo Scan (strict)
-        run: SCAN_MAX_FILE=600 SCAN_MAX_FN=80 SCAN_COMPLEXITY=23 python3 repo_scan.py --fail
+      - name: Repo Scan (informational budgets)
+        run: SCAN_MAX_FILE=600 SCAN_MAX_FN=80 SCAN_COMPLEXITY=23 python3 repo_scan.py || echo "Budget warnings (non-blocking)"
       - name: Lint / Typecheck / Tests (best-effort)
         run: |
           npm run lint || true

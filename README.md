@@ -41,7 +41,28 @@ Enable optional daily check-in reminders from Settings. Times are stored locally
 - `npm run typecheck`
 - `npm test`
 - `npm run build`
+- `npm run verify` - Run typecheck + lint + test in sequence
 - `npm run health:scan` - Comprehensive health scan (see [QUICKSTART_HEALTH_SCAN.md](./QUICKSTART_HEALTH_SCAN.md))
+
+## First Device Test - Mobile Builds
+
+### Android
+```bash
+npm run build:android
+```
+Builds the Android APK. Output: `android/app/build/outputs/apk/release/`
+
+### iOS
+```bash
+npm run build:ios
+```
+Creates an iOS archive. Output: `ios/App/build/App.xcarchive`
+
+### Bundle Size Report
+```bash
+npm run size:report
+```
+Analyzes and reports bundle size for web build.
 
 ## Spending Dashboard
 - Budget vs. actual spend with variance bar

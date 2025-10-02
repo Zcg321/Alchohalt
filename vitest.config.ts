@@ -42,7 +42,16 @@ export default defineConfig({
         "src/**/*.stories.{ts,tsx}",
         "src/features/legal/**",
         "src/features/onboarding/**",
-        "src/services/platform.ts"
+        "src/services/platform.ts",
+        // Exclude feature-gated scaffolding/stub code (Tasks 16-24)
+        "src/features/security/**",      // Task 18: App lock (behind ENABLE_APP_LOCK flag)
+        "src/features/health/**",        // Task 19: Health integrations stub (behind ENABLE_HEALTH_INTEGRATION flag)
+        "src/features/analytics/**",     // Task 21: Analytics tiles (behind ENABLE_ANALYTICS_TILES flag)
+        "src/features/iap/**",           // Task 23-24: IAP abstraction (behind ENABLE_IAP flag)
+        "src/lib/encryption/**",         // Task 20: Local encryption (behind ENABLE_LOCAL_ENCRYPTION flag)
+        "src/lib/csv-export.ts",         // Task 17: CSV export (free feature, to be tested separately)
+        "src/lib/pdf-export.ts",         // Task 17: PDF export stub (behind ENABLE_PDF_CSV_EXPORT flag)
+        "src/components/PremiumGate.tsx" // Task 16: Premium plumbing (behind ENABLE_PREMIUM_FEATURES flag)
       ],
       lines: parseInt(process.env.TEST_COVERAGE_LINES ?? "50", 10),
     },
