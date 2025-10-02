@@ -11,34 +11,10 @@ on:
 
 permissions:
   contents: read
-  security-events: write
-  actions: read
 
 jobs:
-  codeql:
-    name: CodeQL Analysis
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      contents: read
-      actions: read
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript-typescript
-      
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-      
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript-typescript"
+  # CodeQL is handled by GitHub's default setup in Security tab
+  # Removing custom CodeQL job to avoid conflict with default setup
   
   gitleaks:
     name: Secret Scanning
