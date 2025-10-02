@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       
       - name: Install dependencies
@@ -31,11 +31,19 @@ jobs:
       - name: Build web bundle
         run: npm run build
       
+      - name: Zip web distribution
+        run: |
+          cd dist
+          zip -r ../alchohalt-web-dist-${{ github.ref_name }}.zip .
+          cd ..
+      
       - name: Upload web build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: web-build-${{ github.ref_name }}
-          path: dist/
+          name: alchohalt-web-dist-${{ github.ref_name }}
+          path: |
+            dist/**
+            alchohalt-web-dist-${{ github.ref_name }}.zip
           retention-days: 30
       
       - name: Set up Java for Android
@@ -56,8 +64,8 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk-${{ github.ref_name }}
-          path: android/app/build/outputs/apk/release/
+          name: alchohalt-android-apk-${{ github.ref_name }}
+          path: android/app/build/outputs/apk/release/*.apk
           retention-days: 30
       
       - name: iOS build setup note

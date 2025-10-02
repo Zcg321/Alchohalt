@@ -340,6 +340,86 @@ cd ../..
 
 ---
 
+## Future Improvements (Post-MVP)
+
+### Security Hardening (App Lock)
+
+**Recommended enhancements for future releases**:
+
+1. **Rate limiting**: Add exponential back-off after failed PIN attempts
+   - 3 attempts: 30-second lockout
+   - 6 attempts: 5-minute lockout
+   - 9 attempts: 30-minute lockout or data wipe option
+
+2. **Screenshot prevention**: On sensitive screens (lock screen, settings with PIN visible)
+   - iOS: `UIApplication.shared.ignoreSnapshotOnNextApplicationLaunch()`
+   - Android: `window.setFlags(WindowManager.LayoutParams.FLAG_SECURE)`
+
+3. **Biometric authentication**: Add fingerprint/Face ID support
+   - Use Capacitor Biometrics plugin
+   - Fall back to PIN if biometric fails
+
+4. **Session timeout**: Auto-lock after N minutes of inactivity
+
+**Status**: Current implementation is functional for MVP. These hardening features can be added in post-release updates based on user feedback and security requirements.
+
+---
+
+## 4) Store Compliance & Release Readiness
+
+### 📋 Store-Compliance Basics (Blocking Checkboxes)
+
+**Status**: REQUIRES VERIFICATION BEFORE RELEASE
+
+#### ⚠️ Support Contact Information
+- [ ] **Real support contact present** in Privacy Policy and Terms of Service
+- [ ] **No placeholder emails** (no support@example.com, privacy@placeholder.com)
+- [ ] **GitHub Issues/Discussions links** properly configured and working
+- [ ] **Contact information accessible** from About/Settings screen
+
+**Current Status**: Using GitHub Issues/Discussions links. No placeholder emails in UI.
+
+**Action Required**: Verify all contact links work and lead to appropriate support channels.
+
+#### ⚠️ App Store Screenshots
+- [ ] **Placeholder screenshots replaced** with real app captures
+- [ ] **Core flows captured**: 
+  - [ ] Logging screen (add drink entry)
+  - [ ] Stats/Dashboard (main view with data)
+  - [ ] Settings panel (with features visible)
+  - [ ] Reminder notification flow
+  - [ ] Data export/import demonstration
+- [ ] **Screenshots show actual data** (not Lorem Ipsum or test data)
+- [ ] **Dark mode + Light mode** screenshots (if applicable)
+- [ ] **Multiple device sizes** (phone, tablet if supported)
+
+**Current Status**: No screenshots committed to repository yet.
+
+**Location**: Should be in `public/screenshots/` or `assets/store/`
+
+**Action Required**: 
+1. Take screenshots of all core flows
+2. Ensure screenshots show realistic, non-offensive data
+3. Verify screenshots meet store guidelines (no inappropriate content)
+4. Add screenshots to repository in `public/screenshots/`
+
+#### ⚠️ Legal & Privacy Compliance
+- [ ] **Privacy Policy** reviewed and accurate
+- [ ] **Terms of Service** reviewed and accurate  
+- [ ] **Data collection disclosure** accurate (currently: 100% on-device, no analytics)
+- [ ] **Age rating justification** documented (alcohol content → 17+/18+)
+- [ ] **Health disclaimers** present (no medical advice)
+
+**Current Status**: 
+- Privacy policy exists: `src/features/legal/PrivacyPolicy.tsx`
+- Terms exist: `src/features/legal/TermsOfService.tsx`
+- Disclaimers: "Not medical advice" present
+- Data: 100% on-device, no external analytics
+
+**Action Required**: Review legal documents for accuracy before submission.
+
+---
+
 ## Summary
 
 ### Copilot Deliverables - COMPLETE ✅
