@@ -27,19 +27,19 @@ export function HALTCorrelationsTile({ onToggle }: { onToggle?: () => void }) {
   entries.forEach(entry => {
     const isHighCraving = entry.craving >= 4;
     
-    if (entry.halt.H) {
+    if (entry.halt && entry.halt.H) {
       haltCounts.H++;
       if (isHighCraving) haltWithHighCraving.H++;
     }
-    if (entry.halt.A) {
+    if (entry.halt && entry.halt.A) {
       haltCounts.A++;
       if (isHighCraving) haltWithHighCraving.A++;
     }
-    if (entry.halt.L) {
+    if (entry.halt && entry.halt.L) {
       haltCounts.L++;
       if (isHighCraving) haltWithHighCraving.L++;
     }
-    if (entry.halt.T) {
+    if (entry.halt && entry.halt.T) {
       haltCounts.T++;
       if (isHighCraving) haltWithHighCraving.T++;
     }
