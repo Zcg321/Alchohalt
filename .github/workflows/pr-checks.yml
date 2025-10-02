@@ -26,6 +26,9 @@ jobs:
       - name: Verify (typecheck + lint + test)
         run: npm run verify
       
+      - name: Security audit
+        run: npm run audit:ci
+      
       - name: Build
         run: npm run build
       
