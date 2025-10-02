@@ -14,7 +14,12 @@ export function TrendsTile({ onToggle }: { onToggle?: () => void }) {
   const recentEntries = entries.filter(e => e.ts >= thirtyDaysAgo);
 
   const totalDrinks = recentEntries.reduce((sum, e) => sum + e.stdDrinks, 0);
-  const averagePerDay = recentEntries.length > 0 ? totalDrinks / 30 : 0;
+  // Count unique days in recentEntries
+  const uniqueDays = new Set(recentEntries.map(e => {
+    const d = new Date(e.ts);
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  })).size;
+  const averagePerDay = uniqueDays > 0 ? totalDrinks / uniqueDays : 0;
   const averageCraving = recentEntries.length > 0
     ? recentEntries.reduce((sum, e) => sum + e.craving, 0) / recentEntries.length
     : 0;
