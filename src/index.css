@@ -106,28 +106,69 @@
 }
 
 @layer components {
-  /* Enhanced card system */
+  /*
+   * Card system. One canonical .card. Variants stack with .card-elevated
+   * (slightly stronger surface) or .card-premium (warm accent ring for
+   * unlocked premium content).
+   *
+   * Polish principle: cards are containers, not buttons. They do NOT
+   * translate / scale / glow on hover by default — those motions are
+   * for tap targets. Subtle shadow lift on hover only when the card
+   * is itself a clickable surface (then add .card-interactive).
+   */
   .card {
-    @apply bg-white dark:bg-neutral-800 rounded-xl shadow-card border border-neutral-200 dark:border-neutral-700;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateZ(0); /* GPU acceleration */
+    @apply bg-white border border-neutral-200/80 rounded-2xl shadow-card;
+    @apply dark:bg-neutral-800/60 dark:border-neutral-700/70;
+    color: var(--color-text-primary);
   }
 
-  .card:hover {
-    @apply shadow-lg;
-    transform: translateY(-1px) translateZ(0);
+  .card-elevated {
+    @apply shadow-card-hover;
   }
-  
+
+  .card-premium {
+    @apply border-accent-200/70 dark:border-accent-700/40;
+    box-shadow: var(--shadow-soft), 0 0 0 1px rgb(204 135 68 / 0.08);
+  }
+
+  .card-interactive {
+    @apply transition-shadow duration-200 ease-out cursor-pointer;
+  }
+
+  .card-interactive:hover {
+    @apply shadow-card-hover;
+  }
+
   .card-header {
-    @apply p-4 sm:p-6 border-b border-neutral-200 dark:border-neutral-700;
+    @apply px-5 sm:px-6 py-4 border-b border-neutral-200/70 dark:border-neutral-700/60;
   }
-  
+
   .card-content {
-    @apply p-4 sm:p-6;
+    @apply px-5 sm:px-6 py-5;
   }
-  
+
   .card-footer {
-    @apply p-4 sm:p-6 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/50 rounded-b-xl;
+    @apply px-5 sm:px-6 py-4 border-t border-neutral-200/70 dark:border-neutral-700/60 bg-neutral-50/60 dark:bg-neutral-800/40 rounded-b-2xl;
+  }
+
+  /*
+   * Stat number — for streak count, money saved, drink totals.
+   * Tabular figures + tighter tracking so the digit width is stable
+   * (the number doesn't dance as the value changes).
+   */
+  .stat-num {
+    @apply font-semibold tracking-tight;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+
+  /*
+   * Section spacing — apply between top-level dashboard sections so
+   * the rhythm is consistent across screens. Horizontal padding lives
+   * on the page container; this only governs vertical breathing room.
+   */
+  .section-stack > * + * {
+    @apply mt-6 sm:mt-8;
   }
   
   /* Mobile-optimized buttons */
@@ -137,10 +178,10 @@
     user-select: none;
   }
 
-  .btn:active {
-    transform: scale(0.95);
+  .btn:active:not(:disabled) {
+    transform: scale(0.98);
   }
-  
+
   .btn-primary {
     @apply bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500 shadow-sm hover:shadow-md active:bg-primary-800;
   }
@@ -165,16 +206,13 @@
     @apply bg-transparent text-neutral-700 border border-neutral-300 hover:bg-neutral-50 focus-visible:ring-neutral-500 dark:text-neutral-300 dark:border-neutral-600 dark:hover:bg-neutral-800;
   }
   
-  /* Enhanced form inputs */
+  /* Form inputs — stable layout. No translateY on focus (moving the
+     input under the user's caret while they type is hostile). */
   .input {
-    @apply block w-full px-3 py-3 text-base border border-neutral-300 rounded-lg bg-white placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 disabled:bg-neutral-50 disabled:text-neutral-500 dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-100 dark:placeholder-neutral-400 dark:focus:border-primary-400 dark:disabled:bg-neutral-900 transition-all duration-200;
+    @apply block w-full px-3.5 py-2.5 text-base border border-neutral-300 rounded-lg bg-white placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 disabled:bg-neutral-50 disabled:text-neutral-500 dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-100 dark:placeholder-neutral-400 dark:focus:border-primary-400 dark:disabled:bg-neutral-900 transition-colors duration-150;
     font-size: 16px; /* Prevents zoom on iOS */
     -webkit-appearance: none;
     appearance: none;
-  }
-
-  .input:focus {
-    transform: translateY(-1px);
   }
   
   .label {
@@ -241,8 +279,8 @@
   }
 
   .slider::-webkit-slider-thumb:hover {
-    @apply border-primary-600 scale-110;
-    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.1);
+    @apply border-primary-600;
+    box-shadow: 0 0 0 6px rgb(14 165 233 / 0.12);
   }
   
   .slider::-moz-range-thumb {

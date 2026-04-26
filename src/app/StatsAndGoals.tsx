@@ -30,14 +30,20 @@ export default function StatsAndGoals({ drinks, goals, onGoalsChange, id }: Prop
     .map((d) => stdDrinks(d.volumeMl, d.abvPct) * pricePerStd);
 
   return (
-    <section id={id} className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-      <div className="card text-center lg:col-span-1">
-        <div className="card-content">
-          <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
+    <section
+      id={id}
+      className="mx-auto w-full max-w-4xl px-4 py-2 grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-3"
+    >
+      <div className="card lg:col-span-1">
+        <div className="card-content text-center">
+          <div className="text-[10px] uppercase tracking-[0.12em] font-medium text-neutral-500 dark:text-neutral-400">
+            Total standard drinks
+          </div>
+          <div className="mt-1.5 stat-num text-4xl sm:text-5xl text-neutral-900 dark:text-neutral-50 leading-none">
             {totalStd.toFixed(1)}
           </div>
-          <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Total Standard Drinks
+          <div className="mt-3 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
+            All entries, all-time
           </div>
         </div>
       </div>

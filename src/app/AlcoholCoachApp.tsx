@@ -122,13 +122,22 @@ export function AlcoholCoachApp() {
         onDismiss={() => setShowUpdateBanner(false)}
       />
 
-      {/* Online Status Indicator */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
-        <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} animate-pulse`} />
-        <span className="text-xs text-gray-600 bg-white/90 px-2 py-1 rounded shadow" role="status" aria-live="polite">
-          {isOnline ? t('status.online') : t('status.offline')}
-        </span>
-      </div>
+      {/*
+       * Offline indicator. Only visible when the user is OFFLINE — when
+       * online there's no value in showing "Online" to a privacy-first
+       * app whose data never leaves the device. Mounted at the bottom
+       * of the viewport so it doesn't fight the header crisis button.
+       */}
+      {!isOnline && (
+        <div
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-full bg-neutral-900/90 px-3.5 py-2 text-xs font-medium text-white shadow-md backdrop-blur-sm"
+          role="status"
+          aria-live="polite"
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden />
+          {t('status.offline')}
+        </div>
+      )}
 
       <AppHeader onOpenCrisis={() => setShowCrisis(true)} />
 
@@ -137,23 +146,26 @@ export function AlcoholCoachApp() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="crisis-dialog-title"
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/60 p-4"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-neutral-950/70 backdrop-blur-sm p-4 animate-fade-in"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowCrisis(false);
           }}
         >
-          <div className="my-8 w-full max-w-2xl rounded-lg bg-white shadow-xl dark:bg-gray-900">
-            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
-              <h2 id="crisis-dialog-title" className="text-base font-semibold">
+          <div className="my-8 w-full max-w-2xl rounded-2xl bg-white shadow-xl ring-1 ring-neutral-200/70 dark:bg-neutral-900 dark:ring-neutral-800 animate-slide-up">
+            <div className="flex items-center justify-between border-b border-neutral-200/70 px-5 py-4 dark:border-neutral-800">
+              <h2 id="crisis-dialog-title" className="text-base font-semibold tracking-tight">
                 Need help now?
               </h2>
               <button
                 type="button"
                 onClick={() => setShowCrisis(false)}
                 aria-label="Close"
-                className="rounded-md px-2 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
               >
-                ✕
+                <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
             <CrisisResources />

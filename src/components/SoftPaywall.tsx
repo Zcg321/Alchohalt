@@ -62,26 +62,46 @@ export default function SoftPaywall({
 
   return (
     <div
-      className={`relative rounded-md border border-amber-300 bg-amber-50/50 dark:border-amber-700 dark:bg-amber-950/20 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-accent-200/70 bg-gradient-to-br from-accent-50/80 via-white to-white dark:border-accent-900/50 dark:from-accent-950/40 dark:via-neutral-900 dark:to-neutral-900 ${className}`}
       data-soft-paywall={feature}
+      style={{ boxShadow: '0 0 0 1px rgb(204 135 68 / 0.06), 0 1px 2px 0 rgb(15 23 42 / 0.04)' }}
     >
       {/* Dimmed, non-interactive preview — user sees the shape of the
-          feature so they understand what they'd unlock. */}
+          feature so they understand what they'd unlock. Slight blur
+          + saturation drop reads as "preview" instead of "broken". */}
       <div
         aria-hidden
-        className="pointer-events-none select-none opacity-40 [filter:blur(0.5px)]"
+        className="pointer-events-none select-none opacity-30 [filter:blur(1px)_saturate(0.6)]"
       >
         {children}
       </div>
 
+      {/* Soft fade so the preview blends into the CTA card rather than
+          ending in a hard horizontal line. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-white/85 dark:via-neutral-900/40 dark:to-neutral-900/85"
+      />
+
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-        <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-          ✨ {unlockText}
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-100/80 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent-800 dark:bg-accent-900/40 dark:text-accent-200">
+          <svg
+            aria-hidden
+            viewBox="0 0 16 16"
+            className="h-3 w-3"
+            fill="currentColor"
+          >
+            <path d="M8 1.5l1.6 4 4.2.4-3.2 2.9 1 4.2L8 11l-3.6 1.9 1-4.2L2.2 5.9l4.2-.4z" />
+          </svg>
+          Premium
+        </span>
+        <p className="max-w-xs text-sm font-medium text-neutral-800 dark:text-neutral-100">
+          {unlockText}
         </p>
         <button
           type="button"
           onClick={handleUnlock}
-          className="rounded-md bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700"
+          className="rounded-full bg-neutral-900 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition-colors min-h-[40px]"
         >
           {t('paywall.cta')}
         </button>
