@@ -27,7 +27,7 @@ export default function OnboardingFlow() {
     {
       id: 'privacy',
       title: t('onboarding.privacy.title', 'Your Privacy Matters'),
-      description: t('onboarding.privacy.description', 'All your data stays on your device. We never collect, store, or share your personal information.'),
+      description: t('onboarding.privacy.description', 'Your wellness data stays on your phone by default. Optional, opt-in AI features can send anonymized patterns to AI providers — you control this in Settings → AI.'),
       icon: '🔒'
     },
     {
@@ -39,7 +39,7 @@ export default function OnboardingFlow() {
     {
       id: 'insights',
       title: t('onboarding.insights.title', 'Personalized Insights'),
-      description: t('onboarding.insights.description', 'Get AI-powered insights about your habits, triggers, and progress over time.'),
+      description: t('onboarding.insights.description', 'On-device pattern analytics by default. Optional AI Insights (off until you enable it) can generate written reflections from anonymized summaries.'),
       icon: '🧠'
     },
     {

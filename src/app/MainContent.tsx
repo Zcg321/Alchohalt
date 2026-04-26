@@ -18,6 +18,7 @@ const AchievementDisplay = React.lazy(() => import('../features/achievements/Ach
 const SocialChallenges = React.lazy(() => import('../features/challenges/SocialChallenges'));
 const EnhancedMoodTracker = React.lazy(() => import('../features/mood/EnhancedMoodTracker'));
 const PremiumWellnessDashboard = React.lazy(() => import('../features/wellness/PremiumWellnessDashboard'));
+const AIInsightsTile = React.lazy(() => import('../features/ai/AIInsightsTile'));
 
 interface MainContentProps {
   drinks: Drink[];
@@ -154,10 +155,16 @@ export default function MainContent({
           </Suspense>
 
           <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-            <InsightsPanel 
+            <InsightsPanel
               drinks={drinks}
               goals={goals}
             />
+          </Suspense>
+
+          {/* AI Insights — opt-in, consent-gated, network call deferred
+              to v1.1 (see docs/ai_architecture.md). */}
+          <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
+            <AIInsightsTile />
           </Suspense>
         </div>
       </div>

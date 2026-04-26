@@ -6,6 +6,7 @@ import DevTools from './DevTools';
 import ExportImport from '../drinks/ExportImport';
 import LegalLinks from './LegalLinks';
 import About from './About';
+import AISettingsPanel from '../ai/AISettingsPanel';
 
 export default function SettingsPanel() {
   const { settings, setTheme, setLanguage, setReminderTimes, setRemindersEnabled } = useDB(s => ({
@@ -124,13 +125,17 @@ export default function SettingsPanel() {
             Data Management
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            All data stays on this device. Export for backup. Not medical advice.
+            Your wellness data stays on this device by default. Opt-in
+            AI features can change this — see AI Insights below. Not
+            medical advice.
           </p>
         </div>
         <div className="card-content">
           <ExportImport />
         </div>
       </section>
+
+      <AISettingsPanel />
 
       <About />
       <LegalLinks />

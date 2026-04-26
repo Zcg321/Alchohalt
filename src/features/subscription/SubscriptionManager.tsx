@@ -123,7 +123,8 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
           Free forever for the things that matter. Premium when you want more.
         </p>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
-          Your data never leaves your phone — on any plan.
+          Your wellness data stays on your phone by default — on any plan.
+          AI Insights is opt-in and controlled in Settings → AI.
         </p>
       </header>
 
@@ -227,7 +228,8 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
 
       <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-500">
         🔒 Payments handled by Apple / Google. Cancel any time from your device&apos;s
-        subscription settings. All wellness data stays on your device.
+        subscription settings. Your wellness data stays on your device by default;
+        opt-in AI features can change this — see Settings → AI.
       </p>
     </div>
   );

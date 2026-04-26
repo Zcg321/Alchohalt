@@ -7,9 +7,9 @@
 
 ## TL;DR
 
-Your wellness data never leaves your phone. We don't run a server that
-sees your drink log, mood, or journal entries. The only third parties
-that ever see anything from your use of Alchohalt are:
+**Your wellness data stays on your phone by default.** We don't run a
+server that sees your drink log, mood, or journal entries. The only
+third parties that ever see anything from your use of Alchohalt are:
 
 1. **Apple App Store / Google Play** — they handle your subscription
    payment if you pay for premium. They tell us only "this anonymous
@@ -18,10 +18,19 @@ that ever see anything from your use of Alchohalt are:
    anonymous user ID and a product ID at the moment you make a
    purchase, so we can confirm your premium entitlement is real. They
    never see your wellness data.
+3. **Anthropic — only if you opt in to AI Insights.** AI Insights is
+   off by default. When you turn it on, an anonymized summary of your
+   patterns (drink counts grouped by week, mood-tag counts, HALT
+   counts, streak length, day-of-week pattern) is sent through a
+   server-side proxy to Anthropic. **Your raw data — journal text,
+   notes, exact times, custom drink names, voice transcripts — never
+   leaves the device, even with AI Insights on.** See Section 5 for
+   the full data flow.
 
 Everything else — every drink you log, every mood tag, every HALT
 trigger, every dollar spent, every journal entry — stays on your
-device.
+device unless you (a) explicitly export it, or (b) opt in to AI
+Insights.
 
 ---
 
@@ -49,12 +58,13 @@ The only data that ever leaves your device:
 |---|---|---|---|
 | Apple / Google | Anonymous purchase token + product ID | Only when you tap "Purchase" or "Restore Purchases" | They process the payment + give you a receipt |
 | RevenueCat | Same purchase token + your device's anonymous app-instance ID | Same moments | They validate the receipt + tell us the premium entitlement is active |
+| **Anthropic** (via server-side proxy) | **Anonymized pattern summary** — see Section 5 for the exact field list | **Only if you opt in to AI Insights AND tap "Generate insights"** | They generate written reflections from the summary |
 | 988 / SAMHSA / hotlines | Whatever you say in the call/text | Only when YOU tap a hotline link in our Crisis Resources page | They are the actual crisis service. We don't see what you say. |
 | External support sites (AA, SMART Recovery) | Whatever your browser tells them | Only when YOU tap a "Visit" link | We don't proxy these — they're direct browser links. |
 
 That's the complete list.
 
-### What we do NOT collect (and never will)
+### What we do NOT collect by default
 
 - Your name, email, phone number, or address — we don't have an
   account system
@@ -126,13 +136,91 @@ sends crash stack traces and basic device metadata (OS version, app
 version, locale) to Sentry's servers. Wellness data is NEVER included
 in crash reports. You can disable this from Settings at any time.
 
-### AI-assisted insights — OFF by default, on-device when feasible
+### AI Insights — OFF by default, opt-in only
 
-Future "AI insights" premium features will be on-device when feasible.
-If a feature ever requires sending data to a remote AI, it will be
-clearly labeled and require explicit opt-in per use, with the data
-that would be sent shown to you first. We will update this policy
-before any such feature ships.
+AI Insights is an optional, opt-in feature available on premium tiers.
+**It is off by default.** Turning it on requires:
+
+1. A premium subscription (so the feature is gated by entitlement).
+2. Reading the in-app consent screen that lists exactly what is sent
+   and what is never sent.
+3. Affirming the "I understand" checkbox.
+4. Tapping **Enable AI Insights**.
+
+#### What gets sent (only after you opt in)
+
+When you tap "Generate insights," an anonymized summary is built
+locally on your device and sent through our server-side proxy to
+Anthropic (Claude). The summary contains exclusively:
+
+- Drink counts grouped by ISO week (no exact timestamps).
+- Mood-tag counts (e.g., `happy: 12, anxious: 4`).
+- HALT trigger counts (hungry / angry / lonely / tired).
+- Intention counts (celebrate / social / taste / bored / cope / other).
+- Day-of-week pattern (counts only).
+- Current streak length.
+- An anonymous device ID generated locally at consent (rotates on
+  revoke + re-grant).
+- Your locale (e.g., `en`).
+
+The exact JSON shape is defined in `src/lib/ai/types.ts` as
+`SanitizedAIPayload`. The sanitization function in `src/lib/ai/sanitize.ts`
+is **allowlist-based** — fields outside this list cannot pass through.
+A defense-in-depth check runs before every send and refuses to
+transmit if any forbidden field is present.
+
+#### What is NEVER sent, even with AI Insights on
+
+- Your name, email, phone, or address (we never collect these).
+- Your IP address beyond what TLS unavoidably exposes to our proxy.
+- Your location or any GPS data.
+- Any free text you've written: journal entries, drink notes,
+  alt-action text, voice transcripts.
+- Custom drink names you've created (these may contain personal
+  references like "Dad's IPA").
+- Your weight, sex, or any other profile field.
+- Exact timestamps of any logged event.
+- Any persistent device identifier other than the rotating
+  AI-Insights anonymous instance ID.
+
+#### Provider posture (Anthropic)
+
+- Anthropic does not train its production models on customer data.
+- Prompts may be retained for up to 30 days for abuse detection.
+- See https://www.anthropic.com/legal/privacy.
+
+#### How the proxy works
+
+Alchohalt itself does **not** embed an AI provider API key in the
+app bundle. The opt-in network call goes to a server-side proxy that
+holds the API key and rate-limits per anonymous device ID. We log
+only the timestamp and the anonymous ID for rate-limiting; we do not
+log the prompt body. The proxy retains nothing else about your usage.
+
+In v1.0 the proxy is not yet deployed; the consent flow is live but
+the network call itself is gated behind a feature flag and returns
+a "coming in v1.1" placeholder. No data leaves the device until the
+proxy ships.
+
+#### Revoking consent
+
+Settings → AI → **Revoke consent**. Revoking:
+
+- Wipes the anonymous device ID locally.
+- Stops any in-flight request immediately (client-side abort).
+- Future re-grants generate a fresh anonymous device ID, so the
+  proxy cannot link before-vs-after-revoke usage.
+
+There is nothing for us to delete on the server side beyond the
+proxy's rate-limit log; that log retains only the anonymous ID and
+timestamps, not your prompt content.
+
+#### Your state-specific rights
+
+If you reside in Washington (MHMDA), Nevada (SB 370), Colorado
+(CPA), or Connecticut (CTDPA), additional consumer-health-data
+rights apply. See [Consumer Health Data Privacy Policy](./CONSUMER_HEALTH_DATA_POLICY.md)
+for the state-specific disclosures.
 
 ---
 

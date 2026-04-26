@@ -1,7 +1,9 @@
 /*
  * Privacy invariant: this stylesheet must NEVER reference an external CDN.
- * The privacy claim ("your data never leaves your phone") is undermined by
- * a single Google Fonts request leaking the user's IP at first render.
+ * The default-mode privacy claim ("your wellness data stays on your phone
+ * by default") is undermined by a single Google Fonts request leaking the
+ * user's IP at first render. (Opt-in AI features have their own consent
+ * flow and a separate transport layer — they never touch CSS.)
  *
  * We use the platform-native sans font stack (San Francisco on Apple OSes,
  * Roboto on Android, Segoe UI on Windows). Tailwind's `font-sans` is

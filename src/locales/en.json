@@ -148,8 +148,8 @@
       "description": "Your personal, private wellness companion for building healthier drinking habits."
     },
     "privacy": {
-      "title": "Your Privacy Matters", 
-      "description": "All your data stays on your device. We never collect, store, or share your personal information."
+      "title": "Your Privacy Matters",
+      "description": "Your wellness data stays on your phone by default. Optional, opt-in AI features can send anonymized patterns to AI providers — you control this in Settings → AI."
     },
     "tracking": {
       "title": "Smart Tracking",
@@ -157,7 +157,7 @@
     },
     "insights": {
       "title": "Personalized Insights",
-      "description": "Get AI-powered insights about your habits, triggers, and progress over time."
+      "description": "On-device pattern analytics by default. Optional AI Insights (off until you enable it) can generate written reflections from anonymized summaries."
     },
     "goals": {
       "title": "Set Your Goals",
@@ -188,7 +188,7 @@
 
   "privacy": {
     "title": "Your Privacy is Protected",
-    "onDevice": "All your data is stored locally on your device using secure, encrypted storage. We never collect, transmit, or store your personal information on external servers.",
+    "onDevice": "Your wellness data is stored locally on your device using secure, encrypted storage by default. Optional, opt-in AI features can send anonymized patterns (no journal text, no notes, no PII) to AI providers — see Settings → AI to control this.",
     "dataControl": "You have complete control over your data. You can export, import, or delete all information at any time from the Settings panel."
   },
 

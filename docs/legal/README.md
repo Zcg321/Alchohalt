@@ -9,10 +9,13 @@ that MUST be cleared before public launch.
 
 | Document                                 | Purpose                                                                                       | Required by                          |
 |------------------------------------------|-----------------------------------------------------------------------------------------------|--------------------------------------|
-| [PRIVACY_POLICY.md](./PRIVACY_POLICY.md) | Data flow, third parties, GDPR/CCPA rights, retention                                         | App Store + Google Play; GDPR; CCPA  |
+| [PRIVACY_POLICY.md](./PRIVACY_POLICY.md) | Data flow, third parties, GDPR/CCPA rights, retention, AI Insights opt-in flow                | App Store + Google Play; GDPR; CCPA  |
+| [CONSUMER_HEALTH_DATA_POLICY.md](./CONSUMER_HEALTH_DATA_POLICY.md) | Separate consumer-health-data policy for AI Insights data flow; affirmative authorization; right to revoke | WA MHMDA; NV SB 370; CO CPA; CT CTDPA |
 | [TERMS_OF_SERVICE.md](./TERMS_OF_SERVICE.md) | User-publisher agreement, "not medical advice" disclaimer, governing law                  | Implicit; general consumer-law       |
-| [EULA.md](./EULA.md)                     | Software license; Apple-required Section 7 if using a custom EULA                             | Apple App Store Review Guidelines    |
+| [EULA.md](./EULA.md)                     | Software license; Apple-required Section 7 if using a custom EULA; AI Insights authorization clause | Apple App Store Review Guidelines    |
 | [SUBSCRIPTION_TERMS.md](./SUBSCRIPTION_TERMS.md) | Auto-renewal disclosure, refund policy, lifetime-tier promise, free-vs-premium matrix    | App Store + Google Play; CA ARL      |
+
+See also: [docs/ai_architecture.md](../ai_architecture.md) — engineering reference for the AI Insights privacy + sanitization design. Read this before adding any field to the LLM prompt or wiring a different provider.
 
 ## Hosting before launch
 
@@ -36,12 +39,13 @@ at a stable public URL. The owner-task list:
 
 ## Review status
 
-| Document               | Counsel-review status | Last reviewed | Next review |
-|------------------------|------------------------|----------------|--------------|
-| PRIVACY_POLICY.md      | ⏳ Scaffold pending review | —              | Pre-launch   |
-| TERMS_OF_SERVICE.md    | ⏳ Scaffold pending review | —              | Pre-launch   |
-| EULA.md                | ⏳ Scaffold pending review | —              | Pre-launch   |
-| SUBSCRIPTION_TERMS.md  | ⏳ Scaffold pending review | —              | Pre-launch   |
+| Document                       | Counsel-review status     | Last reviewed | Next review |
+|--------------------------------|---------------------------|---------------|-------------|
+| PRIVACY_POLICY.md              | ⏳ Scaffold pending review | —             | Pre-launch  |
+| CONSUMER_HEALTH_DATA_POLICY.md | ⏳ Scaffold pending review | —             | **Pre-launch (load-bearing for WA MHMDA + NV SB 370 compliance — block ship until cleared)** |
+| TERMS_OF_SERVICE.md            | ⏳ Scaffold pending review | —             | Pre-launch  |
+| EULA.md                        | ⏳ Scaffold pending review | —             | Pre-launch  |
+| SUBSCRIPTION_TERMS.md          | ⏳ Scaffold pending review | —             | Pre-launch  |
 
 These are **owner-action items**, not engineering deliverables. Do
 not ship a paid tier without clearing every checkbox in each

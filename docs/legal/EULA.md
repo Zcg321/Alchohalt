@@ -67,6 +67,29 @@ You may not, and may not permit any third party to:
 
 ---
 
+## 2a. AI Insights and consumer health data
+
+If you opt in to the AI Insights feature, you authorize Alchohalt to
+send the anonymized pattern summary defined in
+[Privacy Policy §5](./PRIVACY_POLICY.md#5-optional-features-that-change-this-posture)
+through a server-side proxy to the AI provider (currently Anthropic).
+You retain the right to revoke that authorization at any time in
+Settings → AI; revocation rotates the anonymous device ID locally.
+
+If you reside in Washington (MHMDA), Nevada, Colorado, or Connecticut,
+additional consumer-health-data rights and consent requirements apply.
+Those rights are described in the
+[Consumer Health Data Privacy Policy](./CONSUMER_HEALTH_DATA_POLICY.md)
+and are NOT diminished by this EULA.
+
+The AI Insights feature is provided "AS IS" — the disclaimers in
+Section 5 of this EULA and Section 9 of the
+[Terms of Service](./TERMS_OF_SERVICE.md) explicitly include written
+reflections produced by the AI provider. Such reflections are NOT
+medical advice and do not establish any therapeutic relationship.
+
+---
+
 ## 3. Open-source components
 
 Alchohalt is built on open-source software. Each component is
