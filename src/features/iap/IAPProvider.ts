@@ -11,7 +11,7 @@
  *   RevenueCat. Otherwise Mock.
  */
 
-import { PLANS, type PlanId } from '../../config/plans';
+import { PLANS } from '../../config/plans';
 
 export type ProductId = 'premium_monthly' | 'premium_yearly' | 'premium_lifetime';
 

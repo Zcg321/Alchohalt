@@ -68,7 +68,7 @@ export function generatePDFReport(
 
   if (template === 'detailed' || template === 'analytics') {
     y = drawHeading(doc, 'Drink log', y + 4);
-    y = drawDrinkLog(doc, entries, y, pageHeight);
+    drawDrinkLog(doc, entries, y, pageHeight);
   }
 
   // Footer on every page
