@@ -21,6 +21,8 @@
   "money.spentLast30": "Spent (last 30 days)",
   "money.spentVsBudget": "{{spent}} of {{budget}} budget",
   "money.setBudgetHint": "Set a monthly budget in Settings to track savings.",
+  "paywall.unlock": "Unlock with Premium",
+  "paywall.cta": "See plans",
   "stats.points": "Points",
   "stats.weekTotal": "Week total",
   "stats.weeklyGoalProgress": "Weekly goal progress",

@@ -21,6 +21,8 @@
   "money.spentLast30": "Gastado (últimos 30 días)",
   "money.spentVsBudget": "{{spent}} de {{budget}} de presupuesto",
   "money.setBudgetHint": "Configura un presupuesto mensual en Ajustes para ver tus ahorros.",
+  "paywall.unlock": "Desbloquea con Premium",
+  "paywall.cta": "Ver planes",
   "stats.points": "Puntos",
   "stats.weekTotal": "Total semanal",
   "stats.weeklyGoalProgress": "Progreso de la meta semanal",
