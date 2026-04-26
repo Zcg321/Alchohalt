@@ -4,6 +4,7 @@ import { Badge } from '../../components/ui/Badge';
 import { useSubscriptionStore } from './subscriptionStore';
 import { PLANS, type PlanId } from '../../config/plans';
 import { useAnalytics } from '../analytics/analytics';
+import { getIAPProvider, type ProductId } from '../iap/IAPProvider';
 
 /**
  * 4-tier pricing UI: Free + Monthly + Annual + Lifetime.
@@ -71,20 +72,44 @@ const PER_PLAN_PERKS: Record<PlanId, string[]> = {
 
 export default function SubscriptionManager({ onSubscribe, className }: Props) {
   const { trackSubscriptionEvent } = useAnalytics();
-  const { subscription, setPlan } = useSubscriptionStore();
+  const { subscription, setSubscription } = useSubscriptionStore();
   const [pendingPlan, setPendingPlan] = useState<PlanId | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubscribe = async (planId: PlanId) => {
     if (pendingPlan) return;
+    if (planId === 'free') return;
+    setError(null);
     setPendingPlan(planId);
     try {
       if (onSubscribe) {
         await onSubscribe(planId);
         trackSubscriptionEvent('subscribed', planId);
       } else {
-        // Dev/preview path: directly set the plan locally.
-        setPlan(planId);
+        // Default path: drive the IAP provider directly.
+        const provider = getIAPProvider();
+        const productId = planId as ProductId; // PlanId paid tiers ⊆ ProductId
+        const purchase = await provider.purchase(productId);
+        if (purchase.state === 'approved') {
+          // Pull authoritative entitlement back from the provider so
+          // expiry/trial flags are accurate.
+          const state = await provider.getEntitlementState();
+          setSubscription({
+            plan: planId,
+            verifiedAt: Date.now(),
+            periodEndAt: state.expiryDate ? state.expiryDate.getTime() : null,
+            trialActive: !!state.isTrialActive,
+          });
+          trackSubscriptionEvent('subscribed', planId);
+        } else if (purchase.state === 'cancelled') {
+          // Silent — user changed their mind.
+        } else {
+          setError('Purchase did not complete. Try again or restore prior purchases.');
+        }
       }
+    } catch (err) {
+      const e = err as { message?: string };
+      setError(e.message ?? 'Purchase failed. Please try again.');
     } finally {
       setPendingPlan(null);
     }
@@ -190,6 +215,15 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
           );
         })}
       </div>
+
+      {error ? (
+        <p
+          role="alert"
+          className="mt-6 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-800 dark:bg-red-950/30 dark:text-red-100"
+        >
+          {error}
+        </p>
+      ) : null}
 
       <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-500">
         🔒 Payments handled by Apple / Google. Cancel any time from your device&apos;s

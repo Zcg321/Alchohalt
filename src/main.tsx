@@ -6,9 +6,14 @@ import ErrorBoundary from './components/ErrorBoundary';
 import A11ySkipLink from './components/A11ySkipLink';
 import './index.css';
 import { registerSW } from './features/pwa/registerSW';
+import { bootstrapIAPOnStartup } from './features/iap/restoreEntitlement';
 import { LanguageProvider } from './i18n';
 
 registerSW();
+
+// IAP bootstrap — silent. Restores prior premium entitlement from the
+// device's store account at app open. Failures NEVER block startup.
+void bootstrapIAPOnStartup();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
