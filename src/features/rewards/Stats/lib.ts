@@ -1,11 +1,23 @@
 import { useMemo } from 'react';
-import { stdDrinks, computeStreak, computeLongestStreak, computePoints } from '../../../lib/calc';
+import {
+  stdDrinks,
+  computeStreak,
+  computeLongestStreak,
+  computePoints,
+  computeTotalAFDays,
+  getStreakStatus,
+  type StreakStatus,
+} from '../../../lib/calc';
 import type { Drink, Halt } from '../../drinks/DrinkForm';
 import type { Goals } from '../../../types/common';
 
 export interface StatsData {
   streak: number;
   longest: number;
+  /** Lifetime AF days — never decreases. Owner-locked: every win counts. */
+  totalAFDays: number;
+  /** Soft-restart classification for the encouragement banner. */
+  streakStatus: StreakStatus;
   points: number;
   weekStd: number;
   lastWeekStd: number;
@@ -48,6 +60,8 @@ export function useStats(drinks: Drink[], goals: Goals): StatsData {
     }
     const streak = computeStreak(byDayStd);
     const longest = computeLongestStreak(byDayStd);
+    const totalAFDays = computeTotalAFDays(byDayStd);
+    const streakStatus = getStreakStatus(streak, totalAFDays);
     const points = computePoints(byDayDetail, goals.dailyCap, altEvents30);
     const nowDate = new Date();
     let weekStd = 0;
@@ -71,7 +85,7 @@ export function useStats(drinks: Drink[], goals: Goals): StatsData {
     }
     const avgPerDrinkDay30 = drinkingDays30 ? monthStd / drinkingDays30 : 0;
     const daysSinceLast = lastDrinkTs ? Math.floor((now - lastDrinkTs) / (24 * 60 * 60 * 1000)) : null;
-    return { streak, longest, points, weekStd, lastWeekStd, monthStd, prevMonthStd, avgCraving30,
+    return { streak, longest, totalAFDays, streakStatus, points, weekStd, lastWeekStd, monthStd, prevMonthStd, avgCraving30,
       haltCounts, altEvents30, afDays30, drinks30, daysSinceLast, avgPerDrinkDay30 };
   }, [drinks, goals]);
 }

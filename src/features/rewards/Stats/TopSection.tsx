@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge } from '../../../components/ui/Badge';
 import { Progress } from '../../../components/ui/Progress';
 import { StatRow } from '../../../components/ui/StatRow';
+import SoftRestartBanner from './SoftRestartBanner';
 import type { StatsData } from './lib';
 import type { Goals } from '../../../types/common';
 interface Props {
@@ -26,6 +27,7 @@ export default function TopSection({ data, goals, nf1, t }: Props) {
   const avgChangeArrow = avgChange > 0 ? '↑' : avgChange < 0 ? '↓' : '→';
   return (
     <>
+      <SoftRestartBanner status={data.streakStatus} className="mb-3" />
       <StatRow label={t('stats.afStreak')}>
         <div className="flex items-center gap-2">
           <Badge variant="success">{data.streak}</Badge>
@@ -33,6 +35,9 @@ export default function TopSection({ data, goals, nf1, t }: Props) {
             {t('stats.best')}: {data.longest}
           </span>
         </div>
+      </StatRow>
+      <StatRow label={t('stats.totalAFDays')}>
+        <Badge variant="primary">{data.totalAFDays}</Badge>
       </StatRow>
       <StatRow label={t('stats.points')}>{data.points}</StatRow>
       <StatRow label={t('stats.weekTotal')}>

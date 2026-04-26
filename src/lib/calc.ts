@@ -100,3 +100,54 @@ export function computePoints(
   }
   return points;
 }
+
+/**
+ * Total alcohol-free days across the whole record. NOT a streak — this
+ * is a cumulative count that NEVER decreases. Owner-locked: every AF day
+ * is a real win. Even after a soft-restart, the user keeps every prior
+ * AF day in their lifetime total.
+ */
+export function computeTotalAFDays(drinksByDay: Record<string, number>): number {
+  const days = Object.keys(drinksByDay);
+  if (days.length === 0) return 0;
+  const times = days
+    .map((d) => new Date(d).getTime())
+    .filter((n) => Number.isFinite(n));
+  if (times.length === 0) return 0;
+  let total = 0;
+  const current = new Date(Math.min(...times));
+  const today = new Date();
+  while (current <= today) {
+    const key = current.toISOString().slice(0, 10);
+    if ((drinksByDay[key] ?? 0) === 0) total++;
+    current.setDate(current.getDate() + 1);
+  }
+  return total;
+}
+
+/**
+ * Soft-restart streak status — owner-locked language.
+ *
+ * Recovery best-practice (NIH 2023+ guidance): zero-day reset framing
+ * is actively harmful. We frame "what's true right now" without shaming.
+ *
+ *   'building'  : current streak ≥ 1. "N days alcohol-free."
+ *   'starting'  : current streak = 0 AND total AF = 0. New user.
+ *                 "Today's a fresh start."
+ *   'restart'   : current streak = 0 AND total AF > 0. Returning from
+ *                 a relapse. "You're back. M AF days so far."
+ */
+export type StreakStatus = {
+  kind: 'building' | 'starting' | 'restart';
+  currentStreak: number;
+  totalAFDays: number;
+};
+
+export function getStreakStatus(
+  currentStreak: number,
+  totalAFDays: number,
+): StreakStatus {
+  if (currentStreak > 0) return { kind: 'building', currentStreak, totalAFDays };
+  if (totalAFDays === 0) return { kind: 'starting', currentStreak: 0, totalAFDays: 0 };
+  return { kind: 'restart', currentStreak: 0, totalAFDays };
+}
