@@ -68,7 +68,20 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        // Inter listed first so it picks up self-hosted Inter if shipped
+        // (see commented @font-face in src/index.css). Falls back to
+        // platform-native sans (SF on Apple, Roboto on Android, Segoe on
+        // Windows). NEVER fetched from a CDN — privacy invariant.
+        sans: [
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],

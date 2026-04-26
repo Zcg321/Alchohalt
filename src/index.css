@@ -1,4 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/*
+ * Privacy invariant: this stylesheet must NEVER reference an external CDN.
+ * The privacy claim ("your data never leaves your phone") is undermined by
+ * a single Google Fonts request leaking the user's IP at first render.
+ *
+ * We use the platform-native sans font stack (San Francisco on Apple OSes,
+ * Roboto on Android, Segoe UI on Windows). Tailwind's `font-sans` is
+ * configured to point at this stack via tailwind.config.cjs.
+ *
+ * If owner later wants a custom typeface like Inter for cross-platform
+ * brand consistency: drop the .woff2 files in `public/fonts/inter/` and
+ * uncomment the @font-face block below. Self-hosted; no CDN.
+ *
+ * Reference @font-face block (commented out — uncomment + ship fonts):
+ *   @font-face {
+ *     font-family: 'Inter';
+ *     font-style: normal;
+ *     font-weight: 100 900;
+ *     font-display: swap;
+ *     src: url('/fonts/inter/InterVariable.woff2') format('woff2-variations');
+ *   }
+ */
+
 @import "./styles/theme.css";
 
 @tailwind base;
