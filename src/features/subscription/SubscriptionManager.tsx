@@ -1,348 +1,212 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { useSubscriptionStore } from './subscriptionStore';
+import { PLANS, type PlanId } from '../../config/plans';
 import { useAnalytics } from '../analytics/analytics';
 
-export interface SubscriptionPlan {
-  id: string;
-  name: string;
-  price: number;
-  interval: 'month' | 'year';
-  features: string[];
-  popular?: boolean;
-}
-
-export interface UserSubscription {
-  plan: string;
-  status: 'active' | 'inactive' | 'cancelled' | 'trial';
-  expiresAt?: Date;
-  trialEndsAt?: Date;
-}
-
-const subscriptionPlans: SubscriptionPlan[] = [
-  {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    interval: 'month',
-    features: [
-      'Basic drink logging with intentions',
-      'Simple streak tracking',
-      'Basic goal setting (daily/weekly)',
-      'Last 7 days insights',
-      'Standard mood check-ins',
-      'Basic progress charts',
-      'Weekly summary reports',
-      'Export/import data'
-    ]
-  },
-  {
-    id: 'essential',
-    name: 'Essential',
-    price: 4.99,
-    interval: 'month',
-    popular: true,
-    features: [
-      'Everything in Free',
-      'Extended 30-day insights & trends',
-      'HALT trigger tracking & analytics',
-      'Advanced craving pattern analysis',
-      'Custom goal types & deadlines', 
-      'Enhanced progress visualization',
-      'Personalized recommendations',
-      'Priority customer support'
-    ]
-  },
-  {
-    id: 'premium',
-    name: 'Premium',
-    price: 9.99,
-    interval: 'month',
-    features: [
-      'Everything in Essential',
-      'AI-powered insights & predictions',
-      'Detailed mood tracking with triggers',
-      'Advanced streak badges & achievements',
-      'Spending analysis & budget alerts',
-      'Comprehensive wellness dashboard',
-      'Multi-device sync (coming soon)',
-      'Premium community access',
-      'Advanced export formats'
-    ]
-  }
-];
+/**
+ * 4-tier pricing UI: Free + Monthly + Annual + Lifetime.
+ *
+ * Owner-locked spec (2026-04-26):
+ *   - Free covers ~75% of value
+ *   - Monthly $3.99 — undercuts I Am Sober ($9.99) + Sunnyside ($9.99) ~60%
+ *   - Annual $24.99 — 48% discount vs monthly; below Sunnyside annual ($74.99)
+ *   - Lifetime $69 — undercuts Reframe lifetime ($199) by 65%; the wedge
+ *
+ * Lead positioning per plan:
+ *   - Annual: "Most Popular" (recurring revenue + best margin)
+ *   - Lifetime: "No subscription trap" (the differentiator vs competitors)
+ */
 
 interface Props {
-  currentSubscription?: UserSubscription;
-  onSubscribe: (planId: string) => Promise<void>;
-  onCancel: () => Promise<void>;
+  /**
+   * Wire to the IAP provider's purchase() in [ALCH-IAP-REAL]. If omitted,
+   * the buttons no-op (used in dev / preview).
+   */
+  onSubscribe?: (planId: PlanId) => Promise<void>;
   className?: string;
 }
 
-export default function SubscriptionManager({ 
-  currentSubscription, 
-  onSubscribe, 
-  onCancel, 
-  className 
-}: Props) {
+const ORDER: PlanId[] = ['free', 'premium_monthly', 'premium_yearly', 'premium_lifetime'];
+
+const HIGHLIGHTS: Partial<Record<PlanId, { label: string; tone: 'primary' | 'success' }>> = {
+  premium_yearly: { label: 'Most Popular', tone: 'primary' },
+  premium_lifetime: { label: 'No subscription trap', tone: 'success' },
+};
+
+const PER_PLAN_PERKS: Record<PlanId, string[]> = {
+  free: [
+    'Unlimited drink logging',
+    'Streak tracker (no zero-reset)',
+    'Money-saved counter',
+    'Daily journal',
+    'Crisis resources (988, SAMHSA)',
+    'Biometric lock',
+    'JSON export + import',
+    'One reminder',
+    'Dark mode + EN/ES',
+  ],
+  premium_monthly: [
+    'Everything in Free',
+    'Mood ↔ drink correlation analytics',
+    'Multiple custom reminders',
+    'CSV / PDF export',
+    'Encrypted local backup + import',
+    'Custom drink presets',
+    'Advanced visualizations',
+    'App icon themes',
+    'Future AI insights (opt-in)',
+  ],
+  premium_yearly: [
+    'Everything in Monthly',
+    'Save 48% vs paying monthly',
+  ],
+  premium_lifetime: [
+    'Everything in Yearly',
+    'Pay once. Yours forever.',
+    'No renewal. No surprise charges.',
+  ],
+};
+
+export default function SubscriptionManager({ onSubscribe, className }: Props) {
   const { trackSubscriptionEvent } = useAnalytics();
-  const { setSubscription } = useSubscriptionStore();
-  const [loading, setLoading] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const { subscription, setPlan } = useSubscriptionStore();
+  const [pendingPlan, setPendingPlan] = useState<PlanId | null>(null);
 
-  // Sync with store
-  useEffect(() => {
-    if (currentSubscription) {
-      setSubscription(currentSubscription);
-    }
-  }, [currentSubscription, setSubscription]);
-
-  const isPremium = currentSubscription?.status === 'active' && 
-                   (currentSubscription.plan === 'premium_monthly' || 
-                    currentSubscription.plan === 'premium_yearly');
-
-  const isTrialActive = currentSubscription?.status === 'trial' && 
-                       currentSubscription.trialEndsAt && 
-                       new Date() < currentSubscription.trialEndsAt;
-
-  const handleSubscribe = async (planId: string) => {
-    if (loading) return;
-    setLoading(true);
-    setSelectedPlan(planId);
-    
+  const handleSubscribe = async (planId: PlanId) => {
+    if (pendingPlan) return;
+    setPendingPlan(planId);
     try {
-      await onSubscribe(planId);
-      trackSubscriptionEvent('subscribed', planId);
+      if (onSubscribe) {
+        await onSubscribe(planId);
+        trackSubscriptionEvent('subscribed', planId);
+      } else {
+        // Dev/preview path: directly set the plan locally.
+        setPlan(planId);
+      }
     } finally {
-      setLoading(false);
-      setSelectedPlan(null);
-    }
-  };
-
-  const handleCancel = async () => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      await onCancel();
-      trackSubscriptionEvent('cancelled', currentSubscription?.plan);
-    } finally {
-      setLoading(false);
+      setPendingPlan(null);
     }
   };
 
   return (
-    <div className={`max-w-4xl mx-auto ${className || ''}`}>
-      {/* Trial/Premium Status Banner */}
-      {(isPremium || isTrialActive) && (
-        <div className={`mb-6 p-4 rounded-lg ${
-          isPremium ? 'bg-green-50 border border-green-200 text-green-800 dark:bg-green-900/20 dark:text-green-300' 
-                    : 'bg-blue-50 border border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300'
-        }`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold">
-                {isPremium ? '🎉 Premium Active' : '✨ Free Trial Active'}
-              </h3>
-              <p className="text-sm opacity-90">
-                {isPremium 
-                  ? 'Your premium subscription is active' 
-                  : 'Trial ends in 7 days - upgrade to keep premium features'}
-              </p>
-            </div>
-            {isPremium && (
-              <Button variant="secondary" size="sm" onClick={handleCancel} disabled={loading}>
-                Manage
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Choose Your Plan</h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Unlock advanced insights and take control of your wellness journey
+    <div className={`mx-auto max-w-5xl ${className ?? ''}`}>
+      <header className="mb-10 text-center">
+        <h2 className="text-3xl font-semibold tracking-tight">A simple price.</h2>
+        <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
+          Free forever for the things that matter. Premium when you want more.
         </p>
-      </div>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
+          Your data never leaves your phone — on any plan.
+        </p>
+      </header>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {subscriptionPlans.map((plan) => (
-          <div key={plan.id} className={`card relative ${
-            plan.popular ? 'ring-2 ring-blue-500 shadow-lg' : ''
-          } ${
-            currentSubscription?.plan === plan.id ? 'ring-2 ring-green-500' : ''
-          }`}>
-            {plan.popular && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge variant="primary" size="sm">Most Popular</Badge>
-              </div>
-            )}
-            
-            {currentSubscription?.plan === plan.id && (
-              <div className="absolute -top-3 right-4">
-                <Badge variant="success" size="sm">Current Plan</Badge>
-              </div>
-            )}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {ORDER.map((planId) => {
+          const plan = PLANS[planId];
+          const isCurrent = subscription.plan === planId;
+          const highlight = HIGHLIGHTS[planId];
+          const isWorking = pendingPlan === planId;
 
-            <div className="card-header text-center">
-              <h3 className="text-xl font-semibold">{plan.name}</h3>
-              <div className="mt-2">
-                <span className="text-3xl font-bold">
-                  ${plan.price}
-                </span>
-                <span className="text-gray-500">
-                  /{plan.interval}
-                </span>
-              </div>
-              {plan.interval === 'year' && (
-                <div className="text-sm text-green-600 font-medium mt-1">
-                  Save 33%
+          return (
+            <article
+              key={planId}
+              className={`relative flex flex-col rounded-xl border p-5 transition ${
+                highlight
+                  ? 'border-blue-400 ring-1 ring-blue-200 dark:border-blue-500 dark:ring-blue-900/40'
+                  : 'border-gray-200 dark:border-gray-700'
+              } ${
+                isCurrent ? 'ring-2 ring-green-500' : 'hover:-translate-y-0.5 hover:shadow-md'
+              } bg-white dark:bg-gray-900`}
+            >
+              {highlight ? (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <Badge variant={highlight.tone} size="sm">
+                    {highlight.label}
+                  </Badge>
                 </div>
-              )}
-            </div>
+              ) : null}
+              {isCurrent ? (
+                <div className="absolute -top-3 right-3">
+                  <Badge variant="success" size="sm">Current</Badge>
+                </div>
+              ) : null}
 
-            <div className="card-content">
-              <ul className="space-y-2 mb-6">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              <div className="text-center">
+                <h3 className="text-lg font-semibold">{plan.name}</h3>
+                <p className="mt-3 text-2xl font-semibold tracking-tight">
+                  {plan.priceLabel}
+                </p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  {plan.subtitle}
+                </p>
+              </div>
+
+              <ul className="mt-6 flex-1 space-y-2 text-sm">
+                {PER_PLAN_PERKS[planId].map((perk, i) => (
+                  <li key={i} className="flex items-start">
+                    <svg
+                      className="mr-2 mt-0.5 h-4 w-4 shrink-0 text-green-500"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
                     </svg>
-                    <span className="text-sm">{feature}</span>
+                    <span className="text-gray-700 dark:text-gray-300">{perk}</span>
                   </li>
                 ))}
               </ul>
 
-              {plan.id === 'free' ? (
-                <Button variant="secondary" className="w-full" disabled>
-                  Current Plan
-                </Button>
-              ) : currentSubscription?.plan === plan.id ? (
-                <Button variant="secondary" className="w-full" disabled>
-                  Active
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => handleSubscribe(plan.id)}
-                  disabled={loading}
-                  className="w-full"
-                >
-                  {loading && selectedPlan === plan.id ? 'Processing...' : 
-                   !currentSubscription || currentSubscription.plan === 'free' ? 'Start 7-Day Trial' : 'Upgrade'}
-                </Button>
-              )}
-            </div>
-          </div>
-        ))}
+              <div className="mt-6">
+                {planId === 'free' ? (
+                  <Button
+                    variant="secondary"
+                    className="w-full"
+                    disabled={isCurrent}
+                  >
+                    {isCurrent ? 'Your current plan' : 'Switch to free'}
+                  </Button>
+                ) : isCurrent ? (
+                  <Button variant="secondary" className="w-full" disabled>
+                    Active
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => void handleSubscribe(planId)}
+                    disabled={isWorking}
+                    className="w-full"
+                  >
+                    {isWorking ? 'Processing…' : `Get ${plan.name}`}
+                  </Button>
+                )}
+              </div>
+            </article>
+          );
+        })}
       </div>
 
-      {/* Premium Features Preview */}
-      <div className="mt-12 card">
-        <div className="card-header">
-          <h3 className="text-lg font-semibold">🌟 Premium Features</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Unlock advanced insights and accelerate your wellness journey
-          </p>
-        </div>
-        
-        <div className="card-content">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-purple-600">🧠</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Advanced AI Insights</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Get personalized analysis of your patterns, triggers, and progress trends
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600">📊</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Detailed Analytics</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Comprehensive charts, mood correlations, and spending analysis
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600">🎯</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Custom Goals & Challenges</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Create personalized challenges with deadlines and milestones
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <span className="text-orange-600">💾</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Data Export & Reports</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Export progress reports in PDF or CSV format for healthcare providers
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                  <span className="text-red-600">🚫</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Ad-Free Experience</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Focus on your wellness without distractions
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                  <span className="text-indigo-600">💬</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Priority Support</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Get help when you need it with dedicated customer support
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8 text-center text-sm text-gray-500">
-        <p>🔒 Secure payments • Cancel anytime • 7-day free trial for new users</p>
-        <p className="mt-2">All data remains private and stored on your device</p>
-      </div>
+      <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-500">
+        🔒 Payments handled by Apple / Google. Cancel any time from your device&apos;s
+        subscription settings. All wellness data stays on your device.
+      </p>
     </div>
   );
 }
 
-// Premium feature gate component
-export function PremiumFeatureGate({ 
-  children, 
-  fallback, 
-  isPremium 
-}: { 
-  children: React.ReactNode; 
-  fallback: React.ReactNode; 
+/** Soft-paywall wrapper used by premium feature surfaces. */
+export function PremiumFeatureGate({
+  children,
+  fallback,
+  isPremium,
+}: {
+  children: React.ReactNode;
+  fallback: React.ReactNode;
   isPremium: boolean;
 }) {
   return isPremium ? <>{children}</> : <>{fallback}</>;

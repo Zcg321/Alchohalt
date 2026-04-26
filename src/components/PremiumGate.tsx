@@ -1,10 +1,11 @@
 import React from 'react';
 import { usePremiumFeatures } from '../features/subscription/subscriptionStore';
 import { FEATURE_FLAGS } from '../config/features';
+import type { FeatureKey } from '../config/plans';
 
 interface PremiumGateProps {
   children: React.ReactNode;
-  feature?: string;
+  feature?: FeatureKey;
   fallback?: React.ReactNode;
   requirePremium?: boolean;
 }
