@@ -10,6 +10,7 @@ import MainContent from './MainContent';
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
+import CrisisResources from '../features/crisis/CrisisResources';
 import { usePWA } from '../hooks/usePWA';
 import { useLanguage } from '../i18n';
 
@@ -20,6 +21,7 @@ export function AlcoholCoachApp() {
   const [lastDeleted, setLastDeleted] = useState<Drink | null>(null); // Store deleted drink snapshot
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
+  const [showCrisis, setShowCrisis] = useState(false);
   const undoTimer = useRef<number>();
   const { isInstallable, isOnline, updateAvailable, promptInstall, updateApp } = usePWA();
   const { t } = useLanguage();
@@ -128,9 +130,38 @@ export function AlcoholCoachApp() {
         </span>
       </div>
 
-      <AppHeader />
+      <AppHeader onOpenCrisis={() => setShowCrisis(true)} />
 
-      <StatsAndGoals 
+      {showCrisis ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="crisis-dialog-title"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/60 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowCrisis(false);
+          }}
+        >
+          <div className="my-8 w-full max-w-2xl rounded-lg bg-white shadow-xl dark:bg-gray-900">
+            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
+              <h2 id="crisis-dialog-title" className="text-base font-semibold">
+                Need help now?
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowCrisis(false)}
+                aria-label="Close"
+                className="rounded-md px-2 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                ✕
+              </button>
+            </div>
+            <CrisisResources />
+          </div>
+        </div>
+      ) : null}
+
+      <StatsAndGoals
         drinks={drinks} 
         goals={goals} 
         onGoalsChange={onGoalsChange}
