@@ -5,6 +5,7 @@ import ReminderBanner from '../features/coach/ReminderBanner';
 import { Disclaimer } from '../components/Disclaimer';
 import { Button } from '../components/ui/Button';
 import { Skeleton } from '../components/ui/Skeleton';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const DrinkForm = React.lazy(() => import('../features/drinks/DrinkForm'));
 const DrinkList = React.lazy(() => import('../features/drinks/DrinkList'));
@@ -162,10 +163,15 @@ export default function MainContent({
           </Suspense>
 
           {/* AI Insights — opt-in, consent-gated, network call deferred
-              to v1.1 (see docs/ai_architecture.md). */}
-          <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
-            <AIInsightsTile />
-          </Suspense>
+              to v1.1 (see docs/ai_architecture.md). Wrapped in an
+              isolated ErrorBoundary so any module-level crash here
+              cannot black-screen the rest of the home dashboard —
+              regression guard for the dispatcher-null incident. */}
+          <ErrorBoundary isolate label="AI Insights">
+            <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
+              <AIInsightsTile />
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </div>
 
