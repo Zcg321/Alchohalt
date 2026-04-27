@@ -4,7 +4,6 @@ import { Button } from '../../components/ui/Button';
 import type { Achievement, AchievementState } from './achievementSystem';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
-import { FEATURE_FLAGS } from '../../config/features';
 
 interface Props {
   achievementState?: AchievementState;
@@ -13,11 +12,11 @@ interface Props {
   className?: string;
 }
 
-export default function AchievementDisplay({ 
-  achievementState, 
-  onUpgrade, 
+export default function AchievementDisplay({
+  achievementState,
+  onUpgrade: _onUpgrade,
   showAll = false,
-  className = '' 
+  className = ''
 }: Props) {
   const { isPremium } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
@@ -207,25 +206,9 @@ export default function AchievementDisplay({
         </div>
       )}
 
-      {/* Premium Upsell */}
-      {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && !isPremium && achievements.some(a => a.premium) && (
-        <div className="mt-6 p-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg text-center">
-          <h3 className="font-semibold mb-1">🏆 Premium Achievement Collection</h3>
-          <p className="text-sm opacity-90 mb-3">
-            Unlock {achievements.filter(a => a.premium).length} exclusive premium achievements with advanced tracking and rewards.
-          </p>
-          <Button 
-            variant="secondary" 
-            className="bg-white text-primary-600 hover:bg-gray-100"
-            onClick={() => {
-              trackFeatureUsage('achievement_upgrade_prompt');
-              onUpgrade?.();
-            }}
-          >
-            Upgrade to Premium
-          </Button>
-        </div>
-      )}
+      {/* Premium upsell block removed [VOICE-1]. Premium achievements
+          are still represented inline (locked badges); the dedicated
+          "Upgrade to Premium" call-out lives in Settings → Plan only. */}
     </div>
   );
 }

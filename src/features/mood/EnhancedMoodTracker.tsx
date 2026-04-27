@@ -3,7 +3,6 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
-import { FEATURE_FLAGS } from '../../config/features';
 
 interface EmotionalState {
   primaryEmotion: 'happy' | 'calm' | 'stressed' | 'anxious' | 'sad' | 'angry' | 'excited' | 'bored';
@@ -419,22 +418,7 @@ export default function EnhancedMoodTracker({
         </div>
       )}
 
-      {/* Premium Upsell for Free Users - only show when subscriptions are enabled */}
-      {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && !isPremium && step !== 'complete' && (
-        <div className="mt-6 p-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg text-center">
-          <h3 className="font-semibold mb-1">🧠 Unlock Emotional Intelligence</h3>
-          <p className="text-sm opacity-90 mb-3">
-            Get AI-powered pattern recognition, personalized insights, and advanced emotional tracking.
-          </p>
-          <Button 
-            variant="secondary" 
-            className="bg-white text-primary-600 hover:bg-gray-100"
-            onClick={() => trackFeatureUsage('mood_upgrade_prompt')}
-          >
-            Upgrade to Premium
-          </Button>
-        </div>
-      )}
+      {/* Premium upsell block removed [VOICE-1]. */}
     </div>
   );
 }
