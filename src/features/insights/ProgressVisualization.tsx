@@ -47,11 +47,14 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
     // [BUG-2] Guard against zero / unset goals so we don't render NaN%.
     // Returns -1 when no goal set, signalling the UI to show an empty
     // state instead of a percentage.
+    // [BUG-8] Track RAW progress (uncapped) so the color-decision
+    // branch can detect "over limit" — the previous Math.min clamped
+    // before the >100 check, which is why excess always rendered green.
     const dailyProgress = goals.dailyCap > 0
-      ? Math.min((todayStd / goals.dailyCap) * 100, 100)
+      ? (todayStd / goals.dailyCap) * 100
       : -1;
     const weeklyProgress = goals.weeklyGoal > 0
-      ? Math.min((weekStd / goals.weeklyGoal) * 100, 100)
+      ? (weekStd / goals.weeklyGoal) * 100
       : -1;
 
     // Calculate spending

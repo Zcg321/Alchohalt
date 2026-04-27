@@ -5,7 +5,7 @@
  * Behind ENABLE_LOCAL_ENCRYPTION flag
  */
 
-import { Preferences } from '@capacitor/preferences';
+import { getPreferences } from '../../shared/capacitor';
 
 interface EncryptedPayload {
   version: number;
@@ -36,7 +36,7 @@ export class SecureStorage {
    * Check if encryption is enabled
    */
   async checkEnabled(): Promise<boolean> {
-    const { value } = await Preferences.get({ key: ENCRYPTION_KEY_STORAGE });
+    const { value } = await (await getPreferences()).get({ key: ENCRYPTION_KEY_STORAGE });
     this.enabled = value === 'true';
     return this.enabled;
   }
@@ -60,7 +60,7 @@ export class SecureStorage {
     this.encryptionKey = await this.deriveKey(pin, salt);
     
     // Mark encryption as enabled
-    await Preferences.set({ key: ENCRYPTION_KEY_STORAGE, value: 'true' });
+    await (await getPreferences()).set({ key: ENCRYPTION_KEY_STORAGE, value: 'true' });
     this.enabled = true;
   }
 
@@ -70,8 +70,8 @@ export class SecureStorage {
   async disable(): Promise<void> {
     this.encryptionKey = null;
     this.enabled = false;
-    await Preferences.remove({ key: ENCRYPTION_KEY_STORAGE });
-    await Preferences.remove({ key: ENCRYPTION_SALT_STORAGE });
+    await (await getPreferences()).remove({ key: ENCRYPTION_KEY_STORAGE });
+    await (await getPreferences()).remove({ key: ENCRYPTION_SALT_STORAGE });
   }
 
   /**
@@ -89,12 +89,12 @@ export class SecureStorage {
 
     if (this.enabled && this.encryptionKey) {
       const encrypted = await this.encrypt(stringValue);
-      await Preferences.set({ 
+      await (await getPreferences()).set({ 
         key, 
         value: JSON.stringify(encrypted) 
       });
     } else {
-      await Preferences.set({ key, value: stringValue });
+      await (await getPreferences()).set({ key, value: stringValue });
     }
   }
 
@@ -102,7 +102,7 @@ export class SecureStorage {
    * Get a value (decrypted if enabled)
    */
   async get(key: string): Promise<unknown | null> {
-    const { value } = await Preferences.get({ key });
+    const { value } = await (await getPreferences()).get({ key });
     
     if (!value) {
       return null;
@@ -130,7 +130,7 @@ export class SecureStorage {
    * Remove a value
    */
   async remove(key: string): Promise<void> {
-    await Preferences.remove({ key });
+    await (await getPreferences()).remove({ key });
   }
 
   /**
@@ -254,7 +254,7 @@ export class SecureStorage {
    * Get stored salt
    */
   private async getSalt(): Promise<string | null> {
-    const { value } = await Preferences.get({ key: ENCRYPTION_SALT_STORAGE });
+    const { value } = await (await getPreferences()).get({ key: ENCRYPTION_SALT_STORAGE });
     return value;
   }
 
@@ -262,7 +262,7 @@ export class SecureStorage {
    * Store salt
    */
   private async storeSalt(salt: string): Promise<void> {
-    await Preferences.set({ key: ENCRYPTION_SALT_STORAGE, value: salt });
+    await (await getPreferences()).set({ key: ENCRYPTION_SALT_STORAGE, value: salt });
   }
 
   /**

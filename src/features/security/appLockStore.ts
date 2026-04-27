@@ -5,7 +5,7 @@
  */
 
 import { create } from 'zustand';
-import { Preferences } from '@capacitor/preferences';
+import { getPreferences } from '../../shared/capacitor';
 
 interface AppLockState {
   isEnabled: boolean;
@@ -39,21 +39,24 @@ export const useAppLockStore = create<AppLockState>((set) => ({
     }
 
     const hashedPin = await hashPin(pin);
-    await Preferences.set({ key: APP_LOCK_PIN_KEY, value: hashedPin });
-    await Preferences.set({ key: APP_LOCK_ENABLED_KEY, value: 'true' });
-    
+    const prefs = await getPreferences();
+    await prefs.set({ key: APP_LOCK_PIN_KEY, value: hashedPin });
+    await prefs.set({ key: APP_LOCK_ENABLED_KEY, value: 'true' });
+
     set({ isEnabled: true, isUnlocked: true });
   },
 
   disable: async () => {
-    await Preferences.remove({ key: APP_LOCK_PIN_KEY });
-    await Preferences.remove({ key: APP_LOCK_ENABLED_KEY });
-    
+    const prefs = await getPreferences();
+    await prefs.remove({ key: APP_LOCK_PIN_KEY });
+    await prefs.remove({ key: APP_LOCK_ENABLED_KEY });
+
     set({ isEnabled: false, isUnlocked: true });
   },
 
   unlock: async (pin: string) => {
-    const storedPin = await Preferences.get({ key: APP_LOCK_PIN_KEY });
+    const prefs = await getPreferences();
+    const storedPin = await prefs.get({ key: APP_LOCK_PIN_KEY });
     
     if (!storedPin.value) {
       return false;
@@ -74,7 +77,8 @@ export const useAppLockStore = create<AppLockState>((set) => ({
   },
 
   requiresUnlock: async () => {
-    const enabled = await Preferences.get({ key: APP_LOCK_ENABLED_KEY });
+    const prefs = await getPreferences();
+    const enabled = await prefs.get({ key: APP_LOCK_ENABLED_KEY });
     const isEnabled = enabled.value === 'true';
     
     if (isEnabled) {
