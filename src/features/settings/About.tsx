@@ -38,7 +38,7 @@ export default function About() {
         </h3>
         <div className="text-sm text-success-700 dark:text-success-300 space-y-2">
           <p>
-            {t('privacy.onDevice', 'All your data is stored locally on your device using secure, encrypted storage. We never collect, transmit, or store your personal information on external servers.')}
+            {t('privacy.onDevice', 'Your data is yours. We cryptographically cannot read it. Optional AI features (off by default) are the only thing that can change this — see Settings → AI for the full data flow.')}
           </p>
           <p>
             {t('privacy.dataControl', 'You have complete control over your data. You can export, import, or delete all information at any time from the Settings panel.')}

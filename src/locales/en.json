@@ -73,7 +73,7 @@
   "stats.shareProgressDesc": "Share progress summary",
   "stats.exportStats": "Export stats",
   "stats.exportReady": "Stats download ready",
-  "disclaimer": "All data stays on this device. This app offers no medical advice.",
+  "disclaimer": "Your data is yours. We cryptographically cannot read it. Not medical advice.",
   "export": "Export",
   "import": "Import",
   "add": "Add",
@@ -149,7 +149,7 @@
     },
     "privacy": {
       "title": "Your Privacy Matters",
-      "description": "Your wellness data stays on your phone by default. Optional, opt-in AI features can send anonymized patterns to AI providers — you control this in Settings → AI."
+      "description": "Your data is yours. We cryptographically cannot read it. Optional AI features (off by default) are the only thing that can change this — you control them in Settings → AI."
     },
     "tracking": {
       "title": "Smart Tracking",
@@ -188,7 +188,7 @@
 
   "privacy": {
     "title": "Your Privacy is Protected",
-    "onDevice": "Your wellness data is stored locally on your device using secure, encrypted storage by default. Optional, opt-in AI features can send anonymized patterns (no journal text, no notes, no PII) to AI providers — see Settings → AI to control this.",
+    "onDevice": "Your data is yours. We cryptographically cannot read it. Optional AI features (off by default) are the only thing that can change this — see Settings → AI for the full data flow.",
     "dataControl": "You have complete control over your data. You can export, import, or delete all information at any time from the Settings panel."
   },
 

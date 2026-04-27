@@ -73,7 +73,7 @@
   "stats.shareProgressDesc": "Compartir resumen de progreso",
   "stats.exportStats": "Exportar estadísticas",
   "stats.exportReady": "Descarga de estadísticas lista",
-  "disclaimer": "Todos los datos permanecen en este dispositivo. Esta aplicación no ofrece consejo médico.",
+  "disclaimer": "Tus datos son tuyos. Criptográficamente no podemos leerlos. No es un consejo médico.",
   "export": "Exportar",
   "import": "Importar",
   "add": "Agregar",
@@ -153,7 +153,7 @@
     },
     "privacy": {
       "title": "Tu Privacidad Importa",
-      "description": "Tus datos de bienestar permanecen en tu teléfono por defecto. Las funciones de IA opcionales (desactivadas por defecto) pueden enviar patrones anonimizados a proveedores de IA — tú lo controlas en Configuración → IA."
+      "description": "Tus datos son tuyos. Criptográficamente no podemos leerlos. Las funciones de IA opcionales (desactivadas por defecto) son lo único que puede cambiar esto — tú lo controlas en Configuración → IA."
     },
     "tracking": {
       "title": "Seguimiento Inteligente",
@@ -189,7 +189,7 @@
   },
   "privacy": {
     "title": "Tu Privacidad Está Protegida",
-    "onDevice": "Tus datos de bienestar se almacenan localmente en tu dispositivo utilizando almacenamiento seguro y encriptado por defecto. Las funciones de IA opcionales pueden enviar patrones anonimizados (sin texto del diario, sin notas, sin información personal) a proveedores de IA — consulta Configuración → IA para controlarlo.",
+    "onDevice": "Tus datos son tuyos. Criptográficamente no podemos leerlos. Las funciones de IA opcionales (desactivadas por defecto) son lo único que puede cambiar esto — consulta Configuración → IA para ver el flujo completo de datos.",
     "dataControl": "Tienes control completo sobre tus datos. Puedes exportar, importar o eliminar toda la información en cualquier momento desde el panel de Configuración."
   },
   "subscription": {
