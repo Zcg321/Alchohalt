@@ -1,43 +1,97 @@
-import React from 'react';
-import { Button } from '../components/ui/Button';
+import React, { useEffect, useState } from 'react';
 
 interface PWAInstallBannerProps {
   isInstallable: boolean;
   promptInstall: () => void;
+  /**
+   * Notifier the parent uses to record dismissal in its own state. The
+   * persistent (7-day) flag is owned by this component now via
+   * localStorage, but we keep the parent contract so the parent can
+   * stop rendering once dismissed during the session.
+   */
   onDismiss: () => void;
 }
 
+const DISMISS_KEY = 'alchohalt:pwa-install-dismissed-at';
+const DISMISS_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+function isDismissedRecently(): boolean {
+  if (typeof window === 'undefined') return false;
+  const raw = window.localStorage.getItem(DISMISS_KEY);
+  if (!raw) return false;
+  const ts = Number(raw);
+  if (!Number.isFinite(ts)) return false;
+  return Date.now() - ts < DISMISS_TTL_MS;
+}
+
+function isLikelyMobile(): boolean {
+  if (typeof window === 'undefined') return false;
+  // Coarse pointer = touch primary; max-width 768px = mobile viewport.
+  // Either is sufficient — desktops with a small window don't need an
+  // install prompt either.
+  return (
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.matchMedia('(max-width: 768px)').matches
+  );
+}
+
 export default function PWAInstallBanner({ isInstallable, promptInstall, onDismiss }: PWAInstallBannerProps) {
-  if (!isInstallable) return null;
+  // [INSTALL-1] Mount only when really useful: installable + not
+  // recently dismissed + on a likely-mobile surface.
+  const [shouldShow, setShouldShow] = useState(false);
+
+  useEffect(() => {
+    setShouldShow(isInstallable && !isDismissedRecently() && isLikelyMobile());
+  }, [isInstallable]);
+
+  if (!shouldShow) return null;
+
+  function handleDismiss() {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(DISMISS_KEY, String(Date.now()));
+    }
+    setShouldShow(false);
+    onDismiss();
+  }
+
+  function handleInstall() {
+    promptInstall();
+    // After the user accepts or dismisses the native prompt, suppress
+    // re-show for 7 days regardless — they've already been asked.
+    handleDismiss();
+  }
 
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 flex items-center justify-between sticky top-0 z-40 shadow-lg">
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg">
-          📱
+    <div className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/95 backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/95">
+      <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-2.5">
+        <div className="min-w-0 flex-1 text-sm">
+          <p className="font-medium text-neutral-900 dark:text-neutral-50">
+            Install Alchohalt
+          </p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            Add to your home screen for quick access. Same privacy posture.
+          </p>
         </div>
-        <div className="text-sm">
-          <p className="font-medium">Install Alchohalt</p>
-          <p className="text-blue-100 text-xs">Get the app for quick access</p>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <button
+            type="button"
+            onClick={handleInstall}
+            className="inline-flex items-center justify-center rounded-full bg-neutral-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition-colors min-h-[36px]"
+          >
+            Install
+          </button>
+          <button
+            type="button"
+            onClick={handleDismiss}
+            aria-label="Dismiss install prompt"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+          >
+            <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
-      </div>
-      <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={promptInstall}
-          className="text-white hover:bg-white/20 text-sm px-3 py-1"
-        >
-          Install
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onDismiss}
-          className="text-white hover:bg-white/20 p-1 text-xl leading-none"
-        >
-          ×
-        </Button>
       </div>
     </div>
   );

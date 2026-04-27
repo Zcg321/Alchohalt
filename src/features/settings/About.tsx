@@ -34,7 +34,7 @@ export default function About() {
       {/* Privacy Commitment */}
       <div className="p-4 border border-success-200 rounded-xl bg-success-50 dark:bg-success-900/20">
         <h3 className="font-medium text-success-800 dark:text-success-200 mb-2">
-          🔒 {t('privacy.title', 'Your Privacy is Protected')}
+          {t('privacy.title', 'Your Privacy is Protected')}
         </h3>
         <div className="text-sm text-success-700 dark:text-success-300 space-y-2">
           <p>
@@ -49,7 +49,7 @@ export default function About() {
       {/* Support & Contact */}
       <div className="p-4 border border-default rounded-xl bg-surface">
         <h3 className="font-medium text-primary mb-2">
-          💬 {t('support.title', 'Support & Feedback')}
+          {t('support.title', 'Support & Feedback')}
         </h3>
         <div className="text-sm text-secondary space-y-2">
           <p>
@@ -81,7 +81,7 @@ export default function About() {
       {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && (
         <div className="p-4 border border-default rounded-xl bg-surface">
           <h3 className="font-medium text-primary mb-2">
-            💳 {t('subscription.title', 'Subscription Information')}
+            {t('subscription.title', 'Subscription Information')}
           </h3>
           <div className="text-sm text-secondary space-y-2">
             <p>
@@ -113,7 +113,7 @@ export default function About() {
       {/* Open Source */}
       <div className="p-4 border border-default rounded-xl bg-surface">
         <h3 className="font-medium text-primary mb-2">
-          🌟 {t('openSource.title', 'Open Source')}
+          {t('openSource.title', 'Open Source')}
         </h3>
         <div className="text-sm text-secondary">
           <p>

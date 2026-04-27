@@ -25,8 +25,7 @@ export default function SettingsPanel() {
     <div className="space-y-6">
       <section className="card">
         <div className="card-header">
-          <h2 className="text-lg font-semibold flex items-center">
-            <span className="w-2 h-2 bg-primary-500 rounded-full mr-3"></span>
+          <h2 className="text-lg font-semibold tracking-tight">
             Appearance
           </h2>
         </div>
@@ -64,12 +63,11 @@ export default function SettingsPanel() {
 
       <section className="card">
         <div className="card-header">
-          <h2 className="text-lg font-semibold flex items-center">
-            <span className="w-2 h-2 bg-warning-500 rounded-full mr-3"></span>
+          <h2 className="text-lg font-semibold tracking-tight">
             Reminders
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Set up daily check-in notifications
+            Daily check-in notifications.
           </p>
         </div>
         <div className="card-content space-y-4">
@@ -120,8 +118,7 @@ export default function SettingsPanel() {
 
       <section className="card">
         <div className="card-header">
-          <h2 className="text-lg font-semibold flex items-center">
-            <span className="w-2 h-2 bg-danger-500 rounded-full mr-3"></span>
+          <h2 className="text-lg font-semibold tracking-tight">
             Data Management
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
