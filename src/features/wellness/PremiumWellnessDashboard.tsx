@@ -42,8 +42,8 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
 
   const wellnessMetrics = useMemo((): WellnessMetric[] => {
     const last30Days = drinks.filter(d => d.ts > Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const last7Days = drinks.filter(d => d.ts > Date.now() - 7 * 24 * 60 * 60 * 1000);
-    
+
+
     // Calculate alcohol-free days
     const afDays = Math.max(0, 30 - new Set(last30Days.map(d => 
       new Date(d.ts).toDateString()
@@ -74,9 +74,10 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       ? (socialAlternatives.length / socialDrinks.length) * 100 
       : 85;
     
-    // Liver health estimate (very simplified)
-    const weeklyUnits = last7Days.reduce((sum, d) => sum + (d.volumeMl * d.abvPct / 1000), 0);
-    const liverScore = Math.max(0, 100 - (weeklyUnits * 5));
+    // [LEGAL-1] Removed liver-health-estimate scoring. We are not a
+    // medical device; estimating organ health from drink-tracking
+    // patterns is a regulated claim. The corresponding metric tile
+    // below is also removed.
 
     // Get recent health metrics if available
     const last7DaysDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -145,16 +146,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         description: 'Success rate in social situations without alcohol',
         icon: '🤝'
       },
-      {
-        id: 'liver-health',
-        name: 'Liver Health Est.',
-        value: Math.round(liverScore),
-        unit: '/100',
-        trend: liverScore >= 85 ? 'up' : liverScore >= 70 ? 'stable' : 'down',
-        status: liverScore >= 90 ? 'excellent' : liverScore >= 75 ? 'good' : liverScore >= 60 ? 'fair' : 'poor',
-        description: 'Estimated liver health based on consumption patterns',
-        icon: '🫀'
-      }
+      // [LEGAL-1] Liver-health-estimate metric removed.
     ];
     
     // Add health integration metrics if available
@@ -291,13 +283,18 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
           Get comprehensive health insights, wellness tracking, and AI-powered recommendations
           to optimize your physical and mental wellbeing.
         </p>
+        {/* [LEGAL-1] "Liver health estimation" was a medical claim
+            (organ-health prediction from drink-tracking data) sitting
+            directly above a "no medical advice" disclaimer. Replaced
+            with honest non-clinical framing. Stress / sleep bullets
+            also softened from clinical "analysis" to "patterns". */}
         <ul className="text-sm opacity-90 mb-6 text-left max-w-md mx-auto space-y-1">
-          <li>• Comprehensive health metrics tracking</li>
-          <li>• Sleep quality analysis and recommendations</li>
-          <li>• Stress pattern identification</li>
-          <li>• Liver health estimation</li>
-          <li>• Social wellness scoring</li>
-          <li>• AI-powered personalized insights</li>
+          <li>• Long-term trend insights across months</li>
+          <li>• Sleep pattern observations from your logs</li>
+          <li>• Stress trigger patterns (HALT-based)</li>
+          <li>• Day-by-day comparison views</li>
+          <li>• Social wellness reflections</li>
+          <li>• AI-powered personalized observations</li>
         </ul>
         <Button 
           variant="secondary" 
