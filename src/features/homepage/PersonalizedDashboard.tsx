@@ -95,40 +95,43 @@ export default function PersonalizedDashboard({ drinks = [], goals, onQuickActio
       focusArea: ''
     };
 
-    const timeOfDay = new Date().getHours();
-    const greeting = timeOfDay < 12 ? 'Good morning' : timeOfDay < 17 ? 'Good afternoon' : 'Good evening';
+    // Voice [VOICE-4]: drop time-of-day greeting. A static "How are
+    // you today?" reads honest; "Good morning!" at 9 PM reads weird,
+    // and any time-zone slip makes it worse. Trusted-friend tone:
+    // questions, not declarations; no exclamation marks.
+    const greeting = 'How are you today?';
 
     switch (personalization.personalityType) {
       case 'goal-oriented':
-        content.greeting = `${greeting}! Ready to crush your goals today?`;
+        content.greeting = greeting;
         content.primaryAction = 'Check Goal Progress';
         content.secondaryActions = ['Set New Challenge', 'View Analytics'];
-        content.motivationalMessage = 'Consistency builds champions. Every choice counts.';
-        content.focusArea = 'Achievement & Progress';
+        content.motivationalMessage = 'Consistency over intensity.';
+        content.focusArea = 'Progress';
         break;
 
       case 'social':
-        content.greeting = `${greeting}! Planning anything fun today?`;
+        content.greeting = greeting;
         content.primaryAction = 'Social Alternatives';
         content.secondaryActions = ['Find AF Events', 'Track Social Goals'];
-        content.motivationalMessage = 'Great connections don\'t need alcohol to flourish.';
-        content.focusArea = 'Social Wellness';
+        content.motivationalMessage = "Connection doesn't need alcohol.";
+        content.focusArea = 'Social wellness';
         break;
 
       case 'health-focused':
-        content.greeting = `${greeting}! How are you feeling today?`;
+        content.greeting = greeting;
         content.primaryAction = 'Mood Check-in';
         content.secondaryActions = ['Stress Management', 'Health Insights'];
-        content.motivationalMessage = 'Your mental and physical health are your greatest assets.';
-        content.focusArea = 'Holistic Wellness';
+        content.motivationalMessage = 'Take care of yourself today.';
+        content.focusArea = 'Wellness';
         break;
 
       default:
-        content.greeting = `${greeting}! Take it one day at a time.`;
+        content.greeting = greeting;
         content.primaryAction = 'Quick Log';
         content.secondaryActions = ['Explore Features', 'Set Goals'];
-        content.motivationalMessage = 'Small steps lead to big changes.';
-        content.focusArea = 'Mindful Living';
+        content.motivationalMessage = 'One day at a time.';
+        content.focusArea = 'Today';
     }
 
     return content;
