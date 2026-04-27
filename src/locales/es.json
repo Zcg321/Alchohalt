@@ -21,7 +21,7 @@
   "money.spentLast30": "Gastado (últimos 30 días)",
   "money.spentVsBudget": "{{spent}} de {{budget}} de presupuesto",
   "money.setBudgetHint": "Configura un presupuesto mensual en Ajustes para ver tus ahorros.",
-  "paywall.unlock": "Desbloquea con Premium",
+  "paywall.unlock": "Función Premium.",
   "paywall.cta": "Ver planes",
   "analytics.moodCorrelation.title": "Patrones de ánimo ↔ bebidas",
   "analytics.moodCorrelation.window": "Últimos {{days}} días",

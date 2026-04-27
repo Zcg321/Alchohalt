@@ -283,15 +283,17 @@ function CloseIcon() {
 
 // Helper functions
 function getMotivationalMessage(streak: number, isAlcoholFree: boolean): string {
+  // Voice: trusted friend, not a coach. No exclamation marks except on
+  // genuine milestones (30+ days). No emoji.
   if (isAlcoholFree) {
-    if (streak >= 30) return "Amazing month-long streak! 🏆";
-    if (streak >= 7) return "Week-long streak going strong! 💪";
-    if (streak >= 3) return "Building momentum! 🚀";
-    if (streak >= 1) return "Another alcohol-free day! ⭐";
-    return "Starting fresh today! 🌅";
+    if (streak >= 30) return `${streak} days. That's worth celebrating.`;
+    if (streak >= 7) return "A week in. Steady.";
+    if (streak >= 3) return "Building momentum.";
+    if (streak >= 1) return "Another day clear.";
+    return "Today's a fresh start.";
   }
 
-  return "Every step counts! 🌟";
+  return "Every step counts.";
 }
 
 function getMotivationalSubtext(streak: number, todayStd: number, dailyCap: number): string {

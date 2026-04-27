@@ -80,12 +80,24 @@ export default function InsightsPanel({ drinks, goals }: Props) {
   return (
     <div className="card">
       <div className="card-header">
-        <h2 className="text-xl font-semibold flex items-center">
-          <span className="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
-          Personal Insights
+        <h2 className="text-xl font-semibold tracking-tight">
+          Personal insights
         </h2>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-          {canAccessAIInsights ? 'AI-powered analysis of your drinking patterns' : 'Basic pattern analysis - upgrade for advanced AI insights'}
+        <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400 mt-1">
+          {canAccessAIInsights
+            ? 'On-device pattern analysis of what you log.'
+            : (
+                <>
+                  Basic pattern analysis. Deeper AI Insights are part of Premium —{' '}
+                  <a
+                    href="#settings-section"
+                    className="underline underline-offset-2 hover:text-primary-700 dark:hover:text-primary-300"
+                  >
+                    see plans
+                  </a>
+                  .
+                </>
+              )}
         </p>
       </div>
       

@@ -21,7 +21,7 @@
   "money.spentLast30": "Spent (last 30 days)",
   "money.spentVsBudget": "{{spent}} of {{budget}} budget",
   "money.setBudgetHint": "Set a monthly budget in Settings to track savings.",
-  "paywall.unlock": "Unlock with Premium",
+  "paywall.unlock": "Part of Premium.",
   "paywall.cta": "See plans",
   "analytics.moodCorrelation.title": "Mood ↔ drink patterns",
   "analytics.moodCorrelation.window": "Last {{days}} days",
