@@ -32,22 +32,29 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
 
     const recommendations: Recommendation[] = [];
 
-    // Daily limit warning
+    // Daily limit warning. [BUG-3] Only show when (a) the user has
+    // actually set a daily cap (>0) AND (b) they've logged at least
+    // one drink today. Otherwise both branches were firing on a
+    // fresh install where dailyCap defaults to 0 and todayStd=0,
+    // producing "Daily Limit Reached" alerts for users who hadn't
+    // logged anything.
     const todayStd = todayDrinks.reduce((sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct), 0);
-    if (todayStd >= goals.dailyCap * 0.8 && todayStd < goals.dailyCap) {
-      recommendations.push({
-        title: 'Approaching Daily Limit',
-        description: `You've consumed ${todayStd.toFixed(1)} of your ${goals.dailyCap} daily limit. Consider switching to alcohol-free alternatives for the rest of today.`,
-        type: 'prevention',
-        urgency: 'medium'
-      });
-    } else if (todayStd >= goals.dailyCap) {
-      recommendations.push({
-        title: 'Daily Limit Reached',
-        description: 'You\'ve reached your daily limit. Taking a break now will help you stay on track with your goals.',
-        type: 'prevention',
-        urgency: 'high'
-      });
+    if (goals.dailyCap > 0 && todayDrinks.length > 0) {
+      if (todayStd >= goals.dailyCap * 0.8 && todayStd < goals.dailyCap) {
+        recommendations.push({
+          title: 'Approaching daily limit',
+          description: `You've had ${todayStd.toFixed(1)} of your ${goals.dailyCap} daily limit. Consider an alcohol-free option for the rest of today.`,
+          type: 'prevention',
+          urgency: 'medium'
+        });
+      } else if (todayStd >= goals.dailyCap) {
+        recommendations.push({
+          title: 'Daily limit reached',
+          description: 'A break for the rest of today keeps you on track.',
+          type: 'prevention',
+          urgency: 'high'
+        });
+      }
     }
 
     // Weekend pattern prevention

@@ -77,10 +77,14 @@ export function analyzeCravingTrend(drinks: Drink[]): TrendData {
   if (recent.length === 0 || older.length === 0) {
     return { direction: 'stable', percentage: 0, message: '', type: 'success' };
   }
-  
+
   const recentAvg = recent.reduce((sum, d) => sum + d.craving, 0) / recent.length;
   const olderAvg = older.reduce((sum, d) => sum + d.craving, 0) / older.length;
-  
+
+  // [BUG-2] Guard against /0 when older window has all-zero cravings.
+  if (olderAvg === 0) {
+    return { direction: 'stable', percentage: 0, message: '', type: 'success' };
+  }
   const change = ((recentAvg - olderAvg) / olderAvg) * 100;
   
   if (change < -10) {

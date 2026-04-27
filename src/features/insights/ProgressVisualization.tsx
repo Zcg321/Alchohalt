@@ -44,11 +44,18 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
     const todayStd = todayDrinks.reduce((sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct), 0);
     const weekStd = weekDrinks.reduce((sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct), 0);
 
-    const dailyProgress = Math.min((todayStd / goals.dailyCap) * 100, 100);
-    const weeklyProgress = Math.min((weekStd / goals.weeklyGoal) * 100, 100);
+    // [BUG-2] Guard against zero / unset goals so we don't render NaN%.
+    // Returns -1 when no goal set, signalling the UI to show an empty
+    // state instead of a percentage.
+    const dailyProgress = goals.dailyCap > 0
+      ? Math.min((todayStd / goals.dailyCap) * 100, 100)
+      : -1;
+    const weeklyProgress = goals.weeklyGoal > 0
+      ? Math.min((weekStd / goals.weeklyGoal) * 100, 100)
+      : -1;
 
     // Calculate spending
-    const monthlyActual = monthDrinks.reduce((sum, d) => 
+    const monthlyActual = monthDrinks.reduce((sum, d) =>
       sum + (stdDrinks(d.volumeMl, d.abvPct) * goals.pricePerStd), 0
     );
     const alcoholFreeDays = getAlcoholFreeDaysInMonth(drinks);
@@ -57,7 +64,9 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
     // Calculate streak and milestones
     const currentStreak = getCurrentStreak(drinks);
     const nextMilestone = getNextMilestone(currentStreak);
-    const streakProgress = ((currentStreak % nextMilestone) / nextMilestone) * 100;
+    const streakProgress = nextMilestone > 0
+      ? ((currentStreak % nextMilestone) / nextMilestone) * 100
+      : 0;
 
     // Calculate health metrics
     const avgCraving = monthDrinks.length > 0 
@@ -98,57 +107,75 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
           {/* Daily Progress */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">Daily Limit</span>
-              <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                {progressData.dailyProgress.toFixed(0)}%
-              </span>
+              <span className="text-sm font-medium">Daily limit</span>
+              {progressData.dailyProgress >= 0 ? (
+                <span className="text-sm text-neutral-600 dark:text-neutral-400 stat-num">
+                  {progressData.dailyProgress.toFixed(0)}%
+                </span>
+              ) : null}
             </div>
-            <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
-              <div 
-                className={`h-3 rounded-full transition-all duration-500 ${
-                  progressData.dailyProgress > 100 
-                    ? 'bg-red-500' 
-                    : progressData.dailyProgress > 80 
-                    ? 'bg-yellow-500' 
-                    : 'bg-green-500'
-                }`}
-                style={{ width: `${Math.min(progressData.dailyProgress, 100)}%` }}
-              />
-            </div>
-            <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-              {progressData.dailyProgress <= 100 
-                ? `${(goals.dailyCap - (goals.dailyCap * progressData.dailyProgress / 100)).toFixed(1)} drinks remaining`
-                : `Exceeded by ${(progressData.dailyProgress - 100).toFixed(0)}%`
-              }
-            </div>
+            {progressData.dailyProgress >= 0 ? (
+              <>
+                <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
+                  <div
+                    className={`h-3 rounded-full transition-all duration-500 ${
+                      progressData.dailyProgress > 100
+                        ? 'bg-red-500'
+                        : progressData.dailyProgress > 80
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'
+                    }`}
+                    style={{ width: `${Math.min(progressData.dailyProgress, 100)}%` }}
+                  />
+                </div>
+                <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                  {progressData.dailyProgress <= 100
+                    ? `${(goals.dailyCap - (goals.dailyCap * progressData.dailyProgress / 100)).toFixed(1)} drinks remaining`
+                    : `Exceeded by ${(progressData.dailyProgress - 100).toFixed(0)}%`}
+                </div>
+              </>
+            ) : (
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                Set a daily limit in Settings to track progress.
+              </p>
+            )}
           </div>
 
           {/* Weekly Progress */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">Weekly Goal</span>
-              <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                {progressData.weeklyProgress.toFixed(0)}%
-              </span>
+              <span className="text-sm font-medium">Weekly goal</span>
+              {progressData.weeklyProgress >= 0 ? (
+                <span className="text-sm text-neutral-600 dark:text-neutral-400 stat-num">
+                  {progressData.weeklyProgress.toFixed(0)}%
+                </span>
+              ) : null}
             </div>
-            <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
-              <div 
-                className={`h-3 rounded-full transition-all duration-500 ${
-                  progressData.weeklyProgress > 100 
-                    ? 'bg-red-500' 
-                    : progressData.weeklyProgress > 80 
-                    ? 'bg-yellow-500' 
-                    : 'bg-blue-500'
-                }`}
-                style={{ width: `${Math.min(progressData.weeklyProgress, 100)}%` }}
-              />
-            </div>
-            <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-              {progressData.weeklyProgress <= 100 
-                ? `${(goals.weeklyGoal - (goals.weeklyGoal * progressData.weeklyProgress / 100)).toFixed(1)} drinks remaining this week`
-                : `Exceeded by ${(progressData.weeklyProgress - 100).toFixed(0)}%`
-              }
-            </div>
+            {progressData.weeklyProgress >= 0 ? (
+              <>
+                <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
+                  <div
+                    className={`h-3 rounded-full transition-all duration-500 ${
+                      progressData.weeklyProgress > 100
+                        ? 'bg-red-500'
+                        : progressData.weeklyProgress > 80
+                        ? 'bg-yellow-500'
+                        : 'bg-blue-500'
+                    }`}
+                    style={{ width: `${Math.min(progressData.weeklyProgress, 100)}%` }}
+                  />
+                </div>
+                <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                  {progressData.weeklyProgress <= 100
+                    ? `${(goals.weeklyGoal - (goals.weeklyGoal * progressData.weeklyProgress / 100)).toFixed(1)} drinks remaining this week`
+                    : `Exceeded by ${(progressData.weeklyProgress - 100).toFixed(0)}%`}
+                </div>
+              </>
+            ) : (
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                Set a weekly goal in Settings to track progress.
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -214,28 +241,36 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
             </div>
           </div>
           
-          <div className="relative">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm">Budget usage</span>
-              <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                {((progressData.monthlySpending.actual / progressData.monthlySpending.budget) * 100).toFixed(0)}%
-              </span>
+          {/* [BUG-2] Render budget bar only when a budget is set;
+              otherwise show a calm empty-state instead of NaN%. */}
+          {progressData.monthlySpending.budget > 0 ? (
+            <div className="relative">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm">Budget usage</span>
+                <span className="text-sm text-neutral-600 dark:text-neutral-400 stat-num">
+                  {((progressData.monthlySpending.actual / progressData.monthlySpending.budget) * 100).toFixed(0)}%
+                </span>
+              </div>
+              <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
+                <div
+                  className={`h-3 rounded-full transition-all duration-500 ${
+                    progressData.monthlySpending.actual > progressData.monthlySpending.budget
+                      ? 'bg-red-500'
+                      : progressData.monthlySpending.actual > progressData.monthlySpending.budget * 0.8
+                      ? 'bg-yellow-500'
+                      : 'bg-green-500'
+                  }`}
+                  style={{
+                    width: `${Math.min((progressData.monthlySpending.actual / progressData.monthlySpending.budget) * 100, 100)}%`
+                  }}
+                />
+              </div>
             </div>
-            <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
-              <div 
-                className={`h-3 rounded-full transition-all duration-500 ${
-                  progressData.monthlySpending.actual > progressData.monthlySpending.budget
-                    ? 'bg-red-500' 
-                    : progressData.monthlySpending.actual > progressData.monthlySpending.budget * 0.8
-                    ? 'bg-yellow-500'
-                    : 'bg-green-500'
-                }`}
-                style={{ 
-                  width: `${Math.min((progressData.monthlySpending.actual / progressData.monthlySpending.budget) * 100, 100)}%` 
-                }}
-              />
-            </div>
-          </div>
+          ) : (
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              Set a monthly budget in Settings to track usage.
+            </p>
+          )}
         </div>
       </div>
 
