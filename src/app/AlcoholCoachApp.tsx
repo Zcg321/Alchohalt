@@ -11,6 +11,7 @@ import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
+import SettingsPanel from '../features/settings/SettingsPanel';
 import { usePWA } from '../hooks/usePWA';
 import { useLanguage } from '../i18n';
 
@@ -22,6 +23,18 @@ export function AlcoholCoachApp() {
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const [showCrisis, setShowCrisis] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Esc closes the topmost modal (Settings first, Crisis second).
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return;
+      if (showSettings) setShowSettings(false);
+      else if (showCrisis) setShowCrisis(false);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showCrisis, showSettings]);
   const undoTimer = useRef<number>();
   const { isInstallable, isOnline, updateAvailable, promptInstall, updateApp } = usePWA();
   const { t } = useLanguage();
@@ -33,6 +46,18 @@ export function AlcoholCoachApp() {
   // Migrate legacy data on mount
   useEffect(() => {
     migrateLegacyData();
+  }, []);
+
+  // [ROUTE-1] /crisis (and #crisis) deep-link opens the crisis modal
+  // on load. Bookmarks, external links, and pasted URLs all land
+  // somewhere useful instead of the home dashboard. Pure hash/path
+  // check — no router introduced.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const isCrisis =
+      window.location.pathname === '/crisis' ||
+      window.location.hash === '#crisis';
+    if (isCrisis) setShowCrisis(true);
   }, []);
 
   // Update data modification functions to use store
@@ -86,12 +111,12 @@ export function AlcoholCoachApp() {
     setSettings(settingsUpdate);
   }
 
-  // Navigation callbacks for QuickActions
+  // [BUG-5] Quick Actions "Settings" button used to scroll to a
+  // #settings-section anchor that was just an inline goal-settings
+  // widget; the actual SettingsPanel was never mounted anywhere. Now
+  // it opens the SettingsPanel as a modal (Esc + backdrop dismiss).
   function handleOpenSettings() {
-    const settingsElement = document.getElementById('settings-section');
-    if (settingsElement) {
-      settingsElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    setShowSettings(true);
   }
 
   function handleOpenStats() {
@@ -169,6 +194,42 @@ export function AlcoholCoachApp() {
               </button>
             </div>
             <CrisisResources />
+          </div>
+        </div>
+      ) : null}
+
+      {/* [BUG-5] Settings modal — wired to QuickActions Settings button. */}
+      {showSettings ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="settings-dialog-title"
+          data-testid="settings-modal"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-neutral-950/70 backdrop-blur-sm p-4 animate-fade-in"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowSettings(false);
+          }}
+        >
+          <div className="my-8 w-full max-w-2xl rounded-2xl bg-white shadow-xl ring-1 ring-neutral-200/70 dark:bg-neutral-900 dark:ring-neutral-800 animate-slide-up">
+            <div className="flex items-center justify-between border-b border-neutral-200/70 px-5 py-4 dark:border-neutral-800 sticky top-0 bg-white/95 dark:bg-neutral-900/95 backdrop-blur z-10 rounded-t-2xl">
+              <h2 id="settings-dialog-title" className="text-base font-semibold tracking-tight">
+                Settings
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowSettings(false)}
+                aria-label="Close"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+              >
+                <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-5">
+              <SettingsPanel />
+            </div>
           </div>
         </div>
       ) : null}

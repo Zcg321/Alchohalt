@@ -1,180 +1,220 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '../../components/ui/Button';
+import React, { useEffect, useState } from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
 
-interface OnboardingStep {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  action?: () => void;
+/**
+ * [ONBOARD-1] Three-beat conversational onboarding.
+ *
+ * Replaces the previous 6-step emoji carousel (welcome / privacy /
+ * tracking / insights / goals / ready) with three honest beats:
+ *
+ *   1. "Hi. What brings you here today?"
+ *      Three optional chips: Cutting back / Quitting / Just curious.
+ *      Skip works. Choice is recorded but never required.
+ *
+ *   2. "How would you like to track?"
+ *      Three optional chips: One day at a time / 30-day reset /
+ *      Custom goal. Skip works.
+ *
+ *   3. "We never see what you write. Cancel anytime."
+ *      Single Get started button.
+ *
+ * Each beat has Skip and a real X close button. Esc + backdrop click
+ * also dismiss. All paths persist `hasCompletedOnboarding=true` so
+ * the modal does not re-fire on next load.
+ *
+ * Voice: trusted-friend tone. No "Welcome to Alchohalt!". No emoji
+ * parade. No exclamation marks. Sentence case throughout.
+ */
+
+type Intent = 'cut-back' | 'quit' | 'curious';
+type TrackStyle = 'day-by-day' | 'thirty-day' | 'custom';
+
+interface BeatOneProps {
+  onChoose: (intent: Intent) => void;
+}
+function BeatOne({ onChoose }: BeatOneProps) {
+  return (
+    <>
+      <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        Hi. What brings you here today?
+      </h2>
+      <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        Whatever you pick stays on your phone. You can change your mind anytime.
+      </p>
+      <div className="mt-5 grid gap-2.5">
+        {([
+          ['cut-back', 'Cutting back'],
+          ['quit', 'Quitting'],
+          ['curious', 'Just curious'],
+        ] as const).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onChoose(id)}
+            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
+
+interface BeatTwoProps {
+  onChoose: (style: TrackStyle) => void;
+}
+function BeatTwo({ onChoose }: BeatTwoProps) {
+  return (
+    <>
+      <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        How would you like to track?
+      </h2>
+      <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        Pick the rhythm that fits. You can adjust this in Settings later.
+      </p>
+      <div className="mt-5 grid gap-2.5">
+        {([
+          ['day-by-day', 'One day at a time'],
+          ['thirty-day', '30-day reset'],
+          ['custom', 'Custom goal'],
+        ] as const).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onChoose(id)}
+            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
+
+interface BeatThreeProps {
+  onStart: () => void;
+}
+function BeatThree({ onStart }: BeatThreeProps) {
+  return (
+    <>
+      <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        Your data is yours.
+      </h2>
+      <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        We cryptographically cannot read what you log. Cancel anytime.
+        Optional AI features (off by default) are the only thing that
+        can change this — you control them in Settings.
+      </p>
+      <button
+        type="button"
+        onClick={onStart}
+        className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-neutral-900 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition-colors min-h-[48px]"
+      >
+        Get started
+      </button>
+    </>
+  );
 }
 
 export default function OnboardingFlow() {
   const { t } = useLanguage();
   const { db, setSettings } = useDB();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [step, setStep] = useState<0 | 1 | 2>(0);
   const [isVisible, setIsVisible] = useState(false);
 
-  const steps: OnboardingStep[] = [
-    {
-      id: 'welcome',
-      title: t('onboarding.welcome.title', 'Welcome to Alchohalt'),
-      description: t('onboarding.welcome.description', 'Your personal, private wellness companion for building healthier drinking habits.'),
-      icon: '🌟'
-    },
-    {
-      id: 'privacy',
-      title: t('onboarding.privacy.title', 'Your Privacy Matters'),
-      description: t('onboarding.privacy.description', 'Your wellness data stays on your phone by default. Optional, opt-in AI features can send anonymized patterns to AI providers — you control this in Settings → AI.'),
-      icon: '🔒'
-    },
-    {
-      id: 'tracking',
-      title: t('onboarding.tracking.title', 'Smart Tracking'),
-      description: t('onboarding.tracking.description', 'Log drinks with intentions, HALT triggers, and craving levels to understand your patterns.'),
-      icon: '📊'
-    },
-    {
-      id: 'insights',
-      title: t('onboarding.insights.title', 'Personalized Insights'),
-      description: t('onboarding.insights.description', 'On-device pattern analytics by default. Optional AI Insights (off until you enable it) can generate written reflections from anonymized summaries.'),
-      icon: '🧠'
-    },
-    {
-      id: 'goals',
-      title: t('onboarding.goals.title', 'Set Your Goals'),
-      description: t('onboarding.goals.description', 'Create personalized goals and track your progress with motivating streak counters.'),
-      icon: '🎯'
-    },
-    {
-      id: 'ready',
-      title: t('onboarding.ready.title', 'You\'re All Set!'),
-      description: t('onboarding.ready.description', 'Ready to start your wellness journey? Your first log is just a tap away.'),
-      icon: '🚀'
-    }
-  ];
-
   useEffect(() => {
-    // Check if user has completed onboarding
-    const hasSeenOnboarding = db.settings?.hasCompletedOnboarding;
-    if (!hasSeenOnboarding) {
-      setIsVisible(true);
-    }
+    if (!db.settings?.hasCompletedOnboarding) setIsVisible(true);
   }, [db.settings]);
 
-  const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      completeOnboarding();
-    }
-  };
-
-  const skipOnboarding = () => {
-    completeOnboarding();
-  };
-
-  const completeOnboarding = () => {
+  function complete() {
     setSettings({ hasCompletedOnboarding: true });
     setIsVisible(false);
-  };
+  }
 
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+  // [BUG-9] Esc dismisses + persists.
+  useEffect(() => {
+    if (!isVisible) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') complete();
     }
-  };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isVisible, complete]);
 
   if (!isVisible) return null;
 
-  const currentStepData = steps[currentStep];
-  const progress = ((currentStep + 1) / steps.length) * 100;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="max-w-lg mx-4 bg-surface-elevated rounded-2xl shadow-strong border border-default overflow-hidden animate-scale-up">
-        {/* Progress Bar */}
-        <div className="h-1 bg-gray-200 dark:bg-gray-700">
-          <div 
-            className="h-full bg-primary-600 transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        {/* Content */}
-        <div className="p-8 text-center">
-          <div className="text-6xl mb-4">{currentStepData.icon}</div>
-          
-          <h2 className="text-2xl font-bold text-primary mb-4">
-            {currentStepData.title}
-          </h2>
-          
-          <p className="text-secondary leading-relaxed mb-8">
-            {currentStepData.description}
-          </p>
-
-          {/* Step Indicators */}
-          <div className="flex justify-center gap-2 mb-8">
-            {steps.map((_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index <= currentStep ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-              />
-            ))}
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-3 justify-center">
-            {currentStep > 0 && (
-              <Button
-                variant="ghost"
-                onClick={prevStep}
-                className="px-6"
-              >
-                {t('onboarding.back', 'Back')}
-              </Button>
-            )}
-            
-            <Button
-              variant="ghost"
-              onClick={skipOnboarding}
-              className="px-6"
-            >
-              {t('onboarding.skip', 'Skip')}
-            </Button>
-            
-            <Button
-              onClick={nextStep}
-              className="px-6"
-            >
-              {currentStep === steps.length - 1 
-                ? t('onboarding.getStarted', 'Get Started')
-                : t('onboarding.next', 'Next')
-              }
-            </Button>
-          </div>
-        </div>
-
-        {/* Quick Tips */}
-        {currentStep === steps.length - 1 && (
-          <div className="px-8 pb-8">
-            <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4">
-              <h4 className="font-medium text-primary-800 dark:text-primary-200 mb-2">
-                💡 {t('onboarding.quickTips.title', 'Quick Tips')}
-              </h4>
-              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-1">
-                <li>• {t('onboarding.quickTips.tip1', 'Start with small, achievable goals')}</li>
-                <li>• {t('onboarding.quickTips.tip2', 'Log honestly for better insights')}</li>
-                <li>• {t('onboarding.quickTips.tip3', 'Check your progress regularly')}</li>
-                <li>• {t('onboarding.quickTips.tip4', 'Export your data anytime for backup')}</li>
-              </ul>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-title"
+      data-testid="onboarding-modal"
+      className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center overflow-y-auto bg-neutral-950/70 backdrop-blur-sm p-0 sm:p-4 animate-fade-in"
+      onClick={(e) => {
+        // [BUG-9] Backdrop click dismisses + persists.
+        if (e.target === e.currentTarget) complete();
+      }}
+    >
+      <div className="w-full max-w-md rounded-t-3xl sm:rounded-3xl bg-white p-6 shadow-xl ring-1 ring-neutral-200/70 dark:bg-neutral-900 dark:ring-neutral-800 animate-slide-up">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <span id="onboarding-title" className="sr-only">
+              Welcome to Alchohalt
+            </span>
+            <div className="flex gap-1.5" aria-hidden>
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className={`h-1 flex-1 rounded-full transition-colors ${
+                    i <= step
+                      ? 'bg-neutral-800 dark:bg-neutral-100'
+                      : 'bg-neutral-200 dark:bg-neutral-700'
+                  }`}
+                />
+              ))}
             </div>
           </div>
-        )}
+          <button
+            type="button"
+            onClick={complete}
+            aria-label={t('onboarding.skip', 'Skip')}
+            className="-mt-1 -mr-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+          >
+            <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="mt-5">
+          {step === 0 && <BeatOne onChoose={() => setStep(1)} />}
+          {step === 1 && <BeatTwo onChoose={() => setStep(2)} />}
+          {step === 2 && <BeatThree onStart={complete} />}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between gap-3 text-xs text-neutral-500 dark:text-neutral-400">
+          {step > 0 ? (
+            <button
+              type="button"
+              onClick={() => setStep((s) => (s === 0 ? 0 : ((s - 1) as 0 | 1 | 2)))}
+              className="hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline"
+            >
+              {t('onboarding.back', 'Back')}
+            </button>
+          ) : <span />}
+          <button
+            type="button"
+            onClick={complete}
+            data-testid="onboarding-skip"
+            className="hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline"
+          >
+            {t('onboarding.skip', 'Skip and explore')}
+          </button>
+        </div>
       </div>
     </div>
   );
