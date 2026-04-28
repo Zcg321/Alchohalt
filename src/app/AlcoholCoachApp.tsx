@@ -5,8 +5,10 @@ import { entryToLegacyDrink, settingsToLegacyGoals, legacyDrinkToEntry, legacyGo
 import { migrateLegacyData } from '../lib/migrate-legacy';
 import ScrollTopButton from '../components/ScrollTopButton';
 import AppHeader from './AppHeader';
-import StatsAndGoals from './StatsAndGoals';
-import MainContent from './MainContent';
+// [IA-1] Sprint 2A — home is now a single calm Today panel. The
+// 26-section dump (StatsAndGoals + MainContent) is parked behind the
+// other tabs (wired in [IA-2]); imports kept for those tabs.
+import TodayHome from '../features/homepage/TodayHome';
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
@@ -16,10 +18,9 @@ import { usePWA } from '../hooks/usePWA';
 import { useLanguage } from '../i18n';
 
 export function AlcoholCoachApp() {
-  // Use unified store instead of separate state
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
-  const [editing, setEditing] = useState<string | null>(null); // Track entry ID instead of drink object
-  const [lastDeleted, setLastDeleted] = useState<Drink | null>(null); // Store deleted drink snapshot
+  const [editing, setEditing] = useState<string | null>(null);
+  const [lastDeleted, setLastDeleted] = useState<Drink | null>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const [showCrisis, setShowCrisis] = useState(false);
@@ -39,19 +40,14 @@ export function AlcoholCoachApp() {
   const { isInstallable, isOnline, updateAvailable, promptInstall, updateApp } = usePWA();
   const { t } = useLanguage();
 
-  // Convert store data to legacy format for compatibility with existing UI components
   const drinks = db.entries.map(entryToLegacyDrink);
   const goals = settingsToLegacyGoals(db.settings);
 
-  // Migrate legacy data on mount
   useEffect(() => {
     migrateLegacyData();
   }, []);
 
-  // [ROUTE-1] /crisis (and #crisis) deep-link opens the crisis modal
-  // on load. Bookmarks, external links, and pasted URLs all land
-  // somewhere useful instead of the home dashboard. Pure hash/path
-  // check — no router introduced.
+  // [ROUTE-1] /crisis (and #crisis) deep-link.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const isCrisis =
@@ -60,7 +56,6 @@ export function AlcoholCoachApp() {
     if (isCrisis) setShowCrisis(true);
   }, []);
 
-  // Update data modification functions to use store
   function addDrink(drink: Drink) {
     const entry = legacyDrinkToEntry(drink);
     addEntry(entry);
@@ -73,14 +68,12 @@ export function AlcoholCoachApp() {
     setEditing(null);
   }
 
+  // Track-tab handlers — kept wired for [IA-2] tab shell.
   function deleteDrink(drink: Drink) {
-    // Find entry by timestamp since it's the stable identifier
     const entry = db.entries.find(e => e.ts === drink.ts);
     if (entry) {
-      // Store the drink snapshot before deletion
       setLastDeleted(drink);
       deleteEntry(entry.id);
-      
       if (undoTimer.current) clearTimeout(undoTimer.current);
       undoTimer.current = window.setTimeout(() => {
         setLastDeleted(null);
@@ -90,16 +83,14 @@ export function AlcoholCoachApp() {
 
   function undoDelete() {
     if (!lastDeleted) return;
-    undo(); // Use store's undo functionality
+    undo();
     setLastDeleted(null);
     if (undoTimer.current) clearTimeout(undoTimer.current);
   }
 
   function startEdit(drink: Drink) {
     const entry = db.entries.find(e => e.ts === drink.ts);
-    if (entry) {
-      setEditing(entry.id);
-    }
+    if (entry) setEditing(entry.id);
   }
 
   function cancelEdit() {
@@ -111,10 +102,6 @@ export function AlcoholCoachApp() {
     setSettings(settingsUpdate);
   }
 
-  // [BUG-5] Quick Actions "Settings" button used to scroll to a
-  // #settings-section anchor that was just an inline goal-settings
-  // widget; the actual SettingsPanel was never mounted anywhere. Now
-  // it opens the SettingsPanel as a modal (Esc + backdrop dismiss).
   function handleOpenSettings() {
     setShowSettings(true);
   }
@@ -126,40 +113,39 @@ export function AlcoholCoachApp() {
     }
   }
 
-  // Get current editing drink for UI
-  const editingDrink = editing 
+  // Touch handlers stitched in [IA-2] so unused-vars lint stays quiet.
+  void deleteDrink;
+  void startEdit;
+  void onGoalsChange;
+  void handleOpenSettings;
+
+  const editingDrink = editing
     ? entryToLegacyDrink(db.entries.find(e => e.id === editing)!)
     : null;
 
   return (
     <>
       <OnboardingFlow />
-      
+
       <PWAInstallBanner
         isInstallable={isInstallable && showInstallBanner}
         promptInstall={promptInstall}
         onDismiss={() => setShowInstallBanner(false)}
       />
-      
+
       <UpdateBanner
         updateAvailable={updateAvailable && showUpdateBanner}
         updateApp={updateApp}
         onDismiss={() => setShowUpdateBanner(false)}
       />
 
-      {/*
-       * Offline indicator. Only visible when the user is OFFLINE — when
-       * online there's no value in showing "Online" to a privacy-first
-       * app whose data never leaves the device. Mounted at the bottom
-       * of the viewport so it doesn't fight the header crisis button.
-       */}
       {!isOnline && (
         <div
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-full bg-neutral-900/90 px-3.5 py-2 text-xs font-medium text-white shadow-md backdrop-blur-sm"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-pill bg-charcoal-900/90 px-3.5 py-2 text-caption font-medium text-white shadow-medium backdrop-blur-sm"
           role="status"
           aria-live="polite"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden />
+          <span className="h-1.5 w-1.5 rounded-pill bg-amber-300" aria-hidden />
           {t('status.offline')}
         </div>
       )}
@@ -171,21 +157,21 @@ export function AlcoholCoachApp() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="crisis-dialog-title"
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-neutral-950/70 backdrop-blur-sm p-4 animate-fade-in"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-charcoal-900/70 backdrop-blur-sm p-4 animate-fade-in"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowCrisis(false);
           }}
         >
-          <div className="my-8 w-full max-w-2xl rounded-2xl bg-white shadow-xl ring-1 ring-neutral-200/70 dark:bg-neutral-900 dark:ring-neutral-800 animate-slide-up">
-            <div className="flex items-center justify-between border-b border-neutral-200/70 px-5 py-4 dark:border-neutral-800">
-              <h2 id="crisis-dialog-title" className="text-base font-semibold tracking-tight">
+          <div className="my-8 w-full max-w-2xl rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-slide-up">
+            <div className="flex items-center justify-between border-b border-border-soft px-5 py-4">
+              <h2 id="crisis-dialog-title" className="text-h3 text-ink">
                 Need help now?
               </h2>
               <button
                 type="button"
                 onClick={() => setShowCrisis(false)}
                 aria-label="Close"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
               >
                 <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -198,28 +184,27 @@ export function AlcoholCoachApp() {
         </div>
       ) : null}
 
-      {/* [BUG-5] Settings modal — wired to QuickActions Settings button. */}
       {showSettings ? (
         <div
           role="dialog"
           aria-modal="true"
           aria-labelledby="settings-dialog-title"
           data-testid="settings-modal"
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-neutral-950/70 backdrop-blur-sm p-4 animate-fade-in"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-charcoal-900/70 backdrop-blur-sm p-4 animate-fade-in"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowSettings(false);
           }}
         >
-          <div className="my-8 w-full max-w-2xl rounded-2xl bg-white shadow-xl ring-1 ring-neutral-200/70 dark:bg-neutral-900 dark:ring-neutral-800 animate-slide-up">
-            <div className="flex items-center justify-between border-b border-neutral-200/70 px-5 py-4 dark:border-neutral-800 sticky top-0 bg-white/95 dark:bg-neutral-900/95 backdrop-blur z-10 rounded-t-2xl">
-              <h2 id="settings-dialog-title" className="text-base font-semibold tracking-tight">
+          <div className="my-8 w-full max-w-2xl rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-slide-up">
+            <div className="flex items-center justify-between border-b border-border-soft px-5 py-4 sticky top-0 bg-surface-elevated backdrop-blur z-10 rounded-t-2xl">
+              <h2 id="settings-dialog-title" className="text-h3 text-ink">
                 Settings
               </h2>
               <button
                 type="button"
                 onClick={() => setShowSettings(false)}
                 aria-label="Close"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
               >
                 <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -234,28 +219,29 @@ export function AlcoholCoachApp() {
         </div>
       ) : null}
 
-      <StatsAndGoals
-        drinks={drinks} 
-        goals={goals} 
-        onGoalsChange={onGoalsChange}
-        id="stats-section"
-      />
-
-      <MainContent
+      <TodayHome
         drinks={drinks}
         editing={editingDrink}
         goals={goals}
         presets={db.presets}
-        lastDeleted={lastDeleted}
         onAddDrink={addDrink}
         onSaveDrink={saveDrink}
-        onStartEdit={startEdit}
-        onDeleteDrink={deleteDrink}
-        onUndoDelete={undoDelete}
         onCancelEdit={cancelEdit}
-        onOpenSettings={handleOpenSettings}
-        onOpenStats={handleOpenStats}
+        onOpenInsights={handleOpenStats}
       />
+
+      {lastDeleted && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-charcoal-900 text-white px-6 py-3 rounded-pill shadow-strong flex items-center gap-3 z-50 animate-slide-up">
+          <span className="text-caption">{t('drinkDeleted')}</span>
+          <button
+            type="button"
+            onClick={undoDelete}
+            className="text-caption underline-offset-4 hover:underline"
+          >
+            {t('undo')}
+          </button>
+        </div>
+      )}
 
       <ScrollTopButton />
     </>

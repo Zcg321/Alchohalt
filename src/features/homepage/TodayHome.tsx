@@ -1,0 +1,172 @@
+/**
+ * TodayHome
+ * =========
+ *
+ * Sprint-2A `[IA-1]` home view. Replaces the prior 26-section dump
+ * with a calm Today panel + a single drink-log surface revealed on
+ * demand by the panel's primary CTA.
+ *
+ * What lives here (and only here):
+ *   - The big calm Day-N hero
+ *   - The context-aware primary CTA
+ *   - A quiet stats strip (today / 7d / 30d)
+ *   - On-demand: the DrinkForm (when user picks "Log a drink")
+ *   - On-demand: the EnhancedMoodTracker (when user picks "How are you today?")
+ *
+ * What MOVED OFF home (delivered as part of `[IA-2]`):
+ *   - Drinks Database  → Track tab
+ *   - Goals widgets    → Goals tab
+ *   - Smart Recs / Streak Milestone / Money / Wellness → Insights tab
+ *   - Mood IQ multi-step → Insights tab as a sub-flow
+ *
+ * What's deprecated (Sprint 2B):
+ *   - Community Challenges placeholder (gone for now; full deprecate in `[IA-6]`)
+ *   - Levels / Points gamification (gone for now; full strip in `[IA-5]`)
+ */
+
+import React, { Suspense, useState } from 'react';
+import type { Drink, DrinkPreset, Goals } from '../../types/common';
+import { Skeleton } from '../../components/ui/Skeleton';
+import ErrorBoundary from '../../components/ErrorBoundary';
+import TodayPanel from './TodayPanel';
+import { Disclaimer } from '../../components/Disclaimer';
+
+const DrinkForm = React.lazy(() => import('../drinks/DrinkForm'));
+const EnhancedMoodTracker = React.lazy(() => import('../mood/EnhancedMoodTracker'));
+
+interface Props {
+  drinks: Drink[];
+  goals: Goals;
+  presets: DrinkPreset[];
+  editing: Drink | null;
+  onAddDrink: (drink: Drink) => void;
+  onSaveDrink: (drink: Drink) => void;
+  onCancelEdit: () => void;
+  /** Used by the panel "See progress" CTA. */
+  onOpenInsights?: () => void;
+}
+
+type Surface = 'panel' | 'log' | 'check-in';
+
+export default function TodayHome({
+  drinks,
+  goals,
+  presets,
+  editing,
+  onAddDrink,
+  onSaveDrink,
+  onCancelEdit,
+  onOpenInsights,
+}: Props) {
+  const [surface, setSurface] = useState<Surface>('panel');
+
+  // If the parent flips into edit mode, surface the log form so the
+  // user can see the entry they're editing.
+  React.useEffect(() => {
+    if (editing) setSurface('log');
+  }, [editing]);
+
+  function handleDrinkSubmit(drink: Drink) {
+    if (editing) onSaveDrink(drink);
+    else onAddDrink(drink);
+    setSurface('panel');
+  }
+
+  function handleMarkAF() {
+    // A "mark today AF" entry is a 0-volume / 0-abv entry. The
+    // existing data model treats this as a check-in / AF day.
+    onAddDrink({
+      ts: Date.now(),
+      volumeMl: 0,
+      abvPct: 0,
+      intention: 'social',
+      craving: 0,
+      halt: [],
+      alt: '',
+    });
+  }
+
+  return (
+    <main id="main">
+      <TodayPanel
+        drinks={drinks}
+        goals={goals}
+        onCheckIn={() => setSurface('check-in')}
+        onLogDrink={() => setSurface('log')}
+        onMarkAF={handleMarkAF}
+        onSeeProgress={onOpenInsights}
+      />
+
+      {surface === 'log' ? (
+        <section
+          aria-labelledby="log-heading"
+          className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
+        >
+          <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
+            <div className="flex items-center justify-between mb-4">
+              <h2 id="log-heading" className="text-h3 text-ink">
+                {editing ? 'Edit drink' : 'Log a drink'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => {
+                  if (editing) onCancelEdit();
+                  setSurface('panel');
+                }}
+                className="text-caption text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
+              >
+                Close
+              </button>
+            </div>
+            <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+              <DrinkForm
+                onSubmit={handleDrinkSubmit}
+                initial={editing || undefined}
+                submitLabel={editing ? 'Save' : 'Add'}
+                onCancel={() => {
+                  if (editing) onCancelEdit();
+                  setSurface('panel');
+                }}
+                presets={presets}
+              />
+            </Suspense>
+          </div>
+        </section>
+      ) : null}
+
+      {surface === 'check-in' ? (
+        <section
+          aria-labelledby="checkin-heading"
+          className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
+        >
+          <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
+            <div className="flex items-center justify-between mb-4">
+              <h2 id="checkin-heading" className="text-h3 text-ink">
+                How are you today?
+              </h2>
+              <button
+                type="button"
+                onClick={() => setSurface('panel')}
+                className="text-caption text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
+              >
+                Close
+              </button>
+            </div>
+            <ErrorBoundary isolate label="Mood check-in">
+              <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+                <EnhancedMoodTracker
+                  onComplete={() => setSurface('panel')}
+                  onPatternUpdate={() => { /* handled in Insights tab */ }}
+                />
+              </Suspense>
+            </ErrorBoundary>
+          </div>
+        </section>
+      ) : null}
+
+      <div className="mx-auto w-full max-w-3xl px-4 pb-section-y-mobile lg:pb-section-y-desktop">
+        <Disclaimer />
+      </div>
+    </main>
+  );
+}
