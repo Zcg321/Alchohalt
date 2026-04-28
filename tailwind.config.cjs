@@ -1,17 +1,3 @@
-/*
- * Alchohalt Tailwind config
- *
- * Every color is a CSS variable defined in src/styles/theme.css. That
- * file is the single source of truth — flip data-theme="dark" on
- * <html> (or add the legacy `.dark` class) to swap palettes.
- *
- * darkMode honors BOTH class-based dark (legacy) and the new
- * data-theme attribute, so we can migrate code at our own pace.
- *
- * Sprint-1-locked palette: sage / cream / indigo / amber / charcoal,
- * with red reserved for crisis only.
- */
-
 /* eslint-env node */
 const cv = (name) => `var(${name})`;
 
@@ -21,7 +7,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // ---------- New scales ----------
         sage: {
           50:  cv('--color-sage-50'),
           100: cv('--color-sage-100'),
@@ -76,8 +61,6 @@ module.exports = {
           900: cv('--color-crisis-900'),
           DEFAULT: cv('--color-crisis-600'),
         },
-
-        // ---------- Semantic ----------
         surface: {
           DEFAULT:  cv('--surface-base'),
           base:     cv('--surface-base'),
@@ -95,11 +78,6 @@ module.exports = {
           soft:    cv('--border-soft'),
           strong:  cv('--border-strong'),
         },
-
-        // ---------- Legacy aliases ----------
-        // Existing utilities (text-primary-700, bg-neutral-50, etc.)
-        // continue to resolve. Mapped through CSS vars so the visual
-        // result is the new palette.
         primary: {
           50:  cv('--color-primary-50'),
           100: cv('--color-primary-100'),
@@ -150,7 +128,6 @@ module.exports = {
           800: cv('--color-amber-900'),
           900: cv('--color-warning-900'),
         },
-        // Danger == crisis. Red reserved for crisis only.
         danger: {
           50:  cv('--color-danger-50'),
           100: cv('--color-danger-100'),
@@ -173,4 +150,109 @@ module.exports = {
           600: cv('--text-soft'),
           700: cv('--color-charcoal-500'),
           800: cv('--color-charcoal-700'),
-          900: cv
+          900: cv('--color-charcoal-900'),
+          950: cv('--color-charcoal-900'),
+        },
+      },
+      fontFamily: {
+        sans: [
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'system-ui',
+          'sans-serif',
+        ],
+      },
+      fontSize: {
+        'xs':   ['0.75rem',  { lineHeight: '1.05rem' }],
+        'sm':   ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem',     { lineHeight: '1.55'    }],
+        'lg':   ['1.125rem', { lineHeight: '1.6rem'  }],
+        'xl':   ['1.25rem',  { lineHeight: '1.65rem' }],
+        '2xl':  ['1.5rem',   { lineHeight: '1.85rem' }],
+        '3xl':  ['1.875rem', { lineHeight: '2.15rem' }],
+        '4xl':  ['2.25rem',  { lineHeight: '2.5rem'  }],
+        '5xl':  ['3rem',     { lineHeight: '3.15rem' }],
+        'micro':   ['0.6875rem', { lineHeight: '1rem',     letterSpacing: '0.04em' }],
+        'caption': ['0.8125rem', { lineHeight: '1.15rem'  }],
+        'body':    ['1rem',      { lineHeight: '1.55'     }],
+        'h3':      ['1.125rem',  { lineHeight: '1.45',    fontWeight: '500' }],
+        'h2':      ['1.5rem',    { lineHeight: '1.3',     fontWeight: '600' }],
+        'h1':      ['2rem',      { lineHeight: '1.2',     fontWeight: '600', letterSpacing: '-0.01em' }],
+        'display': ['3.25rem',   { lineHeight: '1.05',    fontWeight: '600', letterSpacing: '-0.02em' }],
+      },
+      fontWeight: {
+        regular:  '400',
+        medium:   '500',
+        semibold: '600',
+      },
+      lineHeight: {
+        body:  '1.55',
+        snug:  '1.35',
+        tight: '1.2',
+      },
+      spacing: {
+        'card':              cv('--space-card'),
+        'card-tight':        cv('--space-card-tight'),
+        'section-y':         cv('--space-section-y-mobile'),
+        'section-y-mobile':  cv('--space-section-y-mobile'),
+        'section-y-desktop': cv('--space-section-y-desktop'),
+      },
+      borderRadius: {
+        'sm':   cv('--radius-sm'),
+        'md':   cv('--radius-md'),
+        'lg':   cv('--radius-lg'),
+        'xl':   cv('--radius-xl'),
+        '2xl':  cv('--radius-2xl'),
+        '3xl':  '1.5rem',
+        'pill': cv('--radius-pill'),
+      },
+      boxShadow: {
+        'soft':         cv('--shadow-soft'),
+        'card':         cv('--shadow-card'),
+        'card-hover':   cv('--shadow-medium'),
+        'medium':       cv('--shadow-medium'),
+        'strong':       cv('--shadow-strong'),
+        'sm':           cv('--shadow-soft'),
+        'DEFAULT':      cv('--shadow-card'),
+        'md':           cv('--shadow-medium'),
+        'lg':           cv('--shadow-medium'),
+        'xl':           cv('--shadow-strong'),
+        'premium-glow': '0 0 0 1px rgb(232 168 124 / 0.20), 0 4px 12px -2px rgb(232 168 124 / 0.20)',
+      },
+      animation: {
+        'fade-in':    'fadeIn 0.3s ease-out',
+        'slide-up':   'slideUp 0.3s ease-out',
+        'slide-down': 'slideDown 0.3s ease-out',
+        'scale-up':   'scaleUp 0.2s ease-out',
+        'pulse-soft': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(-10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scaleUp: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-soft':   'linear-gradient(135deg, var(--tw-gradient-stops))',
+      },
+    },
+  },
+  plugins: [],
+};

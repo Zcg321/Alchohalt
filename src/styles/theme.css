@@ -2,36 +2,24 @@
  * Alchohalt design token system
  * ==============================
  *
- * Single source of truth for color, type, and spacing — every value in
- * here is a CSS variable so dark / light flips by toggling
- * `data-theme="dark"` on <html>. Tailwind tokens (see
+ * Single source of truth for color, type, and spacing - every value
+ * is a CSS variable so dark/light flips by toggling
+ * data-theme="dark" on <html>. Tailwind tokens (see
  * tailwind.config.cjs) reference these variables; component code
  * should NEVER hardcode hex values.
  *
  * Palette (Sprint 1 lock):
- *   sage     — primary, calm trusted-friend green
- *   cream    — warm off-white surface
- *   indigo   — muted indigo for secondary / "Need help?" pill
- *   amber    — warm celebration accent
- *   charcoal — warm-charcoal dark surfaces
- *   red      — crisis only, never decorative
- *
- * Type: Inter when self-hosted, otherwise platform-native sans.
- * 16px base, 1.55 line-height, tabular nums on stat numerals.
- *
- * Spacing: 64px section-y desktop / 48px mobile, 24px card padding.
- *
- * Legacy compatibility: existing Tailwind classes (primary-500,
- * neutral-900, .dark variant, etc.) keep working. They route through
- * these tokens, so updating a token reflows everywhere. The
- * `data-theme="dark"` selector and the legacy `.dark` class are both
- * honored — see darkMode in tailwind.config.cjs.
+ *   sage     - primary, calm trusted-friend green
+ *   cream    - warm off-white surface
+ *   indigo   - muted indigo for secondary / "Need help?" pill
+ *   amber    - warm celebration accent
+ *   charcoal - warm-charcoal dark surfaces
+ *   red      - crisis only, never decorative
  */
 
 @layer base {
   :root,
   [data-theme="light"] {
-    /* ---------- Sage (primary) ---------- */
     --color-sage-50:  #eef4f1;
     --color-sage-100: #d9e6df;
     --color-sage-300: #a6c3b5;
@@ -39,7 +27,6 @@
     --color-sage-700: #3f6055;
     --color-sage-900: #25382f;
 
-    /* ---------- Cream (warm surface) ---------- */
     --color-cream-50:  #fdfcf9;
     --color-cream-100: #F8F5F0;
     --color-cream-300: #ece5d8;
@@ -47,7 +34,6 @@
     --color-cream-700: #8a7e63;
     --color-cream-900: #3d3725;
 
-    /* ---------- Indigo (muted secondary) ---------- */
     --color-indigo-50:  #eef0f6;
     --color-indigo-100: #d9deec;
     --color-indigo-300: #9aa5c5;
@@ -55,7 +41,6 @@
     --color-indigo-700: #2c3a5b;
     --color-indigo-900: #161d2e;
 
-    /* ---------- Amber (warm celebration) ---------- */
     --color-amber-50:  #fdf4ec;
     --color-amber-100: #fae3cc;
     --color-amber-300: #efba8e;
@@ -63,7 +48,6 @@
     --color-amber-700: #b27a4e;
     --color-amber-900: #5a3c25;
 
-    /* ---------- Charcoal (warm-dark) ---------- */
     --color-charcoal-50:  #f3f1ee;
     --color-charcoal-100: #d9d4cc;
     --color-charcoal-300: #8a8278;
@@ -71,7 +55,6 @@
     --color-charcoal-700: #2a2622;
     --color-charcoal-900: #1A1814;
 
-    /* ---------- Red (crisis only — DO NOT use decoratively) ---------- */
     --color-crisis-50:  #fef2f2;
     --color-crisis-100: #fee2e2;
     --color-crisis-500: #ef4444;
@@ -79,41 +62,34 @@
     --color-crisis-700: #b91c1c;
     --color-crisis-900: #7f1d1d;
 
-    /* ---------- Semantic surfaces (light) ---------- */
-    --surface-base:     var(--color-cream-100);    /* main page background */
-    --surface-elevated: #ffffff;                   /* cards, modals */
-    --surface-muted:    var(--color-cream-50);     /* sub-surfaces */
-    --surface-inverse:  var(--color-charcoal-900); /* toasts, tooltips */
+    --surface-base:     var(--color-cream-100);
+    --surface-elevated: #ffffff;
+    --surface-muted:    var(--color-cream-50);
+    --surface-inverse:  var(--color-charcoal-900);
 
-    /* ---------- Semantic text (light) ---------- */
-    --text-default: #1f1d1a;                       /* warm near-black */
-    --text-soft:    #4a443c;                       /* secondary copy */
-    --text-subtle:  #8a8278;                       /* tertiary / hint */
-    --text-on-sage: #ffffff;                       /* on sage-500/700 */
-    --text-on-amber: var(--color-charcoal-900);    /* on amber-500 */
+    --text-default: #1f1d1a;
+    --text-soft:    #4a443c;
+    --text-subtle:  #8a8278;
+    --text-on-sage: #ffffff;
+    --text-on-amber: var(--color-charcoal-900);
 
-    /* ---------- Semantic borders (light) ---------- */
-    --border-default: #e6e0d3;                     /* default hairline */
-    --border-soft:    #f0ebe0;                     /* very subtle */
-    --border-strong:  #cdc4b0;                     /* explicit edges */
+    --border-default: #e6e0d3;
+    --border-soft:    #f0ebe0;
+    --border-strong:  #cdc4b0;
 
-    /* ---------- Action / status mapping ---------- */
     --action-primary:        var(--color-sage-700);
     --action-primary-hover:  var(--color-sage-900);
     --action-secondary:      var(--color-indigo-500);
     --action-celebration:    var(--color-amber-500);
     --action-crisis:         var(--color-crisis-600);
 
-    /* ---------- Focus ---------- */
     --focus-ring: var(--color-sage-500);
 
-    /* ---------- Shadows (calm) ---------- */
     --shadow-soft:   0 1px 2px 0 rgb(31 29 26 / 0.04);
     --shadow-card:   0 1px 3px 0 rgb(31 29 26 / 0.06), 0 1px 2px -1px rgb(31 29 26 / 0.04);
     --shadow-medium: 0 4px 6px -1px rgb(31 29 26 / 0.08), 0 2px 4px -2px rgb(31 29 26 / 0.06);
     --shadow-strong: 0 10px 15px -3px rgb(31 29 26 / 0.10), 0 4px 6px -4px rgb(31 29 26 / 0.08);
 
-    /* ---------- Radii ---------- */
     --radius-sm:  0.375rem;
     --radius-md:  0.625rem;
     --radius-lg:  0.875rem;
@@ -121,13 +97,11 @@
     --radius-2xl: 1.5rem;
     --radius-pill: 9999px;
 
-    /* ---------- Spacing scale (locked from Sprint 1) ---------- */
-    --space-section-y-mobile:  3rem;     /* 48px */
-    --space-section-y-desktop: 4rem;     /* 64px */
-    --space-card:              1.5rem;   /* 24px */
-    --space-card-tight:        1rem;     /* 16px */
+    --space-section-y-mobile:  3rem;
+    --space-section-y-desktop: 4rem;
+    --space-card:              1.5rem;
+    --space-card-tight:        1rem;
 
-    /* ---------- Typography ---------- */
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                  Roboto, 'Helvetica Neue', system-ui, sans-serif;
 
@@ -135,9 +109,6 @@
     --line-height-tight: 1.2;
     --line-height-snug:  1.35;
 
-    /* ---------- Legacy aliases ---------- */
-    /* Older code reaches for primary-* / accent-* / neutral-* directly. */
-    /* Map them through the new palette so nothing breaks while we migrate. */
     --color-primary-50:  var(--color-sage-50);
     --color-primary-100: var(--color-sage-100);
     --color-primary-500: var(--color-sage-500);
@@ -146,4 +117,169 @@
     --color-primary-900: var(--color-sage-900);
 
     --color-secondary-50:  var(--color-cream-50);
-    --color-secondary-100: var(--c
+    --color-secondary-100: var(--color-cream-100);
+    --color-secondary-500: var(--color-charcoal-500);
+    --color-secondary-600: var(--color-charcoal-700);
+    --color-secondary-700: var(--color-charcoal-700);
+    --color-secondary-900: var(--color-charcoal-900);
+
+    --color-success-50:  var(--color-sage-50);
+    --color-success-100: var(--color-sage-100);
+    --color-success-500: var(--color-sage-500);
+    --color-success-600: var(--color-sage-700);
+    --color-success-700: var(--color-sage-700);
+    --color-success-900: var(--color-sage-900);
+
+    --color-warning-50:  var(--color-amber-50);
+    --color-warning-100: var(--color-amber-100);
+    --color-warning-500: var(--color-amber-500);
+    --color-warning-600: var(--color-amber-700);
+    --color-warning-700: var(--color-amber-700);
+    --color-warning-900: var(--color-amber-900);
+
+    --color-danger-50:  var(--color-crisis-50);
+    --color-danger-100: var(--color-crisis-100);
+    --color-danger-500: var(--color-crisis-500);
+    --color-danger-600: var(--color-crisis-600);
+    --color-danger-700: var(--color-crisis-700);
+    --color-danger-900: var(--color-crisis-900);
+
+    --color-background:        var(--surface-base);
+    --color-surface:           var(--surface-base);
+    --color-surface-elevated:  var(--surface-elevated);
+    --color-border:            var(--border-default);
+    --color-border-strong:     var(--border-strong);
+    --color-text-primary:      var(--text-default);
+    --color-text-secondary:    var(--text-soft);
+    --color-text-muted:        var(--text-subtle);
+    --color-text-on-primary:   var(--text-on-sage);
+
+    --color-interactive-primary:        var(--action-primary);
+    --color-interactive-primary-hover:  var(--action-primary-hover);
+    --color-interactive-primary-active: var(--color-sage-900);
+
+    --color-focus-ring: var(--focus-ring);
+    --focus-ring-opacity: 0.5;
+
+    --radius-base: var(--radius-md);
+  }
+
+  [data-theme="dark"],
+  .dark,
+  .dark[data-theme] {
+    --surface-base:     var(--color-charcoal-900);
+    --surface-elevated: var(--color-charcoal-700);
+    --surface-muted:    #221f1a;
+    --surface-inverse:  var(--color-cream-100);
+
+    --text-default: #f3efe7;
+    --text-soft:    #c8c0b1;
+    --text-subtle:  #8a8278;
+    --text-on-sage: #ffffff;
+    --text-on-amber: var(--color-charcoal-900);
+
+    --border-default: #34302a;
+    --border-soft:    #2a2622;
+    --border-strong:  #4a443c;
+
+    --action-primary:       var(--color-sage-300);
+    --action-primary-hover: #c4dbd0;
+    --action-secondary:     #c0c8de;
+    --action-celebration:   var(--color-amber-300);
+    --action-crisis:        var(--color-crisis-500);
+
+    --focus-ring: var(--color-sage-300);
+
+    --shadow-soft:   0 1px 2px 0 rgb(0 0 0 / 0.40);
+    --shadow-card:   0 1px 3px 0 rgb(0 0 0 / 0.50), 0 1px 2px -1px rgb(0 0 0 / 0.30);
+    --shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 0.55), 0 2px 4px -2px rgb(0 0 0 / 0.40);
+    --shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.60), 0 4px 6px -4px rgb(0 0 0 / 0.50);
+
+    --color-background:        var(--surface-base);
+    --color-surface:            var(--surface-base);
+    --color-surface-elevated:   var(--surface-elevated);
+    --color-border:             var(--border-default);
+    --color-border-strong:      var(--border-strong);
+    --color-text-primary:       var(--text-default);
+    --color-text-secondary:     var(--text-soft);
+    --color-text-muted:         var(--text-subtle);
+    --color-text-on-primary:    var(--color-charcoal-900);
+
+    --color-interactive-primary:        var(--action-primary);
+    --color-interactive-primary-hover:  var(--action-primary-hover);
+    --color-interactive-primary-active: var(--color-sage-100);
+  }
+
+  .high-contrast {
+    --action-primary:  #0b3a2c;
+    --action-primary-hover: #062018;
+    --text-default:    #000000;
+    --text-soft:       #000000;
+    --surface-base:    #ffffff;
+    --surface-elevated: #ffffff;
+    --border-default:  #000000;
+    --border-strong:   #000000;
+    --shadow-soft:   0 0 0 1px rgb(0 0 0 / 1);
+    --shadow-card:   0 0 0 1px rgb(0 0 0 / 1);
+    --shadow-medium: 0 0 0 2px rgb(0 0 0 / 1);
+  }
+
+  .high-contrast.dark,
+  .high-contrast[data-theme="dark"] {
+    --text-default: #ffffff;
+    --text-soft:    #ffffff;
+    --surface-base: #000000;
+    --surface-elevated: #000000;
+    --border-default: #ffffff;
+    --border-strong: #ffffff;
+  }
+
+  body {
+    background-color: var(--surface-base);
+    color: var(--text-default);
+    font-family: var(--font-sans);
+    line-height: var(--line-height-base);
+  }
+}
+
+@layer components {
+  .text-primary   { color: var(--text-default); }
+  .text-secondary { color: var(--text-soft); }
+  .text-muted     { color: var(--text-subtle); }
+
+  .bg-surface          { background-color: var(--surface-base); }
+  .bg-surface-elevated { background-color: var(--surface-elevated); }
+
+  .border-default { border-color: var(--border-default); }
+  .border-strong  { border-color: var(--border-strong); }
+}
+
+@layer utilities {
+  .stat-num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  .animate-fade-in  { animation: fadeIn 0.3s ease-out; }
+  .animate-slide-up { animation: slideUp 0.3s ease-out; }
+  .animate-scale-up { animation: scaleUp 0.2s ease-out; }
+
+  @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in,
+    .animate-slide-up,
+    .animate-scale-up { animation: none; }
+    .btn, .input { transition: none; }
+  }
+
+  @media (prefers-contrast: high) {
+    :root {
+      --shadow-soft: 0 0 0 1px rgb(0 0 0 / 0.3);
+      --shadow-card: 0 0 0 1px rgb(0 0 0 / 0.3);
+      --shadow-medium: 0 0 0 2px rgb(0 0 0 / 0.3);
+    }
+  }
+}
