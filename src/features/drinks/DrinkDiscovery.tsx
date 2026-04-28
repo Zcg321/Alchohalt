@@ -86,24 +86,17 @@ export default function DrinkDiscovery({ onSelectDrink, className = '' }: Props)
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+        {/*
+         * [IA-4] Functional reference only. Drinks DB used to show
+         * ⭐ popularity_score/10 + flavor_profile tags ("refreshing",
+         * "citrusy", "smooth") — star-rating alcoholic drinks for a
+         * user trying to cut back is the wrong frame. Now: ABV %,
+         * typical volume, category. Functional, not editorial.
+         */}
+        <div className="flex items-center gap-3 text-xs stat-num text-neutral-500 dark:text-neutral-400">
           <span>{drink.typicalAbv}% ABV</span>
-          <span>{drink.typicalVolumeMl}ml</span>
-          <span>⭐ {drink.popularity_score}/10</span>
-        </div>
-
-        {/* Flavor Tags */}
-        <div className="flex flex-wrap gap-1 mt-2">
-          {drink.flavor_profile.slice(0, 3).map(flavor => (
-            <Badge 
-              key={flavor} 
-              variant="outline" 
-              className="text-xs px-2 py-0 text-gray-500"
-            >
-              {flavor}
-            </Badge>
-          ))}
+          <span aria-hidden>·</span>
+          <span>{drink.typicalVolumeMl} ml</span>
         </div>
       </div>
 

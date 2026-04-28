@@ -13,7 +13,6 @@ import type { Goals } from '../../../types/common';
 const ZERO_GOALS: Goals = {
   dailyCap: 0,
   weeklyGoal: 0,
-  monthlyBudget: 0,
   pricePerStd: 5,
   baselineMonthlySpend: 0,
 };
