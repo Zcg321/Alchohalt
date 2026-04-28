@@ -26,9 +26,6 @@ function isDismissedRecently(): boolean {
 
 function isLikelyMobile(): boolean {
   if (typeof window === 'undefined') return false;
-  // Coarse pointer = touch primary; max-width 768px = mobile viewport.
-  // Either is sufficient — desktops with a small window don't need an
-  // install prompt either.
   return (
     window.matchMedia('(pointer: coarse)').matches ||
     window.matchMedia('(max-width: 768px)').matches
@@ -36,8 +33,6 @@ function isLikelyMobile(): boolean {
 }
 
 export default function PWAInstallBanner({ isInstallable, promptInstall, onDismiss }: PWAInstallBannerProps) {
-  // [INSTALL-1] Mount only when really useful: installable + not
-  // recently dismissed + on a likely-mobile surface.
   const [shouldShow, setShouldShow] = useState(false);
 
   useEffect(() => {
@@ -56,27 +51,21 @@ export default function PWAInstallBanner({ isInstallable, promptInstall, onDismi
 
   function handleInstall() {
     promptInstall();
-    // After the user accepts or dismisses the native prompt, suppress
-    // re-show for 7 days regardless — they've already been asked.
     handleDismiss();
   }
 
   return (
-    <div className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/95 backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/95">
-      <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-2.5">
-        <div className="min-w-0 flex-1 text-sm">
-          <p className="font-medium text-neutral-900 dark:text-neutral-50">
-            Install Alchohalt
-          </p>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            Add to your home screen for quick access. Same privacy posture.
-          </p>
+    <div className="sticky top-0 z-40 border-b border-border-soft bg-surface-elevated/95 backdrop-blur">
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-2.5">
+        <div className="min-w-0 flex-1 text-caption">
+          <p className="font-medium text-ink">Install Alchohalt</p>
+          <p className="text-ink-soft">Add to your home screen for quick access. Same privacy posture.</p>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
             onClick={handleInstall}
-            className="inline-flex items-center justify-center rounded-full bg-neutral-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition-colors min-h-[36px]"
+            className="inline-flex items-center justify-center rounded-pill bg-sage-700 px-3.5 py-1.5 text-caption font-semibold text-white hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[36px]"
           >
             Install
           </button>
@@ -84,7 +73,7 @@ export default function PWAInstallBanner({ isInstallable, promptInstall, onDismi
             type="button"
             onClick={handleDismiss}
             aria-label="Dismiss install prompt"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink transition-colors"
           >
             <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />
