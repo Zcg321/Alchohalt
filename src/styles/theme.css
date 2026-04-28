@@ -1,191 +1,149 @@
-/* Enhanced WCAG-compliant theme system for Alchohalt */
-@layer base {
-  :root {
-    /* WCAG AAA compliant color palette */
-    --color-primary-50: #f0f9ff;
-    --color-primary-100: #e0f2fe;
-    --color-primary-500: #0ea5e9;
-    --color-primary-600: #0284c7;
-    --color-primary-700: #0369a1;
-    --color-primary-900: #0c4a6e;
-    
-    --color-secondary-50: #f8fafc;
-    --color-secondary-100: #f1f5f9;
-    --color-secondary-500: #64748b;
-    --color-secondary-600: #475569;
-    --color-secondary-700: #334155;
-    --color-secondary-900: #0f172a;
-    
-    --color-success-50: #f0fdf4;
-    --color-success-100: #dcfce7;
-    --color-success-500: #22c55e;
-    --color-success-600: #16a34a;
-    --color-success-700: #15803d;
-    --color-success-900: #14532d;
-    
-    --color-warning-50: #fffbeb;
-    --color-warning-100: #fef3c7;
-    --color-warning-500: #f59e0b;
-    --color-warning-600: #d97706;
-    --color-warning-700: #b45309;
-    --color-warning-900: #78350f;
-    
-    --color-danger-50: #fef2f2;
-    --color-danger-100: #fee2e2;
-    --color-danger-500: #ef4444;
-    --color-danger-600: #dc2626;
-    --color-danger-700: #b91c1c;
-    --color-danger-900: #7f1d1d;
-    
-    /* Adaptive backgrounds and surfaces */
-    --color-background: #ffffff;
-    --color-surface: #f8fafc;
-    --color-surface-elevated: #ffffff;
-    --color-border: #e2e8f0;
-    --color-border-strong: #cbd5e1;
-    
-    /* Text colors with WCAG AAA contrast ratios */
-    --color-text-primary: #1e293b;
-    --color-text-secondary: #475569;
-    --color-text-muted: #64748b;
-    --color-text-on-primary: #ffffff;
-    
-    /* Interactive states */
-    --color-interactive-primary: var(--color-primary-600);
-    --color-interactive-primary-hover: var(--color-primary-700);
-    --color-interactive-primary-active: var(--color-primary-900);
-    
-    /* Focus rings */
-    --color-focus-ring: var(--color-primary-500);
-    --focus-ring-opacity: 0.5;
-    
-    /* Shadows */
-    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    
-    /* Spacing and sizing */
-    --radius-sm: 0.25rem;
-    --radius-base: 0.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-    --radius-2xl: 1.5rem;
-  }
-  
-  /* Dark theme with high contrast ratios */
-  .dark {
-    --color-background: #020617;
-    --color-surface: #0f172a;
-    --color-surface-elevated: #1e293b;
-    --color-border: #334155;
-    --color-border-strong: #475569;
-    
-    --color-text-primary: #f8fafc;
-    --color-text-secondary: #cbd5e1;
-    --color-text-muted: #94a3b8;
-    --color-text-on-primary: #020617;
-    
-    --color-interactive-primary: var(--color-primary-500);
-    --color-interactive-primary-hover: var(--color-primary-400);
-    --color-interactive-primary-active: var(--color-primary-300);
-    
-    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-    --shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-    --shadow-strong: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  }
-  
-  /* High contrast mode for accessibility */
-  .high-contrast {
-    --color-primary-500: #0066cc;
-    --color-primary-600: #0052a3;
-    --color-text-primary: #000000;
-    --color-text-secondary: #000000;
-    --color-background: #ffffff;
-    --color-border: #000000;
-    --shadow-soft: 0 0 0 1px rgb(0 0 0 / 1);
-    --shadow-medium: 0 0 0 2px rgb(0 0 0 / 1);
-  }
-  
-  .high-contrast.dark {
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #ffffff;
-    --color-background: #000000;
-    --color-border: #ffffff;
-  }
-}
-
 /*
- * NOTE: this file used to redefine .card / .btn / .btn-primary / .input
- * etc., which conflicted with the same classes defined in src/index.css
- * (where the Tailwind component layer is the source of truth). Those
- * duplicates were removed during the visual polish pass — see commit
- * [POLISH]. Component classes live in src/index.css; this file owns
- * only the CSS variables that those classes consume.
+ * Alchohalt design token system
+ * ==============================
  *
- * The handful of token-tied utilities (.text-primary, .bg-surface,
- * .border-default) are still useful where a component reaches past
- * Tailwind for a CSS-variable-bound color. Kept below.
+ * Single source of truth for color, type, and spacing — every value in
+ * here is a CSS variable so dark / light flips by toggling
+ * `data-theme="dark"` on <html>. Tailwind tokens (see
+ * tailwind.config.cjs) reference these variables; component code
+ * should NEVER hardcode hex values.
+ *
+ * Palette (Sprint 1 lock):
+ *   sage     — primary, calm trusted-friend green
+ *   cream    — warm off-white surface
+ *   indigo   — muted indigo for secondary / "Need help?" pill
+ *   amber    — warm celebration accent
+ *   charcoal — warm-charcoal dark surfaces
+ *   red      — crisis only, never decorative
+ *
+ * Type: Inter when self-hosted, otherwise platform-native sans.
+ * 16px base, 1.55 line-height, tabular nums on stat numerals.
+ *
+ * Spacing: 64px section-y desktop / 48px mobile, 24px card padding.
+ *
+ * Legacy compatibility: existing Tailwind classes (primary-500,
+ * neutral-900, .dark variant, etc.) keep working. They route through
+ * these tokens, so updating a token reflows everywhere. The
+ * `data-theme="dark"` selector and the legacy `.dark` class are both
+ * honored — see darkMode in tailwind.config.cjs.
  */
 
-@layer components {
-  .text-primary { color: var(--color-text-primary); }
-  .text-secondary { color: var(--color-text-secondary); }
-  .text-muted { color: var(--color-text-muted); }
+@layer base {
+  :root,
+  [data-theme="light"] {
+    /* ---------- Sage (primary) ---------- */
+    --color-sage-50:  #eef4f1;
+    --color-sage-100: #d9e6df;
+    --color-sage-300: #a6c3b5;
+    --color-sage-500: #5A8073;
+    --color-sage-700: #3f6055;
+    --color-sage-900: #25382f;
 
-  .bg-surface { background-color: var(--color-surface); }
-  .bg-surface-elevated { background-color: var(--color-surface-elevated); }
+    /* ---------- Cream (warm surface) ---------- */
+    --color-cream-50:  #fdfcf9;
+    --color-cream-100: #F8F5F0;
+    --color-cream-300: #ece5d8;
+    --color-cream-500: #d6cab2;
+    --color-cream-700: #8a7e63;
+    --color-cream-900: #3d3725;
 
-  .border-default { border-color: var(--color-border); }
-  .border-strong { border-color: var(--color-border-strong); }
-}
+    /* ---------- Indigo (muted secondary) ---------- */
+    --color-indigo-50:  #eef0f6;
+    --color-indigo-100: #d9deec;
+    --color-indigo-300: #9aa5c5;
+    --color-indigo-500: #3D4F7A;
+    --color-indigo-700: #2c3a5b;
+    --color-indigo-900: #161d2e;
 
-@layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
-  }
-  
-  .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
-  }
-  
-  .animate-scale-up {
-    animation: scaleUp 0.2s ease-out;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes slideUp {
-    from { transform: translateY(8px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  
-  @keyframes scaleUp {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  
-  /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
-    .animate-fade-in,
-    .animate-slide-up,
-    .animate-scale-up {
-      animation: none;
-    }
-    
-    .btn,
-    .input {
-      transition: none;
-    }
-  }
-  
-  /* High contrast mode detection */
-  @media (prefers-contrast: high) {
-    :root {
-      --shadow-soft: 0 0 0 1px rgb(0 0 0 / 0.3);
-      --shadow-medium: 0 0 0 2px rgb(0 0 0 / 0.3);
-    }
-  }
-}
+    /* ---------- Amber (warm celebration) ---------- */
+    --color-amber-50:  #fdf4ec;
+    --color-amber-100: #fae3cc;
+    --color-amber-300: #efba8e;
+    --color-amber-500: #E8A87C;
+    --color-amber-700: #b27a4e;
+    --color-amber-900: #5a3c25;
+
+    /* ---------- Charcoal (warm-dark) ---------- */
+    --color-charcoal-50:  #f3f1ee;
+    --color-charcoal-100: #d9d4cc;
+    --color-charcoal-300: #8a8278;
+    --color-charcoal-500: #4a443c;
+    --color-charcoal-700: #2a2622;
+    --color-charcoal-900: #1A1814;
+
+    /* ---------- Red (crisis only — DO NOT use decoratively) ---------- */
+    --color-crisis-50:  #fef2f2;
+    --color-crisis-100: #fee2e2;
+    --color-crisis-500: #ef4444;
+    --color-crisis-600: #dc2626;
+    --color-crisis-700: #b91c1c;
+    --color-crisis-900: #7f1d1d;
+
+    /* ---------- Semantic surfaces (light) ---------- */
+    --surface-base:     var(--color-cream-100);    /* main page background */
+    --surface-elevated: #ffffff;                   /* cards, modals */
+    --surface-muted:    var(--color-cream-50);     /* sub-surfaces */
+    --surface-inverse:  var(--color-charcoal-900); /* toasts, tooltips */
+
+    /* ---------- Semantic text (light) ---------- */
+    --text-default: #1f1d1a;                       /* warm near-black */
+    --text-soft:    #4a443c;                       /* secondary copy */
+    --text-subtle:  #8a8278;                       /* tertiary / hint */
+    --text-on-sage: #ffffff;                       /* on sage-500/700 */
+    --text-on-amber: var(--color-charcoal-900);    /* on amber-500 */
+
+    /* ---------- Semantic borders (light) ---------- */
+    --border-default: #e6e0d3;                     /* default hairline */
+    --border-soft:    #f0ebe0;                     /* very subtle */
+    --border-strong:  #cdc4b0;                     /* explicit edges */
+
+    /* ---------- Action / status mapping ---------- */
+    --action-primary:        var(--color-sage-700);
+    --action-primary-hover:  var(--color-sage-900);
+    --action-secondary:      var(--color-indigo-500);
+    --action-celebration:    var(--color-amber-500);
+    --action-crisis:         var(--color-crisis-600);
+
+    /* ---------- Focus ---------- */
+    --focus-ring: var(--color-sage-500);
+
+    /* ---------- Shadows (calm) ---------- */
+    --shadow-soft:   0 1px 2px 0 rgb(31 29 26 / 0.04);
+    --shadow-card:   0 1px 3px 0 rgb(31 29 26 / 0.06), 0 1px 2px -1px rgb(31 29 26 / 0.04);
+    --shadow-medium: 0 4px 6px -1px rgb(31 29 26 / 0.08), 0 2px 4px -2px rgb(31 29 26 / 0.06);
+    --shadow-strong: 0 10px 15px -3px rgb(31 29 26 / 0.10), 0 4px 6px -4px rgb(31 29 26 / 0.08);
+
+    /* ---------- Radii ---------- */
+    --radius-sm:  0.375rem;
+    --radius-md:  0.625rem;
+    --radius-lg:  0.875rem;
+    --radius-xl:  1.125rem;
+    --radius-2xl: 1.5rem;
+    --radius-pill: 9999px;
+
+    /* ---------- Spacing scale (locked from Sprint 1) ---------- */
+    --space-section-y-mobile:  3rem;     /* 48px */
+    --space-section-y-desktop: 4rem;     /* 64px */
+    --space-card:              1.5rem;   /* 24px */
+    --space-card-tight:        1rem;     /* 16px */
+
+    /* ---------- Typography ---------- */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                 Roboto, 'Helvetica Neue', system-ui, sans-serif;
+
+    --line-height-base:  1.55;
+    --line-height-tight: 1.2;
+    --line-height-snug:  1.35;
+
+    /* ---------- Legacy aliases ---------- */
+    /* Older code reaches for primary-* / accent-* / neutral-* directly. */
+    /* Map them through the new palette so nothing breaks while we migrate. */
+    --color-primary-50:  var(--color-sage-50);
+    --color-primary-100: var(--color-sage-100);
+    --color-primary-500: var(--color-sage-500);
+    --color-primary-600: var(--color-sage-700);
+    --color-primary-700: var(--color-sage-700);
+    --color-primary-900: var(--color-sage-900);
+
+    --color-secondary-50:  var(--color-cream-50);
+    --color-secondary-100: var(--c

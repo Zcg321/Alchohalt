@@ -11,6 +11,7 @@ coverage
 
 # logs
 npm-debug.log*
+*.log
 
 !public/icons/*.png
 
@@ -26,3 +27,18 @@ apk_size_report.txt
 security_audit.txt
 outdated_packages.txt
 __pycache__/
+
+# Local-only / per-developer state
+.claude/
+.env.local
+.env.*.local
+
+# PWA dev workbox output (regenerated on every `vite dev`)
+dev-dist/
+
+# Vitest/Vite config transform artifacts
+vitest.config.*.timestamp-*.mjs
+vite.config.*.timestamp-*.mjs
+
+# Push helper scripts dropped by automation
+_push_*.bat
