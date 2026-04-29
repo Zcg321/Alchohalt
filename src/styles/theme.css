@@ -2,80 +2,90 @@
  * Alchohalt design token system
  * ==============================
  *
- * Single source of truth for color, type, and spacing - every value
- * is a CSS variable so dark/light flips by toggling
- * data-theme="dark" on <html>. Tailwind tokens (see
- * tailwind.config.cjs) reference these variables; component code
- * should NEVER hardcode hex values.
+ * Single source of truth for color, type, and spacing — every value is
+ * a CSS variable so dark/light flips by toggling data-theme="dark" on
+ * <html>. Tailwind tokens (see tailwind.config.cjs) reference these
+ * variables; component code should NEVER hardcode hex values.
  *
  * Palette (Sprint 1 lock):
- *   sage     - primary, calm trusted-friend green
- *   cream    - warm off-white surface
- *   indigo   - muted indigo for secondary / "Need help?" pill
- *   amber    - warm celebration accent
- *   charcoal - warm-charcoal dark surfaces
- *   red      - crisis only, never decorative
+ *   sage     — primary, calm trusted-friend green
+ *   cream    — warm off-white surface
+ *   indigo   — muted indigo for secondary / "Need help?" pill
+ *   amber    — warm celebration accent
+ *   charcoal — warm-charcoal dark surfaces
+ *   crisis   — red, crisis only, never decorative
+ *
+ * Color value format ([VISUAL-4], Sprint 2B):
+ *   Each color var holds an RGB triple ("R G B" — three integers,
+ *   space-separated, no commas). Tailwind tokens consume them via
+ *   `rgb(var(--color-…) / <alpha-value>)`, which lets utility-class
+ *   alpha modifiers ( /80, /40 ) compose. Direct CSS uses a `rgb()`
+ *   wrap, e.g. `background-color: rgb(var(--surface-base));`.
+ *
+ *   Surface / text / border tokens are also triples so the same
+ *   alpha-composition story works on `bg-surface-elevated/95`,
+ *   `border-border-soft/80`, etc.
  */
 
 @layer base {
   :root,
   [data-theme="light"] {
-    --color-sage-50:  #eef4f1;
-    --color-sage-100: #d9e6df;
-    --color-sage-300: #a6c3b5;
-    --color-sage-500: #5A8073;
-    --color-sage-700: #3f6055;
-    --color-sage-900: #25382f;
+    --color-sage-50:  238 244 241;
+    --color-sage-100: 217 230 223;
+    --color-sage-300: 166 195 181;
+    --color-sage-500:  90 128 115;
+    --color-sage-700:  63  96  85;
+    --color-sage-900:  37  56  47;
 
-    --color-cream-50:  #fdfcf9;
-    --color-cream-100: #F8F5F0;
-    --color-cream-300: #ece5d8;
-    --color-cream-500: #d6cab2;
-    --color-cream-700: #8a7e63;
-    --color-cream-900: #3d3725;
+    --color-cream-50:  253 252 249;
+    --color-cream-100: 248 245 240;
+    --color-cream-300: 236 229 216;
+    --color-cream-500: 214 202 178;
+    --color-cream-700: 138 126  99;
+    --color-cream-900:  61  55  37;
 
-    --color-indigo-50:  #eef0f6;
-    --color-indigo-100: #d9deec;
-    --color-indigo-300: #9aa5c5;
-    --color-indigo-500: #3D4F7A;
-    --color-indigo-700: #2c3a5b;
-    --color-indigo-900: #161d2e;
+    --color-indigo-50:  238 240 246;
+    --color-indigo-100: 217 222 236;
+    --color-indigo-300: 154 165 197;
+    --color-indigo-500:  61  79 122;
+    --color-indigo-700:  44  58  91;
+    --color-indigo-900:  22  29  46;
 
-    --color-amber-50:  #fdf4ec;
-    --color-amber-100: #fae3cc;
-    --color-amber-300: #efba8e;
-    --color-amber-500: #E8A87C;
-    --color-amber-700: #b27a4e;
-    --color-amber-900: #5a3c25;
+    --color-amber-50:  253 244 236;
+    --color-amber-100: 250 227 204;
+    --color-amber-300: 239 186 142;
+    --color-amber-500: 232 168 124;
+    --color-amber-700: 178 122  78;
+    --color-amber-900:  90  60  37;
 
-    --color-charcoal-50:  #f3f1ee;
-    --color-charcoal-100: #d9d4cc;
-    --color-charcoal-300: #8a8278;
-    --color-charcoal-500: #4a443c;
-    --color-charcoal-700: #2a2622;
-    --color-charcoal-900: #1A1814;
+    --color-charcoal-50:  243 241 238;
+    --color-charcoal-100: 217 212 204;
+    --color-charcoal-300: 138 130 120;
+    --color-charcoal-500:  74  68  60;
+    --color-charcoal-700:  42  38  34;
+    --color-charcoal-900:  26  24  20;
 
-    --color-crisis-50:  #fef2f2;
-    --color-crisis-100: #fee2e2;
-    --color-crisis-500: #ef4444;
-    --color-crisis-600: #dc2626;
-    --color-crisis-700: #b91c1c;
-    --color-crisis-900: #7f1d1d;
+    --color-crisis-50:  254 242 242;
+    --color-crisis-100: 254 226 226;
+    --color-crisis-500: 239  68  68;
+    --color-crisis-600: 220  38  38;
+    --color-crisis-700: 185  28  28;
+    --color-crisis-900: 127  29  29;
 
     --surface-base:     var(--color-cream-100);
-    --surface-elevated: #ffffff;
+    --surface-elevated: 255 255 255;
     --surface-muted:    var(--color-cream-50);
     --surface-inverse:  var(--color-charcoal-900);
 
-    --text-default: #1f1d1a;
-    --text-soft:    #4a443c;
-    --text-subtle:  #8a8278;
-    --text-on-sage: #ffffff;
+    --text-default:  31  29  26;
+    --text-soft:     74  68  60;
+    --text-subtle:  138 130 120;
+    --text-on-sage: 255 255 255;
     --text-on-amber: var(--color-charcoal-900);
 
-    --border-default: #e6e0d3;
-    --border-soft:    #f0ebe0;
-    --border-strong:  #cdc4b0;
+    --border-default: 230 224 211;
+    --border-soft:    240 235 224;
+    --border-strong:  205 196 176;
 
     --action-primary:        var(--color-sage-700);
     --action-primary-hover:  var(--color-sage-900);
@@ -169,22 +179,22 @@
   .dark[data-theme] {
     --surface-base:     var(--color-charcoal-900);
     --surface-elevated: var(--color-charcoal-700);
-    --surface-muted:    #221f1a;
+    --surface-muted:     34  31  26;
     --surface-inverse:  var(--color-cream-100);
 
-    --text-default: #f3efe7;
-    --text-soft:    #c8c0b1;
-    --text-subtle:  #8a8278;
-    --text-on-sage: #ffffff;
+    --text-default: 243 239 231;
+    --text-soft:    200 192 177;
+    --text-subtle:  138 130 120;
+    --text-on-sage: 255 255 255;
     --text-on-amber: var(--color-charcoal-900);
 
-    --border-default: #34302a;
-    --border-soft:    #2a2622;
-    --border-strong:  #4a443c;
+    --border-default: 52 48 42;
+    --border-soft:    42 38 34;
+    --border-strong:  74 68 60;
 
     --action-primary:       var(--color-sage-300);
-    --action-primary-hover: #c4dbd0;
-    --action-secondary:     #c0c8de;
+    --action-primary-hover: 196 219 208;
+    --action-secondary:     192 200 222;
     --action-celebration:   var(--color-amber-300);
     --action-crisis:        var(--color-crisis-500);
 
@@ -211,14 +221,14 @@
   }
 
   .high-contrast {
-    --action-primary:  #0b3a2c;
-    --action-primary-hover: #062018;
-    --text-default:    #000000;
-    --text-soft:       #000000;
-    --surface-base:    #ffffff;
-    --surface-elevated: #ffffff;
-    --border-default:  #000000;
-    --border-strong:   #000000;
+    --action-primary:       11 58 44;
+    --action-primary-hover:  6 32 24;
+    --text-default:    0 0 0;
+    --text-soft:       0 0 0;
+    --surface-base:    255 255 255;
+    --surface-elevated: 255 255 255;
+    --border-default:  0 0 0;
+    --border-strong:   0 0 0;
     --shadow-soft:   0 0 0 1px rgb(0 0 0 / 1);
     --shadow-card:   0 0 0 1px rgb(0 0 0 / 1);
     --shadow-medium: 0 0 0 2px rgb(0 0 0 / 1);
@@ -226,32 +236,32 @@
 
   .high-contrast.dark,
   .high-contrast[data-theme="dark"] {
-    --text-default: #ffffff;
-    --text-soft:    #ffffff;
-    --surface-base: #000000;
-    --surface-elevated: #000000;
-    --border-default: #ffffff;
-    --border-strong: #ffffff;
+    --text-default:     255 255 255;
+    --text-soft:        255 255 255;
+    --surface-base:     0 0 0;
+    --surface-elevated: 0 0 0;
+    --border-default:   255 255 255;
+    --border-strong:    255 255 255;
   }
 
   body {
-    background-color: var(--surface-base);
-    color: var(--text-default);
+    background-color: rgb(var(--surface-base));
+    color: rgb(var(--text-default));
     font-family: var(--font-sans);
     line-height: var(--line-height-base);
   }
 }
 
 @layer components {
-  .text-primary   { color: var(--text-default); }
-  .text-secondary { color: var(--text-soft); }
-  .text-muted     { color: var(--text-subtle); }
+  .text-primary   { color: rgb(var(--text-default)); }
+  .text-secondary { color: rgb(var(--text-soft)); }
+  .text-muted     { color: rgb(var(--text-subtle)); }
 
-  .bg-surface          { background-color: var(--surface-base); }
-  .bg-surface-elevated { background-color: var(--surface-elevated); }
+  .bg-surface          { background-color: rgb(var(--surface-base)); }
+  .bg-surface-elevated { background-color: rgb(var(--surface-elevated)); }
 
-  .border-default { border-color: var(--border-default); }
-  .border-strong  { border-color: var(--border-strong); }
+  .border-default { border-color: rgb(var(--border-default)); }
+  .border-strong  { border-color: rgb(var(--border-strong)); }
 }
 
 @layer utilities {

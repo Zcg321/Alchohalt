@@ -1,5 +1,10 @@
 /* eslint-env node */
-const cv = (name) => `var(${name})`;
+/* [VISUAL-4] Color tokens are RGB triples in theme.css; wrap with
+ * rgb(var(--name) / <alpha-value>) so Tailwind alpha modifiers
+ * (`/80`, `/40`) compose. Non-color tokens (spacing, radius, shadow)
+ * keep the plain `var(--name)` form via cvRaw. */
+const cv = (name) => `rgb(var(${name}) / <alpha-value>)`;
+const cvRaw = (name) => `var(${name})`;
 
 module.exports = {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
@@ -195,32 +200,32 @@ module.exports = {
         tight: '1.2',
       },
       spacing: {
-        'card':              cv('--space-card'),
-        'card-tight':        cv('--space-card-tight'),
-        'section-y':         cv('--space-section-y-mobile'),
-        'section-y-mobile':  cv('--space-section-y-mobile'),
-        'section-y-desktop': cv('--space-section-y-desktop'),
+        'card':              cvRaw('--space-card'),
+        'card-tight':        cvRaw('--space-card-tight'),
+        'section-y':         cvRaw('--space-section-y-mobile'),
+        'section-y-mobile':  cvRaw('--space-section-y-mobile'),
+        'section-y-desktop': cvRaw('--space-section-y-desktop'),
       },
       borderRadius: {
-        'sm':   cv('--radius-sm'),
-        'md':   cv('--radius-md'),
-        'lg':   cv('--radius-lg'),
-        'xl':   cv('--radius-xl'),
-        '2xl':  cv('--radius-2xl'),
+        'sm':   cvRaw('--radius-sm'),
+        'md':   cvRaw('--radius-md'),
+        'lg':   cvRaw('--radius-lg'),
+        'xl':   cvRaw('--radius-xl'),
+        '2xl':  cvRaw('--radius-2xl'),
         '3xl':  '1.5rem',
-        'pill': cv('--radius-pill'),
+        'pill': cvRaw('--radius-pill'),
       },
       boxShadow: {
-        'soft':         cv('--shadow-soft'),
-        'card':         cv('--shadow-card'),
-        'card-hover':   cv('--shadow-medium'),
-        'medium':       cv('--shadow-medium'),
-        'strong':       cv('--shadow-strong'),
-        'sm':           cv('--shadow-soft'),
-        'DEFAULT':      cv('--shadow-card'),
-        'md':           cv('--shadow-medium'),
-        'lg':           cv('--shadow-medium'),
-        'xl':           cv('--shadow-strong'),
+        'soft':         cvRaw('--shadow-soft'),
+        'card':         cvRaw('--shadow-card'),
+        'card-hover':   cvRaw('--shadow-medium'),
+        'medium':       cvRaw('--shadow-medium'),
+        'strong':       cvRaw('--shadow-strong'),
+        'sm':           cvRaw('--shadow-soft'),
+        'DEFAULT':      cvRaw('--shadow-card'),
+        'md':           cvRaw('--shadow-medium'),
+        'lg':           cvRaw('--shadow-medium'),
+        'xl':           cvRaw('--shadow-strong'),
         'premium-glow': '0 0 0 1px rgb(232 168 124 / 0.20), 0 4px 12px -2px rgb(232 168 124 / 0.20)',
       },
       animation: {
