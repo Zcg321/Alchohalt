@@ -1,4 +1,29 @@
 /*
+ * [FONT-1] Self-hosted Inter variable font.
+ *
+ * Privacy invariant: the default-mode privacy claim ("your wellness
+ * data stays on your phone by default") forbids any first-party CSS
+ * that hits a third-party CDN at first render. Inter is shipped from
+ * `public/fonts/inter/InterVariable.woff2` so no external request fires.
+ *
+ * The file is the Latin-subset variable woff2 from Google Fonts /
+ * fontsource (Inter v4, 100–900 weight axis). 47 KB on disk — well
+ * under the 120 KB self-hosting budget. If a future Sprint needs a
+ * non-Latin script we add a sibling face for that subset.
+ *
+ * `font-display: swap` so the platform-native fallback paints first
+ * and Inter swaps in once decoded — avoids invisible-text flash.
+ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter/InterVariable.woff2') format('woff2-variations'),
+       url('/fonts/inter/InterVariable.woff2') format('woff2');
+}
+
+/*
  * Alchohalt design token system
  * ==============================
  *
