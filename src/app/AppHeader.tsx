@@ -28,7 +28,7 @@ export default function AppHeader({ onOpenCrisis }: Props) {
             type="button"
             onClick={onOpenCrisis}
             aria-label="Open crisis resources"
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-pill border border-indigo-100 bg-indigo-50 px-3.5 py-2 text-caption font-medium text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors min-h-[40px]"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-pill border border-indigo-100 bg-indigo-50 px-3.5 py-2 text-caption font-medium text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors min-h-[44px]"
           >
             <span aria-hidden className="h-2 w-2 rounded-pill bg-indigo-500" />
             Need help?

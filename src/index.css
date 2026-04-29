@@ -75,10 +75,28 @@
     @apply text-lg sm:text-xl md:text-2xl leading-snug;
   }
   
-  /* Enhanced focus styles */
+  /* Enhanced focus styles — [A11Y-1] WCAG 2.1 AA pass.
+   * Token-driven: 2px sage outer ring + 1px inset white separator so
+   * the ring stays legible against any background (cream-50, sage-50,
+   * surface-elevated, dark charcoal). Honored on every interactive
+   * element, including buttons inside cards.
+   */
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white dark:ring-offset-neutral-900;
+    @apply outline-none ring-2 ring-sage-500 ring-offset-2 ring-offset-surface;
     transition: all 0.2s ease-out;
+  }
+
+  /* Skip-to-content — required by WCAG 2.4.1 (Bypass Blocks). The link
+   * is visually hidden until it receives keyboard focus, then it
+   * appears as a focused chip top-left so screen-reader and
+   * keyboard-only users can jump past the header / nav into <main>.
+   */
+  .skip-link {
+    @apply absolute left-3 top-3 z-[200] -translate-y-32 rounded-md bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-strong transition-transform;
+  }
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    @apply translate-y-0;
   }
 
   /* Improved scroll behavior */

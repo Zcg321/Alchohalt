@@ -65,7 +65,7 @@ export default function PWAInstallBanner({ isInstallable, promptInstall, onDismi
           <button
             type="button"
             onClick={handleInstall}
-            className="inline-flex items-center justify-center rounded-pill bg-sage-700 px-3.5 py-1.5 text-caption font-semibold text-white hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[36px]"
+            className="inline-flex items-center justify-center rounded-pill bg-sage-700 px-3.5 py-1.5 text-caption font-semibold text-white hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[44px]"
           >
             Install
           </button>
@@ -73,7 +73,7 @@ export default function PWAInstallBanner({ isInstallable, promptInstall, onDismi
             type="button"
             onClick={handleDismiss}
             aria-label="Dismiss install prompt"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink transition-colors"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
           >
             <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />

@@ -145,6 +145,10 @@ export function AlcoholCoachApp() {
 
   return (
     <>
+      {/* [A11Y-1] Skip-to-content. Visually hidden until focused; lets
+          keyboard / SR users jump straight into <main>. */}
+      <a href="#main" className="skip-link">Skip to main content</a>
+
       <OnboardingFlow />
 
       <PWAInstallBanner
@@ -191,7 +195,7 @@ export function AlcoholCoachApp() {
                 type="button"
                 onClick={() => setShowCrisis(false)}
                 aria-label="Close"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
               >
                 <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
