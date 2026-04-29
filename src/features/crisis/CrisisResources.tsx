@@ -1,4 +1,5 @@
 import React from 'react';
+import { detectRegionFromBrowser, getPack, US_PACK, type RegionCode } from './regions';
 
 /**
  * Crisis resources — always-on, never gated by feature flags or
@@ -13,9 +14,14 @@ import React from 'react';
  *
  * No `fetch()`, no analytics ping, no remote data. Hard-coded numbers
  * + URLs only. Privacy claim must hold here too.
+ *
+ * [INTL-1] Sprint 2B: locale-aware. Resource packs for US / UK / AU /
+ * CA / IE; the detected region renders first, US always remains
+ * visible below as "Other regions" so a misdetected user can still
+ * reach a known-good number.
  */
 
-interface Resource {
+export interface Resource {
   id: string;
   name: string;
   description: string;
@@ -27,58 +33,6 @@ interface Resource {
   url?: string;
   available: string;
 }
-
-const IMMEDIATE: Resource[] = [
-  {
-    id: '988',
-    name: '988 Suicide & Crisis Lifeline',
-    description:
-      'Free 24/7 support for anyone in suicidal crisis or emotional distress. Call or text 988.',
-    phone: '988',
-    available: '24/7',
-  },
-  {
-    id: 'samhsa',
-    name: 'SAMHSA National Helpline',
-    description:
-      'Free, confidential treatment-referral service for substance-use issues. Available in English and Spanish.',
-    phone: '1-800-662-4357',
-    available: '24/7',
-  },
-  {
-    id: 'crisis-text',
-    name: 'Crisis Text Line',
-    description:
-      'Text with a trained crisis counselor. No phone call required.',
-    smsHint: { keyword: 'HOME', number: '741741' },
-    available: '24/7',
-  },
-];
-
-const SUPPORT_GROUPS: Resource[] = [
-  {
-    id: 'aa',
-    name: 'Alcoholics Anonymous',
-    description: 'Find local AA meetings near you.',
-    url: 'https://www.aa.org',
-    available: 'Varies by location',
-  },
-  {
-    id: 'smart-recovery',
-    name: 'SMART Recovery',
-    description:
-      'Self-empowerment, science-based recovery support. Free online meetings.',
-    url: 'https://www.smartrecovery.org',
-    available: 'Online + in-person',
-  },
-  {
-    id: 'samhsa-locator',
-    name: 'SAMHSA Treatment Locator',
-    description: 'Search treatment facilities near you.',
-    url: 'https://findtreatment.gov',
-    available: 'Anytime',
-  },
-];
 
 /**
  * Open a tel: link safely. Strips any non-digit other than the leading
@@ -117,11 +71,80 @@ function openUrl(url: string): void {
   a.click();
 }
 
-export default function CrisisResources({
-  className = '',
-}: {
+function ImmediateCard({ r }: { r: Resource }) {
+  return (
+    <li className="card">
+      <div className="card-content">
+        <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-ink">{r.name}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink-soft">
+              {r.description}
+            </p>
+            <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
+          </div>
+          {r.phone ? (
+            <button
+              type="button"
+              onClick={() => callPhone(r.phone!)}
+              className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
+            >
+              Call {r.phone}
+            </button>
+          ) : null}
+          {r.smsHint ? (
+            <button
+              type="button"
+              onClick={() => sendText(r.smsHint!.keyword, r.smsHint!.number)}
+              className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
+            >
+              Text {r.smsHint.keyword} to {r.smsHint.number}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </li>
+  );
+}
+
+function OngoingCard({ r }: { r: Resource }) {
+  return (
+    <li className="card">
+      <div className="card-content">
+        <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-ink">{r.name}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink-soft">
+              {r.description}
+            </p>
+            <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
+          </div>
+          {r.url ? (
+            <button
+              type="button"
+              onClick={() => openUrl(r.url!)}
+              className="shrink-0 inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 dark:hover:bg-charcoal-700 min-h-[44px]"
+            >
+              Visit
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </li>
+  );
+}
+
+interface Props {
   className?: string;
-}) {
+  /** Optional override for tests / SSR. Defaults to navigator.language. */
+  region?: RegionCode;
+}
+
+export default function CrisisResources({ className = '', region }: Props) {
+  const detected = region ?? detectRegionFromBrowser();
+  const primary = getPack(detected);
+  const showUSFallback = primary.code !== 'US';
+
   return (
     <main className={`mx-auto max-w-2xl space-y-7 px-5 py-6 sm:px-6 ${className}`}>
       {/* 911 banner — first thing on the page. Cannot be missed. Sized
@@ -132,18 +155,19 @@ export default function CrisisResources({
       >
         <h2 className="text-lg font-semibold tracking-tight">In immediate danger?</h2>
         <p className="mt-1.5 text-sm leading-relaxed text-crisis-900/90 dark:text-crisis-100/90">
-          If you or someone near you is in immediate physical danger, call{' '}
-          <strong>911</strong> right now.
+          If you or someone near you is in immediate physical danger, call your
+          local emergency number right now (US/CA <strong>911</strong>, UK/IE{' '}
+          <strong>999</strong>, AU <strong>000</strong>).
         </p>
         <button
           type="button"
-          onClick={() => callPhone('911')}
+          onClick={() => callPhone(primary.code === 'UK' || primary.code === 'IE' ? '999' : primary.code === 'AU' ? '000' : '911')}
           className="mt-4 inline-flex items-center gap-2 rounded-full bg-crisis-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-crisis-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crisis-700 min-h-[44px]"
         >
           <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
           </svg>
-          Call 911
+          {primary.code === 'UK' || primary.code === 'IE' ? 'Call 999' : primary.code === 'AU' ? 'Call 000' : 'Call 911'}
         </button>
       </section>
 
@@ -153,88 +177,50 @@ export default function CrisisResources({
           Free help, available right now. We never see who you call or text —
           these links open your phone&apos;s native dialer or messaging app.
         </p>
+        <p className="mt-1 text-xs text-ink-subtle">
+          Showing resources for <strong>{primary.label}</strong>. Other regions are listed below.
+        </p>
       </header>
 
       <section aria-labelledby="immediate-heading">
         <h2 id="immediate-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
-          Immediate help
+          Immediate help — {primary.label}
         </h2>
-        <ul className="mt-3 space-y-3">
-          {IMMEDIATE.map((r) => (
-            <li
-              key={r.id}
-              className="card"
-            >
-              <div className="card-content">
-                <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-ink">{r.name}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-                      {r.description}
-                    </p>
-                    <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
-                  </div>
-                  {r.phone ? (
-                    <button
-                      type="button"
-                      onClick={() => callPhone(r.phone!)}
-                      className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
-                    >
-                      Call {r.phone}
-                    </button>
-                  ) : null}
-                  {r.smsHint ? (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        sendText(r.smsHint!.keyword, r.smsHint!.number)
-                      }
-                      className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
-                    >
-                      Text {r.smsHint.keyword} to {r.smsHint.number}
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </li>
-          ))}
+        <ul className="mt-3 space-y-3" role="list">
+          {primary.immediate.map((r) => <ImmediateCard key={r.id} r={r} />)}
         </ul>
       </section>
 
       <section aria-labelledby="ongoing-heading">
         <h2 id="ongoing-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
-          Ongoing support
+          Ongoing support — {primary.label}
         </h2>
-        <ul className="mt-3 space-y-3">
-          {SUPPORT_GROUPS.map((r) => (
-            <li
-              key={r.id}
-              className="card"
-            >
-              <div className="card-content">
-                <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-ink">{r.name}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-ink-soft">
-                      {r.description}
-                    </p>
-                    <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
-                  </div>
-                  {r.url ? (
-                    <button
-                      type="button"
-                      onClick={() => openUrl(r.url!)}
-                      className="shrink-0 inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 dark:hover:bg-charcoal-700 min-h-[44px]"
-                    >
-                      Visit
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            </li>
-          ))}
+        <ul className="mt-3 space-y-3" role="list">
+          {primary.ongoing.map((r) => <OngoingCard key={r.id} r={r} />)}
         </ul>
       </section>
+
+      {showUSFallback && (
+        <>
+          <section aria-labelledby="other-immediate-heading">
+            <h2 id="other-immediate-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
+              Other regions — Immediate help (United States)
+            </h2>
+            <ul className="mt-3 space-y-3" role="list">
+              {US_PACK.immediate.map((r) => <ImmediateCard key={r.id} r={r} />)}
+            </ul>
+          </section>
+
+          <section aria-labelledby="other-ongoing-heading">
+            <h2 id="other-ongoing-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
+              Other regions — Ongoing support (United States)
+            </h2>
+            <ul className="mt-3 space-y-3" role="list">
+              {US_PACK.ongoing.map((r) => <OngoingCard key={r.id} r={r} />)}
+            </ul>
+          </section>
+        </>
+      )}
 
       <footer className="border-t border-border-soft pt-6 text-xs leading-relaxed text-ink-subtle space-y-2">
         <p>
@@ -244,9 +230,10 @@ export default function CrisisResources({
           hotlines.
         </p>
         <p>
-          If you&apos;re in another country, your local emergency number may
-          differ from 911. Most countries have a 24/7 mental health hotline —
-          search &ldquo;crisis hotline {`<your country>`}&rdquo;.
+          If you&apos;re in a region we don&apos;t have a pack for, find your
+          local crisis hotline by searching &ldquo;crisis hotline {`<your country>`}&rdquo;.
+          The US numbers above accept calls from outside the US but local
+          numbers will reach you faster.
         </p>
       </footer>
     </main>
