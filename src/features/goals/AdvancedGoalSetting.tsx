@@ -43,7 +43,7 @@ export default function AdvancedGoalSetting({ goals, onChange }: Props) {
           <span className="w-2 h-2 bg-indigo-500 rounded-full mr-3"></span>
           Advanced Goals
         </h3>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+        <p className="text-sm text-ink-soft mt-1">
           Set personalized challenges and milestones
         </p>
       </div>

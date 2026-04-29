@@ -83,7 +83,7 @@ export default function InsightsPanel({ drinks, goals }: Props) {
         <h2 className="text-xl font-semibold tracking-tight">
           Personal insights
         </h2>
-        <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400 mt-1">
+        <p className="text-sm leading-relaxed text-ink-soft mt-1">
           {canAccessAIInsights
             ? 'On-device pattern analysis of what you log.'
             : (
@@ -107,7 +107,7 @@ export default function InsightsPanel({ drinks, goals }: Props) {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
               <ChartIcon />
             </div>
-            <p className="text-neutral-600 dark:text-neutral-400">
+            <p className="text-ink-soft">
               Keep logging your drinks to unlock personalized insights!
             </p>
           </div>

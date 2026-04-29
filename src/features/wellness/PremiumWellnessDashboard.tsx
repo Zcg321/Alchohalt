@@ -298,7 +298,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         </ul>
         <Button 
           variant="secondary" 
-          className="bg-white text-primary-600 hover:bg-gray-100"
+          className="bg-surface-elevated text-primary-600 hover:bg-cream-50"
           onClick={() => trackFeatureUsage('wellness_upgrade_prompt')}
         >
           Upgrade to Access
@@ -311,11 +311,11 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     <div className={className}>
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-ink mb-2 flex items-center gap-2">
           🏥 Wellness Dashboard
           <Badge variant="primary" className="text-xs">Premium</Badge>
         </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-ink-soft">
           Comprehensive health and wellness insights powered by AI analysis
         </p>
       </div>
@@ -325,7 +325,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         {wellnessMetrics.map(metric => (
           <div 
             key={metric.id} 
-            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4"
+            className="bg-surface-elevated rounded-lg border border-border-soft p-4"
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -337,11 +337,11 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
             
             <div className="mb-2">
               <div className="flex items-end gap-1">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                <span className="text-2xl font-bold text-ink">
                   {metric.value}
                 </span>
                 {metric.unit && (
-                  <span className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                  <span className="text-sm text-ink-subtle mb-1">
                     {metric.unit}
                   </span>
                 )}
@@ -352,7 +352,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
               {metric.status.toUpperCase()}
             </Badge>
             
-            <p className="text-xs text-gray-600 dark:text-gray-400">
+            <p className="text-xs text-ink-soft">
               {metric.description}
             </p>
           </div>
@@ -361,7 +361,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
 
       {/* Health Insights */}
       {healthInsights.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div className="bg-surface-elevated rounded-lg border border-border-soft p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             🧠 AI Health Insights
             <Badge variant="primary" className="text-xs">Personalized</Badge>
@@ -390,21 +390,21 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
                     >
                       {insight.priority.toUpperCase()}
                     </Badge>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-ink-subtle">
                       {insight.confidence}% confidence
                     </span>
                   </div>
                 </div>
                 
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                <p className="text-sm text-ink mb-3">
                   {insight.insight}
                 </p>
                 
-                <div className="bg-white dark:bg-gray-700 p-3 rounded border">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                <div className="bg-surface-elevated p-3 rounded border border-border-soft">
+                  <p className="text-sm font-medium text-ink mb-1">
                     💡 Recommendation:
                   </p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm text-ink">
                     {insight.recommendation}
                   </p>
                 </div>

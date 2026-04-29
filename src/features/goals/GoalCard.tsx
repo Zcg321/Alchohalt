@@ -40,7 +40,7 @@ export default function GoalCard({ goal, onToggle, onDelete }: Props) {
                 {progressPercentage.toFixed(0)}%
               </span>
             </div>
-            <div className="w-full bg-white bg-opacity-50 rounded-full h-2">
+            <div className="w-full bg-surface-elevated bg-opacity-50 rounded-full h-2">
               <div 
                 className={`h-2 rounded-full transition-all duration-300 ${
                   isCompleted ? 'bg-green-500' : 'bg-current'

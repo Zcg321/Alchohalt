@@ -42,7 +42,7 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
           <h3 className="font-semibold">Create New Goal</h3>
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600"
+            className="absolute top-4 right-4 text-ink-subtle hover:text-ink"
           >
             <CloseIcon />
           </button>
@@ -61,7 +61,7 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
                   className={`p-3 text-left rounded-lg border transition-colors ${
                     selectedType === type.value
                       ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                      : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300'
+                      : 'border-border-soft hover:border-border'
                   }`}
                 >
                   <div className="text-lg mb-1">{type.icon}</div>
@@ -104,7 +104,7 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
               min={1}
               required
               rightIcon={
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-ink-subtle">
                   {selectedType === 'streak' ? 'days' : 'drinks'}
                 </span>
               }

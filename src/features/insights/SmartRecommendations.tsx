@@ -146,7 +146,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
           <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
           Smart Recommendations
         </h2>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+        <p className="text-sm text-ink-soft mt-1">
           Personalized suggestions based on your patterns
         </p>
       </div>
@@ -157,7 +157,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
               <CheckCircleIcon />
             </div>
-            <p className="text-neutral-600 dark:text-neutral-400">
+            <p className="text-ink-soft">
               Great job! No urgent recommendations right now. Keep up the good work!
             </p>
           </div>

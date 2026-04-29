@@ -28,7 +28,7 @@ function StatusOverview({ currentStreak, todayStd, dailyCap }: {
           <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
             {currentStreak}
           </div>
-          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+          <div className="text-sm text-ink-soft">
             Days alcohol-free
           </div>
         </div>
@@ -36,10 +36,10 @@ function StatusOverview({ currentStreak, todayStd, dailyCap }: {
       
       <div className="card text-center">
         <div className="card-content">
-          <div className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          <div className="text-2xl font-bold text-ink">
             {todayStd.toFixed(1)} / {dailyCap}
           </div>
-          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+          <div className="text-sm text-ink-soft">
             Today&apos;s drinks
           </div>
         </div>
@@ -118,7 +118,7 @@ function QuickDrinkLogging({ quickDrinks, onQuickLog }: {
     <div className="card">
       <div className="card-header">
         <h3 className="font-semibold">Quick Log</h3>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+        <p className="text-sm text-ink-soft">
           Tap to log common drinks
         </p>
       </div>
@@ -160,7 +160,7 @@ function DailyMotivation({ currentStreak, isAlcoholFree, todayStd, dailyCap }: {
         <h3 className="font-semibold mb-2">
           {getMotivationalMessage(currentStreak, isAlcoholFree)}
         </h3>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+        <p className="text-sm text-ink-soft">
           {getMotivationalSubtext(currentStreak, todayStd, dailyCap)}
         </p>
       </div>
@@ -258,7 +258,7 @@ export default function QuickActions({
           <div className="relative max-w-lg w-full">
             <button
               onClick={() => setShowMoodCheck(false)}
-              className="absolute -top-2 -right-2 z-10 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:bg-gray-50"
+              className="absolute -top-2 -right-2 z-10 p-2 bg-surface-elevated rounded-full shadow-lg hover:bg-cream-50"
             >
               <CloseIcon />
             </button>

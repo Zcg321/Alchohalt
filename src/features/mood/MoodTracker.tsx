@@ -34,7 +34,7 @@ const moodOptions = [
     key: 'neutral' as const, 
     label: 'Neutral', 
     icon: '😐', 
-    color: 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-900/30 dark:text-gray-300',
+    color: 'bg-cream-100 text-ink hover:bg-cream-300 dark:bg-charcoal-700 dark:text-ink',
     description: 'Feeling okay, neither good nor bad'
   },
   { 
@@ -129,7 +129,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
     <div className={`card max-w-md mx-auto ${className || ''}`}>
       <div className="card-header">
         <h2 className="text-xl font-semibold">How are you feeling?</h2>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+        <p className="text-sm text-ink-soft mt-1">
           Track your mood to gain insights into patterns
         </p>
       </div>
@@ -141,7 +141,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
               <button
                 key={mood.key}
                 onClick={() => handleMoodSelect(mood.key)}
-                className={`w-full p-4 text-left rounded-lg border border-gray-200 dark:border-gray-700 transition-all ${mood.color} hover:shadow-md`}
+                className={`w-full p-4 text-left rounded-lg border border-border-soft transition-all ${mood.color} hover:shadow-md`}
               >
                 <div className="flex items-center space-x-3">
                   <span className="text-2xl">{mood.icon}</span>
@@ -160,7 +160,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
             <div className="text-center">
               <div className="text-3xl mb-2">{selectedMoodData.icon}</div>
               <h3 className="font-medium">How intense is this feeling?</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Rate from 1 (mild) to 5 (very strong)</p>
+              <p className="text-sm text-ink-soft">Rate from 1 (mild) to 5 (very strong)</p>
             </div>
             
             <div className="flex justify-center space-x-2">
@@ -171,7 +171,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
                   className={`w-12 h-12 rounded-full border-2 transition-all ${
                     intensity === level
                       ? 'border-blue-500 bg-blue-500 text-white'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                      : 'border-border hover:border-sage-300'
                   }`}
                 >
                   {level}
@@ -179,7 +179,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
               ))}
             </div>
 
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-xs text-ink-subtle">
               <span>Mild</span>
               <span>Very Strong</span>
             </div>
@@ -190,7 +190,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
           <div className="space-y-4">
             <div className="text-center">
               <h3 className="font-medium">What triggered this feeling?</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Select any that apply (optional)</p>
+              <p className="text-sm text-ink-soft">Select any that apply (optional)</p>
             </div>
             
             <div className="grid grid-cols-2 gap-2">
@@ -201,7 +201,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
                   className={`p-2 text-xs rounded border transition-all ${
                     selectedTriggers.includes(trigger)
                       ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                      : 'border-border hover:border-sage-300'
                   }`}
                 >
                   {trigger}
@@ -233,14 +233,14 @@ export default function MoodTracker({ onComplete, className }: Props) {
           <div className="space-y-4">
             <div className="text-center">
               <h3 className="font-medium">Any additional notes?</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Optional - helps track patterns</p>
+              <p className="text-sm text-ink-soft">Optional - helps track patterns</p>
             </div>
             
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="What's on your mind? Any specific situations or thoughts..."
-              className="w-full h-24 p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full h-24 p-3 border border-border rounded-lg resize-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500 bg-surface text-ink"
             />
 
             <div className="flex space-x-2">

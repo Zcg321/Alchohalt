@@ -29,7 +29,7 @@ const EMOTIONS = [
   { key: 'anxious', label: 'Anxious', icon: '😟', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30' },
   { key: 'sad', label: 'Sad', icon: '😢', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30' },
   { key: 'angry', label: 'Angry', icon: '😠', color: 'bg-red-200 text-red-900 dark:bg-red-900/40' },
-  { key: 'bored', label: 'Bored', icon: '😑', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30' },
+  { key: 'bored', label: 'Bored', icon: '😑', color: 'bg-cream-100 text-ink dark:bg-charcoal-700' },
 ] as const;
 
 const COMMON_TRIGGERS = [
@@ -175,10 +175,10 @@ export default function EnhancedMoodTracker({
   const currentEmotion = EMOTIONS.find(e => e.key === currentState.primaryEmotion);
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 ${className}`}>
+    <div className={`bg-surface-elevated rounded-lg border border-border-soft p-6 ${className}`}>
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+        <h2 className="text-lg font-bold text-ink mb-2">
           🧠 Mood & Emotional Intelligence
         </h2>
         <div className="flex items-center gap-2 mb-2">
@@ -191,7 +191,7 @@ export default function EnhancedMoodTracker({
           } of 5</Badge>
           {isPremium && <Badge variant="primary" className="text-xs">AI Analysis</Badge>}
         </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-2">
           <div 
             className="bg-primary-500 h-2 rounded-full transition-all duration-300"
             style={{ 
@@ -218,7 +218,7 @@ export default function EnhancedMoodTracker({
                 className={`p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 ${
                   currentState.primaryEmotion === emotion.key
                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-primary-300'
+                    : 'border-border-soft hover:border-sage-300'
                 }`}
               >
                 <div className="text-2xl mb-2">{emotion.icon}</div>
@@ -247,7 +247,7 @@ export default function EnhancedMoodTracker({
                 className={`p-4 rounded-lg border-2 transition-all duration-200 text-center ${
                   currentState.intensity === level
                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-primary-300'
+                    : 'border-border-soft hover:border-sage-300'
                 }`}
               >
                 <div className="text-2xl font-bold">{level}</div>
@@ -270,7 +270,7 @@ export default function EnhancedMoodTracker({
       {step === 'triggers' && (
         <div>
           <h3 className="text-md font-semibold mb-4">What might have triggered this feeling?</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Select all that apply (optional)</p>
+          <p className="text-sm text-ink-soft mb-4">Select all that apply (optional)</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-6">
             {COMMON_TRIGGERS.map(trigger => (
               <button
@@ -279,7 +279,7 @@ export default function EnhancedMoodTracker({
                 className={`p-2 text-xs rounded-lg border transition-all ${
                   currentState.triggers?.includes(trigger)
                     ? 'border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-primary-300'
+                    : 'border-border-soft hover:border-sage-300'
                 }`}
               >
                 {trigger}
@@ -297,7 +297,7 @@ export default function EnhancedMoodTracker({
       {step === 'coping' && (
         <div>
           <h3 className="text-md font-semibold mb-4">What helps you feel better?</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Select strategies you use or want to try</p>
+          <p className="text-sm text-ink-soft mb-4">Select strategies you use or want to try</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-6">
             {COPING_STRATEGIES.map(strategy => (
               <button
@@ -306,7 +306,7 @@ export default function EnhancedMoodTracker({
                 className={`p-2 text-xs rounded-lg border transition-all ${
                   currentState.copingStrategies?.includes(strategy)
                     ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/20'
-                    : 'border-gray-200 dark:border-gray-600 hover:border-green-300'
+                    : 'border-border-soft hover:border-sage-300'
                 }`}
               >
                 {strategy}
@@ -329,7 +329,7 @@ export default function EnhancedMoodTracker({
                   ...prev, 
                   cravingLevel: parseInt(e.target.value) 
                 }))}
-                className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                className="flex-1 h-2 bg-cream-100 rounded-lg appearance-none cursor-pointer dark:bg-charcoal-700"
               />
               <span className="text-lg font-semibold w-8 text-center">
                 {currentState.cravingLevel || 0}
@@ -352,7 +352,7 @@ export default function EnhancedMoodTracker({
             value={currentState.notes}
             onChange={(e) => setCurrentState(prev => ({ ...prev, notes: e.target.value }))}
             placeholder="Optional: What's on your mind? How do you want to handle this feeling?"
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none dark:bg-gray-700"
+            className="w-full p-3 border border-border rounded-lg resize-none bg-surface dark:bg-charcoal-700"
             rows={4}
           />
           <div className="flex gap-3 mt-4">
@@ -367,7 +367,7 @@ export default function EnhancedMoodTracker({
         <div className="text-center">
           <div className="text-4xl mb-4">✨</div>
           <h3 className="text-lg font-semibold mb-2">Check-in Complete!</h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-ink-soft mb-4">
             Thank you for taking time to understand your emotions.
           </p>
           
@@ -379,7 +379,7 @@ export default function EnhancedMoodTracker({
               {moodPattern.commonTriggers.length > 0 && (
                 <div className="mb-3">
                   <p className="text-sm font-medium">Common triggers:</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-ink-soft">
                     {moodPattern.commonTriggers.join(', ')}
                   </p>
                 </div>
@@ -387,7 +387,7 @@ export default function EnhancedMoodTracker({
               {moodPattern.effectiveCoping.length > 0 && (
                 <div className="mb-3">
                   <p className="text-sm font-medium">Effective strategies:</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-ink-soft">
                     {moodPattern.effectiveCoping.join(', ')}
                   </p>
                 </div>

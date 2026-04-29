@@ -128,17 +128,17 @@ export default function CrisisResources({
           for thumb reach; the call button is the primary action. */}
       <section
         role="alert"
-        className="rounded-2xl border border-red-200 bg-red-50 p-5 text-red-900 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-50"
+        className="rounded-2xl border border-crisis-100 bg-crisis-50 p-5 text-crisis-900 dark:border-crisis-900/60 dark:bg-crisis-900/40 dark:text-crisis-50"
       >
         <h2 className="text-lg font-semibold tracking-tight">In immediate danger?</h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-red-900/90 dark:text-red-100/90">
+        <p className="mt-1.5 text-sm leading-relaxed text-crisis-900/90 dark:text-crisis-100/90">
           If you or someone near you is in immediate physical danger, call{' '}
           <strong>911</strong> right now.
         </p>
         <button
           type="button"
           onClick={() => callPhone('911')}
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700 min-h-[44px]"
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-crisis-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-crisis-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crisis-700 min-h-[44px]"
         >
           <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -148,15 +148,15 @@ export default function CrisisResources({
       </section>
 
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">Crisis &amp; Support Resources</h1>
-        <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Crisis &amp; Support Resources</h1>
+        <p className="mt-2 text-sm leading-relaxed text-ink-soft">
           Free help, available right now. We never see who you call or text —
           these links open your phone&apos;s native dialer or messaging app.
         </p>
       </header>
 
       <section aria-labelledby="immediate-heading">
-        <h2 id="immediate-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-400">
+        <h2 id="immediate-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
           Immediate help
         </h2>
         <ul className="mt-3 space-y-3">
@@ -168,17 +168,17 @@ export default function CrisisResources({
               <div className="card-content">
                 <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-neutral-900 dark:text-neutral-50">{r.name}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    <p className="font-medium text-ink">{r.name}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                       {r.description}
                     </p>
-                    <p className="mt-1.5 text-xs text-neutral-500 dark:text-neutral-500">{r.available}</p>
+                    <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
                   </div>
                   {r.phone ? (
                     <button
                       type="button"
                       onClick={() => callPhone(r.phone!)}
-                      className="shrink-0 inline-flex items-center justify-center rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 min-h-[44px]"
+                      className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
                     >
                       Call {r.phone}
                     </button>
@@ -189,7 +189,7 @@ export default function CrisisResources({
                       onClick={() =>
                         sendText(r.smsHint!.keyword, r.smsHint!.number)
                       }
-                      className="shrink-0 inline-flex items-center justify-center rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 min-h-[44px]"
+                      className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
                     >
                       Text {r.smsHint.keyword} to {r.smsHint.number}
                     </button>
@@ -202,7 +202,7 @@ export default function CrisisResources({
       </section>
 
       <section aria-labelledby="ongoing-heading">
-        <h2 id="ongoing-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-400">
+        <h2 id="ongoing-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
           Ongoing support
         </h2>
         <ul className="mt-3 space-y-3">
@@ -214,17 +214,17 @@ export default function CrisisResources({
               <div className="card-content">
                 <div className="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-neutral-900 dark:text-neutral-50">{r.name}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    <p className="font-medium text-ink">{r.name}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                       {r.description}
                     </p>
-                    <p className="mt-1.5 text-xs text-neutral-500 dark:text-neutral-500">{r.available}</p>
+                    <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
                   </div>
                   {r.url ? (
                     <button
                       type="button"
                       onClick={() => openUrl(r.url!)}
-                      className="shrink-0 inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 min-h-[44px]"
+                      className="shrink-0 inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 dark:hover:bg-charcoal-700 min-h-[44px]"
                     >
                       Visit
                     </button>
@@ -236,7 +236,7 @@ export default function CrisisResources({
         </ul>
       </section>
 
-      <footer className="border-t border-neutral-200/70 dark:border-neutral-800 pt-6 text-xs leading-relaxed text-neutral-500 dark:text-neutral-500 space-y-2">
+      <footer className="border-t border-border-soft pt-6 text-xs leading-relaxed text-ink-subtle space-y-2">
         <p>
           Alchohalt is not a substitute for professional medical, mental
           health, or addiction treatment. We don&apos;t see who you call or

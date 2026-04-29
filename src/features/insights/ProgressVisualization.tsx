@@ -112,14 +112,14 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium">Daily limit</span>
               {progressData.dailyProgress >= 0 ? (
-                <span className="text-sm text-neutral-600 dark:text-neutral-400 stat-num">
+                <span className="text-sm text-ink-soft stat-num">
                   {progressData.dailyProgress.toFixed(0)}%
                 </span>
               ) : null}
             </div>
             {progressData.dailyProgress >= 0 ? (
               <>
-                <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
+                <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-3">
                   <div
                     className={`h-3 rounded-full transition-all duration-500 ${
                       progressData.dailyProgress > 100
@@ -131,14 +131,14 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
                     style={{ width: `${Math.min(progressData.dailyProgress, 100)}%` }}
                   />
                 </div>
-                <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                <div className="text-xs text-ink-subtle mt-1">
                   {progressData.dailyProgress <= 100
                     ? `${(goals.dailyCap - (goals.dailyCap * progressData.dailyProgress / 100)).toFixed(1)} drinks remaining`
                     : `Exceeded by ${(progressData.dailyProgress - 100).toFixed(0)}%`}
                 </div>
               </>
             ) : (
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs text-ink-subtle">
                 Set a daily limit in Settings to track progress.
               </p>
             )}
@@ -149,14 +149,14 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium">Weekly goal</span>
               {progressData.weeklyProgress >= 0 ? (
-                <span className="text-sm text-neutral-600 dark:text-neutral-400 stat-num">
+                <span className="text-sm text-ink-soft stat-num">
                   {progressData.weeklyProgress.toFixed(0)}%
                 </span>
               ) : null}
             </div>
             {progressData.weeklyProgress >= 0 ? (
               <>
-                <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
+                <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-3">
                   <div
                     className={`h-3 rounded-full transition-all duration-500 ${
                       progressData.weeklyProgress > 100
@@ -168,14 +168,14 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
                     style={{ width: `${Math.min(progressData.weeklyProgress, 100)}%` }}
                   />
                 </div>
-                <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                <div className="text-xs text-ink-subtle mt-1">
                   {progressData.weeklyProgress <= 100
                     ? `${(goals.weeklyGoal - (goals.weeklyGoal * progressData.weeklyProgress / 100)).toFixed(1)} drinks remaining this week`
                     : `Exceeded by ${(progressData.weeklyProgress - 100).toFixed(0)}%`}
                 </div>
               </>
             ) : (
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs text-ink-subtle">
                 Set a weekly goal in Settings to track progress.
               </p>
             )}
@@ -193,7 +193,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
             <div className="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">
               {progressData.streakMilestones.current}
             </div>
-            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            <div className="text-sm text-ink-soft">
               Days alcohol-free
             </div>
           </div>
@@ -201,11 +201,11 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
           <div className="mb-2">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm">Next milestone: {progressData.streakMilestones.next} days</span>
-              <span className="text-sm text-neutral-600 dark:text-neutral-400">
+              <span className="text-sm text-ink-soft">
                 {Math.round(progressData.streakMilestones.progress)}%
               </span>
             </div>
-            <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2">
+            <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-2">
               <div 
                 className="h-2 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-500"
                 style={{ width: `${progressData.streakMilestones.progress}%` }}
@@ -213,7 +213,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
             </div>
           </div>
           
-          <div className="text-xs text-center text-neutral-500 dark:text-neutral-400">
+          <div className="text-xs text-center text-ink-subtle">
             {progressData.streakMilestones.next - progressData.streakMilestones.current} days to go!
           </div>
         </div>
@@ -227,10 +227,10 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
         <div className="card-content">
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+              <div className="text-2xl font-bold text-ink">
                 ${progressData.monthlySpending.actual.toFixed(0)}
               </div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              <div className="text-sm text-ink-soft">
                 Spent this month
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 ${progressData.monthlySpending.savings.toFixed(0)}
               </div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              <div className="text-sm text-ink-soft">
                 Potential savings
               </div>
             </div>
@@ -250,11 +250,11 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
             <div className="relative">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm">Budget usage</span>
-                <span className="text-sm text-neutral-600 dark:text-neutral-400 stat-num">
+                <span className="text-sm text-ink-soft stat-num">
                   {((progressData.monthlySpending.actual / progressData.monthlySpending.budget) * 100).toFixed(0)}%
                 </span>
               </div>
-              <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-3">
+              <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-3">
                 <div
                   className={`h-3 rounded-full transition-all duration-500 ${
                     progressData.monthlySpending.actual > progressData.monthlySpending.budget
@@ -270,7 +270,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               </div>
             </div>
           ) : (
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            <p className="text-xs text-ink-subtle">
               Set a monthly budget in Settings to track usage.
             </p>
           )}
@@ -288,7 +288,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
                 {progressData.healthMetrics.alcoholFreeDays}
               </div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              <div className="text-sm text-ink-soft">
                 AF days this month
               </div>
             </div>
@@ -297,7 +297,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                 {progressData.healthMetrics.averageCraving.toFixed(1)}
               </div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              <div className="text-sm text-ink-soft">
                 Avg. craving level
               </div>
             </div>
@@ -313,7 +313,7 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
                 {progressData.healthMetrics.improvementTrend === 'improving' ? '📈' : 
                  progressData.healthMetrics.improvementTrend === 'declining' ? '📉' : '➡️'}
               </div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              <div className="text-sm text-ink-soft">
                 Overall trend
               </div>
             </div>

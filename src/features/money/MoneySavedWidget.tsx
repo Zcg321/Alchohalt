@@ -59,13 +59,13 @@ export default function MoneySavedWidget({
       <div className="card-content text-center">
         {mode === 'budget' ? (
           <>
-            <div className="text-[10px] uppercase tracking-[0.12em] font-medium text-neutral-500 dark:text-neutral-400">
+            <div className="text-[10px] uppercase tracking-[0.12em] font-medium text-ink-subtle">
               {t('money.savedThisMonth')}
             </div>
             <div className="mt-1.5 stat-num text-4xl sm:text-5xl text-success-600 dark:text-success-400 leading-none">
               {formatter.format(saved)}
             </div>
-            <div className="mt-3 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
+            <div className="mt-3 text-xs sm:text-sm text-ink-subtle">
               {t('money.spentVsBudget')
                 .replace('{{spent}}', formatter.format(spent))
                 .replace('{{budget}}', formatter.format(monthlyBudget))}
@@ -73,13 +73,13 @@ export default function MoneySavedWidget({
           </>
         ) : (
           <>
-            <div className="text-[10px] uppercase tracking-[0.12em] font-medium text-neutral-500 dark:text-neutral-400">
+            <div className="text-[10px] uppercase tracking-[0.12em] font-medium text-ink-subtle">
               {t('money.spentLast30')}
             </div>
-            <div className="mt-1.5 stat-num text-4xl sm:text-5xl text-neutral-900 dark:text-neutral-50 leading-none">
+            <div className="mt-1.5 stat-num text-4xl sm:text-5xl text-ink leading-none">
               {formatter.format(spent)}
             </div>
-            <div className="mt-3 text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
+            <div className="mt-3 text-xs sm:text-sm text-ink-subtle">
               {t('money.setBudgetHint')}
             </div>
           </>
