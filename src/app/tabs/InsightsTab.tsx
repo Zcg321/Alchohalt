@@ -17,6 +17,7 @@ const InsightsPanel = React.lazy(() => import('../../features/insights/InsightsP
 const ProgressVisualization = React.lazy(() => import('../../features/insights/ProgressVisualization'));
 const SmartRecommendations = React.lazy(() => import('../../features/insights/SmartRecommendations'));
 const MoneySavedWidget = React.lazy(() => import('../../features/money/MoneySavedWidget'));
+const Milestones = React.lazy(() => import('../../features/milestones/Milestones'));
 const PremiumWellnessDashboard = React.lazy(() => import('../../features/wellness/PremiumWellnessDashboard'));
 const AIInsightsTile = React.lazy(() => import('../../features/ai/AIInsightsTile'));
 const EnhancedMoodTracker = React.lazy(() => import('../../features/mood/EnhancedMoodTracker'));
@@ -70,6 +71,12 @@ export default function InsightsTab({ drinks, goals }: Props) {
 
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>
         <MoneySavedWidget costs={last30Costs} monthlyBudget={goals.baselineMonthlySpend ?? 0} />
+      </Suspense>
+
+      {/* [IA-5] Real estate freed by stripping the Levels/Points panel
+          now goes to a quiet dated-milestone list. No XP, no "next level". */}
+      <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
+        <Milestones drinks={drinks} />
       </Suspense>
 
       {/* Mood IQ moved off home -> Insights sub-flow. */}
