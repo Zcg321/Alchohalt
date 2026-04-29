@@ -190,8 +190,18 @@
     user-select: none;
   }
 
+  /* [POLISH] Mobile press feedback — slight scale + 80% opacity. The
+     reduced-motion guard at the bottom of this file zeroes out the
+     scale transform but leaves the opacity dip in (a subtle visual
+     cue that doesn't violate the prefers-reduced-motion contract). */
   .btn:active:not(:disabled) {
     transform: scale(0.98);
+    opacity: 0.8;
+  }
+  .btn:active:not(:disabled),
+  button:active:not(:disabled),
+  [role="button"]:active:not(:disabled) {
+    transition-duration: 0ms;
   }
 
   .btn-primary {

@@ -65,12 +65,12 @@ export default class ErrorBoundary extends Component<Props, State> {
       return (
         <div
           role="alert"
-          className="rounded-2xl border border-neutral-200/70 bg-neutral-50/70 p-5 text-sm text-neutral-700 dark:border-neutral-700/60 dark:bg-neutral-900/40 dark:text-neutral-300"
+          className="rounded-2xl border border-border-soft/70 bg-surface-muted/70 p-5 text-sm text-ink-soft"
         >
-          <p className="font-medium text-neutral-900 dark:text-neutral-50">
+          <p className="font-medium text-ink">
             {heading}
           </p>
-          <p className="mt-1 text-neutral-600 dark:text-neutral-400">
+          <p className="mt-1 text-ink-soft">
             This section hit an unexpected error. The rest of the app
             should still work.
           </p>
@@ -78,7 +78,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={this.reset}
-              className="inline-flex items-center justify-center rounded-full bg-primary-600 px-4 py-2 text-xs font-semibold text-white hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 min-h-[36px]"
+              className="inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-xs font-semibold text-white hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
             >
               Try again
             </button>
@@ -86,7 +86,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               href={supportHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white px-4 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 min-h-[36px]"
+              className="inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-4 py-2 text-xs font-medium text-ink hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
             >
               Report this
             </a>
@@ -99,9 +99,9 @@ export default class ErrorBoundary extends Component<Props, State> {
     return (
       <div
         role="alert"
-        className="mx-auto my-8 max-w-md rounded-2xl border border-neutral-200/70 bg-white p-6 text-center shadow-card dark:border-neutral-700/60 dark:bg-neutral-900"
+        className="mx-auto my-8 max-w-md rounded-2xl border border-border-soft/70 bg-surface-elevated p-6 text-center shadow-card"
       >
-        <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-300">
+        <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-crisis-100 text-crisis-700 dark:bg-crisis-900/40 dark:text-crisis-300">
           <svg
             aria-hidden
             viewBox="0 0 24 24"
@@ -117,20 +117,20 @@ export default class ErrorBoundary extends Component<Props, State> {
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
         </div>
-        <h1 className="text-lg font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        <h1 className="text-lg font-semibold tracking-tight text-ink">
           {heading}
         </h1>
-        <p className="mt-1.5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
           We hit an unexpected error. Your data is safe — it stays on
           your device. Try again, or reload the app if the problem
           persists.
         </p>
         {this.state.error?.message ? (
-          <details className="mt-3 text-left text-xs text-neutral-500 dark:text-neutral-400">
-            <summary className="cursor-pointer hover:text-neutral-700 dark:hover:text-neutral-200">
+          <details className="mt-3 text-left text-xs text-ink-subtle">
+            <summary className="cursor-pointer hover:text-ink">
               Technical details
             </summary>
-            <pre className="mt-2 max-h-40 overflow-auto rounded bg-neutral-100 p-2 font-mono text-[11px] dark:bg-neutral-800/60">
+            <pre className="mt-2 max-h-40 overflow-auto rounded bg-cream-100 p-2 font-mono text-[11px] dark:bg-charcoal-700/60">
               {this.state.error.message}
             </pre>
           </details>
@@ -139,7 +139,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           <button
             type="button"
             onClick={this.reset}
-            className="inline-flex items-center justify-center rounded-full bg-primary-600 px-5 py-2 text-sm font-semibold text-white hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 min-h-[44px]"
+            className="inline-flex items-center justify-center rounded-full bg-sage-700 px-5 py-2 text-sm font-semibold text-white hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
           >
             Try again
           </button>
@@ -148,7 +148,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             onClick={() => {
               if (typeof window !== 'undefined') window.location.reload();
             }}
-            className="inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white px-5 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 min-h-[44px]"
+            className="inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-5 py-2 text-sm font-medium text-ink hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
           >
             Reload app
           </button>
@@ -156,7 +156,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             href={supportHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 min-h-[44px]"
+            className="inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-medium text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
           >
             Report this
           </a>

@@ -121,11 +121,16 @@ export default function Milestones({ drinks, className = '' }: Props) {
             className="flex items-center justify-between gap-3 py-2 border-b border-border-soft last:border-0"
           >
             <div className="flex items-center gap-3 min-w-0">
+              {/* [POLISH] Subtle scale-up celebration on the
+                  reached-state glyph. animate-scale-up is keyframed
+                  in styles/theme.css and is opt-out under
+                  prefers-reduced-motion via the @media block in
+                  index.css. No confetti — quiet acknowledgement. */}
               <span
                 aria-hidden
-                className={`inline-flex h-6 w-6 items-center justify-center rounded-pill text-caption ${
+                className={`inline-flex h-6 w-6 items-center justify-center rounded-pill text-caption transition-colors ${
                   m.reached
-                    ? 'bg-sage-100 text-sage-700'
+                    ? 'bg-sage-100 text-sage-700 animate-scale-up'
                     : 'bg-cream-50 text-ink-subtle'
                 }`}
               >
