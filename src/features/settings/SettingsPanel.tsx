@@ -7,6 +7,15 @@ import ExportImport from '../drinks/ExportImport';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
+import SyncPanel from '../sync/SyncPanel';
+import { MockSyncTransport } from '../../lib/sync/transport';
+
+/** [SYNC-3] Production transport will be a real Supabase client wired
+ *  from the owner's project URL + anon key. Mounted with a
+ *  MockSyncTransport here so the surface renders cleanly until that
+ *  config lands. The production swap is one line: replace this
+ *  module-level singleton with `new SupabaseSyncTransport(...)`. */
+const syncTransport = new MockSyncTransport();
 
 export default function SettingsPanel() {
   const { settings, setTheme, setLanguage, setReminderTimes, setRemindersEnabled } = useDB(s => ({
@@ -134,6 +143,8 @@ export default function SettingsPanel() {
       </section>
 
       <AISettingsPanel />
+
+      <SyncPanel transport={syncTransport} />
 
       <About />
       <LegalLinks />
