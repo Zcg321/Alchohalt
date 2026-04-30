@@ -24,7 +24,11 @@ export default defineConfig({
     setupFiles: ["src/test/setup.ts"],
     include: [
       "src/**/*.{smoke.test,test}.{ts,tsx}",
-      "src/**/__tests__/**/*.{ts,tsx}"
+      "src/**/__tests__/**/*.{ts,tsx}",
+      // [SYNC-2] static SQL/edge-function shape tests live next to
+      // the artifacts they pin (Supabase functions can't import from
+      // src/). Integration coverage is env-gated inside the file.
+      "supabase/functions/__tests__/**/*.test.{ts,tsx}"
     ],
     coverage: {
       enabled: true,
