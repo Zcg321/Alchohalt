@@ -104,9 +104,6 @@ export default defineConfig(() => {
         },
       })
     );
-    if (visualizer) {
-      plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }));
-    }
   if (visualizer) {
     plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }));
   }
