@@ -292,7 +292,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
           <li>• Sleep patterns inferred from your evening logs</li>
           <li>• Which HALT states show up most often</li>
           <li>• Day-by-day comparison views</li>
-          <li>• Social situations: when they go well, when they don't</li>
+          <li>• Social situations: when they go well, when they don&rsquo;t</li>
           <li>• Optional AI reflections from anonymized summaries</li>
         </ul>
         <Button

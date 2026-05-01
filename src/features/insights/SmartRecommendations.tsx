@@ -158,7 +158,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
               <CheckCircleIcon />
             </div>
             <p className="text-ink-soft">
-              Nothing flagging right now. The patterns you've built are doing the work.
+              Nothing flagging right now. The patterns you&rsquo;ve built are doing the work.
             </p>
           </div>
         ) : (

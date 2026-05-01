@@ -123,7 +123,7 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
           More insights, same calm. Never gamified.
         </p>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
-          On any plan, your data stays on your device — we can't read
+          On any plan, your data stays on your device — we can&rsquo;t read
           it. AI Insights is opt-in (Settings → AI).
         </p>
       </header>

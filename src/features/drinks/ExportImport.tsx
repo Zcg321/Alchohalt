@@ -103,7 +103,7 @@ export default function ExportImport() {
       <div>
         <h3 className="text-lg font-semibold mb-2">Import</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Restore from a previous export. We'll check the file's integrity and flag any conflicts before changing anything.
+          Restore from a previous export. We&rsquo;ll check the file&rsquo;s integrity and flag any conflicts before changing anything.
         </p>
         <label className={`btn btn-secondary ${importing ? 'opacity-50 cursor-not-allowed' : ''}`}>
           {importing ? 'Reading file…' : 'Pick a file to import'}
@@ -120,7 +120,7 @@ export default function ExportImport() {
       <div>
         <h3 className="text-lg font-semibold mb-2 text-red-600">Clear all data</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Deletes everything on this device — entries, goals, presets, settings. Can't be undone. Type WIPE to confirm.
+          Deletes everything on this device — entries, goals, presets, settings. Can&rsquo;t be undone. Type WIPE to confirm.
         </p>
         <button
           onClick={doWipe}

@@ -90,7 +90,7 @@ export function HealthIntegrationsDiagnostics() {
           Health integrations
         </h2>
         <p className="text-sm text-secondary mb-4">
-          Connect with your phone's health platform to bring in steps, sleep, and resting heart rate alongside your logs.
+          Connect with your phone&rsquo;s health platform to bring in steps, sleep, and resting heart rate alongside your logs.
         </p>
       </div>
 
