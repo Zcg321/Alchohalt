@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 /**
  * [ONBOARD-1] Three-beat conversational onboarding.
@@ -124,6 +125,7 @@ export default function OnboardingFlow() {
   const { db, setSettings } = useDB();
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [isVisible, setIsVisible] = useState(false);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!db.settings?.hasCompletedOnboarding) setIsVisible(true);
@@ -144,10 +146,18 @@ export default function OnboardingFlow() {
     return () => window.removeEventListener('keydown', onKey);
   }, [isVisible, complete]);
 
+  /* [A11Y-FOCUS-TRAP] Tab inside the onboarding dialog wraps to first/
+   * last focusable element. Without it, Tab from the last button (Get
+   * started / Skip) escaped to the page underneath. The window-level
+   * Escape handler above already covers Escape; onEscape on the trap
+   * is intentionally omitted. */
+  useFocusTrap(dialogRef, isVisible);
+
   if (!isVisible) return null;
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="onboarding-title"

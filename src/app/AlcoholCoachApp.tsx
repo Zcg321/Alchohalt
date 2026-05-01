@@ -22,6 +22,7 @@ import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
 import LegalDocPage, { isLegalSlug, type LegalSlug } from '../features/legal/LegalDocPage';
 import { usePWA } from '../hooks/usePWA';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 import { useLanguage } from '../i18n';
 import { attachForegroundSync } from '../lib/sync/scheduler';
 import { attachDbBridge } from '../lib/sync/dbBridge';
@@ -45,6 +46,16 @@ export function AlcoholCoachApp() {
   // Settings tab.
   const crisisOpenerRef = useRef<HTMLElement | null>(null);
   const crisisCloseRef = useRef<HTMLButtonElement | null>(null);
+  const crisisDialogRef = useRef<HTMLDivElement | null>(null);
+  /* [A11Y-FOCUS-TRAP] Tab inside the Crisis modal now wraps to first
+   * focusable on Tab-from-last and to last on Shift-Tab-from-first.
+   * Without the trap, Tab could escape to elements behind the modal
+   * with no visual cue (a screen-reader user could land on a button
+   * underneath the dialog mid-emergency). aria-modal="true" handles
+   * the AT-virtual-cursor case; the keyboard case lives here. The
+   * existing window-level Escape handler stays — onEscape on the
+   * trap is intentionally omitted to avoid double-firing close. */
+  useFocusTrap(crisisDialogRef, showCrisis);
 
   function openCrisis() {
     if (typeof document !== 'undefined') {
@@ -233,6 +244,7 @@ export function AlcoholCoachApp() {
 
       {showCrisis ? (
         <div
+          ref={crisisDialogRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="crisis-dialog-title"

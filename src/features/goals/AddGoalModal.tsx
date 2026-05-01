@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import type { AdvancedGoal, GoalType } from './types';
 
 interface Props {
@@ -16,6 +17,18 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
   const [description, setDescription] = useState('');
   const [target, setTarget] = useState<number>(30);
   const [deadline, setDeadline] = useState('');
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  /* [A11Y-FOCUS-TRAP] Add dialog semantics + Tab focus trap so the
+   * goal-creation modal stops leaking focus to the page underneath. */
+  useFocusTrap(dialogRef, true, onClose);
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,10 +49,19 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
   const selectedGoalType = goalTypes.find(gt => gt.value === selectedType);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-goal-title"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="card max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="card-header">
-          <h3 className="font-semibold">Create New Goal</h3>
+          <h3 id="add-goal-title" className="font-semibold">Create New Goal</h3>
           <button
             type="button"
             onClick={onClose}
