@@ -168,27 +168,20 @@ export default function SyncPanel({ transport }: Props) {
     }
     setBusy(true);
     try {
-      // We don't know userSalt yet — sign in by email first, then
-      // derive keys with the userSalt the server returns from
-      // user metadata.
-      // Step 1: probe-derive with a placeholder salt — no, the
-      // transport contract gives us userSalt back from sign-in.
-      // For sign-in we need the authHash; we can't derive without
-      // userSalt. Multi-device flow uses a different code path: the
-      // transport.signIn(email, "wait-for-salt") would 401, so the
-      // production flow performs an unauthenticated metadata lookup
-      // (e.g. via a public RPC) to fetch the userSalt by email,
-      // THEN derives authHash. Mock transport short-circuits this
-      // by returning userSalt on signIn directly.
-      //
-      // Pragmatic v1: derive authHash with a temporary salt of all
-      // zeros, attempt sign-in. The mock transport ignores the
-      // userSalt argument on signIn; the production transport will
-      // be augmented in a follow-up to expose getUserSalt(email).
-      const tempSalt = new Uint8Array(16);
-      const probeAuthHash = await deriveAuthHash(passphrase, tempSalt);
-      const session = await transport.signIn(email, probeAuthHash);
-      // Re-derive with the real salt the server returned + pull.
+      // [SYNC-3a] Multi-device flow. Fetch the userSalt from the
+      // pre-auth salt-lookup endpoint, derive authHash + masterKey
+      // from (passphrase, userSalt), then sign in. The transport
+      // ALWAYS returns 16 bytes — for a non-existent email it
+      // returns a pepper-derived fake. Sign-in then fails uniformly
+      // on auth, so a remote observer cannot tell whether the email
+      // is registered.
+      const userSalt = await transport.getUserSalt(email);
+      const authHash = await deriveAuthHash(passphrase, userSalt);
+      const session = await transport.signIn(email, authHash);
+      // Master key is derived for completeness even though we don't
+      // surface it here — the same derivation that ran on the first
+      // device produces the same masterKey, so blobs the server has
+      // sent us decrypt cleanly.
       await deriveMasterKey(passphrase, session.userSalt);
       const result = await transport.pull(session, null);
       setEnabled(session.userId);
