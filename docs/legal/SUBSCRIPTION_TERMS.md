@@ -11,7 +11,7 @@
   basic journal, crisis resources, biometric lock, and one default
   reminder are free forever. We will never move a free feature into
   the paid tier.
-- **Premium tiers:** $3.99/month, $24.99/year, or $69 once for
+- **Premium tiers:** $4.99/month, $24.99/year, or $69 once for
   lifetime. Pricing may vary by region as set by the App Store /
   Google Play.
 - **Auto-renewal:** monthly and yearly subscriptions auto-renew until
@@ -48,7 +48,7 @@
 - Dark mode
 - Multi-language (UI translations)
 
-### Premium Monthly — $3.99 / month (USD; equivalent in local currency)
+### Premium Monthly — $4.99 / month (USD; equivalent in local currency)
 
 Auto-renews monthly. Cancel any time. Unlocks all premium features
 listed below.
@@ -97,7 +97,7 @@ price in the future, prior purchasers are grandfathered.
 **For Premium Monthly and Premium Yearly subscriptions:**
 
 - **Length of subscription:** 1 month (monthly) or 1 year (yearly).
-- **Price per period:** $3.99 (monthly) or $24.99 (yearly), USD.
+- **Price per period:** $4.99 (monthly) or $24.99 (yearly), USD.
   Local currency pricing is shown at checkout and may vary by region
   per Apple / Google's pricing matrix.
 - **Auto-renewal:** Your subscription will automatically renew at the
@@ -277,7 +277,7 @@ directly using the links in Section 6.
 - [ ] Set Effective Date + Last Updated.
 - [ ] Confirm prices in Sections 1 + 3 match the App Store Connect /
       Play Console pricing tier you actually configure (Apple's
-      pricing tiers don't have a $3.99 USD slot in every region; the
+      pricing tiers don't have a $4.99 USD slot in every region; the
       generated regional prices may differ slightly).
 - [ ] Confirm the cancellation paths in Section 3 still match Apple /
       Google's current UI flow (these change every couple of years).

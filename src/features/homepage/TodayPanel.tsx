@@ -144,7 +144,7 @@ export default function TodayPanel({
       : 'Days alcohol-free';
   const heroSubcopy =
     status.kind === 'starting'
-      ? 'Logging stays on this device. We cryptographically cannot read it.'
+      ? 'Calm tracking. No leaderboards. Real help if you need it.'
       : status.kind === 'restart'
       ? `${totalAF} alcohol-free days in your record so far`
       : milestone

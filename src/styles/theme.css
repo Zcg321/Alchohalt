@@ -104,7 +104,12 @@
 
     --text-default:  31  29  26;
     --text-soft:     74  68  60;
-    --text-subtle:  138 130 120;
+    /* [A11Y-DARK-CONTRAST] Light-mode bumped from "138 130 120"
+     * (#8a8278 = 3.79:1 on white) to clear WCAG 4.5:1 against both
+     * --surface-elevated (white) and --surface-base (cream-100). New
+     * value clears ~5:1 on white, ~4.7:1 on cream. Visually a touch
+     * darker but still reads as muted/secondary. */
+    --text-subtle:  108 100  90;
     --text-on-sage: 255 255 255;
     --text-on-amber: var(--color-charcoal-900);
 
@@ -209,7 +214,10 @@
 
     --text-default: 243 239 231;
     --text-soft:    200 192 177;
-    --text-subtle:  138 130 120;
+    /* [A11Y-DARK-CONTRAST] Bumped from "138 130 120" (#8a8278) to clear
+     * WCAG 4.5:1 against --surface-elevated (charcoal-700 = #2a2622).
+     * Old value was 3.96:1; new value clears ~6:1 with margin. */
+    --text-subtle:  175 168 158;
     --text-on-sage: 255 255 255;
     --text-on-amber: var(--color-charcoal-900);
 

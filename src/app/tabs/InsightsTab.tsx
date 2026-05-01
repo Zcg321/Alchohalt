@@ -93,11 +93,19 @@ export default function InsightsTab({ drinks, goals }: Props) {
         <PremiumWellnessDashboard drinks={drinks} />
       </Suspense>
 
-      <ErrorBoundary isolate label="AI Insights">
-        <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>
-          <AIInsightsTile />
-        </Suspense>
-      </ErrorBoundary>
+      {/*
+       * The ALCH-AI-PRIVACY-FIX workaround wrapped this in an
+       * <ErrorBoundary isolate> after a duplicate-React cache-flake
+       * crashed the dispatcher in Sprint 1. With BUG-DUPLICATE-REACT-ROOT
+       * landing the durable Vite resolve.dedupe + optimizeDeps fix and a
+       * cross-component regression test (src/__tests__/duplicate-react-
+       * root.test.tsx), the isolation is no longer load-bearing — a real
+       * AI-call runtime error will now propagate to the parent boundary
+       * in App, which is the right behavior.
+       */}
+      <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>
+        <AIInsightsTile />
+      </Suspense>
     </main>
   );
 }

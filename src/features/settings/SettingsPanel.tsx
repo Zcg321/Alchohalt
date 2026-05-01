@@ -2,26 +2,40 @@ import React, { Suspense, useState } from 'react';
 import { useDB } from '../../store/db';
 import type { Theme, Language } from '../../store/db';
 import { Button } from '../../components/ui/Button';
+import { Skeleton } from '../../components/ui/Skeleton';
 import DevTools from './DevTools';
 import ExportImport from '../drinks/ExportImport';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
-import { Skeleton } from '../../components/ui/Skeleton';
+
+/* [BUG-PAYWALL-MOUNT] SubscriptionManager was built but never imported
+ * outside of `PremiumFeatureGate` (a named export from the same file).
+ * Mount it under Plan & Billing so users can actually see the pricing
+ * grid + tap an Upgrade CTA. Lazy-loaded so Settings still opens fast
+ * — the paywall surface only pulls in iap/analytics modules when the
+ * user scrolls to it. */
+const SubscriptionManager = React.lazy(
+  () => import('../subscription/SubscriptionManager'),
+);
 
 /**
- * SyncPanel pulls in `libsodium-wrappers-sumo` (~400 KB) for envelope
- * encryption and BIP-39 mnemonic derivation. The vast majority of users
- * never open Settings, and of those who do, most never enable sync —
- * eagerly loading sodium with the main bundle hurts everyone for the
- * sake of a small minority. Lazy-load it so sodium ships in its own
- * chunk that only fetches when the user lands on Settings.
+ * [AUDIT-2026-05-01-E] SyncPanel pulls in `libsodium-wrappers-sumo`
+ * (~400 KB raw / 196 KB gz) for envelope encryption and BIP-39
+ * mnemonic derivation. The vast majority of users never open
+ * Settings, and of those who do, most never enable sync — eagerly
+ * loading sodium with the main bundle hurts everyone for the sake of
+ * a small minority. Lazy-load it so sodium ships in its own chunk
+ * that only fetches when the user actually scrolls into the Sync
+ * surface.
  *
  * [SYNC-3] Production transport will be a real Supabase client wired
  * from the owner's project URL + anon key. Mounted with a
  * MockSyncTransport here so the surface renders cleanly until that
  * config lands. The transport import is co-located inside the lazy
- * factory so it doesn't drag the eager bundle either.
+ * factory so it doesn't drag the eager bundle either — the production
+ * swap is one line: replace `MockSyncTransport` with
+ * `SupabaseSyncTransport` inside this factory.
  */
 const SyncPanelLazy = React.lazy(async () => {
   const [{ default: SyncPanel }, { MockSyncTransport }] = await Promise.all([
@@ -154,6 +168,26 @@ export default function SettingsPanel() {
         </div>
         <div className="card-content">
           <ExportImport />
+        </div>
+      </section>
+
+      <section
+        id="plan-and-billing"
+        className="card"
+        aria-labelledby="plan-and-billing-heading"
+      >
+        <div className="card-header">
+          <h2
+            id="plan-and-billing-heading"
+            className="text-lg font-semibold tracking-tight"
+          >
+            Plan &amp; Billing
+          </h2>
+        </div>
+        <div className="card-content">
+          <Suspense fallback={<Skeleton className="h-72 w-full rounded-xl" />}>
+            <SubscriptionManager />
+          </Suspense>
         </div>
       </section>
 

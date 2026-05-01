@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // DNA: Alchohalt v1 • Unified DB • Do not add network calls.
 import { create } from 'zustand';
-import { persist, StateStorage, PersistStorage } from 'zustand/middleware';
+import { persist, StateStorage, createJSONStorage } from 'zustand/middleware';
 import { getPreferences } from "@/shared/capacitor";
 import { nanoid } from 'nanoid';
 import { computeStats, startOfDay, isSameDay } from '../lib/stats';
@@ -382,7 +382,16 @@ export const useDB = create<Store>()(
     {
       name: DB_KEY,
       version: CURRENT_DB_VERSION,
-      storage: preferencesStorage as unknown as PersistStorage<unknown>,
+      // [BUG-DB-SERIALIZATION] preferencesStorage is a string-based
+      // StateStorage adapter (it shells out to localStorage on web,
+      // Capacitor.Preferences on native — both string-only). Wrap it
+      // in createJSONStorage so Zustand serializes/deserializes the
+      // PersistStorage<T> shape (StorageValue) through JSON before it
+      // touches the adapter. The previous `as unknown as PersistStorage`
+      // cast lied to the type system: Zustand passed in an object,
+      // localStorage coerced it to "[object Object]", and every persisted
+      // db became unrecoverable.
+      storage: createJSONStorage(() => preferencesStorage),
       migrate: async (persisted: unknown, v: number) => {
         const migrated = migrateDB((persisted as { db: DB } | undefined)?.db, v, CURRENT_DB_VERSION);
         return migrated ? { db: migrated } : undefined;

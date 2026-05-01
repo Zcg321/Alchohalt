@@ -3,7 +3,7 @@
  *
  * Owner-locked spec (2026-04-26):
  *   - Hybrid: Free + Monthly + Annual + Lifetime
- *   - Prices: $0 / $3.99/mo / $24.99/yr / $69 once
+ *   - Prices: $0 / $4.99/mo / $24.99/yr / $69 once
  *   - Free covers ~75% of value (logging, streak, money saved, journal,
  *     crisis resources, biometric lock, one reminder)
  *   - Premium adds analytics, multi-reminder, CSV/PDF export, encrypted
@@ -46,8 +46,8 @@ export const PLANS: Record<PlanId, PlanDef> = {
   premium_monthly: {
     id: 'premium_monthly',
     name: 'Monthly',
-    priceLabel: '$3.99 / month',
-    amountCents: 399,
+    priceLabel: '$4.99 / month',
+    amountCents: 499,
     currency: 'usd',
     cadence: 'monthly',
     productId: 'com.alchohalt.app.premium_monthly',

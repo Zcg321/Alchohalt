@@ -1,0 +1,11 @@
+{
+  "surface": "settings",
+  "form": "mobile",
+  "performance": 68,
+  "accessibility": 97,
+  "best-practices": 100,
+  "seo": 82,
+  "pwa": null,
+  "totalBlockingTime": 57,
+  "totalByteWeight": 3356951
+}

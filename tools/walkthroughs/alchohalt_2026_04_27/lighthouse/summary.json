@@ -1,0 +1,112 @@
+[
+  {
+    "surface": "today",
+    "form": "mobile",
+    "performance": 71,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 38,
+    "totalByteWeight": 3284888
+  },
+  {
+    "surface": "track",
+    "form": "mobile",
+    "performance": 54,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 32,
+    "totalByteWeight": 3471705
+  },
+  {
+    "surface": "goals",
+    "form": "mobile",
+    "performance": 68,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 30,
+    "totalByteWeight": 3382693
+  },
+  {
+    "surface": "insights",
+    "form": "mobile",
+    "performance": 73,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 36,
+    "totalByteWeight": 3284888
+  },
+  {
+    "surface": "settings",
+    "form": "mobile",
+    "performance": 68,
+    "accessibility": 97,
+    "best-practices": 100,
+    "seo": 82,
+    "pwa": null,
+    "totalBlockingTime": 57,
+    "totalByteWeight": 3356951
+  },
+  {
+    "surface": "today",
+    "form": "desktop",
+    "performance": 80,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 0,
+    "totalByteWeight": 3284888
+  },
+  {
+    "surface": "track",
+    "form": "desktop",
+    "performance": 79,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 0,
+    "totalByteWeight": 3471705
+  },
+  {
+    "surface": "goals",
+    "form": "desktop",
+    "performance": 79,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 0,
+    "totalByteWeight": 3382693
+  },
+  {
+    "surface": "insights",
+    "form": "desktop",
+    "performance": 81,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 91,
+    "pwa": null,
+    "totalBlockingTime": 0,
+    "totalByteWeight": 3284888
+  },
+  {
+    "surface": "settings",
+    "form": "desktop",
+    "performance": 80,
+    "accessibility": 97,
+    "best-practices": 100,
+    "seo": 82,
+    "pwa": null,
+    "totalBlockingTime": 0,
+    "totalByteWeight": 3356951
+  }
+]
