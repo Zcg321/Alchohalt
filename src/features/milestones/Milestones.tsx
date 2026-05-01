@@ -115,22 +115,32 @@ export default function Milestones({ drinks, className = '' }: Props) {
         </p>
       </header>
       <ul className="card-content space-y-2" role="list">
-        {states.map((m) => (
+        {states.map((m) => {
+          /* [POLISH-MILESTONES-MOTION] The scale-up celebration only
+             fires for genuinely-new milestones (reached within the last
+             7 days). Without this gate, every reached glyph re-animated
+             on every screen visit — five checkmarks bouncing in unison
+             becomes Pavlovian noise instead of quiet acknowledgement.
+             Returning users still get a fresh celebration when a new
+             milestone lands; daily users don't see the same bounce ten
+             times in a row. animate-scale-up keyframe + reduced-motion
+             opt-out live in styles/theme.css. */
+          const reachedRecently = !!(
+            m.reached &&
+            m.reachedAt &&
+            Date.now() - m.reachedAt < 7 * 24 * 60 * 60 * 1000
+          );
+          return (
           <li
             key={m.id}
             className="flex items-center justify-between gap-3 py-2 border-b border-border-soft last:border-0"
           >
             <div className="flex items-center gap-3 min-w-0">
-              {/* [POLISH] Subtle scale-up celebration on the
-                  reached-state glyph. animate-scale-up is keyframed
-                  in styles/theme.css and is opt-out under
-                  prefers-reduced-motion via the @media block in
-                  index.css. No confetti — quiet acknowledgement. */}
               <span
                 aria-hidden
                 className={`inline-flex h-6 w-6 items-center justify-center rounded-pill text-caption transition-colors ${
                   m.reached
-                    ? 'bg-sage-100 text-sage-700 animate-scale-up'
+                    ? `bg-sage-100 text-sage-700${reachedRecently ? ' animate-scale-up' : ''}`
                     : 'bg-cream-50 text-ink-subtle'
                 }`}
               >
@@ -144,7 +154,8 @@ export default function Milestones({ drinks, className = '' }: Props) {
                 : '—'}
             </span>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );
