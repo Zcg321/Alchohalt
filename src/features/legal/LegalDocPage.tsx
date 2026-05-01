@@ -5,11 +5,11 @@
  * providing the public privacy-policy URL the App Store + Play Store
  * submissions require.
  *
- * The content is the SAME markdown shipped in docs/legal/. No
- * divergence with the older PrivacyPolicy.tsx / TermsOfService.tsx
- * (which encoded a hardcoded earlier version via i18n keys; those
- * components are kept as-is for now to avoid breaking unrelated callers
- * but will be retired in a follow-up sweep).
+ * The content is the SAME markdown shipped in docs/legal/. The older
+ * hardcoded-via-i18n PrivacyPolicy.tsx / TermsOfService.tsx components
+ * referenced in earlier comments were retired in [LEGAL-CLARITY-PASS]
+ * (round 2 polish) — both were unreachable orphans and only their own
+ * smoke tests imported them.
  *
  * Reuse-first: marked is the smallest mainstream md parser; brand
  * styling reuses the prose-* tokens already defined in tailwind/index.css.

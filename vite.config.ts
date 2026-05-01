@@ -22,9 +22,9 @@ export default defineConfig(() => {
         enabled: process.env.NODE_ENV === 'development'
       },
       manifest: {
-          name: 'Alchohalt - Smart Alcohol Tracker & Coach',
+          name: 'Alchohalt — A calm alcohol tracker',
           short_name: 'Alchohalt',
-          description: 'AI-powered alcohol tracking with personalized insights, smart recommendations, and goal management. 100% offline and private.',
+          description: 'A calm drink log. Track what you drink, set a goal that fits, see how a week or a month actually shaped up. Crisis lines on every screen. Your data stays on your phone.',
           theme_color: '#0ea5e9',
           background_color: '#0f172a',
           display: 'standalone',

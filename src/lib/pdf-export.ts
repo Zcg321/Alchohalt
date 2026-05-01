@@ -229,38 +229,3 @@ export function downloadPDFReport(
   URL.revokeObjectURL(url);
 }
 
-/** Legacy compat — old callers ask "is this implemented?" */
-export function isPDFExportAvailable(): boolean {
-  // The real subscription gate is enforced at the call site via
-  // SoftPaywall + hasFeature('pdf_export'). The function itself works.
-  return true;
-}
-
-/** Legacy compat — used by older PremiumDataExport UI. */
-export function getAvailablePDFTemplates(): Array<{
-  id: string;
-  name: string;
-  description: string;
-  premium: boolean;
-}> {
-  return [
-    {
-      id: 'summary',
-      name: 'Summary report',
-      description: 'Top-level numbers for the period.',
-      premium: true,
-    },
-    {
-      id: 'detailed',
-      name: 'Detailed log',
-      description: 'Every entry, sorted newest first.',
-      premium: true,
-    },
-    {
-      id: 'analytics',
-      name: 'Analytics report',
-      description: 'Summary + detailed log + planned charts (v1.1).',
-      premium: true,
-    },
-  ];
-}

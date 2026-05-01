@@ -60,15 +60,19 @@ export default function GoalCard({ goal, onToggle, onDelete }: Props) {
 
         <div className="flex items-center space-x-2 ml-4">
           <button
+            type="button"
             onClick={onToggle}
             className="p-1 rounded hover:bg-black hover:bg-opacity-10 transition-colors"
+            aria-label={goal.isActive ? 'Pause goal' : 'Resume goal'}
             title={goal.isActive ? 'Pause goal' : 'Resume goal'}
           >
             {goal.isActive ? <PauseIcon /> : <PlayIcon />}
           </button>
           <button
+            type="button"
             onClick={onDelete}
             className="p-1 rounded hover:bg-red-500 hover:bg-opacity-20 text-red-600 transition-colors"
+            aria-label="Delete goal"
             title="Delete goal"
           >
             <TrashIcon />
@@ -81,7 +85,7 @@ export default function GoalCard({ goal, onToggle, onDelete }: Props) {
 
 function PauseIcon() {
   return (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" />
     </svg>
   );
@@ -89,7 +93,7 @@ function PauseIcon() {
 
 function PlayIcon() {
   return (
-    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+    <svg aria-hidden="true" className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
     </svg>
   );
@@ -97,7 +101,7 @@ function PlayIcon() {
 
 function TrashIcon() {
   return (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
     </svg>
   );

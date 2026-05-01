@@ -29,7 +29,7 @@
  * discarded after the user acknowledges they've saved it.
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   useSyncStore,
   isPassphraseStrongEnough,
@@ -72,6 +72,75 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
   );
 }
 
+/* [REFACTOR-LONG-FN] Enabled-phase status card extracted from the
+ * SyncPanel render. Pure presentation: displays provider info, device
+ * id, last sync, sync-now / disable buttons, and the recent-activity
+ * list. State + handlers stay in the parent and pass down. */
+interface SyncEnabledStatusProps {
+  enabledAt: number | null;
+  deviceId: string | null;
+  userId: string | null;
+  lastSyncAt: number | null;
+  busy: boolean;
+  activity: ActivityEntry[];
+  onSyncNow: () => void;
+  onDisable: () => void;
+}
+
+function SyncEnabledStatus({
+  enabledAt, deviceId, userId, lastSyncAt, busy, activity, onSyncNow, onDisable,
+}: SyncEnabledStatusProps) {
+  return (
+    <div className="space-y-4" data-testid="sync-enabled-state">
+      <dl className="grid grid-cols-2 gap-y-2 text-caption">
+        <dt className="text-ink-soft">Provider</dt>
+        <dd className="text-ink">Supabase (encrypted; server cannot read)</dd>
+        <dt className="text-ink-soft">Enabled</dt>
+        <dd className="text-ink tabular-nums">
+          {enabledAt ? new Date(enabledAt).toLocaleDateString() : '—'}
+        </dd>
+        <dt className="text-ink-soft">Device id</dt>
+        <dd className="text-ink font-mono text-micro">{deviceId ?? '—'}</dd>
+        <dt className="text-ink-soft">User id</dt>
+        <dd className="text-ink font-mono text-micro">{userId ?? '—'}</dd>
+        <dt className="text-ink-soft">Last sync</dt>
+        <dd className="text-ink">{lastSyncAt ? fmtRelative(lastSyncAt) : 'never'}</dd>
+      </dl>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={onSyncNow}
+          disabled={busy}
+          className="flex-1 inline-flex items-center justify-center rounded-pill bg-sage-700 px-4 py-2.5 text-caption font-medium text-white hover:bg-sage-900 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
+          data-testid="sync-now"
+        >
+          {busy ? 'Syncing…' : 'Sync now'}
+        </button>
+        <button
+          type="button"
+          onClick={onDisable}
+          className="inline-flex items-center justify-center rounded-pill border border-border bg-surface-elevated px-4 py-2.5 text-caption text-ink hover:bg-cream-50 min-h-[44px]"
+          data-testid="sync-disable"
+        >
+          Disable
+        </button>
+      </div>
+      <div>
+        <h4 className="text-caption font-medium text-ink mb-1">Recent activity</h4>
+        {activity.length === 0 ? (
+          <p className="text-caption text-ink-subtle">No activity yet.</p>
+        ) : (
+          <ul role="list" data-testid="sync-activity-log">
+            {activity.slice(0, 8).map((e) => (
+              <ActivityRow key={e.id} entry={e} />
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function SyncPanel({ transport }: Props) {
   const phase = useSyncStore((s) => s.phase);
   const setPhase = useSyncStore((s) => s.setPhase);
@@ -88,7 +157,28 @@ export default function SyncPanel({ transport }: Props) {
   const [email, setEmail] = useState('');
   const [passphrase, setPassphrase] = useState('');
   const [error, setError] = useState<string | null>(null);
+  /* [A11Y-FORM-ERRORS] Track which field the current error is about so
+   * we can apply aria-invalid + aria-describedby on the right input.
+   * 'form' = error not tied to a single field (network, sign-up, etc.)
+   * Both `error` and `errorField` move together via setFieldError /
+   * clearError helpers. */
+  const [errorField, setErrorField] = useState<'email' | 'passphrase' | 'form' | null>(null);
+  const errorRef = useRef<HTMLDivElement | null>(null);
   const [busy, setBusy] = useState(false);
+
+  function setFieldError(field: 'email' | 'passphrase' | 'form', message: string) {
+    setErrorField(field);
+    setError(message);
+    /* Move focus to the error region so the screen-reader announces it
+     * AND a sighted keyboard user can see exactly what failed without
+     * scanning the whole form. tabIndex=-1 makes the region focusable
+     * programmatically without adding a Tab stop in the regular flow. */
+    queueMicrotask(() => errorRef.current?.focus?.());
+  }
+  function clearError() {
+    setError(null);
+    setErrorField(null);
+  }
 
   // Mnemonic-shown state — generated once during the signup flow.
   const [pendingMnemonic, setPendingMnemonic] = useState<string[] | null>(null);
@@ -102,7 +192,7 @@ export default function SyncPanel({ transport }: Props) {
   function resetForm() {
     setEmail('');
     setPassphrase('');
-    setError(null);
+    clearError();
     setMnemonicAck(false);
     setPendingMnemonic(null);
     setPendingKeys(null);
@@ -110,13 +200,13 @@ export default function SyncPanel({ transport }: Props) {
 
   async function handleEnableSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
+    clearError();
     if (!email.includes('@')) {
-      setError('Enter a valid email.');
+      setFieldError('email', 'Enter a valid email.');
       return;
     }
     if (!isPassphraseStrongEnough(passphrase)) {
-      setError('Passphrase must be 12+ characters with upper, lower, and a digit.');
+      setFieldError('passphrase', 'Passphrase must be 12+ characters with upper, lower, and a digit.');
       return;
     }
     setBusy(true);
@@ -131,7 +221,7 @@ export default function SyncPanel({ transport }: Props) {
       setPendingMnemonic(mnemonic);
       setPhase('mnemonic-shown');
     } catch (err) {
-      setError((err as Error).message);
+      setFieldError('form', (err as Error).message);
     } finally {
       setBusy(false);
     }
@@ -140,7 +230,7 @@ export default function SyncPanel({ transport }: Props) {
   async function handleMnemonicContinue() {
     if (!pendingMnemonic || !pendingKeys || !mnemonicAck) return;
     setBusy(true);
-    setError(null);
+    clearError();
     try {
       const session = await transport.signUp(
         email,
@@ -153,7 +243,7 @@ export default function SyncPanel({ transport }: Props) {
       recordSync('success', 'initial push');
       resetForm();
     } catch (err) {
-      setError((err as Error).message);
+      setFieldError('form', (err as Error).message);
       recordSync('error', (err as Error).message);
     } finally {
       setBusy(false);
@@ -162,9 +252,13 @@ export default function SyncPanel({ transport }: Props) {
 
   async function handleSignInSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
-    if (!email.includes('@') || passphrase.length === 0) {
-      setError('Enter your email and passphrase.');
+    clearError();
+    if (!email.includes('@')) {
+      setFieldError('email', 'Enter your email.');
+      return;
+    }
+    if (passphrase.length === 0) {
+      setFieldError('passphrase', 'Enter your passphrase.');
       return;
     }
     setBusy(true);
@@ -189,7 +283,7 @@ export default function SyncPanel({ transport }: Props) {
       recordSync('success', `pulled ${result.blobs.length} blob(s)`);
       resetForm();
     } catch (err) {
-      setError((err as Error).message);
+      setFieldError('form', (err as Error).message);
     } finally {
       setBusy(false);
     }
@@ -251,7 +345,23 @@ export default function SyncPanel({ transport }: Props) {
         )}
 
         {phase === 'enabling' && (
-          <form noValidate onSubmit={handleEnableSubmit} className="space-y-4" data-testid="sync-enable-form">
+          <form noValidate onSubmit={handleEnableSubmit} className="space-y-4" data-testid="sync-enable-form" aria-describedby={error ? 'sync-enable-error' : undefined}>
+            {/* [A11Y-FORM-ERRORS] Form-level error summary lives at the
+                top of the form so screen readers and sighted keyboard
+                users encounter it before the inputs. tabIndex=-1 makes
+                it programmatically focusable; setFieldError moves focus
+                here so the message is announced and visible. */}
+            {error ? (
+              <div
+                ref={errorRef}
+                id="sync-enable-error"
+                role="alert"
+                tabIndex={-1}
+                className="rounded-lg border border-crisis-200 bg-crisis-50 px-3 py-2 text-caption text-crisis-700 dark:bg-crisis-900/20 dark:border-crisis-800 dark:text-crisis-200 focus:outline-2 focus:outline-crisis-500"
+              >
+                {error}
+              </div>
+            ) : null}
             <div className="space-y-1">
               <label htmlFor="sync-email" className="block text-caption font-medium text-ink">Email</label>
               <input
@@ -261,6 +371,8 @@ export default function SyncPanel({ transport }: Props) {
                 onChange={(e) => setEmail(e.target.value)}
                 className="input"
                 autoComplete="email"
+                aria-invalid={errorField === 'email' ? true : undefined}
+                aria-describedby={errorField === 'email' ? 'sync-enable-error' : undefined}
               />
             </div>
             <div className="space-y-1">
@@ -272,13 +384,17 @@ export default function SyncPanel({ transport }: Props) {
                 onChange={(e) => setPassphrase(e.target.value)}
                 className="input"
                 autoComplete="new-password"
-                aria-describedby="sync-pass-hint"
+                aria-invalid={errorField === 'passphrase' ? true : undefined}
+                aria-describedby={
+                  errorField === 'passphrase'
+                    ? 'sync-pass-hint sync-enable-error'
+                    : 'sync-pass-hint'
+                }
               />
               <p id="sync-pass-hint" className="text-micro text-ink-subtle">
                 12+ characters, with upper, lower, and a digit.
               </p>
             </div>
-            {error ? <p role="alert" className="text-caption text-crisis-700">{error}</p> : null}
             <div className="flex gap-2">
               <button
                 type="submit"
@@ -328,7 +444,17 @@ export default function SyncPanel({ transport }: Props) {
                 for me.
               </span>
             </label>
-            {error ? <p role="alert" className="text-caption text-crisis-700">{error}</p> : null}
+            {error ? (
+              <div
+                ref={errorRef}
+                id="sync-mnemonic-error"
+                role="alert"
+                tabIndex={-1}
+                className="rounded-lg border border-crisis-200 bg-crisis-50 px-3 py-2 text-caption text-crisis-700 dark:bg-crisis-900/20 dark:border-crisis-800 dark:text-crisis-200 focus:outline-2 focus:outline-crisis-500"
+              >
+                {error}
+              </div>
+            ) : null}
             <div className="flex gap-2">
               <button
                 type="button"
@@ -351,7 +477,18 @@ export default function SyncPanel({ transport }: Props) {
         )}
 
         {phase === 'signing-in' && (
-          <form noValidate onSubmit={handleSignInSubmit} className="space-y-4" data-testid="sync-signin-form">
+          <form noValidate onSubmit={handleSignInSubmit} className="space-y-4" data-testid="sync-signin-form" aria-describedby={error ? 'sync-signin-error' : undefined}>
+            {error ? (
+              <div
+                ref={errorRef}
+                id="sync-signin-error"
+                role="alert"
+                tabIndex={-1}
+                className="rounded-lg border border-crisis-200 bg-crisis-50 px-3 py-2 text-caption text-crisis-700 dark:bg-crisis-900/20 dark:border-crisis-800 dark:text-crisis-200 focus:outline-2 focus:outline-crisis-500"
+              >
+                {error}
+              </div>
+            ) : null}
             <div className="space-y-1">
               <label htmlFor="signin-email" className="block text-caption font-medium text-ink">Email</label>
               <input
@@ -361,6 +498,8 @@ export default function SyncPanel({ transport }: Props) {
                 onChange={(e) => setEmail(e.target.value)}
                 className="input"
                 autoComplete="email"
+                aria-invalid={errorField === 'email' ? true : undefined}
+                aria-describedby={errorField === 'email' ? 'sync-signin-error' : undefined}
               />
             </div>
             <div className="space-y-1">
@@ -372,9 +511,10 @@ export default function SyncPanel({ transport }: Props) {
                 onChange={(e) => setPassphrase(e.target.value)}
                 className="input"
                 autoComplete="current-password"
+                aria-invalid={errorField === 'passphrase' ? true : undefined}
+                aria-describedby={errorField === 'passphrase' ? 'sync-signin-error' : undefined}
               />
             </div>
-            {error ? <p role="alert" className="text-caption text-crisis-700">{error}</p> : null}
             <div className="flex gap-2">
               <button
                 type="submit"
@@ -396,55 +536,16 @@ export default function SyncPanel({ transport }: Props) {
         )}
 
         {phase === 'enabled' && (
-          <div className="space-y-4" data-testid="sync-enabled-state">
-            <dl className="grid grid-cols-2 gap-y-2 text-caption">
-              <dt className="text-ink-soft">Provider</dt>
-              <dd className="text-ink">Supabase (encrypted; server cannot read)</dd>
-              <dt className="text-ink-soft">Enabled</dt>
-              <dd className="text-ink tabular-nums">
-                {enabledAt ? new Date(enabledAt).toLocaleDateString() : '—'}
-              </dd>
-              <dt className="text-ink-soft">Device id</dt>
-              <dd className="text-ink font-mono text-micro">{deviceId ?? '—'}</dd>
-              <dt className="text-ink-soft">User id</dt>
-              <dd className="text-ink font-mono text-micro">{userId ?? '—'}</dd>
-              <dt className="text-ink-soft">Last sync</dt>
-              <dd className="text-ink">
-                {lastSyncAt ? fmtRelative(lastSyncAt) : 'never'}
-              </dd>
-            </dl>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleSyncNow}
-                disabled={busy}
-                className="flex-1 inline-flex items-center justify-center rounded-pill bg-sage-700 px-4 py-2.5 text-caption font-medium text-white hover:bg-sage-900 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
-                data-testid="sync-now"
-              >
-                {busy ? 'Syncing…' : 'Sync now'}
-              </button>
-              <button
-                type="button"
-                onClick={handleDisable}
-                className="inline-flex items-center justify-center rounded-pill border border-border bg-surface-elevated px-4 py-2.5 text-caption text-ink hover:bg-cream-50 min-h-[44px]"
-                data-testid="sync-disable"
-              >
-                Disable
-              </button>
-            </div>
-            <div>
-              <h4 className="text-caption font-medium text-ink mb-1">Recent activity</h4>
-              {activity.length === 0 ? (
-                <p className="text-caption text-ink-subtle">No activity yet.</p>
-              ) : (
-                <ul role="list" data-testid="sync-activity-log">
-                  {activity.slice(0, 8).map((e) => (
-                    <ActivityRow key={e.id} entry={e} />
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
+          <SyncEnabledStatus
+            enabledAt={enabledAt}
+            deviceId={deviceId}
+            userId={userId}
+            lastSyncAt={lastSyncAt}
+            busy={busy}
+            activity={activity}
+            onSyncNow={handleSyncNow}
+            onDisable={handleDisable}
+          />
         )}
       </div>
     </section>

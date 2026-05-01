@@ -83,7 +83,7 @@ price in the future, prior purchasers are grandfathered.
 | Mood ↔ drink correlation analytics    |      |    ✓    |
 | Multiple custom reminders + messages  |      |    ✓    |
 | CSV export                            |      |    ✓    |
-| PDF export (printable wellness report)|      |    ✓    |
+| PDF export (printable summary report) |      |    ✓    |
 | Encrypted local backup (.alch-backup) |      |    ✓    |
 | Multiple custom drink presets         |      |    ✓    |
 | Advanced visualizations (heatmaps)    |      |    ✓    |
@@ -176,17 +176,17 @@ restores your premium tier. You don't have to pay again.
 
 Premium entitlement follows the App Store / Google Play account, not
 the device. Sign in to your store account on the new device and tap
-Restore Purchases. Wellness data does NOT follow you — that's stored
-only on the prior device. Use the encrypted backup feature (premium)
-to move your wellness data to the new device manually.
+Restore Purchases. Your drink and mood log does NOT follow you —
+it's stored only on the prior device. Use the encrypted backup
+feature (premium) to move your log to the new device manually.
 
 ### When you delete the app
 
-Your local wellness data is deleted along with the app. Your
-subscription continues to renew on the store side until you cancel
-it explicitly in App Store / Google Play account settings.
-Reinstalling and tapping Restore Purchases brings premium back; it
-does NOT bring back deleted wellness data.
+Your local drink log, mood entries, and journal are deleted along
+with the app. Your subscription continues to renew on the store side
+until you cancel it explicitly in App Store / Google Play account
+settings. Reinstalling and tapping Restore Purchases brings premium
+back; it does NOT bring back deleted log data.
 
 ---
 

@@ -7,7 +7,7 @@
 
 ## TL;DR
 
-**Your wellness data stays on your phone by default.** We don't run a
+**What you log stays on your phone by default.** We don't run a
 server that sees your drink log, mood, or journal entries. The only
 third parties that ever see anything from your use of Alchohalt are:
 
@@ -17,7 +17,7 @@ third parties that ever see anything from your use of Alchohalt are:
 2. **RevenueCat** (purchase-validation broker) — they receive an
    anonymous user ID and a product ID at the moment you make a
    purchase, so we can confirm your premium entitlement is real. They
-   never see your wellness data.
+   never see what you log.
 3. **Anthropic — only if you opt in to AI Insights.** AI Insights is
    off by default. When you turn it on, an anonymized summary of your
    patterns (drink counts grouped by week, mood-tag counts, HALT

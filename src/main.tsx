@@ -7,10 +7,16 @@ import A11ySkipLink from './components/A11ySkipLink';
 import './index.css';
 import { registerSW } from './features/pwa/registerSW';
 import { bootstrapIAPOnStartup } from './features/iap/restoreEntitlement';
+import { installReminderSync } from './lib/notify';
 import { LanguageProvider } from './i18n';
 
 registerSW();
 void bootstrapIAPOnStartup();
+/* [BUG-MADGE-CYCLE] Wire the reminder-sync subscription once at boot
+ * so Zustand reminder mutations trigger native/web reschedules. The
+ * old code did this via direct calls inside db.ts setters, which
+ * created a db ↔ notify import cycle. */
+installReminderSync();
 
 if (typeof document !== 'undefined' && !document.documentElement.hasAttribute('data-theme')) {
   document.documentElement.setAttribute('data-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');

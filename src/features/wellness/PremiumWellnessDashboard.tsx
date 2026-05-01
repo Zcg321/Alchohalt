@@ -7,13 +7,47 @@ import { useAnalytics } from '../analytics/analytics';
 import { useDB } from '../../store/db';
 import { FEATURE_FLAGS } from '../../config/features';
 
+/* [REFACTOR-LONG-FN] One-tile renderer extracted from the metrics
+ * grid. Pure presentation; the parent computes the trend icon and
+ * passes it down so this component never needs to know the icon set. */
+function MetricCard({
+  metric, trendIcon,
+}: { metric: WellnessMetric; trendIcon: string }) {
+  return (
+    <div className="bg-surface-elevated rounded-lg border border-border-soft p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{metric.icon}</span>
+          <h3 className="font-semibold text-sm">{metric.name}</h3>
+        </div>
+        <span className="text-lg">{trendIcon}</span>
+      </div>
+      <div className="mb-2">
+        <div className="flex items-end gap-1">
+          <span className="text-2xl font-bold text-ink">{metric.value}</span>
+          {metric.unit && (
+            <span className="text-sm text-ink-subtle mb-1">{metric.unit}</span>
+          )}
+        </div>
+      </div>
+      <p className="text-xs text-ink-soft">{metric.description}</p>
+    </div>
+  );
+}
+
+/* [POLISH-WELLNESS-LABELS] WellnessMetric had a `status` field with
+ * categorical buckets (excellent/good/fair/poor). Showing a "POOR"
+ * badge over someone's alcohol-free days is exactly the kind of
+ * vibes-judgement the voice guidelines call out — hollow praise on
+ * one end, soft scolding on the other. The metric value, the trend
+ * arrow, and the description already convey the meaning honestly.
+ * The badge added a confidence the data does not earn. */
 interface WellnessMetric {
   id: string;
   name: string;
   value: number | string;
   unit?: string;
   trend: 'up' | 'down' | 'stable';
-  status: 'excellent' | 'good' | 'fair' | 'poor';
   description: string;
   icon: string;
 }
@@ -102,7 +136,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         value: afDays,
         unit: 'days/month',
         trend: afDays >= 20 ? 'up' : afDays >= 15 ? 'stable' : 'down',
-        status: afDays >= 25 ? 'excellent' : afDays >= 20 ? 'good' : afDays >= 15 ? 'fair' : 'poor',
         description: 'Days this month with no logged drinks.',
         icon: '🌟'
       },
@@ -112,7 +145,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         value: Math.round((5 - avgCraving) * 20),
         unit: '%',
         trend: avgCraving <= 2 ? 'up' : avgCraving <= 3 ? 'stable' : 'down',
-        status: avgCraving <= 1 ? 'excellent' : avgCraving <= 2 ? 'good' : avgCraving <= 3 ? 'fair' : 'poor',
         description: 'Higher means lower average craving on logged days.',
         icon: '🛡️'
       },
@@ -122,7 +154,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         value: Math.round(sleepScore),
         unit: '/100',
         trend: sleepScore >= 80 ? 'up' : sleepScore >= 60 ? 'stable' : 'down',
-        status: sleepScore >= 85 ? 'excellent' : sleepScore >= 70 ? 'good' : sleepScore >= 50 ? 'fair' : 'poor',
         description: 'Higher means fewer drinks logged after 6pm. Late drinks correlate with worse sleep.',
         icon: '😴'
       },
@@ -132,7 +163,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         value: Math.round(Math.max(0, 100 - stressLevel)),
         unit: '/100',
         trend: stressLevel <= 30 ? 'up' : stressLevel <= 50 ? 'stable' : 'down',
-        status: stressLevel <= 20 ? 'excellent' : stressLevel <= 40 ? 'good' : stressLevel <= 60 ? 'fair' : 'poor',
         description: 'Higher means fewer drinks tied to angry / lonely / tired.',
         icon: '🧘'
       },
@@ -142,7 +172,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         value: Math.round(socialWellness),
         unit: '%',
         trend: socialWellness >= 70 ? 'up' : socialWellness >= 50 ? 'stable' : 'down',
-        status: socialWellness >= 80 ? 'excellent' : socialWellness >= 60 ? 'good' : socialWellness >= 40 ? 'fair' : 'poor',
         description: 'Share of social drinks where you also noted an alternative action.',
         icon: '🤝'
       },
@@ -159,7 +188,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
           value: avgSteps.toLocaleString(),
           unit: 'avg/day',
           trend: avgSteps >= 8000 ? 'up' : avgSteps >= 5000 ? 'stable' : 'down',
-          status: avgSteps >= 10000 ? 'excellent' : avgSteps >= 7000 ? 'good' : avgSteps >= 5000 ? 'fair' : 'poor',
           description: 'From your health app — last 7 days.',
           icon: '👟'
         });
@@ -172,7 +200,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
           value: avgSleep,
           unit: 'hrs/night',
           trend: sleepNum >= 7.5 ? 'up' : sleepNum >= 6.5 ? 'stable' : 'down',
-          status: sleepNum >= 8 ? 'excellent' : sleepNum >= 7 ? 'good' : sleepNum >= 6 ? 'fair' : 'poor',
           description: 'From your health app — last 7 days.',
           icon: '🛌'
         });
@@ -184,7 +211,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
           value: avgHeartRate,
           unit: 'bpm',
           trend: avgHeartRate <= 70 ? 'up' : avgHeartRate <= 80 ? 'stable' : 'down',
-          status: avgHeartRate <= 60 ? 'excellent' : avgHeartRate <= 70 ? 'good' : avgHeartRate <= 80 ? 'fair' : 'poor',
           description: 'From your health app — last 7 days.',
           icon: '💓'
         });
@@ -257,15 +283,6 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     }).slice(0, 3);
   }, [drinks, canAccessAIInsights]);
 
-  const getStatusColor = (status: WellnessMetric['status']) => {
-    switch (status) {
-      case 'excellent': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
-      case 'good': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
-      case 'fair': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
-      case 'poor': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
-    }
-  };
-
   const getTrendIcon = (trend: WellnessMetric['trend']) => {
     switch (trend) {
       case 'up': return '↗️';
@@ -322,39 +339,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       {/* Wellness Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {wellnessMetrics.map(metric => (
-          <div 
-            key={metric.id} 
-            className="bg-surface-elevated rounded-lg border border-border-soft p-4"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{metric.icon}</span>
-                <h3 className="font-semibold text-sm">{metric.name}</h3>
-              </div>
-              <span className="text-lg">{getTrendIcon(metric.trend)}</span>
-            </div>
-            
-            <div className="mb-2">
-              <div className="flex items-end gap-1">
-                <span className="text-2xl font-bold text-ink">
-                  {metric.value}
-                </span>
-                {metric.unit && (
-                  <span className="text-sm text-ink-subtle mb-1">
-                    {metric.unit}
-                  </span>
-                )}
-              </div>
-            </div>
-            
-            <Badge variant="secondary" className={`text-xs mb-2 ${getStatusColor(metric.status)}`}>
-              {metric.status.toUpperCase()}
-            </Badge>
-            
-            <p className="text-xs text-ink-soft">
-              {metric.description}
-            </p>
-          </div>
+          <MetricCard key={metric.id} metric={metric} trendIcon={getTrendIcon(metric.trend)} />
         ))}
       </div>
 
