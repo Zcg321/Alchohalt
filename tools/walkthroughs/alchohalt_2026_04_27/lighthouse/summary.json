@@ -2,111 +2,111 @@
   {
     "surface": "today",
     "form": "mobile",
-    "performance": 69,
-    "accessibility": 76,
+    "performance": 71,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
-    "totalBlockingTime": 51.5,
-    "totalByteWeight": 3268228
+    "totalBlockingTime": 38,
+    "totalByteWeight": 3284888
   },
   {
     "surface": "track",
     "form": "mobile",
-    "performance": 68,
-    "accessibility": 77,
+    "performance": 54,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
-    "totalBlockingTime": 53,
-    "totalByteWeight": 3455045
+    "totalBlockingTime": 32,
+    "totalByteWeight": 3471705
   },
   {
     "surface": "goals",
     "form": "mobile",
-    "performance": 66,
-    "accessibility": 76,
+    "performance": 68,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
-    "totalBlockingTime": 140,
-    "totalByteWeight": 3366033
+    "totalBlockingTime": 30,
+    "totalByteWeight": 3382693
   },
   {
     "surface": "insights",
     "form": "mobile",
-    "performance": 70,
-    "accessibility": 76,
+    "performance": 73,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
-    "totalBlockingTime": 89,
-    "totalByteWeight": 3268228
+    "totalBlockingTime": 36,
+    "totalByteWeight": 3284888
   },
   {
     "surface": "settings",
     "form": "mobile",
-    "performance": 71,
-    "accessibility": 78,
+    "performance": 68,
+    "accessibility": 97,
     "best-practices": 100,
     "seo": 82,
     "pwa": null,
-    "totalBlockingTime": 100,
-    "totalByteWeight": 3268228
+    "totalBlockingTime": 57,
+    "totalByteWeight": 3356951
   },
   {
     "surface": "today",
     "form": "desktop",
     "performance": 80,
-    "accessibility": 84,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
     "totalBlockingTime": 0,
-    "totalByteWeight": 3268228
+    "totalByteWeight": 3284888
   },
   {
     "surface": "track",
     "form": "desktop",
-    "performance": 78,
-    "accessibility": 84,
+    "performance": 79,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
     "totalBlockingTime": 0,
-    "totalByteWeight": 3455045
+    "totalByteWeight": 3471705
   },
   {
     "surface": "goals",
     "form": "desktop",
     "performance": 79,
-    "accessibility": 84,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
     "totalBlockingTime": 0,
-    "totalByteWeight": 3366033
+    "totalByteWeight": 3382693
   },
   {
     "surface": "insights",
     "form": "desktop",
-    "performance": 80,
-    "accessibility": 84,
+    "performance": 81,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 91,
     "pwa": null,
     "totalBlockingTime": 0,
-    "totalByteWeight": 3268228
+    "totalByteWeight": 3284888
   },
   {
     "surface": "settings",
     "form": "desktop",
     "performance": 80,
-    "accessibility": 86,
+    "accessibility": 97,
     "best-practices": 100,
     "seo": 82,
     "pwa": null,
     "totalBlockingTime": 0,
-    "totalByteWeight": 3268228
+    "totalByteWeight": 3356951
   }
 ]

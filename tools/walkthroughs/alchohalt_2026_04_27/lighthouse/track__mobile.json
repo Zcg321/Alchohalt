@@ -1,11 +1,11 @@
 {
   "surface": "track",
   "form": "mobile",
-  "performance": 68,
-  "accessibility": 77,
+  "performance": 54,
+  "accessibility": 100,
   "best-practices": 100,
   "seo": 91,
   "pwa": null,
-  "totalBlockingTime": 53,
-  "totalByteWeight": 3455045
+  "totalBlockingTime": 32,
+  "totalByteWeight": 3471705
 }

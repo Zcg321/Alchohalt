@@ -1,11 +1,11 @@
 {
   "surface": "insights",
   "form": "desktop",
-  "performance": 80,
-  "accessibility": 84,
+  "performance": 81,
+  "accessibility": 100,
   "best-practices": 100,
   "seo": 91,
   "pwa": null,
   "totalBlockingTime": 0,
-  "totalByteWeight": 3268228
+  "totalByteWeight": 3284888
 }
