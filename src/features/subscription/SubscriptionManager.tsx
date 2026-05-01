@@ -120,11 +120,12 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
       <header className="mb-10 text-center">
         <h2 className="text-3xl font-semibold tracking-tight">A simple price.</h2>
         <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
-          Free forever for the things that matter. Premium when you want more.
+          More insights, same calm. Never gamified.
         </p>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
-          Your data is yours. We cryptographically cannot read it — on
-          any plan. AI Insights is opt-in and controlled in Settings → AI.
+          Free covers the essentials forever. Premium adds analytics,
+          multi-reminders, exports, and encrypted backup. AI Insights is
+          opt-in and controlled in Settings → AI.
         </p>
       </header>
 
