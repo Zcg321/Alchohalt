@@ -32,17 +32,12 @@ describe('[SYNC-3b] dbBridge — drink-log mutation triggers scheduleSync', () =
 
     useDB.getState().addEntry({
       ts: Date.now(),
-      drinkType: 'beer',
       kind: 'beer',
       stdDrinks: 1,
-      volumeMl: 350,
-      abvPct: 5,
       cost: 0,
       intention: 'social',
-      cravingLevel: 1,
+      craving: 1,
       halt: { H: false, A: false, L: false, T: false },
-      altActionUsed: false,
-      coping: false,
     });
 
     await vi.advanceTimersByTimeAsync(DEBOUNCE_MS.mutation + 100);
@@ -58,17 +53,12 @@ describe('[SYNC-3b] dbBridge — drink-log mutation triggers scheduleSync', () =
 
     useDB.getState().addEntry({
       ts: Date.now(),
-      drinkType: 'beer',
       kind: 'beer',
       stdDrinks: 1,
-      volumeMl: 350,
-      abvPct: 5,
       cost: 0,
       intention: 'social',
-      cravingLevel: 1,
+      craving: 1,
       halt: { H: false, A: false, L: false, T: false },
-      altActionUsed: false,
-      coping: false,
     });
 
     expect(__schedulerSnapshot().scheduledReason).toBe('mutation');
@@ -85,17 +75,12 @@ describe('[SYNC-3b] dbBridge — drink-log mutation triggers scheduleSync', () =
     for (let i = 0; i < 3; i++) {
       useDB.getState().addEntry({
         ts: Date.now() + i,
-        drinkType: 'beer',
         kind: 'beer',
         stdDrinks: 1,
-        volumeMl: 350,
-        abvPct: 5,
         cost: 0,
         intention: 'social',
-        cravingLevel: 1,
+        craving: 1,
         halt: { H: false, A: false, L: false, T: false },
-        altActionUsed: false,
-        coping: false,
       });
     }
 
@@ -112,17 +97,12 @@ describe('[SYNC-3b] dbBridge — drink-log mutation triggers scheduleSync', () =
 
     useDB.getState().addEntry({
       ts: Date.now(),
-      drinkType: 'beer',
       kind: 'beer',
       stdDrinks: 1,
-      volumeMl: 350,
-      abvPct: 5,
       cost: 0,
       intention: 'social',
-      cravingLevel: 1,
+      craving: 1,
       halt: { H: false, A: false, L: false, T: false },
-      altActionUsed: false,
-      coping: false,
     });
 
     await vi.advanceTimersByTimeAsync(DEBOUNCE_MS.mutation + 100);
