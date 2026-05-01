@@ -1,14 +1,18 @@
 /**
  * Data persistence service abstraction layer
  * Abstracts Capacitor Preferences to enable testing and future platform flexibility
+ *
+ * [BUG-PREFERENCES-SHIM-COVERAGE] All Capacitor.Preferences access in
+ * the app MUST route through getPreferences() in src/shared/capacitor.ts
+ * — that helper hands back the real plugin on native and a localStorage
+ * shim on web. Importing @capacitor/preferences directly from any other
+ * module bypasses the web shim and triggers
+ * "Preferences.X() is not implemented on web" errors that the analytics
+ * service then captures into localStorage forever. The eslint
+ * no-restricted-imports rule below enforces this.
  */
 
-export interface DataPersistenceService {
-  getItem(key: string): Promise<string | null>;
-  setItem(key: string, value: string): Promise<void>;
-  removeItem(key: string): Promise<void>;
-  clear(): Promise<void>;
-}
+import { getPreferences } from "../shared/capacitor";
 
 export interface NotificationService {
   requestPermissions(): Promise<boolean>;
@@ -26,28 +30,24 @@ export interface NotificationService {
  * Capacitor-based implementation of data persistence
  */
 export class CapacitorDataService implements DataPersistenceService {
-  private async getPreferences() {
-    return (await import("@capacitor/preferences")).Preferences;
-  }
-
   async getItem(key: string): Promise<string | null> {
-    const prefs = await this.getPreferences();
+    const prefs = await getPreferences();
     const result = await prefs.get({ key });
     return result.value;
   }
 
   async setItem(key: string, value: string): Promise<void> {
-    const prefs = await this.getPreferences();
+    const prefs = await getPreferences();
     await prefs.set({ key, value });
   }
 
   async removeItem(key: string): Promise<void> {
-    const prefs = await this.getPreferences();
+    const prefs = await getPreferences();
     await prefs.remove({ key });
   }
 
   async clear(): Promise<void> {
-    const prefs = await this.getPreferences();
+    const prefs = await getPreferences();
     await prefs.clear();
   }
 }
