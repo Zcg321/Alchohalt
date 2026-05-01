@@ -10,7 +10,7 @@ export default function AppHeader({ onOpenCrisis }: Props) {
   const { t } = useLanguage();
 
   return (
-    <header className="mx-auto w-full max-w-3xl px-4 pt-6 pb-4 sm:pt-8 sm:pb-6">
+    <header className="safe-top mx-auto w-full max-w-3xl px-4 pt-6 pb-4 sm:pt-8 sm:pb-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-h2 sm:text-h1 tracking-tight text-ink">

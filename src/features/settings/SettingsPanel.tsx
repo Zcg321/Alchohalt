@@ -8,8 +8,6 @@ import ExportImport from '../drinks/ExportImport';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
-import SyncPanel from '../sync/SyncPanel';
-import { MockSyncTransport } from '../../lib/sync/transport';
 
 /* [BUG-PAYWALL-MOUNT] SubscriptionManager was built but never imported
  * outside of `PremiumFeatureGate` (a named export from the same file).
@@ -21,12 +19,32 @@ const SubscriptionManager = React.lazy(
   () => import('../subscription/SubscriptionManager'),
 );
 
-/** [SYNC-3] Production transport will be a real Supabase client wired
- *  from the owner's project URL + anon key. Mounted with a
- *  MockSyncTransport here so the surface renders cleanly until that
- *  config lands. The production swap is one line: replace this
- *  module-level singleton with `new SupabaseSyncTransport(...)`. */
-const syncTransport = new MockSyncTransport();
+/**
+ * [AUDIT-2026-05-01-E] SyncPanel pulls in `libsodium-wrappers-sumo`
+ * (~400 KB raw / 196 KB gz) for envelope encryption and BIP-39
+ * mnemonic derivation. The vast majority of users never open
+ * Settings, and of those who do, most never enable sync — eagerly
+ * loading sodium with the main bundle hurts everyone for the sake of
+ * a small minority. Lazy-load it so sodium ships in its own chunk
+ * that only fetches when the user actually scrolls into the Sync
+ * surface.
+ *
+ * [SYNC-3] Production transport will be a real Supabase client wired
+ * from the owner's project URL + anon key. Mounted with a
+ * MockSyncTransport here so the surface renders cleanly until that
+ * config lands. The transport import is co-located inside the lazy
+ * factory so it doesn't drag the eager bundle either — the production
+ * swap is one line: replace `MockSyncTransport` with
+ * `SupabaseSyncTransport` inside this factory.
+ */
+const SyncPanelLazy = React.lazy(async () => {
+  const [{ default: SyncPanel }, { MockSyncTransport }] = await Promise.all([
+    import('../sync/SyncPanel'),
+    import('../../lib/sync/transport'),
+  ]);
+  const transport = new MockSyncTransport();
+  return { default: () => <SyncPanel transport={transport} /> };
+});
 
 export default function SettingsPanel() {
   const { settings, setTheme, setLanguage, setReminderTimes, setRemindersEnabled } = useDB(s => ({
@@ -175,7 +193,9 @@ export default function SettingsPanel() {
 
       <AISettingsPanel />
 
-      <SyncPanel transport={syncTransport} />
+      <Suspense fallback={<Skeleton className="h-48 w-full rounded-2xl" />}>
+        <SyncPanelLazy />
+      </Suspense>
 
       <About />
       <LegalLinks />

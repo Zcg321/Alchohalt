@@ -80,16 +80,6 @@ class ThemeManager {
 
     // Set meta theme color for mobile browsers
     this.updateMetaThemeColor(effectiveTheme);
-
-    // Store theme preference
-    try {
-      localStorage.setItem('alchohalt-theme', JSON.stringify({
-        mode: theme.mode,
-        timestamp: Date.now()
-      }));
-    } catch (error) {
-      console.warn('Failed to save theme preference:', error);
-    }
   }
 
   private updateMetaThemeColor(theme: string): void {

@@ -49,6 +49,16 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  /* The fixed bottom tab bar pads itself off the iPhone home indicator
+     gesture area. max() guards against pre-iOS 11 / Android where the
+     env value is unavailable (resolves to 0px). */
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top), 0px);
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold text-neutral-900 dark:text-neutral-100;
   }

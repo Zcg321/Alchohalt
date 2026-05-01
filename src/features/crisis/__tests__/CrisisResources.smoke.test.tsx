@@ -18,19 +18,19 @@ describe('CrisisResources — never gated', () => {
   it('renders 988 Suicide & Crisis Lifeline', () => {
     render(<CrisisResources />);
     expect(screen.getByText(/988 Suicide & Crisis Lifeline/i)).toBeTruthy();
-    expect(screen.getByRole('button', { name: /Call 988/i })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /Call 988/i })).toBeTruthy();
   });
 
   it('renders SAMHSA helpline', () => {
     render(<CrisisResources />);
     expect(screen.getByText(/SAMHSA National Helpline/i)).toBeTruthy();
-    expect(screen.getByRole('button', { name: /1-800-662-4357/ })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /1-800-662-4357/ })).toBeTruthy();
   });
 
   it('renders Crisis Text Line', () => {
     render(<CrisisResources />);
     expect(screen.getByText(/Crisis Text Line/i)).toBeTruthy();
-    expect(screen.getByRole('button', { name: /Text HOME to 741741/i })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /Text HOME to 741741/i })).toBeTruthy();
   });
 
   it('renders AA + SMART Recovery + SAMHSA Treatment Locator (ongoing support)', () => {

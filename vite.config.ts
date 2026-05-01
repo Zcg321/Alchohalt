@@ -171,6 +171,15 @@ export default defineConfig(() => {
             if (id.includes('lodash')) return 'lodash';
             if (id.includes('date-fns') || id.includes('dayjs')) return 'date';
             if (id.includes('lucide-react') || id.includes('@heroicons')) return 'icons';
+            // [AUDIT-2026-05-01-E] libsodium is only used by the
+            // lazy-loaded Sync surface (and the test-only
+            // encrypted-backup helper). Returning undefined lets
+            // Rollup put it in whichever async chunk imports it
+            // instead of stuffing 400 KB of WASM bindings into the
+            // eager `vendor` chunk that every visitor downloads.
+            if (id.includes('libsodium')) return undefined;
+            // jspdf is similarly only pulled by the PDF-export path.
+            if (id.includes('jspdf')) return undefined;
             return 'vendor';
           },
         },
