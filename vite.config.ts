@@ -147,6 +147,13 @@ export default defineConfig(() => {
               if (id.includes('lodash')) return 'lodash';
               if (id.includes('date-fns') || id.includes('dayjs')) return 'date';
               if (id.includes('lucide-react') || id.includes('@heroicons')) return 'icons';
+              // libsodium is only used by the (lazy-loaded) Sync surface
+              // and the encrypted-backup helper. Returning undefined
+              // lets Rollup put it in whichever async chunk imports it,
+              // instead of stuffing it into the eager `vendor` chunk.
+              if (id.includes('libsodium')) return undefined;
+              // jspdf is similarly only pulled by the PDF-export path.
+              if (id.includes('jspdf')) return undefined;
               return 'vendor';
             }
           },
