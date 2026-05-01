@@ -425,7 +425,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
           variant="outline"
           onClick={() => trackFeatureUsage('wellness_share_with_doctor')}
         >
-          Share with your doctor
+          Share with a doctor
         </Button>
         <Button
           variant="primary"

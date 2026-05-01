@@ -104,9 +104,9 @@ function BeatThree({ onStart }: BeatThreeProps) {
         Your data, your device.
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-        Nobody else, including us, can see what you log. Cancel anytime.
-        Optional AI features (off by default) are the only thing that
-        can change this — you control them in Settings.
+        Nobody else, including us, can see what you log. Optional AI
+        features (off by default) are the only thing that can change
+        this — you control them in Settings.
       </p>
       <button
         type="button"

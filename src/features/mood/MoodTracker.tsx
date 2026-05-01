@@ -21,14 +21,14 @@ const moodOptions = [
     label: 'Excellent', 
     icon: '🌟', 
     color: 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300',
-    description: 'Feeling amazing, motivated and in control'
+    description: 'Steady, grounded, in good shape'
   },
   { 
     key: 'good' as const, 
     label: 'Good', 
     icon: '😊', 
     color: 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300',
-    description: 'Positive and comfortable'
+    description: 'Generally okay'
   },
   { 
     key: 'neutral' as const, 
@@ -130,7 +130,7 @@ export default function MoodTracker({ onComplete, className }: Props) {
       <div className="card-header">
         <h2 className="text-xl font-semibold">How are you feeling?</h2>
         <p className="text-sm text-ink-soft mt-1">
-          Track your mood to gain insights into patterns
+          A quick check-in. Patterns show up over time as you log.
         </p>
       </div>
       

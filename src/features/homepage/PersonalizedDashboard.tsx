@@ -157,7 +157,7 @@ export default function PersonalizedDashboard({ drinks = [], goals, onQuickActio
           <Badge variant="secondary">{personalizedContent.focusArea}</Badge>
           {isPremium && (
             <Badge variant="primary" className="text-xs">
-              AI Personalized
+              Adapted to you
             </Badge>
           )}
         </div>

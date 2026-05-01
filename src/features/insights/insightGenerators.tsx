@@ -60,40 +60,40 @@ export function generateInsights(drinks: Drink[], _goals: Goals): Insight[] {
   const currentStreak = getCurrentStreak(drinks);
   if (currentStreak >= 7) {
     insights.push({
-      title: `${currentStreak} Day Alcohol-Free Streak!`,
-      description: 'Great job maintaining your alcohol-free streak. Keep it up!',
+      title: `${currentStreak} alcohol-free days`,
+      description: "Past the first week. The hardest stretch is usually behind you now.",
       type: 'achievement',
       icon: <TrophyIcon />,
       priority: 1
     });
   }
-  
+
   // Weekend pattern analysis
   const weekendPattern = analyzeWeekendPattern(recentDrinks);
   if (weekendPattern.hasPattern) {
     insights.push({
-      title: 'Weekend Drinking Pattern Detected',
-      description: `You tend to drink ${weekendPattern.percentage}% more on weekends. Consider planning alcohol-free weekend activities.`,
+      title: 'Weekends run higher',
+      description: `Weekend numbers are ${weekendPattern.percentage}% above weekdays. One non-drinking weekend activity in the rotation usually helps.`,
       type: 'pattern',
       icon: <CalendarIcon />,
       priority: 2
     });
   }
-  
+
   // Craving trend analysis
   const cravingTrend = analyzeCravingTrend(recentDrinks);
   if (cravingTrend.direction === 'improving') {
     insights.push({
-      title: 'Cravings Are Decreasing',
-      description: `Your average craving intensity has decreased by ${cravingTrend.percentage}% over the past month. This suggests improved control.`,
+      title: 'Cravings are easing',
+      description: `Average craving intensity is ${cravingTrend.percentage}% lower than last month. The patterns you've built are doing the work.`,
       type: 'achievement',
       icon: <TrendDownIcon />,
       priority: 1
     });
   } else if (cravingTrend.direction === 'worsening') {
     insights.push({
-      title: 'Cravings Are Increasing',
-      description: `Your cravings have increased by ${cravingTrend.percentage}% recently. Consider stress management techniques.`,
+      title: 'Cravings are up',
+      description: `Cravings are ${cravingTrend.percentage}% higher than before. Worth a look at what's been different — sleep, stress, schedule.`,
       type: 'warning',
       icon: <TrendUpIcon />,
       priority: 3
