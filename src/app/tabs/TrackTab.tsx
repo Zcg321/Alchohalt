@@ -65,7 +65,7 @@ export default function TrackTab({
         {empty ? (
           <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center">
             <p className="text-body text-ink">No drinks logged yet.</p>
-            <p className="mt-1 text-caption text-ink-soft">Today's a fresh start. Add an entry above when you'd like.</p>
+            <p className="mt-1 text-caption text-ink-soft">Today&rsquo;s a fresh start. Add an entry above when you&rsquo;d like.</p>
           </div>
         ) : (
           <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>

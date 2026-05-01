@@ -2,27 +2,25 @@
  * libsodium runtime accessor.
  *
  * `libsodium-wrappers-sumo` is the runtime — sumo includes Argon2id
- * (`crypto_pwhash`) and the AEAD primitives we need; the slim build
- * does not.
- *
- * Types come from `@types/libsodium-wrappers` (the slim typings, but a
- * strict superset of what sumo exposes for our usages — the cast at
- * the bottom is safe).
+ * (`crypto_pwhash`), the AEAD primitives, and SHA-256 (used for the
+ * BIP-39 mnemonic checksum). The slim `libsodium-wrappers` package
+ * does NOT export `crypto_hash_sha256`, so we type against sumo's own
+ * declarations.
  *
  * The WASM blob must initialize before any primitive is callable.
  * `getSodium()` memoizes the ready promise so we only pay the
  * initialization cost once per process.
  */
 import sodiumSumo from 'libsodium-wrappers-sumo';
-import type sodium from 'libsodium-wrappers';
+import type * as sumoTypes from 'libsodium-wrappers-sumo';
 
-let readyPromise: Promise<typeof sodium> | null = null;
+export type Sodium = typeof sumoTypes;
 
-export function getSodium(): Promise<typeof sodium> {
+let readyPromise: Promise<Sodium> | null = null;
+
+export function getSodium(): Promise<Sodium> {
   if (!readyPromise) {
-    readyPromise = sodiumSumo.ready.then(
-      () => sodiumSumo as unknown as typeof sodium,
-    );
+    readyPromise = sodiumSumo.ready.then(() => sodiumSumo as unknown as Sodium);
   }
   return readyPromise;
 }
