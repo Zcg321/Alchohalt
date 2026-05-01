@@ -72,6 +72,75 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
   );
 }
 
+/* [REFACTOR-LONG-FN] Enabled-phase status card extracted from the
+ * SyncPanel render. Pure presentation: displays provider info, device
+ * id, last sync, sync-now / disable buttons, and the recent-activity
+ * list. State + handlers stay in the parent and pass down. */
+interface SyncEnabledStatusProps {
+  enabledAt: number | null;
+  deviceId: string | null;
+  userId: string | null;
+  lastSyncAt: number | null;
+  busy: boolean;
+  activity: ActivityEntry[];
+  onSyncNow: () => void;
+  onDisable: () => void;
+}
+
+function SyncEnabledStatus({
+  enabledAt, deviceId, userId, lastSyncAt, busy, activity, onSyncNow, onDisable,
+}: SyncEnabledStatusProps) {
+  return (
+    <div className="space-y-4" data-testid="sync-enabled-state">
+      <dl className="grid grid-cols-2 gap-y-2 text-caption">
+        <dt className="text-ink-soft">Provider</dt>
+        <dd className="text-ink">Supabase (encrypted; server cannot read)</dd>
+        <dt className="text-ink-soft">Enabled</dt>
+        <dd className="text-ink tabular-nums">
+          {enabledAt ? new Date(enabledAt).toLocaleDateString() : '—'}
+        </dd>
+        <dt className="text-ink-soft">Device id</dt>
+        <dd className="text-ink font-mono text-micro">{deviceId ?? '—'}</dd>
+        <dt className="text-ink-soft">User id</dt>
+        <dd className="text-ink font-mono text-micro">{userId ?? '—'}</dd>
+        <dt className="text-ink-soft">Last sync</dt>
+        <dd className="text-ink">{lastSyncAt ? fmtRelative(lastSyncAt) : 'never'}</dd>
+      </dl>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={onSyncNow}
+          disabled={busy}
+          className="flex-1 inline-flex items-center justify-center rounded-pill bg-sage-700 px-4 py-2.5 text-caption font-medium text-white hover:bg-sage-900 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
+          data-testid="sync-now"
+        >
+          {busy ? 'Syncing…' : 'Sync now'}
+        </button>
+        <button
+          type="button"
+          onClick={onDisable}
+          className="inline-flex items-center justify-center rounded-pill border border-border bg-surface-elevated px-4 py-2.5 text-caption text-ink hover:bg-cream-50 min-h-[44px]"
+          data-testid="sync-disable"
+        >
+          Disable
+        </button>
+      </div>
+      <div>
+        <h4 className="text-caption font-medium text-ink mb-1">Recent activity</h4>
+        {activity.length === 0 ? (
+          <p className="text-caption text-ink-subtle">No activity yet.</p>
+        ) : (
+          <ul role="list" data-testid="sync-activity-log">
+            {activity.slice(0, 8).map((e) => (
+              <ActivityRow key={e.id} entry={e} />
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function SyncPanel({ transport }: Props) {
   const phase = useSyncStore((s) => s.phase);
   const setPhase = useSyncStore((s) => s.setPhase);
@@ -467,55 +536,16 @@ export default function SyncPanel({ transport }: Props) {
         )}
 
         {phase === 'enabled' && (
-          <div className="space-y-4" data-testid="sync-enabled-state">
-            <dl className="grid grid-cols-2 gap-y-2 text-caption">
-              <dt className="text-ink-soft">Provider</dt>
-              <dd className="text-ink">Supabase (encrypted; server cannot read)</dd>
-              <dt className="text-ink-soft">Enabled</dt>
-              <dd className="text-ink tabular-nums">
-                {enabledAt ? new Date(enabledAt).toLocaleDateString() : '—'}
-              </dd>
-              <dt className="text-ink-soft">Device id</dt>
-              <dd className="text-ink font-mono text-micro">{deviceId ?? '—'}</dd>
-              <dt className="text-ink-soft">User id</dt>
-              <dd className="text-ink font-mono text-micro">{userId ?? '—'}</dd>
-              <dt className="text-ink-soft">Last sync</dt>
-              <dd className="text-ink">
-                {lastSyncAt ? fmtRelative(lastSyncAt) : 'never'}
-              </dd>
-            </dl>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleSyncNow}
-                disabled={busy}
-                className="flex-1 inline-flex items-center justify-center rounded-pill bg-sage-700 px-4 py-2.5 text-caption font-medium text-white hover:bg-sage-900 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
-                data-testid="sync-now"
-              >
-                {busy ? 'Syncing…' : 'Sync now'}
-              </button>
-              <button
-                type="button"
-                onClick={handleDisable}
-                className="inline-flex items-center justify-center rounded-pill border border-border bg-surface-elevated px-4 py-2.5 text-caption text-ink hover:bg-cream-50 min-h-[44px]"
-                data-testid="sync-disable"
-              >
-                Disable
-              </button>
-            </div>
-            <div>
-              <h4 className="text-caption font-medium text-ink mb-1">Recent activity</h4>
-              {activity.length === 0 ? (
-                <p className="text-caption text-ink-subtle">No activity yet.</p>
-              ) : (
-                <ul role="list" data-testid="sync-activity-log">
-                  {activity.slice(0, 8).map((e) => (
-                    <ActivityRow key={e.id} entry={e} />
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
+          <SyncEnabledStatus
+            enabledAt={enabledAt}
+            deviceId={deviceId}
+            userId={userId}
+            lastSyncAt={lastSyncAt}
+            busy={busy}
+            activity={activity}
+            onSyncNow={handleSyncNow}
+            onDisable={handleDisable}
+          />
         )}
       </div>
     </section>

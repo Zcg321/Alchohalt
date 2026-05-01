@@ -23,6 +23,56 @@ import CrisisResources from '../features/crisis/CrisisResources';
 import LegalDocPage, { isLegalSlug, type LegalSlug } from '../features/legal/LegalDocPage';
 import { usePWA } from '../hooks/usePWA';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+
+/* [REFACTOR-LONG-FN] Crisis dialog extracted as a sibling component to
+ * shrink AlcoholCoachApp's render function. The dialog is presentation
+ * only — focus-trap + Escape + opener-restore live in the parent so
+ * showCrisis stays the single source of truth. The parent passes the
+ * dialog ref + close-button ref + onClose. Keeps the Crisis surface
+ * inspectable in the same file rather than scattered across imports. */
+function CrisisDialog({
+  dialogRef,
+  closeRef,
+  onClose,
+}: {
+  dialogRef: React.RefObject<HTMLDivElement>;
+  closeRef: React.RefObject<HTMLButtonElement>;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="crisis-dialog-title"
+      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-charcoal-900/70 backdrop-blur-sm p-4 animate-fade-in"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="my-8 w-full max-w-2xl rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-fade-in">
+        <div className="flex items-center justify-between border-b border-border-soft px-5 py-4">
+          <h2 id="crisis-dialog-title" className="text-h3 text-ink">
+            Need help now?
+          </h2>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
+          >
+            <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <CrisisResources />
+      </div>
+    </div>
+  );
+}
 import { useLanguage } from '../i18n';
 import { attachForegroundSync } from '../lib/sync/scheduler';
 import { attachDbBridge } from '../lib/sync/dbBridge';
@@ -243,43 +293,11 @@ export function AlcoholCoachApp() {
       <AppHeader onOpenCrisis={openCrisis} />
 
       {showCrisis ? (
-        <div
-          ref={crisisDialogRef}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="crisis-dialog-title"
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-charcoal-900/70 backdrop-blur-sm p-4 animate-fade-in"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeCrisis();
-          }}
-        >
-          {/* [POLISH-CRISIS-ANIMATION] Crisis dialog uses animate-fade-in
-              instead of animate-slide-up. A surface that rises into view
-              reads "alarming/urgent" — the wrong register for a crisis
-              moment, which calls for low-emotion calm. Fade-in matches
-              the overlay and feels gentler. prefers-reduced-motion is
-              honored by .animate-fade-in's media query in theme.css. */}
-          <div className="my-8 w-full max-w-2xl rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-fade-in">
-            <div className="flex items-center justify-between border-b border-border-soft px-5 py-4">
-              <h2 id="crisis-dialog-title" className="text-h3 text-ink">
-                Need help now?
-              </h2>
-              <button
-                ref={crisisCloseRef}
-                type="button"
-                onClick={closeCrisis}
-                aria-label="Close"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
-              >
-                <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
-            <CrisisResources />
-          </div>
-        </div>
+        <CrisisDialog
+          dialogRef={crisisDialogRef}
+          closeRef={crisisCloseRef}
+          onClose={closeCrisis}
+        />
       ) : null}
 
       {legalSlug ? (

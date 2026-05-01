@@ -7,6 +7,34 @@ import { useAnalytics } from '../analytics/analytics';
 import { useDB } from '../../store/db';
 import { FEATURE_FLAGS } from '../../config/features';
 
+/* [REFACTOR-LONG-FN] One-tile renderer extracted from the metrics
+ * grid. Pure presentation; the parent computes the trend icon and
+ * passes it down so this component never needs to know the icon set. */
+function MetricCard({
+  metric, trendIcon,
+}: { metric: WellnessMetric; trendIcon: string }) {
+  return (
+    <div className="bg-surface-elevated rounded-lg border border-border-soft p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{metric.icon}</span>
+          <h3 className="font-semibold text-sm">{metric.name}</h3>
+        </div>
+        <span className="text-lg">{trendIcon}</span>
+      </div>
+      <div className="mb-2">
+        <div className="flex items-end gap-1">
+          <span className="text-2xl font-bold text-ink">{metric.value}</span>
+          {metric.unit && (
+            <span className="text-sm text-ink-subtle mb-1">{metric.unit}</span>
+          )}
+        </div>
+      </div>
+      <p className="text-xs text-ink-soft">{metric.description}</p>
+    </div>
+  );
+}
+
 /* [POLISH-WELLNESS-LABELS] WellnessMetric had a `status` field with
  * categorical buckets (excellent/good/fair/poor). Showing a "POOR"
  * badge over someone's alcohol-free days is exactly the kind of
@@ -311,35 +339,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       {/* Wellness Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {wellnessMetrics.map(metric => (
-          <div 
-            key={metric.id} 
-            className="bg-surface-elevated rounded-lg border border-border-soft p-4"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{metric.icon}</span>
-                <h3 className="font-semibold text-sm">{metric.name}</h3>
-              </div>
-              <span className="text-lg">{getTrendIcon(metric.trend)}</span>
-            </div>
-            
-            <div className="mb-2">
-              <div className="flex items-end gap-1">
-                <span className="text-2xl font-bold text-ink">
-                  {metric.value}
-                </span>
-                {metric.unit && (
-                  <span className="text-sm text-ink-subtle mb-1">
-                    {metric.unit}
-                  </span>
-                )}
-              </div>
-            </div>
-            
-            <p className="text-xs text-ink-soft">
-              {metric.description}
-            </p>
-          </div>
+          <MetricCard key={metric.id} metric={metric} trendIcon={getTrendIcon(metric.trend)} />
         ))}
       </div>
 
