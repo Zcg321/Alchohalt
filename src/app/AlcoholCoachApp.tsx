@@ -241,7 +241,13 @@ export function AlcoholCoachApp() {
             if (e.target === e.currentTarget) closeCrisis();
           }}
         >
-          <div className="my-8 w-full max-w-2xl rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-slide-up">
+          {/* [POLISH-CRISIS-ANIMATION] Crisis dialog uses animate-fade-in
+              instead of animate-slide-up. A surface that rises into view
+              reads "alarming/urgent" — the wrong register for a crisis
+              moment, which calls for low-emotion calm. Fade-in matches
+              the overlay and feels gentler. prefers-reduced-motion is
+              honored by .animate-fade-in's media query in theme.css. */}
+          <div className="my-8 w-full max-w-2xl rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-fade-in">
             <div className="flex items-center justify-between border-b border-border-soft px-5 py-4">
               <h2 id="crisis-dialog-title" className="text-h3 text-ink">
                 Need help now?
