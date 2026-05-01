@@ -1,0 +1,11 @@
+{
+  "surface": "insights",
+  "form": "mobile",
+  "performance": 70,
+  "accessibility": 76,
+  "best-practices": 100,
+  "seo": 91,
+  "pwa": null,
+  "totalBlockingTime": 89,
+  "totalByteWeight": 3268228
+}

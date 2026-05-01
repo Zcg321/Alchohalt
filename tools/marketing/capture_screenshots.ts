@@ -27,6 +27,8 @@ import { dirname, join } from 'node:path';
 
 import type { Browser, Page } from 'playwright';
 
+import { DB_KEY, makeSeedPayload } from './capture_lib';
+
 const REPO_ROOT = join(__dirname, '..', '..');
 const OUT_ROOT = join(REPO_ROOT, 'public', 'marketing', 'screenshots');
 const DEV_URL = process.env.DEV_URL ?? 'http://localhost:4173';
@@ -58,55 +60,13 @@ const VIEWPORTS: Record<Platform, { width: number; height: number; deviceScaleFa
 
 const THEMES: Theme[] = ['light', 'dark'];
 
-const DB_KEY = 'alchohalt:alchohalt.db';
-
-/**
- * 7-day calm streak seed: a single early entry from 14 days ago,
- * then a clean week. Reads as "real recovery progress," not aspirational.
- */
-function makeSeedPayload(now: number): string {
-  const day = 24 * 60 * 60 * 1000;
-  const entry = {
-    id: 'demo-entry-1',
-    ts: now - 14 * day,
-    kind: 'beer' as const,
-    stdDrinks: 1.5,
-    cost: 7.5,
-    intention: 'social' as const,
-    craving: 3,
-    halt: { H: false, A: false, L: false, T: false },
-    notes: 'dinner with friends',
-    mood: 'calm' as const,
-  };
-  const db = {
-    version: 5,
-    entries: [entry],
-    trash: [],
-    settings: {
-      version: 1,
-      language: 'en',
-      theme: 'system',
-      dailyGoalDrinks: 2,
-      weeklyGoalDrinks: 7,
-      monthlyBudget: 80,
-      reminders: { enabled: false, times: [] },
-      showBAC: false,
-      hasCompletedOnboarding: true,
-    },
-    advancedGoals: [],
-    presets: [],
-    meta: {},
-  };
-  return JSON.stringify({ state: { db }, version: 5 });
-}
-
 async function captureOne(
   browser: Browser,
   platform: Platform,
   theme: Theme,
   surface: Surface,
 ): Promise<void> {
-  const seedPayload = makeSeedPayload(Date.now());
+  const seedPayload = makeSeedPayload();
   const ctx = await browser.newContext({
     viewport: VIEWPORTS[platform],
     deviceScaleFactor: VIEWPORTS[platform].deviceScaleFactor,
