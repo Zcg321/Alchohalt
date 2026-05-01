@@ -42,8 +42,8 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     if (goals.dailyCap > 0 && todayDrinks.length > 0) {
       if (todayStd >= goals.dailyCap * 0.8 && todayStd < goals.dailyCap) {
         recommendations.push({
-          title: 'Approaching daily limit',
-          description: `You've had ${todayStd.toFixed(1)} of your ${goals.dailyCap} daily limit. Consider an alcohol-free option for the rest of today.`,
+          title: 'Close to your daily limit',
+          description: `You've had ${todayStd.toFixed(1)} of ${goals.dailyCap} today. The rest of the day works fine without another.`,
           type: 'prevention',
           urgency: 'medium'
         });
@@ -61,10 +61,10 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const today = new Date().getDay();
     if ((today === 5 || today === 6) && hasWeekendPattern(drinks)) {
       recommendations.push({
-        title: 'Weekend Strategy Needed',
-        description: 'You tend to drink more on weekends. Consider planning alcohol-free activities or setting a specific weekend limit.',
+        title: 'Weekends tend to add up',
+        description: "Your weekend numbers run higher than weekdays. Worth picking one weekend activity that doesn't involve a drink — or setting a weekend limit.",
         action: {
-          label: 'Set Weekend Goal',
+          label: 'Set a weekend goal',
           onClick: () => {/* Open goal setting */}
         },
         type: 'planning',
@@ -76,8 +76,8 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const recentHighCravings = monthDrinks.filter(d => d.craving >= 7).length;
     if (recentHighCravings > 5) {
       recommendations.push({
-        title: 'Craving Management Tips',
-        description: 'You\'ve experienced high cravings recently. Try the 10-minute rule: wait 10 minutes before drinking and engage in a different activity.',
+        title: 'High cravings recently',
+        description: 'When the craving hits hard, the ten-minute rule usually helps: do anything else for ten minutes — a walk, a glass of water, a call — before deciding.',
         type: 'health',
         urgency: 'medium'
       });
@@ -93,8 +93,8 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const currentStreak = getCurrentStreak(drinks);
     if (currentStreak >= 3 && currentStreak < 7) {
       recommendations.push({
-        title: 'Keep Your Streak Going!',
-        description: `You're ${currentStreak} days alcohol-free. You're doing great! Each day gets easier.`,
+        title: `${currentStreak} days in`,
+        description: `${currentStreak} alcohol-free days. The hardest stretch is usually the first week — you're past it.`,
         type: 'motivation',
         urgency: 'low'
       });
@@ -103,8 +103,8 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     // Alternative activity suggestion
     if (getAlternativeUsage(monthDrinks) < 30 && monthDrinks.length > 0) {
       recommendations.push({
-        title: 'Try Alternative Activities',
-        description: 'Consider planning enjoyable alternatives when you feel like drinking: go for a walk, call a friend, or try a new hobby.',
+        title: "An alternative when the craving's there",
+        description: 'When the craving shows up: a walk, a call to someone, anything that buys you ten minutes.',
         type: 'planning',
         urgency: 'low'
       });
@@ -114,8 +114,8 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     const monthlySpend = calculateMonthlySpend(monthDrinks, goals.pricePerStd);
     if (monthlySpend > goals.baselineMonthlySpend * 1.2) {
       recommendations.push({
-        title: 'Budget Alert',
-        description: `You've spent $${monthlySpend.toFixed(2)} on alcohol this month, which is over your $${goals.baselineMonthlySpend} budget.`,
+        title: 'Over your monthly budget',
+        description: `You've spent $${monthlySpend.toFixed(2)} this month — past your $${goals.baselineMonthlySpend} budget.`,
         type: 'health',
         urgency: 'medium'
       });
@@ -144,10 +144,10 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
       <div className="card-header">
         <h2 className="text-xl font-semibold flex items-center">
           <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-          Smart Recommendations
+          What stands out
         </h2>
         <p className="text-sm text-ink-soft mt-1">
-          Personalized suggestions based on your patterns
+          Quiet observations from your recent entries.
         </p>
       </div>
 
@@ -158,7 +158,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
               <CheckCircleIcon />
             </div>
             <p className="text-ink-soft">
-              Great job! No urgent recommendations right now. Keep up the good work!
+              Nothing flagging right now. The patterns you've built are doing the work.
             </p>
           </div>
         ) : (
@@ -255,20 +255,20 @@ function getHaltRecommendation(drinks: Drink[]): Recommendation | null {
 
   const haltStrategies = {
     hungry: {
-      title: 'Manage Hunger-Triggered Drinking',
-      description: 'Keep healthy snacks ready and eat regular meals. Low blood sugar can trigger alcohol cravings.'
+      title: 'Hungry shows up a lot',
+      description: 'Eating regular meals takes the edge off — low blood sugar can mimic a craving.'
     },
     angry: {
-      title: 'Channel Your Anger Differently',
-      description: 'Try physical exercise, deep breathing, or journaling when you feel angry instead of reaching for alcohol.'
+      title: 'Angry shows up a lot',
+      description: "When the anger's loud, anything physical helps — a walk, push-ups, even just stepping outside."
     },
     lonely: {
-      title: 'Combat Loneliness Proactively',
-      description: 'Schedule regular social activities or video calls with friends. Loneliness is a common drinking trigger.'
+      title: 'Lonely shows up a lot',
+      description: 'Reaching out to one person — even just a text — usually helps more than waiting for them to reach out first.'
     },
     tired: {
-      title: 'Address Fatigue First',
-      description: 'Prioritize sleep hygiene and rest. Being tired makes it harder to resist cravings.'
+      title: 'Tired shows up a lot',
+      description: 'Tired makes everything harder to resist. Sleep is upstream of most of this.'
     }
   };
 

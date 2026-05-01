@@ -13,7 +13,7 @@ export default function LegalLinks(){
           <li><a className="underline underline-offset-2 hover:text-primary-700 dark:hover:text-primary-300" href="/docs/legal/SUBSCRIPTION_TERMS.md" target="_blank" rel="noreferrer">Subscription Terms</a></li>
         </ul>
         <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-500">
-          Alchohalt keeps wellness data on-device by default. Opt-in AI features can change this — see Settings → AI. Not medical advice.
+          Your logs stay on your device by default. Opt-in AI features can change this — see Settings → AI. Not medical advice.
         </p>
       </div>
     </section>
