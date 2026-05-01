@@ -3,7 +3,7 @@
 This directory holds the public-facing legal scaffolds the app needs
 before submission. Every file here is a **template scaffold** — they
 encode the owner-locked product decisions (free-vs-premium split,
-$3.99/$24.99/$69 pricing, local-only privacy posture, never-gate
+$4.99/$24.99/$69 pricing, local-only privacy posture, never-gate
 crisis resources) but each one carries a counsel-review checklist
 that MUST be cleared before public launch.
 

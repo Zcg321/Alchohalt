@@ -23,7 +23,7 @@ In code, already shipped:
 
   | Plan                   | Product ID                             | Price ref |
   |------------------------|----------------------------------------|-----------|
-  | Monthly subscription   | `com.alchohalt.app.premium_monthly`    | $3.99 / mo |
+  | Monthly subscription   | `com.alchohalt.app.premium_monthly`    | $4.99 / mo |
   | Yearly subscription    | `com.alchohalt.app.premium_yearly`     | $24.99 / yr |
   | Lifetime (one-time)    | `com.alchohalt.app.premium_lifetime`   | $69.00 once |
 
@@ -39,7 +39,7 @@ all wired to the free tier and do **not** check entitlement state.
 
 1. Sign up at https://app.revenuecat.com/signup. Free tier covers up to
    $10K monthly tracked revenue (MTR); paid tiers start at $99/mo.
-   Alchohalt at $3.99/mo would need ~2,500 active subscribers before
+   Alchohalt at $4.99/mo would need ~2,000 active subscribers before
    the free tier becomes a constraint.
 2. Create a new project. Name it `Alchohalt`. Bundle ID: `com.alchohalt.app`.
 3. From **Project settings → API keys**, copy:
@@ -62,7 +62,7 @@ In App Store Connect → My Apps → Alchohalt → **In-App Purchases**:
 
 | RevenueCat will look for | Type                              | Reference price |
 |--------------------------|-----------------------------------|-----------------|
-| `com.alchohalt.app.premium_monthly`  | Auto-Renewable Subscription, 1 month | Tier 4 ($3.99) |
+| `com.alchohalt.app.premium_monthly`  | Auto-Renewable Subscription, 1 month | Tier 5 ($4.99) |
 | `com.alchohalt.app.premium_yearly`   | Auto-Renewable Subscription, 1 year  | Tier 25 ($24.99) |
 | `com.alchohalt.app.premium_lifetime` | Non-Consumable                       | Tier 69 ($69.00) |
 
@@ -86,7 +86,7 @@ In Play Console → Alchohalt → **Monetize → Products**:
 
 - **Subscriptions** → Create subscription:
   - Product ID: `com.alchohalt.app.premium_monthly`
-  - Base plan ID: `monthly` — Auto-renewing, billing period 1 month, $3.99 USD
+  - Base plan ID: `monthly` — Auto-renewing, billing period 1 month, $4.99 USD
   - Product ID: `com.alchohalt.app.premium_yearly`
   - Base plan ID: `yearly` — Auto-renewing, billing period 1 year, $24.99 USD
 - **In-app products** → Create:

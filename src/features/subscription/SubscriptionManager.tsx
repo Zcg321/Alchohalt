@@ -11,7 +11,7 @@ import { getIAPProvider, type ProductId } from '../iap/IAPProvider';
  *
  * Owner-locked spec (2026-04-26):
  *   - Free covers ~75% of value
- *   - Monthly $3.99 — undercuts I Am Sober ($9.99) + Sunnyside ($9.99) ~60%
+ *   - Monthly $4.99 — still on the value end vs I Am Sober ($9.99) + Sunnyside ($9.99); reads "real product" not "side project"
  *   - Annual $24.99 — 48% discount vs monthly; below Sunnyside annual ($74.99)
  *   - Lifetime $69 — undercuts Reframe lifetime ($199) by 65%; the wedge
  *
