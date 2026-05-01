@@ -45,8 +45,10 @@
   },
   "dependencies": {
     "@capacitor/core": "6.0.0",
+    "@capacitor/haptics": "^6.0.0",
     "@capacitor/local-notifications": "6.0.0",
     "@capacitor/preferences": "6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
     "@revenuecat/purchases-capacitor": "^9.0.0",
     "jspdf": "^4.2.1",
     "libsodium-wrappers-sumo": "^0.8.4",

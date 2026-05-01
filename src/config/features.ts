@@ -38,6 +38,14 @@ export const FEATURE_FLAGS = {
   ENABLE_AI_RECOMMENDATIONS: import.meta.env.VITE_ENABLE_AI_RECOMMENDATIONS === 'true' || false,
   ENABLE_JOURNALING: import.meta.env.VITE_ENABLE_JOURNALING === 'true' || false,
   ENABLE_THERAPY_RESOURCES: import.meta.env.VITE_ENABLE_THERAPY_RESOURCES === 'true' || false,
+
+  // Native chrome polish — wiring landed in round-2 polish, default
+  // off until verified on a real iOS + Android device. Web side is a
+  // no-op shim, so flipping these on web is harmless. To enable
+  // native, also: npm install @capacitor/status-bar @capacitor/haptics
+  // and npx cap sync.
+  ENABLE_NATIVE_STATUS_BAR: import.meta.env.VITE_ENABLE_NATIVE_STATUS_BAR === 'true' || false,
+  ENABLE_NATIVE_HAPTICS: import.meta.env.VITE_ENABLE_NATIVE_HAPTICS === 'true' || false,
 } as const;
 
 /**
