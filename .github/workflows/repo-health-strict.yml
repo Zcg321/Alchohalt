@@ -42,8 +42,10 @@ jobs:
         run: npm run size:prep
       - name: Size debug
         run: npm run size:debug
-      - name: Size report
+      - name: Size report (informational)
         run: npm run size:report
+      - name: Size check (round-2 budgets — fails on regression)
+        run: npm run size:check
       - name: APK size (best-effort)
         run: npm run apk:size || true
       - name: Upload coverage
