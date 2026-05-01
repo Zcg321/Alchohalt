@@ -120,6 +120,25 @@ export default defineConfig(() => {
           ? { 'virtual:pwa-register': '/src/features/pwa/virtual-pwa-register-stub.ts' }
           : {}),
       },
+      // [BUG-DUPLICATE-REACT-ROOT] Force a single React + ReactDOM
+      // instance across the whole graph. Without this, any transitive
+      // dep that bundles its own copy (or any moment the Vite dev
+      // optimizeDeps pre-bundle is mid-rebuild) ends up giving two
+      // tiles different React instances → "Cannot read properties of
+      // null (reading 'useState')". Hit the AIInsightsTile path in
+      // Sprint 1 (4f7f78c [ALCH-AI-PRIVACY-FIX]) and re-surfaced on
+      // the Track tab during the 2026-04-27 audit. dedupe is the
+      // canonical durable fix; the ErrorBoundary `isolate` wrapper
+      // around AIInsightsTile is now defensive resilience, not a
+      // workaround for this bug.
+      dedupe: ['react', 'react-dom', 'react/jsx-runtime'],
+    },
+    optimizeDeps: {
+      // Pre-bundle React explicitly so dev hot-reloads don't catch a
+      // half-resolved module mid-flight (the second symptom from the
+      // Sprint 1 incident — node_modules/.vite/deps/react.js
+      // momentarily returning null).
+      include: ['react', 'react-dom', 'react-dom/client'],
     },
     esbuild: { drop: ['console', 'debugger'] },
     build: {
@@ -140,15 +159,22 @@ export default defineConfig(() => {
         treeshake: true,
         output: {
           manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('react')) return 'react';
-              if (id.includes('capacitor')) return 'capacitor';
-              if (id.includes('recharts')) return 'charts';
-              if (id.includes('lodash')) return 'lodash';
-              if (id.includes('date-fns') || id.includes('dayjs')) return 'date';
-              if (id.includes('lucide-react') || id.includes('@heroicons')) return 'icons';
-              return 'vendor';
+            if (!id.includes('node_modules')) return undefined;
+            // [BUG-DUPLICATE-REACT-ROOT] Match react and react-dom with
+            // exact path segments — substring `react` also catches
+            // react-smooth, react-transition-group (recharts), and
+            // anything in src/ with "react" in the path. Bundling
+            // those with react proper risks pulling fragments into
+            // the wrong chunk on tree-shake.
+            if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) {
+              return 'react';
             }
+            if (id.includes('@capacitor/')) return 'capacitor';
+            if (id.includes('recharts')) return 'charts';
+            if (id.includes('lodash')) return 'lodash';
+            if (id.includes('date-fns') || id.includes('dayjs')) return 'date';
+            if (id.includes('lucide-react') || id.includes('@heroicons')) return 'icons';
+            return 'vendor';
           },
         },
       },
