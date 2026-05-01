@@ -166,3 +166,34 @@ async function cancelAllNotifications() {
     await cancelNative(8);
   }
 }
+
+/* [BUG-MADGE-CYCLE] Reminder resync used to live inside db.ts setters
+ * (a direct call to resyncNotifications() after every reminder mutation).
+ * That created a db ↔ notify import cycle: notify needed useDB at
+ * runtime, db needed resyncNotifications at compile-time. The two
+ * resolved at runtime through function-body refs but the graph was
+ * fragile — a tree-shake change or import reorder could flip the load
+ * order and break startup with no obvious cause.
+ *
+ * Now: db.ts no longer imports notify. main.tsx calls
+ * installReminderSync() once at startup; it installs a Zustand
+ * subscription that watches db.settings.reminders and calls
+ * resyncNotifications when (and only when) the slice actually changes.
+ * Effect: same behavior, dependency arrow goes only one way. */
+let _reminderSyncInstalled = false;
+
+export function installReminderSync(): void {
+  if (_reminderSyncInstalled) return;
+  _reminderSyncInstalled = true;
+  useDB.subscribe((state, prevState) => {
+    const prev = prevState.db.settings.reminders;
+    const next = state.db.settings.reminders;
+    if (
+      prev.enabled !== next.enabled ||
+      prev.times.length !== next.times.length ||
+      prev.times.some((t, i) => t !== next.times[i])
+    ) {
+      void resyncNotifications();
+    }
+  });
+}

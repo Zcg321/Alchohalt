@@ -6,7 +6,12 @@ import { getPreferences } from "@/shared/capacitor";
 import { nanoid } from 'nanoid';
 import { computeStats, startOfDay, isSameDay } from '../lib/stats';
 import { migrateDB } from '../lib/migrate';
-import { resyncNotifications } from '../lib/notify';
+/* [BUG-MADGE-CYCLE] Reminder resync is now driven by a Zustand
+ * subscription installed from main.tsx (see lib/notify.ts:
+ * installReminderSync). The previous direct import of
+ * resyncNotifications from this file created a runtime cycle
+ * (db ↔ notify) that worked because both calls deferred to
+ * function-body refs but flipped on small refactors. */
 import type { AdvancedGoal } from '../features/goals/types';
 import type { DrinkPreset } from '../types/common';
 
@@ -225,17 +230,16 @@ function setLanguageFn(set: any, get: any, language: Language) {
 function setSettingsFn(set: any, get: any, patch: Partial<Settings>) {
   const db = { ...get().db, settings: { ...get().db.settings, ...patch } };
   set({ db }); get()._recompute();
-  if ('reminders' in patch) resyncNotifications();
 }
 
 function setReminderTimesFn(set: any, get: any, times: string[]) {
   const db = { ...get().db, settings: { ...get().db.settings, reminders: { ...get().db.settings.reminders, times } } };
-  set({ db }); get()._recompute(); resyncNotifications();
+  set({ db }); get()._recompute();
 }
 
 function setRemindersEnabledFn(set: any, get: any, enabled: boolean) {
   const db = { ...get().db, settings: { ...get().db.settings, reminders: { ...get().db.settings.reminders, enabled } } };
-  set({ db }); get()._recompute(); resyncNotifications();
+  set({ db }); get()._recompute();
 }
 
 function dismissReminderUntilFn(set: any, get: any, ts: number) {
