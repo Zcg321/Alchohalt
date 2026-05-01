@@ -22,6 +22,8 @@ import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
 import { usePWA } from '../hooks/usePWA';
 import { useLanguage } from '../i18n';
+import { attachForegroundSync } from '../lib/sync/scheduler';
+import { attachDbBridge } from '../lib/sync/dbBridge';
 
 export function AlcoholCoachApp() {
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
@@ -52,6 +54,18 @@ export function AlcoholCoachApp() {
 
   useEffect(() => {
     migrateLegacyData();
+  }, []);
+
+  // [SYNC-3b] Attach the cloud-sync triggers exactly once. The
+  // bridges no-op when sync is off, so they're cheap to mount
+  // unconditionally.
+  useEffect(() => {
+    const detachForeground = attachForegroundSync();
+    const detachDb = attachDbBridge();
+    return () => {
+      detachForeground();
+      detachDb();
+    };
   }, []);
 
   // [ROUTE-1] /crisis (and #crisis) deep-link.

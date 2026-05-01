@@ -35,6 +35,7 @@ import {
   isPassphraseStrongEnough,
   type ActivityEntry,
 } from '../../lib/sync/syncStore';
+import { scheduleSync } from '../../lib/sync/scheduler';
 import {
   deriveMasterKey,
   deriveAuthHash,
@@ -198,9 +199,12 @@ export default function SyncPanel({ transport }: Props) {
     if (phase !== 'enabled' || !userId) return;
     setBusy(true);
     try {
-      // The session is reconstructed at unlock-time in production;
-      // here we record the user-initiated sync as activity.
-      recordSync('success', 'manual');
+      // [SYNC-3b] Dispatch through the scheduler so the manual run
+      // is serialized against any in-flight foreground / mutation
+      // run. Manual reason has 0s debounce; the scheduler's runner
+      // is configured at app startup with the active SyncTransport
+      // session.
+      scheduleSync('manual');
     } finally {
       setBusy(false);
     }
