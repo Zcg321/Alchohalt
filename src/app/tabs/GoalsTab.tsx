@@ -33,7 +33,7 @@ export default function GoalsTab({ goals, onGoalsChange }: Props) {
       {!hasGoals ? (
         <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center">
           <p className="text-body text-ink">No goals yet.</p>
-          <p className="mt-1 text-caption text-ink-soft">Start with a daily limit you'd feel good about.</p>
+          <p className="mt-1 text-caption text-ink-soft">Start with a daily limit you&rsquo;d feel good about.</p>
         </div>
       ) : null}
 
