@@ -20,6 +20,7 @@ import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
+import LegalDocPage, { isLegalSlug, type LegalSlug } from '../features/legal/LegalDocPage';
 import { usePWA } from '../hooks/usePWA';
 import { useLanguage } from '../i18n';
 import { attachForegroundSync } from '../lib/sync/scheduler';
@@ -35,6 +36,8 @@ export function AlcoholCoachApp() {
   // [IA-2] active tab — controlled here so other surfaces (the Today
   // panel "See progress" CTA) can request a jump to Insights.
   const [activeTab, setActiveTab] = useState<TabId | undefined>(undefined);
+  // [SHIP-3.1] /legal/<slug> deep-link state.
+  const [legalSlug, setLegalSlug] = useState<LegalSlug | null>(null);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -69,12 +72,28 @@ export function AlcoholCoachApp() {
   }, []);
 
   // [ROUTE-1] /crisis (and #crisis) deep-link.
+  // [SHIP-3.1] /legal/<slug> deep-link. The Vercel deployment rewrites
+  // any unmatched path back to index.html, so this client-side check
+  // is the canonical resolver for both deep-link visits and
+  // back/forward nav.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const isCrisis =
-      window.location.pathname === '/crisis' ||
-      window.location.hash === '#crisis';
-    if (isCrisis) setShowCrisis(true);
+    function resolveRoute() {
+      const path = window.location.pathname;
+      if (path === '/crisis' || window.location.hash === '#crisis') {
+        setShowCrisis(true);
+        return;
+      }
+      const legalMatch = path.match(/^\/legal\/([^/]+)\/?$/);
+      if (legalMatch && isLegalSlug(legalMatch[1])) {
+        setLegalSlug(legalMatch[1]);
+      } else {
+        setLegalSlug(null);
+      }
+    }
+    resolveRoute();
+    window.addEventListener('popstate', resolveRoute);
+    return () => window.removeEventListener('popstate', resolveRoute);
   }, []);
 
   function addDrink(drink: Drink) {
@@ -222,7 +241,11 @@ export function AlcoholCoachApp() {
         </div>
       ) : null}
 
-      <TabShell panels={panels} activeTab={activeTab} onChange={setActiveTab} />
+      {legalSlug ? (
+        <LegalDocPage slug={legalSlug} />
+      ) : (
+        <TabShell panels={panels} activeTab={activeTab} onChange={setActiveTab} />
+      )}
 
       {lastDeleted && (
         <div className="fixed bottom-24 lg:bottom-4 left-1/2 transform -translate-x-1/2 bg-charcoal-900 text-white px-6 py-3 rounded-pill shadow-strong flex items-center gap-3 z-50 animate-slide-up">
