@@ -7,12 +7,13 @@
 
 ## TL;DR
 
-Alchohalt is a self-tracking wellness tool. **It is not medical
-advice, not a substitute for professional treatment, and not an
-emergency service.** If you are in crisis, call 988 (US Suicide &
-Crisis Lifeline) or your local emergency number — the in-app Crisis
-Resources page (which is always free and never gated) has the full
-list. By using the app you agree to these terms.
+Alchohalt is a self-tracking app for your drinking, mood, and the
+patterns between them. **It is not medical advice, not a substitute
+for professional treatment, and not an emergency service.** If you
+are in crisis, call 988 (US Suicide & Crisis Lifeline) or your local
+emergency number — the in-app Crisis Resources page (which is always
+free and never gated) has the full list. By using the app you agree
+to these terms.
 
 ---
 
