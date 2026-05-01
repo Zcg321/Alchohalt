@@ -34,41 +34,33 @@ export interface Resource {
   available: string;
 }
 
-/**
- * Open a tel: link safely. Strips any non-digit other than the leading
- * "+" so the dialer doesn't get a bad URL.
- */
-function callPhone(phone: string): void {
+const PRIMARY_LINK_CLASSES =
+  'shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white no-underline shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]';
+
+const SECONDARY_LINK_CLASSES =
+  'shrink-0 inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink no-underline hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 dark:hover:bg-charcoal-700 min-h-[44px]';
+
+/** Sanitize a phone number for a tel: anchor. Keeps a leading + and digits. */
+function telHref(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, '');
-  if (!digits) return;
-  // Use anchor click so the platform decides which app handles tel:
-  const a = document.createElement('a');
-  a.href = `tel:${digits}`;
-  a.click();
+  return digits ? `tel:${digits}` : '';
 }
 
-/** Open an SMS link with a pre-filled keyword. */
-function sendText(keyword: string, number: string): void {
-  const safeNumber = number.replace(/[^\d]/g, '');
-  if (!safeNumber) return;
-  const a = document.createElement('a');
-  a.href = `sms:${safeNumber}?&body=${encodeURIComponent(keyword)}`;
-  a.click();
+/** Sanitize a number for an sms: anchor and pre-fill the keyword body. */
+function smsHref(keyword: string, number: string): string {
+  const digits = number.replace(/[^\d]/g, '');
+  return digits ? `sms:${digits}?&body=${encodeURIComponent(keyword)}` : '';
 }
 
-/** Open an external URL with a hardened anchor. */
-function openUrl(url: string): void {
+/** Reject non-http(s) URLs so we never emit `javascript:` etc. */
+function safeHttpUrl(url: string): string {
   try {
     const u = new URL(url);
-    if (u.protocol !== 'https:' && u.protocol !== 'http:') return;
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return '';
+    return url;
   } catch {
-    return;
+    return '';
   }
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  a.click();
 }
 
 function ImmediateCard({ r }: { r: Resource }) {
@@ -84,22 +76,17 @@ function ImmediateCard({ r }: { r: Resource }) {
             <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
           </div>
           {r.phone ? (
-            <button
-              type="button"
-              onClick={() => callPhone(r.phone!)}
-              className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
-            >
+            <a href={telHref(r.phone)} className={PRIMARY_LINK_CLASSES}>
               Call {r.phone}
-            </button>
+            </a>
           ) : null}
           {r.smsHint ? (
-            <button
-              type="button"
-              onClick={() => sendText(r.smsHint!.keyword, r.smsHint!.number)}
-              className="shrink-0 inline-flex items-center justify-center rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 min-h-[44px]"
+            <a
+              href={smsHref(r.smsHint.keyword, r.smsHint.number)}
+              className={PRIMARY_LINK_CLASSES}
             >
               Text {r.smsHint.keyword} to {r.smsHint.number}
-            </button>
+            </a>
           ) : null}
         </div>
       </div>
@@ -108,6 +95,7 @@ function ImmediateCard({ r }: { r: Resource }) {
 }
 
 function OngoingCard({ r }: { r: Resource }) {
+  const href = r.url ? safeHttpUrl(r.url) : '';
   return (
     <li className="card">
       <div className="card-content">
@@ -119,14 +107,15 @@ function OngoingCard({ r }: { r: Resource }) {
             </p>
             <p className="mt-1.5 text-xs text-ink-subtle">{r.available}</p>
           </div>
-          {r.url ? (
-            <button
-              type="button"
-              onClick={() => openUrl(r.url!)}
-              className="shrink-0 inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 dark:hover:bg-charcoal-700 min-h-[44px]"
+          {href ? (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={SECONDARY_LINK_CLASSES}
             >
               Visit
-            </button>
+            </a>
           ) : null}
         </div>
       </div>
@@ -159,16 +148,25 @@ export default function CrisisResources({ className = '', region }: Props) {
           local emergency number right now (US/CA <strong>911</strong>, UK/IE{' '}
           <strong>999</strong>, AU <strong>000</strong>).
         </p>
-        <button
-          type="button"
-          onClick={() => callPhone(primary.code === 'UK' || primary.code === 'IE' ? '999' : primary.code === 'AU' ? '000' : '911')}
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-crisis-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-crisis-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crisis-700 min-h-[44px]"
-        >
-          <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-          </svg>
-          {primary.code === 'UK' || primary.code === 'IE' ? 'Call 999' : primary.code === 'AU' ? 'Call 000' : 'Call 911'}
-        </button>
+        {(() => {
+          const emergencyNumber =
+            primary.code === 'UK' || primary.code === 'IE'
+              ? '999'
+              : primary.code === 'AU'
+                ? '000'
+                : '911';
+          return (
+            <a
+              href={`tel:${emergencyNumber}`}
+              className="mt-4 inline-flex items-center gap-2 rounded-full bg-crisis-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm hover:bg-crisis-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crisis-700 min-h-[44px]"
+            >
+              <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              Call {emergencyNumber}
+            </a>
+          );
+        })()}
       </section>
 
       <header>

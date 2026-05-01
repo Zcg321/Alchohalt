@@ -36,12 +36,34 @@ export function AlcoholCoachApp() {
   // panel "See progress" CTA) can request a jump to Insights.
   const [activeTab, setActiveTab] = useState<TabId | undefined>(undefined);
 
+  // Crisis modal: Escape closes; focus returns to the element that
+  // opened it. Tracked via a ref captured the moment showCrisis flips
+  // to true — works whether the trigger came from AppHeader or the
+  // Settings tab.
+  const crisisOpenerRef = useRef<HTMLElement | null>(null);
+  const crisisCloseRef = useRef<HTMLButtonElement | null>(null);
+
+  function openCrisis() {
+    if (typeof document !== 'undefined') {
+      crisisOpenerRef.current = document.activeElement as HTMLElement | null;
+    }
+    setShowCrisis(true);
+  }
+
+  function closeCrisis() {
+    setShowCrisis(false);
+    // Restore focus to the trigger after the dialog unmounts.
+    queueMicrotask(() => crisisOpenerRef.current?.focus?.());
+  }
+
   useEffect(() => {
+    if (!showCrisis) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key !== 'Escape' && showCrisis) return;
-      if (e.key === 'Escape' && showCrisis) setShowCrisis(false);
+      if (e.key === 'Escape') closeCrisis();
     }
     window.addEventListener('keydown', onKey);
+    // Move focus into the dialog so subsequent Tab presses cycle inside it.
+    crisisCloseRef.current?.focus();
     return () => window.removeEventListener('keydown', onKey);
   }, [showCrisis]);
 
@@ -154,7 +176,7 @@ export function AlcoholCoachApp() {
     ),
     goals: <GoalsTab goals={goals} onGoalsChange={onGoalsChange} />,
     insights: <InsightsTab drinks={drinks} goals={goals} />,
-    settings: <SettingsTab onOpenCrisis={() => setShowCrisis(true)} />,
+    settings: <SettingsTab onOpenCrisis={openCrisis} />,
   };
 
   return (
@@ -188,7 +210,7 @@ export function AlcoholCoachApp() {
         </div>
       )}
 
-      <AppHeader onOpenCrisis={() => setShowCrisis(true)} />
+      <AppHeader onOpenCrisis={openCrisis} />
 
       {showCrisis ? (
         <div
@@ -197,7 +219,7 @@ export function AlcoholCoachApp() {
           aria-labelledby="crisis-dialog-title"
           className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-charcoal-900/70 backdrop-blur-sm p-4 animate-fade-in"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setShowCrisis(false);
+            if (e.target === e.currentTarget) closeCrisis();
           }}
         >
           <div className="my-8 w-full max-w-2xl rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-slide-up">
@@ -206,8 +228,9 @@ export function AlcoholCoachApp() {
                 Need help now?
               </h2>
               <button
+                ref={crisisCloseRef}
                 type="button"
-                onClick={() => setShowCrisis(false)}
+                onClick={closeCrisis}
                 aria-label="Close"
                 className="inline-flex h-11 w-11 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
               >

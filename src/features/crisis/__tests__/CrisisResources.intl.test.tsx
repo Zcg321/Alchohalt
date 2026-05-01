@@ -29,7 +29,7 @@ describe('CrisisResources (international)', () => {
     render(<CrisisResources region="AU" />);
     expect(screen.getByText(/13 11 14/)).toBeInTheDocument();
     expect(screen.getByText(/1800 250 015/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Call 000/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Call 000/i })).toBeInTheDocument();
   });
 
   it('CA renders Talk Suicide Canada + ON helpline', () => {
@@ -41,7 +41,7 @@ describe('CrisisResources (international)', () => {
   it('IE renders Samaritans + HSE + Call 999 banner', () => {
     render(<CrisisResources region="IE" />);
     expect(screen.getByText(/HSE Drugs & Alcohol Helpline/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Call 999/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Call 999/i })).toBeInTheDocument();
   });
 
   it('US numbers stay reachable from any non-US region', () => {
