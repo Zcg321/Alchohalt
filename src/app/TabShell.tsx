@@ -13,9 +13,23 @@
  *   - Desktop: sage left-border accent + weight bump.
  * No screaming colors. No badges. Gamification deprecate ([IA-5])
  * pulled the badge framework anyway.
+ *
+ * [A11Y-TABSHELL] Conforms to the WAI-ARIA 1.2 tabs pattern:
+ *   - Exactly one <div role="tablist"> per nav (no <ul>/<li> wrapping —
+ *     ARIA requires role="tab" children to be direct children of
+ *     role="tablist", which the previous <ul role="tablist"><li><button
+ *     role="tab"></li></ul> structure violated, generating
+ *     aria-required-children + aria-required-parent + listitem axe
+ *     violations on every screen).
+ *   - role="tab" buttons carry id, aria-selected, aria-controls.
+ *   - Roving tabindex: only the active tab is in tab order; arrow keys
+ *     move focus + activate sibling tabs.
+ *   - Home/End jump to first/last; Enter/Space activate (default).
+ *   - Panel wrapper has role="tabpanel" + aria-labelledby + tabindex=0
+ *     so the keyboard user can land on the panel after activating a tab.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export type TabId = 'today' | 'track' | 'goals' | 'insights' | 'settings';
 
@@ -43,6 +57,9 @@ function readInitialTab(): TabId {
   return 'today';
 }
 
+const TAB_ID = (variant: 'desktop' | 'mobile', id: TabId) => `tab-${variant}-${id}`;
+const PANEL_ID = (id: TabId) => `panel-${id}`;
+
 export default function TabShell({ panels, activeTab, onChange }: Props) {
   const [internal, setInternal] = useState<TabId>(readInitialTab);
   const tab = activeTab ?? internal;
@@ -69,69 +86,151 @@ export default function TabShell({ panels, activeTab, onChange }: Props) {
 
   return (
     <>
-      {/* Desktop top-nav. Hidden on mobile. */}
-      <nav
-        aria-label="Primary"
-        className="hidden lg:block sticky top-0 z-30 border-b border-border-soft bg-surface/85 backdrop-blur"
+      <DesktopTablist tab={tab} onSelect={go} />
+
+      {/* The active panel. Promoted to role="tabpanel" so the WAI-ARIA
+          tabs contract is honored. Mobile gets bottom padding so the
+          fixed bottom-tab doesn't overlap content. */}
+      <div
+        id={PANEL_ID(tab)}
+        role="tabpanel"
+        aria-labelledby={TAB_ID('desktop', tab)}
+        tabIndex={0}
+        className="pb-24 lg:pb-0 focus:outline-none"
       >
-        <div className="mx-auto max-w-3xl px-4 py-2 flex items-center gap-1">
-          {TABS.map((t) => (
+        {panels[tab]}
+      </div>
+
+      <MobileTablist tab={tab} onSelect={go} />
+    </>
+  );
+}
+
+interface TablistProps {
+  tab: TabId;
+  onSelect: (id: TabId) => void;
+}
+
+/** Shared keydown handler implementing WAI-ARIA tabs keyboard contract. */
+function makeKeydownHandler(
+  tab: TabId,
+  onSelect: (id: TabId) => void,
+  refs: React.MutableRefObject<Record<TabId, HTMLButtonElement | null>>,
+) {
+  return (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const idx = TABS.findIndex((t) => t.id === tab);
+    if (idx < 0) return;
+    let next = idx;
+    switch (e.key) {
+      case 'ArrowLeft':
+        next = (idx - 1 + TABS.length) % TABS.length;
+        break;
+      case 'ArrowRight':
+        next = (idx + 1) % TABS.length;
+        break;
+      case 'Home':
+        next = 0;
+        break;
+      case 'End':
+        next = TABS.length - 1;
+        break;
+      default:
+        return; // Enter/Space: default <button> behavior fires onClick
+    }
+    e.preventDefault();
+    const nextId = TABS[next].id;
+    onSelect(nextId);
+    // After re-render the new tab will be tabIndex=0; focus it.
+    requestAnimationFrame(() => {
+      refs.current[nextId]?.focus();
+    });
+  };
+}
+
+function DesktopTablist({ tab, onSelect }: TablistProps) {
+  const refs = useRef<Record<TabId, HTMLButtonElement | null>>({} as Record<TabId, HTMLButtonElement | null>);
+  return (
+    <nav
+      aria-label="Primary navigation"
+      className="hidden lg:block sticky top-0 z-30 border-b border-border-soft bg-surface/85 backdrop-blur"
+    >
+      <div
+        role="tablist"
+        aria-label="Primary"
+        aria-orientation="horizontal"
+        onKeyDown={makeKeydownHandler(tab, onSelect, refs)}
+        className="mx-auto max-w-3xl px-4 py-2 flex items-center gap-1"
+      >
+        {TABS.map((t) => {
+          const active = tab === t.id;
+          return (
             <button
               key={t.id}
+              ref={(el) => { refs.current[t.id] = el; }}
               type="button"
               role="tab"
-              aria-selected={tab === t.id}
-              onClick={() => go(t.id)}
+              id={TAB_ID('desktop', t.id)}
+              aria-selected={active}
+              aria-controls={PANEL_ID(t.id)}
+              tabIndex={active ? 0 : -1}
+              onClick={() => onSelect(t.id)}
               className={`px-4 py-2 rounded-md text-caption transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 ${
-                tab === t.id
+                active
                   ? 'text-ink font-medium border-l-2 border-sage-700 bg-sage-50/40'
                   : 'text-ink-soft hover:text-ink hover:bg-cream-50'
               }`}
             >
               {t.label}
             </button>
-          ))}
-        </div>
-      </nav>
-
-      {/* Active panel. Mobile gets bottom padding so the fixed bottom-tab
-          doesn't overlap content. */}
-      <div className="pb-24 lg:pb-0">
-        {panels[tab]}
+          );
+        })}
       </div>
+    </nav>
+  );
+}
 
-      {/* Mobile bottom-tab. Fixed, only on mobile. */}
-      <nav
-        aria-label="Primary (mobile)"
-        className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border-soft bg-surface/95 backdrop-blur safe-bottom"
+function MobileTablist({ tab, onSelect }: TablistProps) {
+  const refs = useRef<Record<TabId, HTMLButtonElement | null>>({} as Record<TabId, HTMLButtonElement | null>);
+  return (
+    <nav
+      aria-label="Primary (mobile)"
+      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border-soft bg-surface/95 backdrop-blur safe-bottom"
+    >
+      <div
+        role="tablist"
+        aria-label="Primary"
+        aria-orientation="horizontal"
+        onKeyDown={makeKeydownHandler(tab, onSelect, refs)}
+        className="grid grid-cols-5"
       >
-        <ul role="tablist" className="grid grid-cols-5">
-          {TABS.map((t) => {
-            const active = tab === t.id;
-            return (
-              <li key={t.id}>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => go(t.id)}
-                  className={`w-full flex flex-col items-center gap-1 py-2 text-micro transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 ${
-                    active ? 'text-sage-700 font-medium' : 'text-ink-subtle hover:text-ink'
-                  }`}
-                >
-                  <span aria-hidden className="h-5 w-5">{t.icon}</span>
-                  <span>{t.label}</span>
-                  <span
-                    aria-hidden
-                    className={`mt-0.5 h-0.5 w-6 rounded-pill ${active ? 'bg-sage-700' : 'bg-transparent'}`}
-                  />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </>
+        {TABS.map((t) => {
+          const active = tab === t.id;
+          return (
+            <button
+              key={t.id}
+              ref={(el) => { refs.current[t.id] = el; }}
+              type="button"
+              role="tab"
+              id={TAB_ID('mobile', t.id)}
+              aria-selected={active}
+              aria-controls={PANEL_ID(t.id)}
+              tabIndex={active ? 0 : -1}
+              onClick={() => onSelect(t.id)}
+              className={`w-full flex flex-col items-center gap-1 py-2 text-micro transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 ${
+                active ? 'text-sage-700 font-medium' : 'text-ink-subtle hover:text-ink'
+              }`}
+            >
+              <span aria-hidden className="h-5 w-5">{t.icon}</span>
+              <span>{t.label}</span>
+              <span
+                aria-hidden
+                className={`mt-0.5 h-0.5 w-6 rounded-pill ${active ? 'bg-sage-700' : 'bg-transparent'}`}
+              />
+            </button>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 
