@@ -1,7 +1,7 @@
 {
   "name": "Alchohalt",
   "short_name": "Alchohalt",
-  "description": "Offline-first alcohol tracker & coach. 100% on-device.",
+  "description": "A calm alcohol tracker. No streaks-leaderboards. Real crisis support when you need it.",
   "theme_color": "#5A8073",
   "background_color": "#F8F5F0",
   "display": "standalone",

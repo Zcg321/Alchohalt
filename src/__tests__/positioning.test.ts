@@ -74,6 +74,18 @@ describe('non-encryption wedge — hero surfaces', () => {
     expect(leadsWithEncryption(m![1])).toBe(false);
   });
 
+  it('manifest.webmanifest description follows MARKETING-1 (calm, not encryption)', () => {
+    const manifest = JSON.parse(
+      readFileSync(join(REPO_ROOT, 'public/manifest.webmanifest'), 'utf-8'),
+    );
+    const desc: string = manifest.description ?? '';
+    expect(desc.length).toBeGreaterThan(0);
+    expect(leadsWithEncryption(desc)).toBe(false);
+    expect(desc.toLowerCase()).toMatch(/calm|leaderboard|crisis support/);
+    // Old pre-MARKETING-1 phrasing should be gone
+    expect(desc.toLowerCase()).not.toMatch(/100% on-device|offline-first/);
+  });
+
   it('positioning.md exists and pins the wedge order', () => {
     const positioning = readFileSync(
       join(REPO_ROOT, 'docs/marketing/positioning.md'),
