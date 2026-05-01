@@ -71,19 +71,16 @@ export default function PremiumMoodTracking() {
 
   const freeUserFallback = (
     <Card className="p-6 text-center">
-      <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
-        <span className="text-blue-600 text-2xl">🧠</span>
-      </div>
       <h3 className="text-lg font-semibold mb-2">
-        {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS ? 'Premium Mood & Trigger Tracking' : 'Advanced Mood & Trigger Tracking'}
+        {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS ? 'Mood & trigger patterns' : 'Mood & trigger patterns'}
       </h3>
       <p className="text-gray-600 dark:text-gray-400 mb-4">
-        {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS 
-          ? 'Identify your drinking triggers and get personalized insights about mood patterns and correlations.'
-          : 'This feature is coming soon. Stay tuned for advanced mood pattern analysis and trigger identification.'}
+        {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS
+          ? 'Tag triggers and see which ones line up with the days you drank more.'
+          : 'On the way. For now, the HALT field on each entry surfaces the basic patterns.'}
       </p>
       {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && (
-        <Button variant="primary">Upgrade to Premium</Button>
+        <Button variant="primary">See plans</Button>
       )}
     </Card>
   );
@@ -96,11 +93,10 @@ export default function PremiumMoodTracking() {
       <div className="space-y-6">
         {/* Mood Pattern Analysis */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
-            <span className="mr-2">📊</span>
-            Mood Pattern Analysis
+          <h3 className="text-lg font-semibold mb-4">
+            Mood patterns
           </h3>
-          
+
           {moodPatterns.length > 0 ? (
             <div className="space-y-4">
               {moodPatterns.slice(0, 5).map((pattern, index) => (
@@ -132,32 +128,30 @@ export default function PremiumMoodTracking() {
             </div>
           ) : (
             <div className="text-center py-8 text-gray-600 dark:text-gray-400">
-              <p>Not enough data yet for pattern analysis.</p>
-              <p className="text-sm mt-1">Keep logging your mood and triggers to see insights!</p>
+              <p>Not enough data yet to surface patterns.</p>
+              <p className="text-sm mt-1">A handful of logged entries with mood or HALT tags is usually enough.</p>
             </div>
           )}
         </Card>
 
         {/* HALT Correlation Analysis */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
-            <span className="mr-2">⚡</span>
-            HALT Trigger Correlations
+          <h3 className="text-lg font-semibold mb-4">
+            HALT correlations
           </h3>
-          
+
           <HALTCorrelationView entries={db.entries} />
         </Card>
 
         {/* Trigger Selection */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
-            <span className="mr-2">🎯</span>
-            Track Your Triggers
+          <h3 className="text-lg font-semibold mb-4">
+            Track your triggers
           </h3>
-          
+
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">Common Triggers</h4>
+              <h4 className="font-medium mb-2">Common triggers</h4>
               <div className="flex flex-wrap gap-2">
                 {predefinedTriggers.map((trigger) => (
                   <button
@@ -176,7 +170,7 @@ export default function PremiumMoodTracking() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-2">Add Custom Trigger</h4>
+              <h4 className="font-medium mb-2">Add a custom trigger</h4>
               <div className="flex space-x-2">
                 <input
                   type="text"
@@ -194,7 +188,7 @@ export default function PremiumMoodTracking() {
 
             {selectedTriggers.length > 0 && (
               <div>
-                <h4 className="font-medium mb-2">Your Active Triggers</h4>
+                <h4 className="font-medium mb-2">Tracking now</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedTriggers.map((trigger) => (
                     <div
@@ -238,12 +232,12 @@ function analyzeMoodPatterns(entries: Entry[]): MoodPattern[] {
       const lastOccurrence = Math.max(...intentionEntries.map(e => e.ts));
 
       const triggerMap: Record<string, string> = {
-        celebrate: 'Celebration/Success',
-        social: 'Social Situations',
-        taste: 'Taste/Appetite',
-        bored: 'Boredom/Nothing to do',
-        cope: 'Stress/Coping',
-        other: 'Other Situations'
+        celebrate: 'Celebrating something',
+        social: 'In a social setting',
+        taste: 'Wanted the taste',
+        bored: 'Boredom',
+        cope: 'Coping with something hard',
+        other: 'Other'
       };
 
       patterns.push({
@@ -293,8 +287,8 @@ function HALTCorrelationView({ entries }: { entries: Entry[] }) {
   if (haltAnalysis.length === 0) {
     return (
       <div className="text-center py-8 text-gray-600 dark:text-gray-400">
-        <p>Not enough HALT data yet for correlation analysis.</p>
-        <p className="text-sm mt-1">Keep tracking your HALT states to see patterns!</p>
+        <p>Not enough HALT data yet to compare.</p>
+        <p className="text-sm mt-1">A few more entries with hungry / angry / lonely / tired tagged is usually enough.</p>
       </div>
     );
   }
@@ -324,7 +318,7 @@ function HALTCorrelationView({ entries }: { entries: Entry[] }) {
           </div>
           {Math.abs(impact) > 20 && (
             <div className="mt-2 text-xs text-orange-600 dark:text-orange-400">
-              ⚠️ Significant impact detected
+              Worth a closer look
             </div>
           )}
         </div>

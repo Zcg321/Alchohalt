@@ -55,7 +55,7 @@ function createNotifications(times: string[]) {
   return times.map((t, i) => ({
     id: 100 + i,
     title: 'Alchohalt',
-    body: 'Reminder: log your day?',
+    body: 'Log your day?',
     schedule: { at: hhmmToNextDate(t), repeats: true, every: 'day' },
     channelId: 'alchohalt-reminders'
   }));
@@ -118,28 +118,28 @@ export function isReminderWindowDue(now: number, times: string[], lastLogAt: num
 }
 
 const NOTIFICATION_MESSAGES = [
-  "How's your day going? Take a moment to check in 🌟",
-  "Time for a mindful moment - how are you feeling? 💭",
-  "Your wellness journey matters. Ready to log today's progress? 📊",
-  "Taking care of yourself today? Let's track your progress 🎯"
+  "Log your day if you'd like.",
+  "How's today going?",
+  "A quiet moment to log.",
+  "Log when you're ready — no rush."
 ];
 
 function buildNotifications(times: string[]) {
   return times.map((time, idx) => ({
     id: idx + 1000,
-    title: "Alchohalt Check-in",
+    title: "Alchohalt",
     body: NOTIFICATION_MESSAGES[idx % NOTIFICATION_MESSAGES.length],
     schedule: { at: hhmmToNextDate(time) }
   }));
 }
 
 async function handlePermissionDenied() {
-  useDB.getState().setSettings?.({ notificationFallbackMessage: 'Enable notifications in settings.' });
+  useDB.getState().setSettings?.({ notificationFallbackMessage: 'Reminders are off — turn them on in your phone settings if you want them back.' });
 }
 
 async function handleSchedulingError(error: unknown, times: string[]) {
   console.error('Scheduling error:', error);
-  useDB.getState().setSettings?.({ notificationFallbackMessage: 'Unable to schedule.' });
+  useDB.getState().setSettings?.({ notificationFallbackMessage: "Couldn't schedule reminders. Trying a different way…" });
   await Promise.all([scheduleNative(times), scheduleWeb()]);
 }
 

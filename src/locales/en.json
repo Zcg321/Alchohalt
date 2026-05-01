@@ -73,7 +73,7 @@
   "stats.shareProgressDesc": "Share progress summary",
   "stats.exportStats": "Export stats",
   "stats.exportReady": "Stats download ready",
-  "disclaimer": "Your data is yours. We cryptographically cannot read it. Not medical advice.",
+  "disclaimer": "Your logs stay on your device. We can't read them. Not medical advice.",
   "export": "Export",
   "import": "Import",
   "add": "Add",
@@ -145,66 +145,66 @@
   "onboarding": {
     "welcome": {
       "title": "Welcome to Alchohalt",
-      "description": "Your personal, private wellness companion for building healthier drinking habits."
+      "description": "A private space to log what you drink and notice what's changing."
     },
     "privacy": {
-      "title": "Your Privacy Matters",
-      "description": "Your data is yours. We cryptographically cannot read it. Optional AI features (off by default) are the only thing that can change this — you control them in Settings → AI."
+      "title": "Your data, your device",
+      "description": "Nobody else, including us, can see what you log. Optional AI features (off by default) are the only thing that can change this — you control them in Settings → AI."
     },
     "tracking": {
-      "title": "Smart Tracking",
-      "description": "Log drinks with intentions, HALT triggers, and craving levels to understand your patterns."
+      "title": "Log what you drink",
+      "description": "Note the time, the type, why, and how it felt — only the parts you want to."
     },
     "insights": {
-      "title": "Personalized Insights",
-      "description": "On-device pattern analytics by default. Optional AI Insights (off until you enable it) can generate written reflections from anonymized summaries."
+      "title": "What changes over time",
+      "description": "Patterns surface as you log — on your device. Optional AI Insights (off until you enable it) can write a reflection from an anonymized summary."
     },
     "goals": {
-      "title": "Set Your Goals",
-      "description": "Create personalized goals and track your progress with motivating streak counters."
+      "title": "Set a target if you want one",
+      "description": "Pick a daily limit or a streak length. You can change either anytime, or skip this entirely."
     },
     "ready": {
-      "title": "You're All Set!",
-      "description": "Ready to start your wellness journey? Your first log is just a tap away."
+      "title": "Ready when you are",
+      "description": "Add your first entry whenever you'd like. Or just look around."
     },
     "quickTips": {
-      "title": "Quick Tips",
-      "tip1": "Start with small, achievable goals",
-      "tip2": "Log honestly for better insights", 
-      "tip3": "Check your progress regularly",
-      "tip4": "Export your data anytime for backup"
+      "title": "A few notes",
+      "tip1": "Start small. You can change the goal later.",
+      "tip2": "The patterns you see are only as honest as the entries.",
+      "tip3": "Glance at the trends when you remember. There's no scoreboard.",
+      "tip4": "You can export everything anytime. It's yours."
     },
     "back": "Back",
-    "skip": "Skip", 
+    "skip": "Skip",
     "next": "Next",
-    "getStarted": "Get Started"
+    "getStarted": "Get started"
   },
 
   "medicalDisclaimer": {
-    "title": "Important Medical Disclaimer",
+    "title": "Important medical disclaimer",
     "content": "Alchohalt is a personal tracking tool and does not provide medical advice, diagnosis, or treatment. This app is not a substitute for professional medical care.",
-    "emergency": "If you are experiencing a medical emergency or need immediate help with substance use, please contact emergency services or a healthcare professional immediately."
+    "emergency": "If you're in a medical emergency or need urgent help with substance use, contact emergency services or a healthcare professional right now. The Crisis tab has direct numbers."
   },
 
   "privacy": {
-    "title": "Your Privacy is Protected",
-    "onDevice": "Your data is yours. We cryptographically cannot read it. Optional AI features (off by default) are the only thing that can change this — see Settings → AI for the full data flow.",
+    "title": "Your privacy is protected",
+    "onDevice": "Your data stays on your device, encrypted with a key only you control. We cryptographically cannot read it. Opt-in AI features can change this — see Settings → AI for the full data flow.",
     "dataControl": "You have complete control over your data. You can export, import, or delete all information at any time from the Settings panel."
   },
 
   "support": {
-    "title": "Support & Feedback", 
-    "description": "We're here to help you on your wellness journey. Your feedback helps us improve the app."
+    "title": "Support & feedback",
+    "description": "We read your feedback ourselves. It shapes what gets built."
   },
 
   "subscription": {
-    "title": "Subscription Information",
-    "coreFeatures": "Core habit tracking features remain free forever. Premium features enhance your experience with advanced analytics and insights.",
-    "cancellation": "Subscriptions can be cancelled anytime through your device's subscription settings. No data is lost when downgrading."
+    "title": "Subscription",
+    "coreFeatures": "The core — logging, history, streaks, money saved, crisis resources — is free forever. Premium adds longer-view analytics, custom presets, and more.",
+    "cancellation": "You can cancel anytime from your device's subscription settings. Nothing's lost when you downgrade."
   },
 
   "openSource": {
-    "title": "Open Source",
-    "description": "Alchohalt is open source software. You can review our code, contribute improvements, or build your own version."
+    "title": "Open source",
+    "description": "Alchohalt is open source. You can read the code, suggest changes, or build your own version."
   }
 }

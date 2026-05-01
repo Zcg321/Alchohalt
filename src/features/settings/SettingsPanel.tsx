@@ -142,10 +142,10 @@ export default function SettingsPanel() {
             Data Management
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Your data is yours. We cryptographically cannot read it.
-            Opt-in AI features (off by default) are the only thing
-            that can change this — see AI Insights below. Not medical
-            advice.
+            Your data stays on your device, encrypted with a key only
+            you control. We cryptographically cannot read it. Opt-in
+            AI features can change this — see AI Insights below. Not
+            medical advice.
           </p>
         </div>
         <div className="card-content">

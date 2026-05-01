@@ -62,7 +62,7 @@ function QuickActionButtons({
   return (
     <div className="card">
       <div className="card-header">
-        <h3 className="font-semibold">Quick Actions</h3>
+        <h3 className="font-semibold">Quick actions</h3>
       </div>
       <div className="card-content">
         <div className="grid grid-cols-2 gap-3">
@@ -73,9 +73,9 @@ function QuickActionButtons({
             onClick={onMoodCheckIn}
             leftIcon={<HeartIcon />}
           >
-            Mood Check-In
+            Mood check-in
           </Button>
-          
+
           <Button
             variant="secondary"
             size="sm"
@@ -83,9 +83,9 @@ function QuickActionButtons({
             onClick={onOpenStats}
             leftIcon={<ChartIcon />}
           >
-            View Progress
+            See trends
           </Button>
-          
+
           <Button
             variant="secondary"
             size="sm"
@@ -95,14 +95,14 @@ function QuickActionButtons({
           >
             Settings
           </Button>
-          
+
           <Button
             variant={isAlcoholFree ? 'success' : 'secondary'}
             size="sm"
             className="h-12"
             leftIcon={isAlcoholFree ? <CheckIcon /> : <CalendarIcon />}
           >
-            {isAlcoholFree ? 'AF Today!' : 'Log Drink'}
+            {isAlcoholFree ? 'AF today' : 'Log a drink'}
           </Button>
         </div>
       </div>
@@ -117,9 +117,9 @@ function QuickDrinkLogging({ quickDrinks, onQuickLog }: {
   return (
     <div className="card">
       <div className="card-header">
-        <h3 className="font-semibold">Quick Log</h3>
+        <h3 className="font-semibold">Quick log</h3>
         <p className="text-sm text-ink-soft">
-          Tap to log common drinks
+          Tap a common drink to log it.
         </p>
       </div>
       <div className="card-content">
@@ -298,15 +298,15 @@ function getMotivationalMessage(streak: number, isAlcoholFree: boolean): string 
 
 function getMotivationalSubtext(streak: number, todayStd: number, dailyCap: number): string {
   if (todayStd === 0) {
-    return "Keep going! Each alcohol-free day builds your strength and resilience.";
+    return "Quiet days count. They add up faster than they feel like.";
   }
-  
+
   if (todayStd >= dailyCap) {
-    return "You&apos;ve reached your limit for today. Tomorrow is a new opportunity.";
+    return "You're at today's limit. The rest of the day works fine without another.";
   }
-  
+
   const remaining = dailyCap - todayStd;
-  return `You have ${remaining.toFixed(1)} drinks remaining in today&apos;s limit.`;
+  return `${remaining.toFixed(1)} drinks left in today's limit.`;
 }
 
 // Icon components

@@ -9,14 +9,14 @@ import { useLanguage } from '../../i18n';
  * tracking / insights / goals / ready) with three honest beats:
  *
  *   1. "Hi. What brings you here today?"
- *      Three optional chips: Cutting back / Quitting / Just curious.
- *      Skip works. Choice is recorded but never required.
+ *      Three optional chips: Trying to drink less / Trying to stop /
+ *      Not sure yet. Skip works. Choice is recorded but never required.
  *
  *   2. "How would you like to track?"
- *      Three optional chips: One day at a time / 30-day reset /
- *      Custom goal. Skip works.
+ *      Three optional chips: One day at a time / A month off /
+ *      Set my own. Skip works.
  *
- *   3. "We never see what you write. Cancel anytime."
+ *   3. "Your data, your device."
  *      Single Get started button.
  *
  * Each beat has Skip and a real X close button. Esc + backdrop click
@@ -44,9 +44,9 @@ function BeatOne({ onChoose }: BeatOneProps) {
       </p>
       <div className="mt-5 grid gap-2.5">
         {([
-          ['cut-back', 'Cutting back'],
-          ['quit', 'Quitting'],
-          ['curious', 'Just curious'],
+          ['cut-back', 'Trying to drink less'],
+          ['quit', 'Trying to stop'],
+          ['curious', 'Not sure yet'],
         ] as const).map(([id, label]) => (
           <button
             key={id}
@@ -77,8 +77,8 @@ function BeatTwo({ onChoose }: BeatTwoProps) {
       <div className="mt-5 grid gap-2.5">
         {([
           ['day-by-day', 'One day at a time'],
-          ['thirty-day', '30-day reset'],
-          ['custom', 'Custom goal'],
+          ['thirty-day', 'A month off'],
+          ['custom', 'Set my own'],
         ] as const).map(([id, label]) => (
           <button
             key={id}
@@ -101,12 +101,12 @@ function BeatThree({ onStart }: BeatThreeProps) {
   return (
     <>
       <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
-        Your data is yours.
+        Your data, your device.
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-        We cryptographically cannot read what you log. Cancel anytime.
-        Optional AI features (off by default) are the only thing that
-        can change this — you control them in Settings.
+        Nobody else, including us, can see what you log. Optional AI
+        features (off by default) are the only thing that can change
+        this — you control them in Settings.
       </p>
       <button
         type="button"
@@ -162,7 +162,7 @@ export default function OnboardingFlow() {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <span id="onboarding-title" className="sr-only">
-              Welcome to Alchohalt
+              Quick intro
             </span>
             <div className="flex gap-1.5" aria-hidden>
               {[0, 1, 2].map((i) => (

@@ -21,7 +21,7 @@ export default function PrivacyPolicy() {
         </h2>
         <div className="prose prose-gray dark:prose-invert">
           <p>
-            {t('privacy.policy.overview.content', 'Alchohalt is designed with privacy as a core principle. We believe your personal wellness journey should remain completely private and under your control.')}
+            {t('privacy.policy.overview.content', 'Alchohalt is designed with privacy as a core principle. What you log is personal, and we believe it should stay private and under your control.')}
           </p>
         </div>
       </section>
@@ -32,7 +32,7 @@ export default function PrivacyPolicy() {
         </h2>
         <div className="prose prose-gray dark:prose-invert space-y-3">
           <p>
-            {t('privacy.policy.dataStorage.local', 'Your wellness data is stored locally on your device using secure, encrypted storage mechanisms provided by your operating system.')}
+            {t('privacy.policy.dataStorage.local', 'Your data is stored locally on your device using secure, encrypted storage mechanisms provided by your operating system.')}
           </p>
           <p>
             {t('privacy.policy.dataStorage.noCloud', 'We do not use cloud storage, external databases, or any form of remote data collection by default. Your information stays on your device unless you (1) explicitly export it, OR (2) opt in to AI Insights — see "AI Features" below.')}

@@ -179,17 +179,17 @@ export default function EnhancedMoodTracker({
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-ink mb-2">
-          🧠 Mood & Emotional Intelligence
+          Mood check-in
         </h2>
         <div className="flex items-center gap-2 mb-2">
           <Badge variant="secondary">Step {
-            step === 'emotion' ? '1' : 
-            step === 'intensity' ? '2' : 
-            step === 'triggers' ? '3' : 
-            step === 'coping' ? '4' : 
+            step === 'emotion' ? '1' :
+            step === 'intensity' ? '2' :
+            step === 'triggers' ? '3' :
+            step === 'coping' ? '4' :
             step === 'notes' ? '5' : '6'
           } of 5</Badge>
-          {isPremium && <Badge variant="primary" className="text-xs">AI Analysis</Badge>}
+          {isPremium && <Badge variant="primary" className="text-xs">Adapted to you</Badge>}
         </div>
         <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-2">
           <div 
@@ -347,17 +347,17 @@ export default function EnhancedMoodTracker({
       {/* Step 5: Notes */}
       {step === 'notes' && (
         <div>
-          <h3 className="text-md font-semibold mb-4">Any additional thoughts?</h3>
+          <h3 className="text-md font-semibold mb-4">Anything else worth noting?</h3>
           <textarea
             value={currentState.notes}
             onChange={(e) => setCurrentState(prev => ({ ...prev, notes: e.target.value }))}
-            placeholder="Optional: What's on your mind? How do you want to handle this feeling?"
+            placeholder="Optional. A line or two — only what you want to write."
             className="w-full p-3 border border-border rounded-lg resize-none bg-surface dark:bg-charcoal-700"
             rows={4}
           />
           <div className="flex gap-3 mt-4">
             <Button variant="outline" onClick={() => setStep('coping')}>Back</Button>
-            <Button onClick={handleComplete}>Complete Check-in</Button>
+            <Button onClick={handleComplete}>Save check-in</Button>
           </div>
         </div>
       )}
@@ -365,16 +365,15 @@ export default function EnhancedMoodTracker({
       {/* Completion & Insights */}
       {step === 'complete' && (
         <div className="text-center">
-          <div className="text-4xl mb-4">✨</div>
-          <h3 className="text-lg font-semibold mb-2">Check-in Complete!</h3>
+          <h3 className="text-lg font-semibold mb-2">Logged.</h3>
           <p className="text-ink-soft mb-4">
-            Thank you for taking time to understand your emotions.
+            Thanks for taking a minute with this.
           </p>
-          
+
           {showInsights && moodPattern && isPremium && (
             <div className="mt-6 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-left">
               <h4 className="font-semibold mb-3 text-primary-800 dark:text-primary-300">
-                🧠 AI Insights
+                What stands out
               </h4>
               {moodPattern.commonTriggers.length > 0 && (
                 <div className="mb-3">
@@ -405,7 +404,7 @@ export default function EnhancedMoodTracker({
             </div>
           )}
           
-          <Button 
+          <Button
             onClick={() => {
               setStep('emotion');
               setCurrentState({ triggers: [], copingStrategies: [], notes: '', timestamp: Date.now() });
@@ -413,7 +412,7 @@ export default function EnhancedMoodTracker({
             }}
             className="mt-4"
           >
-            New Check-in
+            New check-in
           </Button>
         </div>
       )}

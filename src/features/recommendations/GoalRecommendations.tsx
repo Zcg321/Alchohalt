@@ -56,8 +56,8 @@ export default function GoalRecommendations({ entries, settings, onAcceptRecomme
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4">
-        <h3 className="text-lg font-semibold">🤖 AI-Powered Recommendations</h3>
-        <Badge variant="primary" className="text-xs">Personalized</Badge>
+        <h3 className="text-lg font-semibold">Goals worth considering</h3>
+        <Badge variant="primary" className="text-xs">From your patterns</Badge>
       </div>
 
       <div className="space-y-3">
@@ -74,7 +74,7 @@ export default function GoalRecommendations({ entries, settings, onAcceptRecomme
                     {rec.title}
                   </h4>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Based on your recent progress
+                    From your last few weeks of entries
                   </p>
                 </div>
               </div>
@@ -127,7 +127,7 @@ export default function GoalRecommendations({ entries, settings, onAcceptRecomme
                   size="sm"
                   onClick={() => onAcceptRecommendation(rec)}
                 >
-                  Accept Goal
+                  Set this goal
                 </Button>
               </div>
             </div>
@@ -137,8 +137,7 @@ export default function GoalRecommendations({ entries, settings, onAcceptRecomme
 
       <div className="text-xs text-gray-500 dark:text-gray-400 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
         <p>
-          💡 Recommendations are based on your recent behavior patterns and are designed to be achievable yet challenging. 
-          You can always adjust goals after accepting them.
+          These come from the patterns in your recent entries. They're meant to feel reachable but not trivial. You can adjust any goal after setting it.
         </p>
       </div>
     </div>

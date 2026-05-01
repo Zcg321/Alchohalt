@@ -98,52 +98,52 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     const baseMetrics = [
       {
         id: 'alcohol-free-days',
-        name: 'Alcohol-Free Days',
+        name: 'Alcohol-free days',
         value: afDays,
         unit: 'days/month',
         trend: afDays >= 20 ? 'up' : afDays >= 15 ? 'stable' : 'down',
         status: afDays >= 25 ? 'excellent' : afDays >= 20 ? 'good' : afDays >= 15 ? 'fair' : 'poor',
-        description: 'Days without alcohol consumption this month',
+        description: 'Days this month with no logged drinks.',
         icon: '🌟'
       },
       {
         id: 'craving-control',
-        name: 'Craving Control',
+        name: 'Average craving',
         value: Math.round((5 - avgCraving) * 20),
         unit: '%',
         trend: avgCraving <= 2 ? 'up' : avgCraving <= 3 ? 'stable' : 'down',
         status: avgCraving <= 1 ? 'excellent' : avgCraving <= 2 ? 'good' : avgCraving <= 3 ? 'fair' : 'poor',
-        description: 'How well you\'re managing alcohol cravings',
+        description: 'Higher means lower average craving on logged days.',
         icon: '🛡️'
       },
       {
         id: 'sleep-quality',
-        name: 'Sleep Quality Index',
+        name: 'Evening drinking',
         value: Math.round(sleepScore),
         unit: '/100',
         trend: sleepScore >= 80 ? 'up' : sleepScore >= 60 ? 'stable' : 'down',
         status: sleepScore >= 85 ? 'excellent' : sleepScore >= 70 ? 'good' : sleepScore >= 50 ? 'fair' : 'poor',
-        description: 'Estimated sleep quality based on drinking patterns',
+        description: 'Higher means fewer drinks logged after 6pm. Late drinks correlate with worse sleep.',
         icon: '😴'
       },
       {
         id: 'stress-management',
-        name: 'Stress Management',
+        name: 'HALT-tagged drinks',
         value: Math.round(Math.max(0, 100 - stressLevel)),
         unit: '/100',
         trend: stressLevel <= 30 ? 'up' : stressLevel <= 50 ? 'stable' : 'down',
         status: stressLevel <= 20 ? 'excellent' : stressLevel <= 40 ? 'good' : stressLevel <= 60 ? 'fair' : 'poor',
-        description: 'How effectively you\'re managing stress triggers',
+        description: 'Higher means fewer drinks tied to angry / lonely / tired.',
         icon: '🧘'
       },
       {
         id: 'social-wellness',
-        name: 'Social Wellness',
+        name: 'Social with alternatives',
         value: Math.round(socialWellness),
         unit: '%',
         trend: socialWellness >= 70 ? 'up' : socialWellness >= 50 ? 'stable' : 'down',
         status: socialWellness >= 80 ? 'excellent' : socialWellness >= 60 ? 'good' : socialWellness >= 40 ? 'fair' : 'poor',
-        description: 'Success rate in social situations without alcohol',
+        description: 'Share of social drinks where you also noted an alternative action.',
         icon: '🤝'
       },
       // [LEGAL-1] Liver-health-estimate metric removed.
@@ -155,12 +155,12 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       if (avgSteps > 0) {
         healthIntegrationMetrics.push({
           id: 'daily-steps',
-          name: 'Daily Steps',
+          name: 'Daily steps',
           value: avgSteps.toLocaleString(),
           unit: 'avg/day',
           trend: avgSteps >= 8000 ? 'up' : avgSteps >= 5000 ? 'stable' : 'down',
           status: avgSteps >= 10000 ? 'excellent' : avgSteps >= 7000 ? 'good' : avgSteps >= 5000 ? 'fair' : 'poor',
-          description: 'Average daily steps from health app',
+          description: 'From your health app — last 7 days.',
           icon: '👟'
         });
       }
@@ -168,24 +168,24 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         const sleepNum = parseFloat(avgSleep.toString());
         healthIntegrationMetrics.push({
           id: 'sleep-hours',
-          name: 'Sleep Duration',
+          name: 'Sleep duration',
           value: avgSleep,
           unit: 'hrs/night',
           trend: sleepNum >= 7.5 ? 'up' : sleepNum >= 6.5 ? 'stable' : 'down',
           status: sleepNum >= 8 ? 'excellent' : sleepNum >= 7 ? 'good' : sleepNum >= 6 ? 'fair' : 'poor',
-          description: 'Average sleep duration from health app',
+          description: 'From your health app — last 7 days.',
           icon: '🛌'
         });
       }
       if (avgHeartRate > 0) {
         healthIntegrationMetrics.push({
           id: 'heart-rate',
-          name: 'Resting Heart Rate',
+          name: 'Resting heart rate',
           value: avgHeartRate,
           unit: 'bpm',
           trend: avgHeartRate <= 70 ? 'up' : avgHeartRate <= 80 ? 'stable' : 'down',
           status: avgHeartRate <= 60 ? 'excellent' : avgHeartRate <= 70 ? 'good' : avgHeartRate <= 80 ? 'fair' : 'poor',
-          description: 'Average resting heart rate from health app',
+          description: 'From your health app — last 7 days.',
           icon: '💓'
         });
       }
@@ -209,25 +209,25 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     if (eveningDrinks.length > 3) {
       insights.push({
         type: 'sleep',
-        title: 'Late Evening Drinking Pattern',
-        insight: `You've had ${eveningDrinks.length} drinks after 8 PM in the last 2 weeks. This can significantly impact sleep quality and REM cycles.`,
-        recommendation: 'Consider setting a cut-off time for alcohol consumption, ideally 3-4 hours before bedtime.',
+        title: 'Drinks after 8pm',
+        insight: `${eveningDrinks.length} drinks logged after 8pm in the last two weeks. Late drinking tends to fragment sleep, even when you fall asleep faster.`,
+        recommendation: 'Even a 3-hour gap between the last drink and bedtime makes a noticeable difference.',
         confidence: 85,
         priority: 'high'
       });
     }
 
     // Stress insight
-    const stressfulDays = recent.filter(d => 
+    const stressfulDays = recent.filter(d =>
       d.halt?.includes('angry') || d.halt?.includes('lonely') || d.craving >= 4
     );
-    
+
     if (stressfulDays.length > 0) {
       insights.push({
         type: 'stress',
-        title: 'Stress-Related Drinking Patterns',
-        insight: `${stressfulDays.length} drinking episodes were associated with high stress or emotional triggers.`,
-        recommendation: 'Consider developing alternative stress management techniques like deep breathing, exercise, or meditation.',
+        title: 'Drinks tied to hard moments',
+        insight: `${stressfulDays.length} drinks in the last two weeks lined up with anger, loneliness, or a high-craving moment.`,
+        recommendation: 'When the urge ties to a feeling, the feeling tends to pass faster than the urge. Buying ten minutes (a walk, a call, water first) usually helps.',
         confidence: 90,
         priority: 'high'
       });
@@ -236,16 +236,16 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     // Social insight
     const socialDrinks = recent.filter(d => d.intention === 'social');
     const socialWithAlternatives = socialDrinks.filter(d => d.alt && d.alt.trim());
-    
+
     if (socialDrinks.length > 0) {
       const successRate = (socialWithAlternatives.length / socialDrinks.length) * 100;
       insights.push({
         type: 'social',
-        title: 'Social Situation Analysis',
-        insight: `You're successfully managing ${Math.round(successRate)}% of social drinking situations with alternatives.`,
-        recommendation: successRate < 50 
-          ? 'Practice saying no in social situations and have go-to non-alcoholic options ready.'
-          : 'Great job! Consider sharing your strategies with others who might benefit.',
+        title: 'Social drinks, alternatives noted',
+        insight: `${Math.round(successRate)}% of social drinks had an alternative action noted alongside.`,
+        recommendation: successRate < 50
+          ? 'Picking one go-to non-alcoholic order before the event is the simplest move.'
+          : 'You\'ve got the rhythm of this. The patterns from these entries are good ground to stand on.',
         confidence: 80,
         priority: successRate < 50 ? 'medium' : 'low'
       });
@@ -277,11 +277,10 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
   if (!isPremium) {
     return (
       <div className={`bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg p-6 text-center ${className}`}>
-        <div className="text-4xl mb-4">🏥</div>
-        <h2 className="text-xl font-bold mb-2">Premium Wellness Dashboard</h2>
+        <h2 className="text-xl font-bold mb-2">More patterns, longer view</h2>
         <p className="mb-4 opacity-90">
-          Get comprehensive health insights, wellness tracking, and AI-powered recommendations
-          to optimize your physical and mental wellbeing.
+          A longer view of your trends — sleep timing, stress triggers,
+          and how social situations show up. Not medical advice.
         </p>
         {/* [LEGAL-1] "Liver health estimation" was a medical claim
             (organ-health prediction from drink-tracking data) sitting
@@ -289,19 +288,19 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
             with honest non-clinical framing. Stress / sleep bullets
             also softened from clinical "analysis" to "patterns". */}
         <ul className="text-sm opacity-90 mb-6 text-left max-w-md mx-auto space-y-1">
-          <li>• Long-term trend insights across months</li>
-          <li>• Sleep pattern observations from your logs</li>
-          <li>• Stress trigger patterns (HALT-based)</li>
+          <li>• Trends across months, not just the last week</li>
+          <li>• Sleep patterns inferred from your evening logs</li>
+          <li>• Which HALT states show up most often</li>
           <li>• Day-by-day comparison views</li>
-          <li>• Social wellness reflections</li>
-          <li>• AI-powered personalized observations</li>
+          <li>• Social situations: when they go well, when they don't</li>
+          <li>• Optional AI reflections from anonymized summaries</li>
         </ul>
-        <Button 
-          variant="secondary" 
+        <Button
+          variant="secondary"
           className="bg-surface-elevated text-primary-600 hover:bg-cream-50"
           onClick={() => trackFeatureUsage('wellness_upgrade_prompt')}
         >
-          Upgrade to Access
+          See plans
         </Button>
       </div>
     );
@@ -312,11 +311,11 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold text-ink mb-2 flex items-center gap-2">
-          🏥 Wellness Dashboard
+          Patterns over time
           <Badge variant="primary" className="text-xs">Premium</Badge>
         </h2>
         <p className="text-sm text-ink-soft">
-          Comprehensive health and wellness insights powered by AI analysis
+          Patterns from your last 30 days. Not medical advice.
         </p>
       </div>
 
@@ -363,8 +362,8 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       {healthInsights.length > 0 && (
         <div className="bg-surface-elevated rounded-lg border border-border-soft p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            🧠 AI Health Insights
-            <Badge variant="primary" className="text-xs">Personalized</Badge>
+            What stands out
+            <Badge variant="primary" className="text-xs">From your last 14 days</Badge>
           </h3>
           
           <div className="space-y-4">
@@ -402,7 +401,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
                 
                 <div className="bg-surface-elevated p-3 rounded border border-border-soft">
                   <p className="text-sm font-medium text-ink mb-1">
-                    💡 Recommendation:
+                    Worth trying
                   </p>
                   <p className="text-sm text-ink">
                     {insight.recommendation}
@@ -416,23 +415,23 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
 
       {/* Action Buttons */}
       <div className="mt-6 flex gap-3 justify-center">
-        <Button 
+        <Button
           variant="outline"
           onClick={() => trackFeatureUsage('wellness_export_report')}
         >
-          📊 Export Report
+          Export report
         </Button>
-        <Button 
+        <Button
           variant="outline"
           onClick={() => trackFeatureUsage('wellness_share_with_doctor')}
         >
-          👩‍⚕️ Share with Doctor
+          Share with a doctor
         </Button>
-        <Button 
+        <Button
           variant="primary"
           onClick={() => trackFeatureUsage('wellness_set_goals')}
         >
-          🎯 Set Health Goals
+          Set goals
         </Button>
       </div>
     </div>

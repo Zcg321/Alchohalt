@@ -68,9 +68,10 @@ function analyzeHALTPatterns(entries: Entry[]): PremiumInsight[] {
   });
 
   if (maxState && maxAvg > 1.5) {
+    const lower = stateNames[maxState as keyof typeof stateNames].toLowerCase();
     insights.push({
-      title: `${stateNames[maxState as keyof typeof stateNames]} Trigger Alert`,
-      description: `You tend to drink ${maxAvg.toFixed(1)}x more when experiencing ${stateNames[maxState as keyof typeof stateNames].toLowerCase()}. Consider alternative coping strategies.`,
+      title: `${stateNames[maxState as keyof typeof stateNames]} shows up most`,
+      description: `When you log "${lower}" alongside a drink, the count is ${maxAvg.toFixed(1)}x higher than usual. Worth a strategy specifically for those moments.`,
       type: 'warning',
       icon: '⚠️',
       priority: 90,
@@ -112,8 +113,8 @@ function analyzeTimePatterns(entries: Entry[]): PremiumInsight[] {
     const timeDesc = peak.hour < 12 ? 'morning' : peak.hour < 18 ? 'afternoon' : 'evening';
     
     insights.push({
-      title: `Peak Drinking Time: ${peak.hour}:00`,
-      description: `Your ${timeDesc} drinks (around ${peak.hour}:00) tend to be heavier. Consider scheduling alternative activities during this time.`,
+      title: `${timeDesc.charAt(0).toUpperCase() + timeDesc.slice(1)} runs heavier`,
+      description: `Drinks logged around ${peak.hour}:00 tend to be larger. If there's a routine that fits in that hour and doesn't involve alcohol, planting it there usually helps.`,
       type: 'pattern',
       icon: '🕐',
       priority: 70,
@@ -148,8 +149,8 @@ function analyzeCravingCorrelations(entries: Entry[]): PremiumInsight[] {
       
       if (difference > 1) {
         insights.push({
-          title: 'Strong Craving-Consumption Link',
-          description: `High craving days lead to ${difference.toFixed(1)} more standard drinks on average. Focus on craving management techniques.`,
+          title: 'Cravings track with bigger nights',
+          description: `High-craving days run ${difference.toFixed(1)} standard drinks higher than low-craving days. The ten-minute rule (do anything else for ten minutes first) usually helps most here.`,
           type: 'pattern',
           icon: '🧠',
           priority: 80,
@@ -178,8 +179,8 @@ function analyzeCostImpacts(entries: Entry[]): PremiumInsight[] {
 
   if (monthlyCost > 100) {
     insights.push({
-      title: 'High Monthly Spending Alert',
-      description: `Your current pace suggests $${monthlyCost.toFixed(0)}/month on alcohol. Consider setting a budget or finding cost-effective alternatives.`,
+      title: 'Monthly spend is adding up',
+      description: `At your current pace, around $${monthlyCost.toFixed(0)} per month. Setting a budget on the Goals tab makes the number harder to ignore.`,
       type: 'warning',
       icon: '💰',
       priority: 75,
@@ -204,8 +205,8 @@ function analyzeCostImpacts(entries: Entry[]): PremiumInsight[] {
 
   if (expensiveKind && expensiveKind.avgCost > avgCostPerDrink * 1.5) {
     insights.push({
-      title: `${expensiveKind.kind.charAt(0).toUpperCase() + expensiveKind.kind.slice(1)} Cost Optimization`,
-      description: `${expensiveKind.kind} costs ${expensiveKind.avgCost.toFixed(2)} per drink vs your average of $${avgCostPerDrink.toFixed(2)}. Consider cheaper alternatives.`,
+      title: `${expensiveKind.kind.charAt(0).toUpperCase() + expensiveKind.kind.slice(1)} runs your spend up`,
+      description: `${expensiveKind.kind} costs $${expensiveKind.avgCost.toFixed(2)} on average — well above your $${avgCostPerDrink.toFixed(2)} per-drink average. A cheaper version of the same thing makes a noticeable dent.`,
       type: 'tip',
       icon: '💡',
       priority: 60,
@@ -247,17 +248,17 @@ function analyzeIntentionEffectiveness(entries: Entry[]): PremiumInsight[] {
     
     if (worst.avgDrinks > best.avgDrinks * 1.5) {
       const intentionMap: Record<string, string> = {
-        celebrate: 'Celebrating',
-        social: 'Social drinking',
-        taste: 'Taste preference', 
-        bored: 'Boredom',
-        cope: 'Coping/stress',
-        other: 'Other reasons'
+        celebrate: 'celebrating',
+        social: 'social settings',
+        taste: 'wanting the taste',
+        bored: 'boredom',
+        cope: 'coping with something',
+        other: 'other reasons'
       };
 
       insights.push({
-        title: `Intention Pattern: Avoid ${intentionMap[worst.intention] || worst.intention}`,
-        description: `${intentionMap[worst.intention] || worst.intention} leads to ${worst.avgDrinks.toFixed(1)} drinks on average vs ${best.avgDrinks.toFixed(1)} for ${intentionMap[best.intention] || best.intention}.`,
+        title: `${(intentionMap[worst.intention] || worst.intention).replace(/^./, c => c.toUpperCase())} runs heaviest`,
+        description: `Drinks logged for ${intentionMap[worst.intention] || worst.intention} average ${worst.avgDrinks.toFixed(1)} — vs ${best.avgDrinks.toFixed(1)} for ${intentionMap[best.intention] || best.intention}. The intention column is doing real work here.`,
         type: 'pattern',
         icon: '🎯',
         priority: 85,

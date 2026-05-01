@@ -225,7 +225,7 @@ export default function SyncPanel({ transport }: Props) {
       <div className="card-header">
         <h3 id="sync-heading" className="text-h3 text-ink">Encrypted backup</h3>
         <p className="mt-1 text-caption text-ink-soft">
-          Your data is yours. We cryptographically cannot read it. Off by default.
+          Backups upload encrypted with a key only you have. Off by default.
         </p>
       </div>
       <div className="card-content space-y-4">

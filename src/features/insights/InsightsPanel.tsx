@@ -28,32 +28,32 @@ export default function InsightsPanel({ drinks, goals }: Props) {
     // Basic insights available to all users
     if (streak > 0) {
       basicInsights.push({
-        title: streak >= 7 ? `🎉 ${streak} Day Streak!` : `💪 ${streak} Days Strong`,
-        description: streak >= 7 ? 'Amazing work! Keep this momentum going!' : 'Building great habits one day at a time.',
+        title: streak >= 7 ? `${streak} days in a row` : `${streak} days going`,
+        description: streak >= 7 ? "Past the first week. The hardest stretch is usually behind you now." : 'Quiet days count.',
         type: 'achievement',
         icon: <ChartIcon />,
         priority: streak >= 7 ? 3 : 2
       });
     }
-    
+
     // Weekend pattern (basic version)
     if (weekendPattern.hasPattern) {
       basicInsights.push({
-        title: 'Weekend Pattern Detected',
-        description: `You drink ${weekendPattern.percentage}% more on weekends. Consider planning alcohol-free weekend activities.`,
+        title: 'Weekends run higher',
+        description: `Your weekend numbers are ${weekendPattern.percentage}% above weekdays. One non-drinking weekend activity in the rotation usually helps.`,
         type: 'pattern',
         icon: <ChartIcon />,
         priority: 2
       });
     }
-    
+
     // Craving trend (basic version)
     if (cravingTrend.direction !== 'stable') {
       basicInsights.push({
-        title: cravingTrend.direction === 'improving' ? 'Cravings Improving' : 'Cravings Increasing',
-        description: cravingTrend.direction === 'improving' 
-          ? `Your cravings have decreased by ${cravingTrend.percentage.toFixed(0)}% recently. Great progress!`
-          : `Your cravings have increased by ${cravingTrend.percentage.toFixed(0)}% recently. Consider reviewing your coping strategies.`,
+        title: cravingTrend.direction === 'improving' ? 'Cravings down' : 'Cravings up',
+        description: cravingTrend.direction === 'improving'
+          ? `Cravings are ${cravingTrend.percentage.toFixed(0)}% lower than before. The patterns you've built are doing the work.`
+          : `Cravings are ${cravingTrend.percentage.toFixed(0)}% higher than before. Worth a look at what's been different — sleep, stress, schedule.`,
         type: cravingTrend.direction === 'improving' ? 'achievement' : 'warning',
         icon: <ChartIcon />,
         priority: cravingTrend.direction === 'improving' ? 2 : 3
@@ -108,7 +108,7 @@ export default function InsightsPanel({ drinks, goals }: Props) {
               <ChartIcon />
             </div>
             <p className="text-ink-soft">
-              Keep logging your drinks to unlock personalized insights!
+              A few more entries and the patterns start showing up here.
             </p>
           </div>
         ) : (

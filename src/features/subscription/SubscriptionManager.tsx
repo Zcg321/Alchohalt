@@ -32,7 +32,7 @@ interface Props {
 const ORDER: PlanId[] = ['free', 'premium_monthly', 'premium_yearly', 'premium_lifetime'];
 
 const HIGHLIGHTS: Partial<Record<PlanId, { label: string; tone: 'primary' | 'success' }>> = {
-  premium_yearly: { label: 'Most Popular', tone: 'primary' },
+  premium_yearly: { label: 'Most popular', tone: 'primary' },
   premium_lifetime: { label: 'No subscription trap', tone: 'success' },
 };
 
@@ -104,12 +104,12 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
         } else if (purchase.state === 'cancelled') {
           // Silent — user changed their mind.
         } else {
-          setError('Purchase did not complete. Try again or restore prior purchases.');
+          setError('Purchase didn\'t go through. Try again, or use Restore prior purchases if you bought already on another device.');
         }
       }
     } catch (err) {
       const e = err as { message?: string };
-      setError(e.message ?? 'Purchase failed. Please try again.');
+      setError(e.message ?? 'Couldn\'t complete the purchase. Try again, or contact your app store if it keeps happening.');
     } finally {
       setPendingPlan(null);
     }
@@ -123,9 +123,8 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
           More insights, same calm. Never gamified.
         </p>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
-          Free covers the essentials forever. Premium adds analytics,
-          multi-reminders, exports, and encrypted backup. AI Insights is
-          opt-in and controlled in Settings → AI.
+          On any plan, your data stays on your device — we can't read
+          it. AI Insights is opt-in (Settings → AI).
         </p>
       </header>
 
@@ -229,9 +228,9 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
 
       <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-500">
         Payments handled by Apple / Google. Cancel any time from your
-        device&apos;s subscription settings. Your data is yours — we
-        cryptographically cannot read it. Opt-in AI features can change
-        this; see Settings → AI.
+        device&apos;s subscription settings. Your data stays on your
+        device — we can&apos;t read it. AI Insights is opt-in
+        (Settings → AI).
       </p>
     </div>
   );

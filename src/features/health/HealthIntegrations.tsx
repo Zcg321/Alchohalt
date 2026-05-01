@@ -66,10 +66,10 @@ export function HealthIntegrationsDiagnostics() {
     return (
       <div className="p-4 border border-warning-200 rounded-xl bg-warning-50 dark:bg-warning-900/20">
         <h3 className="font-medium text-warning-800 dark:text-warning-200 mb-2">
-          Health Integrations Disabled
+          Health integrations are off
         </h3>
         <p className="text-sm text-warning-700 dark:text-warning-300">
-          Health integrations are currently disabled. Enable the ENABLE_HEALTH_INTEGRATION flag to use this feature.
+          Turn on the ENABLE_HEALTH_INTEGRATION flag to use this. (Dev-only setting for now.)
         </p>
       </div>
     );
@@ -78,7 +78,7 @@ export function HealthIntegrationsDiagnostics() {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-secondary">Checking health capabilities...</div>
+        <div className="text-secondary">Checking what your phone supports…</div>
       </div>
     );
   }
@@ -87,10 +87,10 @@ export function HealthIntegrationsDiagnostics() {
     <div className="space-y-4">
       <div className="p-4 border border-default rounded-xl bg-surface">
         <h2 className="text-lg font-semibold text-primary mb-4">
-          Health Integrations
+          Health integrations
         </h2>
         <p className="text-sm text-secondary mb-4">
-          Connect with health platforms to sync your wellness data.
+          Connect with your phone's health platform to bring in steps, sleep, and resting heart rate alongside your logs.
         </p>
       </div>
 
@@ -151,11 +151,10 @@ export function HealthIntegrationsDiagnostics() {
 
       <div className="p-4 border border-info-200 rounded-xl bg-info-50 dark:bg-info-900/20">
         <h3 className="font-medium text-info-800 dark:text-info-200 mb-2">
-          ℹ️ Feature Status
+          Where this stands
         </h3>
         <p className="text-sm text-info-700 dark:text-info-300">
-          This is a scaffold implementation. Health data read/write functionality is not yet implemented.
-          The integration shows capability checks and permission prompts for future implementation.
+          The capability and permission checks work today. Reading and writing health data is coming in a later release.
         </p>
       </div>
     </div>

@@ -13,61 +13,63 @@ export default function ExportImport() {
       const exportData = await createExport(db);
       downloadData(exportData);
     } catch (error) {
-      alert(`Export failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const msg = error instanceof Error ? error.message : 'try again';
+      alert(`Couldn't save your export — ${msg}. If it keeps happening, report this at https://github.com/Zcg321/Alchohalt/issues`);
     }
   }
 
   async function doImport(ev: React.ChangeEvent<HTMLInputElement>) {
     if (importing) return;
     setImporting(true);
-    
+
     try {
       const f = ev.target.files?.[0];
       if (!f) return;
-      
+
       const text = await f.text();
       let parsed: unknown;
       try {
         parsed = JSON.parse(text);
       } catch {
-        alert('Invalid JSON file');
+        alert("That file isn't valid JSON. Make sure you picked an Alchohalt export — not a CSV, PDF, or other file.");
         return;
       }
 
       // Validate import data
       const validation = await validateImport(parsed);
       if (!validation.success) {
-        alert(`Import validation failed: ${validation.error}`);
+        alert(`Couldn't read the file: ${validation.error}. The export may be from an older version, or the file got modified.`);
         return;
       }
 
       // Show warnings if any
       if (validation.warnings && validation.warnings.length > 0) {
         const proceed = confirm(
-          `Import warnings:\n${validation.warnings.join('\n')}\n\nProceed with import?`
+          `Heads-up before importing:\n${validation.warnings.join('\n')}\n\nGo ahead?`
         );
         if (!proceed) return;
       }
 
       // Process import and check for conflicts
       const { migratedData, conflicts } = await processImport(parsed as ExportData, db);
-      
+
       if (conflicts.length > 0) {
         const proceed = confirm(
-          `Data conflicts detected:\n${conflicts.join('\n')}\n\nThis will replace ALL current data. Continue?`
+          `Some entries overlap with what's already on this device:\n${conflicts.join('\n')}\n\nThis replaces ALL current data with the import. Continue?`
         );
         if (!proceed) return;
-      } else if (!confirm('Replace ALL current data with import?')) {
+      } else if (!confirm('Replace all current data with the imported file?')) {
         return;
       }
 
       // Apply the import
       useDB.setState({ db: migratedData });
       useDB.getState()._recompute();
-      alert('Import completed successfully');
-      
+      alert('Import complete.');
+
     } catch (error) {
-      alert(`Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const msg = error instanceof Error ? error.message : 'try again';
+      alert(`Couldn't finish the import — ${msg}. Your existing data wasn't changed.`);
     } finally {
       setImporting(false);
       // Reset file input
@@ -76,55 +78,55 @@ export default function ExportImport() {
   }
 
   function doWipe() {
-    const s = prompt('Type WIPE to confirm');
+    const s = prompt('This deletes everything: every entry, goal, preset, and setting. Type WIPE to confirm.');
     if (s === 'WIPE') {
       wipeAll(true);
-      alert('All data cleared');
+      alert('All data cleared.');
     }
   }
 
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold mb-2">Export Data</h3>
+        <h3 className="text-lg font-semibold mb-2">Export</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Create a secure backup with checksum verification and version info
+          A JSON file of everything — entries, goals, presets, settings. Includes a checksum so you can verify it later.
         </p>
-        <button 
+        <button
           onClick={doExport}
           className="btn btn-primary"
         >
-          📥 Export with Checksum
+          Export to JSON
         </button>
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-2">Import Data</h3>
+        <h3 className="text-lg font-semibold mb-2">Import</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Restore from backup with integrity checking and conflict detection
+          Restore from a previous export. We'll check the file's integrity and flag any conflicts before changing anything.
         </p>
         <label className={`btn btn-secondary ${importing ? 'opacity-50 cursor-not-allowed' : ''}`}>
-          {importing ? '⏳ Processing...' : '📤 Import with Validation'}
-          <input 
-            type="file" 
-            className="hidden" 
-            accept=".json" 
+          {importing ? 'Reading file…' : 'Pick a file to import'}
+          <input
+            type="file"
+            className="hidden"
+            accept=".json"
             onChange={doImport}
             disabled={importing}
           />
         </label>
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-2 text-red-600">Danger Zone</h3>
+        <h3 className="text-lg font-semibold mb-2 text-red-600">Clear all data</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Permanently delete all data (requires double confirmation)
+          Deletes everything on this device — entries, goals, presets, settings. Can't be undone. Type WIPE to confirm.
         </p>
-        <button 
+        <button
           onClick={doWipe}
           className="btn bg-red-600 hover:bg-red-700 text-white"
         >
-          🗑️ Clear All Data
+          Clear all data
         </button>
       </div>
       

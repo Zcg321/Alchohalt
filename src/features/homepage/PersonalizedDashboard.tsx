@@ -104,32 +104,32 @@ export default function PersonalizedDashboard({ drinks = [], goals, onQuickActio
     switch (personalization.personalityType) {
       case 'goal-oriented':
         content.greeting = greeting;
-        content.primaryAction = 'Check Goal Progress';
-        content.secondaryActions = ['Set New Challenge', 'View Analytics'];
+        content.primaryAction = 'Check goal progress';
+        content.secondaryActions = ['Set a new goal', 'View trends'];
         content.motivationalMessage = 'Consistency over intensity.';
         content.focusArea = 'Progress';
         break;
 
       case 'social':
         content.greeting = greeting;
-        content.primaryAction = 'Social Alternatives';
-        content.secondaryActions = ['Find AF Events', 'Track Social Goals'];
+        content.primaryAction = 'Social alternatives';
+        content.secondaryActions = ['Plan an AF event', 'Set a social goal'];
         content.motivationalMessage = "Connection doesn't need alcohol.";
-        content.focusArea = 'Social wellness';
+        content.focusArea = 'Social';
         break;
 
       case 'health-focused':
         content.greeting = greeting;
-        content.primaryAction = 'Mood Check-in';
-        content.secondaryActions = ['Stress Management', 'Health Insights'];
+        content.primaryAction = 'Mood check-in';
+        content.secondaryActions = ['HALT patterns', 'See trends'];
         content.motivationalMessage = 'Take care of yourself today.';
-        content.focusArea = 'Wellness';
+        content.focusArea = 'How you feel';
         break;
 
       default:
         content.greeting = greeting;
-        content.primaryAction = 'Quick Log';
-        content.secondaryActions = ['Explore Features', 'Set Goals'];
+        content.primaryAction = 'Quick log';
+        content.secondaryActions = ['Look around', 'Set a goal'];
         content.motivationalMessage = 'One day at a time.';
         content.focusArea = 'Today';
     }
@@ -157,7 +157,7 @@ export default function PersonalizedDashboard({ drinks = [], goals, onQuickActio
           <Badge variant="secondary">{personalizedContent.focusArea}</Badge>
           {isPremium && (
             <Badge variant="primary" className="text-xs">
-              AI Personalized
+              Adapted to you
             </Badge>
           )}
         </div>
@@ -175,13 +175,13 @@ export default function PersonalizedDashboard({ drinks = [], goals, onQuickActio
             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
             : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
         }`}>
-          <span className="text-lg">
-            {personalization.motivationalTrend === 'improving' ? '📈' : 
-             personalization.motivationalTrend === 'stable' ? '➡️' : '📊'}
+          <span className="text-lg" aria-hidden>
+            {personalization.motivationalTrend === 'improving' ? '↗' :
+             personalization.motivationalTrend === 'stable' ? '→' : '↘'}
           </span>
           <span>
-            {personalization.motivationalTrend === 'improving' ? 'Trending Up' : 
-             personalization.motivationalTrend === 'stable' ? 'Staying Steady' : 'Needs Attention'}
+            {personalization.motivationalTrend === 'improving' ? 'Trending up' :
+             personalization.motivationalTrend === 'stable' ? 'Steady' : 'Worth a closer look'}
           </span>
         </div>
       </div>

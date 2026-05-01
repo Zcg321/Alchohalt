@@ -73,7 +73,7 @@
   "stats.shareProgressDesc": "Compartir resumen de progreso",
   "stats.exportStats": "Exportar estadísticas",
   "stats.exportReady": "Descarga de estadísticas lista",
-  "disclaimer": "Tus datos son tuyos. Criptográficamente no podemos leerlos. No es un consejo médico.",
+  "disclaimer": "Tus registros se guardan en tu dispositivo. No podemos leerlos. No es consejo médico.",
   "export": "Exportar",
   "import": "Importar",
   "add": "Agregar",
@@ -142,63 +142,63 @@
   "reminder.prompt": "¿Registrar tu día?",
   "reminder.log": "Registrar ahora",
   "medicalDisclaimer": {
-    "title": "Descargo de Responsabilidad Médica Importante",
-    "content": "Alchohalt es una herramienta de seguimiento personal y no proporciona asesoramiento médico, diagnóstico o tratamiento. Esta aplicación no sustituye la atención médica profesional.",
-    "emergency": "Si experimenta una emergencia médica o necesita ayuda inmediata con el uso de sustancias, comuníquese con los servicios de emergencia o un profesional de la salud de inmediato."
+    "title": "Aviso médico importante",
+    "content": "Alchohalt es una herramienta de seguimiento personal y no proporciona asesoramiento médico, diagnóstico ni tratamiento. Esta aplicación no sustituye la atención médica profesional.",
+    "emergency": "Si tienes una emergencia médica o necesitas ayuda urgente con el uso de sustancias, contacta con servicios de emergencia o un profesional de la salud ahora mismo. La pestaña de Crisis tiene números directos."
   },
   "onboarding": {
     "welcome": {
       "title": "Bienvenido a Alchohalt",
-      "description": "Tu compañero personal y privado de bienestar para construir hábitos de consumo más saludables."
+      "description": "Un espacio privado para registrar lo que bebes y ver qué va cambiando."
     },
     "privacy": {
-      "title": "Tu Privacidad Importa",
-      "description": "Tus datos son tuyos. Criptográficamente no podemos leerlos. Las funciones de IA opcionales (desactivadas por defecto) son lo único que puede cambiar esto — tú lo controlas en Configuración → IA."
+      "title": "Tus datos, tu dispositivo",
+      "description": "Nadie más, ni nosotros, puede ver lo que registras. Las funciones de IA opcionales (desactivadas por defecto) son lo único que puede cambiar esto — tú las controlas en Configuración → IA."
     },
     "tracking": {
-      "title": "Seguimiento Inteligente",
-      "description": "Registra bebidas con intenciones, activadores HALT y niveles de antojo para comprender tus patrones."
+      "title": "Registra lo que bebes",
+      "description": "Anota la hora, el tipo, el porqué y cómo te sentiste — solo lo que quieras."
     },
     "insights": {
-      "title": "Perspectivas Personalizadas",
-      "description": "Análisis de patrones en el dispositivo por defecto. Las Perspectivas con IA opcionales (desactivadas hasta que las habilites) pueden generar reflexiones escritas a partir de resúmenes anonimizados."
+      "title": "Lo que cambia con el tiempo",
+      "description": "Los patrones aparecen a medida que registras — en tu dispositivo. Las Perspectivas con IA opcionales (desactivadas hasta que las habilites) pueden escribir una reflexión a partir de un resumen anonimizado."
     },
     "goals": {
-      "title": "Establece Tus Metas",
-      "description": "Crea metas personalizadas y realiza un seguimiento de tu progreso con contadores de rachas motivadores."
+      "title": "Pon una meta si quieres",
+      "description": "Elige un límite diario o la duración de una racha. Puedes cambiar cualquiera en cualquier momento, o saltarte esto."
     },
     "ready": {
-      "title": "¡Estás Listo!",
-      "description": "¿Listo para comenzar tu viaje de bienestar? Tu primer registro está a solo un toque de distancia."
+      "title": "Cuando quieras",
+      "description": "Añade tu primer registro cuando te apetezca. O simplemente mira por aquí."
     },
     "quickTips": {
-      "title": "Consejos Rápidos",
-      "tip1": "Comienza con metas pequeñas y alcanzables",
-      "tip2": "Registra honestamente para mejores perspectivas",
-      "tip3": "Revisa tu progreso regularmente",
-      "tip4": "Exporta tus datos en cualquier momento para respaldo"
+      "title": "Unas notas",
+      "tip1": "Empieza con poco. Puedes cambiar la meta luego.",
+      "tip2": "Los patrones son tan sinceros como los registros.",
+      "tip3": "Mira las tendencias cuando te acuerdes. No hay marcador.",
+      "tip4": "Puedes exportar todo en cualquier momento. Es tuyo."
     },
     "back": "Atrás",
     "skip": "Omitir",
     "next": "Siguiente",
-    "getStarted": "Comenzar"
+    "getStarted": "Empezar"
   },
   "openSource": {
-    "title": "Código Abierto",
-    "description": "Alchohalt es software de código abierto. Puedes revisar nuestro código, contribuir mejoras o construir tu propia versión."
+    "title": "Código abierto",
+    "description": "Alchohalt es código abierto. Puedes leer el código, sugerir cambios o construir tu propia versión."
   },
   "privacy": {
-    "title": "Tu Privacidad Está Protegida",
-    "onDevice": "Tus datos son tuyos. Criptográficamente no podemos leerlos. Las funciones de IA opcionales (desactivadas por defecto) son lo único que puede cambiar esto — consulta Configuración → IA para ver el flujo completo de datos.",
+    "title": "Tu privacidad está protegida",
+    "onDevice": "Tus datos están en tu dispositivo, cifrados con una clave que solo tú controlas. Criptográficamente no podemos leerlos. Las funciones de IA opcionales pueden cambiar esto — consulta Configuración → IA para ver el flujo completo de datos.",
     "dataControl": "Tienes control completo sobre tus datos. Puedes exportar, importar o eliminar toda la información en cualquier momento desde el panel de Configuración."
   },
   "subscription": {
-    "title": "Información de Suscripción",
-    "coreFeatures": "Las funciones básicas de seguimiento de hábitos permanecen gratuitas para siempre. Las funciones premium mejoran tu experiencia con análisis e información avanzados.",
-    "cancellation": "Las suscripciones se pueden cancelar en cualquier momento a través de la configuración de suscripciones de tu dispositivo. No se pierden datos al cambiar a un plan inferior."
+    "title": "Suscripción",
+    "coreFeatures": "Lo esencial — registros, historial, rachas, ahorros, recursos de crisis — es gratis para siempre. Premium añade análisis a largo plazo, presets personalizados y más.",
+    "cancellation": "Puedes cancelar cuando quieras desde la configuración de suscripciones de tu dispositivo. No se pierde nada al cambiar a un plan menor."
   },
   "support": {
-    "title": "Soporte y Comentarios",
-    "description": "Estamos aquí para ayudarte en tu viaje de bienestar. Tus comentarios nos ayudan a mejorar la aplicación."
+    "title": "Soporte y comentarios",
+    "description": "Leemos tus comentarios nosotros mismos. Dan forma a lo que se construye."
   }
 }
