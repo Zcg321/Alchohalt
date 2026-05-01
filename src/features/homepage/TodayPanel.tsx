@@ -144,7 +144,7 @@ export default function TodayPanel({
       : 'Days alcohol-free';
   const heroSubcopy =
     status.kind === 'starting'
-      ? 'Logging stays on this device. We cryptographically cannot read it.'
+      ? 'Nobody else, including us, can see what you log.'
       : status.kind === 'restart'
       ? `${totalAF} alcohol-free days in your record so far`
       : milestone
@@ -199,15 +199,29 @@ export default function TodayPanel({
       </div>
 
       {/* Below-fold stats strip */}
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <Stat label="Today" value={todayStd.toFixed(1)} unit="std" />
-        <Stat label="7 days" value={weekStd.toFixed(1)} unit="std" />
-        <Stat
-          label="30 days"
-          value={pricePerStd > 0 ? `$${monthSpent.toFixed(0)}` : `${monthStd.toFixed(0)}`}
-          unit={pricePerStd > 0 ? 'spent' : 'std'}
-        />
-      </div>
+      {drinks.length === 0 ? (
+        <div
+          className="rounded-lg border border-border-soft bg-surface-elevated px-5 py-6 text-center"
+          data-testid="day-zero-empty-stats"
+        >
+          <p className="text-body text-ink">
+            Log your first to see your week shape up.
+          </p>
+          <p className="mt-1 text-caption text-ink-soft">
+            Today, 7 days, and 30 days will fill in as you log.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-2 text-center">
+          <Stat label="Today" value={todayStd.toFixed(1)} unit="std" />
+          <Stat label="7 days" value={weekStd.toFixed(1)} unit="std" />
+          <Stat
+            label="30 days"
+            value={pricePerStd > 0 ? `$${monthSpent.toFixed(0)}` : `${monthStd.toFixed(0)}`}
+            unit={pricePerStd > 0 ? 'spent' : 'std'}
+          />
+        </div>
+      )}
 
       {/* Optional "What's next" prompt card. Only shows if there's a
           concrete next-step worth surfacing. Quiet by default. */}

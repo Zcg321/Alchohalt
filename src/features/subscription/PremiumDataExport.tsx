@@ -47,7 +47,7 @@ export default function PremiumDataExport() {
       }
     } catch (error) {
       console.error('Export failed:', error);
-      // Handle error appropriately
+      alert(`Couldn't save the export — ${error instanceof Error ? error.message : 'try again'}. If it keeps happening, JSON export in Settings is the most reliable fallback.`);
     } finally {
       setIsExporting(false);
     }
@@ -56,19 +56,16 @@ export default function PremiumDataExport() {
   const freeUserFallback = (
     <Card className="p-6 text-center">
       <div className="mb-4">
-        <div className="w-16 h-16 mx-auto bg-orange-100 rounded-full flex items-center justify-center mb-4">
-          <span className="text-orange-600 text-2xl">📊</span>
-        </div>
         <h3 className="text-lg font-semibold mb-2">
-          {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS ? 'Premium Data Export' : 'Advanced Data Export'}
+          {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS ? 'Data export & reports' : 'PDF and CSV export'}
         </h3>
         <p className="text-gray-600 dark:text-gray-400 mb-4">
-          {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS 
-            ? 'Export your progress data in multiple formats for healthcare providers, personal records, or analysis.'
-            : 'PDF and CSV export features are coming soon. Use the JSON export available in Settings for now.'}
+          {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS
+            ? 'Export your logs as PDF, CSV, or JSON — for doctors, your own records, or another tool.'
+            : 'PDF and CSV are on the way. JSON export works today, in Settings.'}
         </p>
         {FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS && (
-          <Button variant="primary">Upgrade to Premium</Button>
+          <Button variant="primary">See plans</Button>
         )}
       </div>
     </Card>
@@ -82,12 +79,11 @@ export default function PremiumDataExport() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-semibold flex items-center">
-              <span className="mr-2">📊</span>
-              Data Export & Reports
+            <h3 className="text-lg font-semibold">
+              Data export & reports
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Generate comprehensive reports for healthcare providers or personal analysis
+              Pick a format and a date range. PDF includes a summary; CSV and JSON include the full log.
             </p>
           </div>
         </div>

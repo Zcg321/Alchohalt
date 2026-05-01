@@ -55,7 +55,7 @@ export function PremiumBadge({ className = '' }: { className?: string }) {
   
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 ${className}`}>
-      ✨ Premium
+      Premium
     </span>
   );
 }
@@ -63,38 +63,35 @@ export function PremiumBadge({ className = '' }: { className?: string }) {
 /**
  * UpgradePrompt - shows a prompt to upgrade to premium
  */
-export function UpgradePrompt({ 
-  title = "Upgrade to Premium",
-  message = "This feature is available in our premium plan.",
+export function UpgradePrompt({
+  title = "Part of Premium",
+  message = "Unlocks with any paid plan.",
   className = ''
-}: { 
+}: {
   title?: string;
   message?: string;
   className?: string;
 }) {
   if (!FEATURE_FLAGS.ENABLE_SUBSCRIPTIONS) return null;
-  
+
   return (
     <div className={`p-4 border border-amber-200 rounded-xl bg-amber-50 dark:bg-amber-900/20 ${className}`}>
-      <div className="flex items-start gap-3">
-        <span className="text-2xl">✨</span>
-        <div className="flex-1">
-          <h3 className="font-medium text-amber-900 dark:text-amber-100 mb-1">
-            {title}
-          </h3>
-          <p className="text-sm text-amber-800 dark:text-amber-200">
-            {message}
-          </p>
-          <button 
-            className="mt-3 px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
-            onClick={() => {
-              // TODO: Navigate to subscription page
-              console.log('Navigate to subscription page');
-            }}
-          >
-            Learn More
-          </button>
-        </div>
+      <div className="flex-1">
+        <h3 className="font-medium text-amber-900 dark:text-amber-100 mb-1">
+          {title}
+        </h3>
+        <p className="text-sm text-amber-800 dark:text-amber-200">
+          {message}
+        </p>
+        <button
+          className="mt-3 px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
+          onClick={() => {
+            // TODO: Navigate to subscription page
+            console.log('Navigate to subscription page');
+          }}
+        >
+          See plans
+        </button>
       </div>
     </div>
   );
