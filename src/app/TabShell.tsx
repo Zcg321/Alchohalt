@@ -217,7 +217,9 @@ function MobileTablist({ tab, onSelect }: TablistProps) {
               tabIndex={active ? 0 : -1}
               onClick={() => onSelect(t.id)}
               className={`w-full flex flex-col items-center gap-1 py-2 text-micro transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 ${
-                active ? 'text-sage-700 font-medium' : 'text-ink-subtle hover:text-ink'
+                /* [A11Y-DARK-CONTRAST] sage-700 on dark surface = 2.54:1.
+                 * In dark mode shift to sage-300 (#a6c3b5) for ~7:1. */
+                active ? 'text-sage-700 dark:text-sage-300 font-medium' : 'text-ink-subtle hover:text-ink'
               }`}
             >
               <span aria-hidden className="h-5 w-5">{t.icon}</span>
