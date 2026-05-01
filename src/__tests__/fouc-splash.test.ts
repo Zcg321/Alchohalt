@@ -55,3 +55,15 @@ describe('[BUG-FOUC-SPLASH] cold-load chrome', () => {
     expect(HTML).toMatch(/data-fade/);
   });
 });
+
+describe('[A11Y-VIEWPORT-ZOOM] viewport meta does not block zoom', () => {
+  it('viewport meta omits maximum-scale and user-scalable=no (WCAG 1.4.4)', () => {
+    const m = HTML.match(/<meta\s+name="viewport"\s+content="([^"]+)"/);
+    expect(m, 'viewport meta tag missing').not.toBeNull();
+    const content = m![1];
+    expect(content).toMatch(/width=device-width/);
+    expect(content).toMatch(/initial-scale=1/);
+    expect(content).not.toMatch(/maximum-scale=1/);
+    expect(content).not.toMatch(/user-scalable\s*=\s*no/);
+  });
+});
