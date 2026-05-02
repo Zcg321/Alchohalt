@@ -42,12 +42,18 @@ export default function RetrospectivePanel() {
       >
         <div className="card-content">
           <h3 id="retro-placeholder-heading" className="font-semibold text-base">
-            Your retrospective is coming
+            {t('retrospective.placeholderTitle', 'Your retrospective is coming')}
           </h3>
           <p className="text-sm text-ink-soft mt-1">
             {daysAway === 1
-              ? 'Your first retrospective unlocks tomorrow — a 30-day-vs-prior-30-day comparison once there’s enough history to make it honest.'
-              : `Your first retrospective unlocks in about ${daysAway} days — a 30-day-vs-prior-30-day comparison once there’s enough history to make it honest.`}
+              ? t(
+                  'retrospective.placeholderTomorrow',
+                  'Your first retrospective unlocks tomorrow — a 30-day-vs-prior-30-day comparison once there’s enough history to make it honest.'
+                )
+              : t(
+                  'retrospective.placeholderInDays',
+                  'Your first retrospective unlocks in about {{n}} days — a 30-day-vs-prior-30-day comparison once there’s enough history to make it honest.'
+                ).replace('{{n}}', String(daysAway))}
           </p>
         </div>
       </section>

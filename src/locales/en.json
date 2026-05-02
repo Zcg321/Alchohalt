@@ -253,7 +253,22 @@
     "viewSubtitle": "Recent {{n}} days vs the prior {{n}}.",
     "totalDrinks": "Total drinks",
     "afDays": "AF days",
-    "avgCraving": "Avg craving"
+    "avgCraving": "Avg craving",
+    "placeholderTitle": "Your retrospective is coming",
+    "placeholderTomorrow": "Your first retrospective unlocks tomorrow — a 30-day-vs-prior-30-day comparison once there's enough history to make it honest.",
+    "placeholderInDays": "Your first retrospective unlocks in about {{n}} days — a 30-day-vs-prior-30-day comparison once there's enough history to make it honest."
+  },
+
+  "funnel": {
+    "title": "Onboarding funnel",
+    "empty": "No attempts recorded yet. Clear data and re-run onboarding to populate.",
+    "subtitleOne": "On-device counts across {{n}} attempt. Never transmitted.",
+    "subtitleMany": "On-device counts across {{n}} attempts. Never transmitted.",
+    "attempts": "Attempts",
+    "completed": "Completed",
+    "completion": "Completion",
+    "reached": "{{n}} reached ({{pct}}%)",
+    "droppedHere": "Dropped here:"
   },
 
   "monthlyDelta": {

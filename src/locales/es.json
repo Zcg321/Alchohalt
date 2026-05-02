@@ -252,7 +252,21 @@
     "viewSubtitle": "Últimos {{n}} días vs los {{n}} anteriores.",
     "totalDrinks": "Bebidas totales",
     "afDays": "Días sin alcohol",
-    "avgCraving": "Antojo promedio"
+    "avgCraving": "Antojo promedio",
+    "placeholderTitle": "Tu retrospectiva está en camino",
+    "placeholderTomorrow": "Tu primera retrospectiva se desbloquea mañana — comparación de los últimos 30 días con los 30 anteriores, en cuanto haya historial suficiente para que sea honesta.",
+    "placeholderInDays": "Tu primera retrospectiva se desbloquea en unos {{n}} días — comparación de los últimos 30 días con los 30 anteriores, en cuanto haya historial suficiente para que sea honesta."
+  },
+  "funnel": {
+    "title": "Embudo de incorporación",
+    "empty": "Aún no se han registrado intentos. Borra los datos y vuelve a hacer la incorporación para llenar esto.",
+    "subtitleOne": "Conteos en el dispositivo a partir de {{n}} intento. Nunca se transmite.",
+    "subtitleMany": "Conteos en el dispositivo a partir de {{n}} intentos. Nunca se transmite.",
+    "attempts": "Intentos",
+    "completed": "Completados",
+    "completion": "Finalización",
+    "reached": "{{n}} alcanzaron ({{pct}}%)",
+    "droppedHere": "Abandonaron aquí:"
   },
   "monthlyDelta": {
     "title": "Mes a mes",

@@ -1,6 +1,7 @@
 // @no-smoke
 import React from 'react';
 import { useDB } from '../../store/db';
+import { useLanguage } from '../../i18n';
 import { computeOnboardingFunnel } from '../onboarding/funnel';
 
 /**
@@ -12,6 +13,7 @@ import { computeOnboardingFunnel } from '../onboarding/funnel';
  * shipping any analytics infra.
  */
 export default function OnboardingFunnelView() {
+  const { t } = useLanguage();
   const diag = useDB((s) => s.db.settings.onboardingDiagnostics);
   const history = useDB((s) => s.db.settings.onboardingDiagnosticsHistory);
   const funnel = computeOnboardingFunnel(diag, history);
@@ -25,10 +27,13 @@ export default function OnboardingFunnelView() {
       >
         <div className="card-header">
           <h3 id="funnel-heading" className="text-base font-semibold tracking-tight">
-            Onboarding funnel
+            {t('funnel.title', 'Onboarding funnel')}
           </h3>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            No attempts recorded yet. Clear data and re-run onboarding to populate.
+            {t(
+              'funnel.empty',
+              'No attempts recorded yet. Clear data and re-run onboarding to populate.',
+            )}
           </p>
         </div>
       </section>
@@ -37,6 +42,11 @@ export default function OnboardingFunnelView() {
 
   const ratePct =
     funnel.completionRate === null ? '—' : `${Math.round(funnel.completionRate * 100)}%`;
+  const subtitleKey = funnel.totalAttempts === 1 ? 'funnel.subtitleOne' : 'funnel.subtitleMany';
+  const subtitleFallback =
+    funnel.totalAttempts === 1
+      ? 'On-device counts across {{n}} attempt. Never transmitted.'
+      : 'On-device counts across {{n}} attempts. Never transmitted.';
 
   return (
     <section
@@ -46,29 +56,34 @@ export default function OnboardingFunnelView() {
     >
       <div className="card-header">
         <h3 id="funnel-heading" className="text-base font-semibold tracking-tight">
-          Onboarding funnel
+          {t('funnel.title', 'Onboarding funnel')}
         </h3>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-          On-device counts across {funnel.totalAttempts} attempt
-          {funnel.totalAttempts === 1 ? '' : 's'}. Never transmitted.
+          {t(subtitleKey, subtitleFallback).replace('{{n}}', String(funnel.totalAttempts))}
         </p>
       </div>
       <div className="card-content space-y-3">
         <dl className="grid grid-cols-3 gap-x-6 gap-y-2 text-sm">
           <div>
-            <dt className="text-xs uppercase tracking-wider text-ink-soft">Attempts</dt>
+            <dt className="text-xs uppercase tracking-wider text-ink-soft">
+              {t('funnel.attempts', 'Attempts')}
+            </dt>
             <dd className="font-medium" data-testid="funnel-total">
               {funnel.totalAttempts}
             </dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wider text-ink-soft">Completed</dt>
+            <dt className="text-xs uppercase tracking-wider text-ink-soft">
+              {t('funnel.completed', 'Completed')}
+            </dt>
             <dd className="font-medium" data-testid="funnel-completed">
               {funnel.totalCompleted}
             </dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wider text-ink-soft">Completion</dt>
+            <dt className="text-xs uppercase tracking-wider text-ink-soft">
+              {t('funnel.completion', 'Completion')}
+            </dt>
             <dd className="font-medium tabular-nums" data-testid="funnel-rate">
               {ratePct}
             </dd>
@@ -91,12 +106,14 @@ export default function OnboardingFunnelView() {
                 <div className="flex items-baseline justify-between gap-2">
                   <span className="font-medium text-sm">{s.label}</span>
                   <span className="text-xs text-ink-soft tabular-nums">
-                    {s.reached} reached ({Math.round(reachRate * 100)}%)
+                    {t('funnel.reached', '{{n}} reached ({{pct}}%)')
+                      .replace('{{n}}', String(s.reached))
+                      .replace('{{pct}}', String(Math.round(reachRate * 100)))}
                   </span>
                 </div>
                 <div className="mt-1 flex items-baseline justify-between gap-2 text-xs text-ink-soft">
                   <span>
-                    Dropped here:{' '}
+                    {t('funnel.droppedHere', 'Dropped here:')}{' '}
                     <span className="font-medium text-ink dark:text-neutral-200 tabular-nums">
                       {s.droppedHere}
                     </span>{' '}

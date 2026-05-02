@@ -247,7 +247,21 @@
     "viewSubtitle": "Derniers {{n}} jours vs les {{n}} précédents.",
     "totalDrinks": "Verres au total",
     "afDays": "Jours sans alcool",
-    "avgCraving": "Envie moyenne"
+    "avgCraving": "Envie moyenne",
+    "placeholderTitle": "Ta rétrospective arrive",
+    "placeholderTomorrow": "Ta première rétrospective se débloque demain — une comparaison des 30 derniers jours avec les 30 précédents, dès qu'il y a assez d'historique pour qu'elle soit honnête.",
+    "placeholderInDays": "Ta première rétrospective se débloque dans environ {{n}} jours — une comparaison des 30 derniers jours avec les 30 précédents, dès qu'il y a assez d'historique pour qu'elle soit honnête."
+  },
+  "funnel": {
+    "title": "Entonnoir d'accueil",
+    "empty": "Aucune tentative enregistrée pour l'instant. Efface les données et refais l'accueil pour remplir.",
+    "subtitleOne": "Décomptes sur l'appareil à partir de {{n}} tentative. Jamais transmis.",
+    "subtitleMany": "Décomptes sur l'appareil à partir de {{n}} tentatives. Jamais transmis.",
+    "attempts": "Tentatives",
+    "completed": "Terminées",
+    "completion": "Achèvement",
+    "reached": "{{n}} atteint ({{pct}}%)",
+    "droppedHere": "Abandons ici :"
   },
   "monthlyDelta": {
     "title": "D'un mois à l'autre",

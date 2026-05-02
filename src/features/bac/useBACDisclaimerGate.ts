@@ -22,15 +22,21 @@ import {
  *
  *   return (
  *     <>
- *       {bacGate.modal}
+ *       <BACDisclaimerModal
+ *         open={bacGate.isOpen}
+ *         onConfirm={bacGate.onConfirm}
+ *         onCancel={bacGate.onCancel}
+ *       />
  *       <Toggle onChange={onUserToggleBACOn} />
  *     </>
  *   );
  *
- * The hook returns the modal node itself so the caller doesn't have to
- * thread state. Acknowledgement is sticky on the device — confirming
- * once means it never shows again, dismissing leaves it un-set so
- * the next attempt re-prompts.
+ * The hook returns `{ requireAcknowledgement, isOpen, onConfirm,
+ * onCancel }`. The caller renders the BACDisclaimerModal themselves
+ * (so the modal stays a regular component, no Portal magic) and wires
+ * `isOpen` + the two callbacks. Acknowledgement is sticky on the
+ * device — confirming once means it never shows again; cancelling
+ * leaves it un-set so the next attempt re-prompts.
  */
 export function useBACDisclaimerGate() {
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);

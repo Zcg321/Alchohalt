@@ -12,7 +12,7 @@ import { useFocusTrap } from '../../hooks/useFocusTrap';
  *
  * The widmarkBAC function exists but is currently unwired (no UI imports
  * it as of round 11). This modal is the gate: any future BAC UI MUST
- * route through `useBACDisclaimer` before the user sees an estimate.
+ * route through `useBACDisclaimerGate` before the user sees an estimate.
  *
  * Voice: factual, not hand-wavy. The brief specified the wording.
  */
