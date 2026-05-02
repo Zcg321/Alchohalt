@@ -3,6 +3,7 @@ import type { PlanId } from '../../config/plans';
 import { useSubscriptionStore } from './subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
 import { getIAPProvider, type ProductId } from '../iap/IAPProvider';
+import { hapticForEvent } from '../../shared/haptics';
 
 const FAILED_MSG =
   "Purchase didn't go through. Try again, or use Restore prior purchases if you bought already on another device.";
@@ -38,11 +39,13 @@ export function useSubscriptionPurchase(onSubscribe?: (planId: PlanId) => Promis
           trackSubscriptionEvent('subscribed', planId);
         } else if (purchase.state !== 'cancelled') {
           setError(FAILED_MSG);
+          hapticForEvent('error');
         }
       }
     } catch (err) {
       const e = err as { message?: string };
       setError(e.message ?? ERROR_MSG);
+      hapticForEvent('error');
     } finally {
       setPendingPlan(null);
     }

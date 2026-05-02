@@ -30,6 +30,7 @@ import { Skeleton } from '../components/ui/Skeleton';
 const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
 import { usePWA } from '../hooks/usePWA';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { hapticForEvent } from '../shared/haptics';
 
 /* [REFACTOR-LONG-FN] Crisis dialog extracted as a sibling component to
  * shrink AlcoholCoachApp's render function. The dialog is presentation
@@ -189,6 +190,11 @@ export function AlcoholCoachApp() {
   function addDrink(drink: Drink) {
     const entry = legacyDrinkToEntry(drink);
     addEntry(entry);
+    /* Haptic map: drink-logged + af-day-marked both fire 'Light'. The
+     * AF case (volumeMl=0, abvPct=0) is the same user action — pressing
+     * a button — so it gets the same confirmation tap. Goal-hit /
+     * milestone-reached fire elsewhere when those events land. */
+    hapticForEvent(drink.volumeMl === 0 && drink.abvPct === 0 ? 'af-day-marked' : 'drink-logged');
   }
 
   function saveDrink(drink: Drink) {
@@ -196,6 +202,7 @@ export function AlcoholCoachApp() {
     const entry = legacyDrinkToEntry(drink);
     editEntry(editing, entry);
     setEditing(null);
+    hapticForEvent('drink-logged');
   }
 
   function deleteDrink(drink: Drink) {

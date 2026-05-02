@@ -44,6 +44,7 @@ import {
 import { generate as generateMnemonic } from '../../lib/sync/mnemonic';
 import type { SyncTransport } from '../../lib/sync/transport';
 import { humanizeSyncError } from './syncErrorMessage';
+import { hapticForEvent } from '../../shared/haptics';
 
 interface Props {
   transport: SyncTransport;
@@ -170,6 +171,11 @@ export default function SyncPanel({ transport }: Props) {
   function setFieldError(field: 'email' | 'passphrase' | 'form', message: string) {
     setErrorField(field);
     setError(message);
+    /* Form-level errors are the catch-block path (network / auth /
+     * mnemonic-checksum). Field-level email/passphrase errors are
+     * inline validation hints — they stay haptic-silent so the device
+     * doesn't buzz on every typo. See shared/haptics.ts for the map. */
+    if (field === 'form') hapticForEvent('error');
     /* Move focus to the error region so the screen-reader announces it
      * AND a sighted keyboard user can see exactly what failed without
      * scanning the whole form. tabIndex=-1 makes the region focusable
