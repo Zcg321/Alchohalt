@@ -34,7 +34,7 @@ describe('Capacitor.Preferences shim coverage', () => {
       lines = [];
     }
     const offending = lines
-      .map((l) => l.split(':')[0])
+      .map((l) => l.split(':')[0] ?? '')
       .filter((p) => p && p !== 'src/shared/capacitor.ts')
       // Test files don't ship; allow them to mock-import the plugin.
       .filter((p) => !/__tests__|\.test\.|\.spec\./.test(p));

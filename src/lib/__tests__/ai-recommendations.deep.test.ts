@@ -74,7 +74,7 @@ describe('generateGoalRecommendations — real signals', () => {
     );
     const recs = generateGoalRecommendations(entries, settingsBase, []);
     for (let i = 0; i < recs.length - 1; i++) {
-      expect(recs[i].confidence).toBeGreaterThanOrEqual(recs[i + 1].confidence);
+      expect(recs[i]!.confidence).toBeGreaterThanOrEqual(recs[i + 1]!.confidence);
     }
   });
 
@@ -276,7 +276,7 @@ describe('healthMetrics signal — readiness score', () => {
     // worst equal. Sleep 8h boosts readiness by 0.2; no-data baseline
     // adds 0.1.
     if (recsGood.length > 0 && recsNoData.length > 0) {
-      expect(recsGood[0].confidence).toBeGreaterThanOrEqual(recsNoData[0].confidence - 0.05);
+      expect(recsGood[0]!.confidence).toBeGreaterThanOrEqual(recsNoData[0]!.confidence - 0.05);
     }
   });
 });

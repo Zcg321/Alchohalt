@@ -86,7 +86,7 @@ describe('[A11Y-TABSHELL] WAI-ARIA tabs contract', () => {
     );
     // Find the desktop tablist (first one)
     const tablists = container.querySelectorAll('[role="tablist"]');
-    const list = tablists[0];
+    const list = tablists[0]!;
     fireEvent.keyDown(list, { key: 'ArrowRight' });
     expect(active).toBe('track');
 
@@ -124,7 +124,7 @@ describe('[A11Y-TABSHELL] WAI-ARIA tabs contract', () => {
     render(
       <TabShell panels={PANELS} activeTab={active as 'today'} onChange={(t) => { active = t; }} />,
     );
-    fireEvent.click(screen.getAllByRole('tab', { name: /Insights/i })[0]);
+    fireEvent.click(screen.getAllByRole('tab', { name: /Insights/i })[0]!);
     expect(active).toBe('insights');
   });
 });

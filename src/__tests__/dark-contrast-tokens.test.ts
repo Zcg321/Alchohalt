@@ -18,7 +18,11 @@ const THEME = readFileSync(join(REPO_ROOT, 'src/styles/theme.css'), 'utf-8');
 
 /** Convert "138 130 120" → relative luminance per WCAG. */
 function luminance(triple: string): number {
-  const [r, g, b] = triple.trim().split(/\s+/).map(Number);
+  const parts = triple.trim().split(/\s+/).map(Number);
+  const [r, g, b] = parts;
+  if (r === undefined || g === undefined || b === undefined) {
+    throw new Error(`Bad RGB triple: ${triple}`);
+  }
   const lin = (c: number) => {
     const v = c / 255;
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
@@ -40,22 +44,22 @@ function darkTokenTriple(name: string): string {
     /\[data-theme="dark"\][\s\S]*?\{([\s\S]*?)\n  \}/,
   );
   expect(darkBlockMatch, 'dark-mode block missing in theme.css').not.toBeNull();
-  const block = darkBlockMatch![1];
+  const block = darkBlockMatch![1]!;
   const re = new RegExp(`--${name}:\\s*([0-9 ]+);`);
   const m = block.match(re);
   expect(m, `--${name} not declared in dark-mode block`).not.toBeNull();
-  return m![1];
+  return m![1]!;
 }
 
 function lightTokenTriple(name: string): string {
   // First [data-theme="light"] (or :root) block
   const m = THEME.match(/:root,\s*\[data-theme="light"\][\s\S]*?\{([\s\S]*?)\n  \}/);
   expect(m).not.toBeNull();
-  const block = m![1];
+  const block = m![1]!;
   const re = new RegExp(`--${name}:\\s*([0-9 ]+);`);
   const m2 = block.match(re);
   expect(m2, `--${name} not declared in light-mode block`).not.toBeNull();
-  return m2![1];
+  return m2![1]!;
 }
 
 describe('[A11Y-DARK-CONTRAST] dark-mode contrast invariants', () => {

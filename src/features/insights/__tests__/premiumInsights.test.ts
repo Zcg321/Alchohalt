@@ -62,7 +62,7 @@ describe('generatePremiumInsights — gating', () => {
     );
     const insights = generatePremiumInsights(entries);
     for (let i = 0; i < insights.length - 1; i++) {
-      expect(insights[i].confidence).toBeGreaterThanOrEqual(insights[i + 1].confidence);
+      expect(insights[i]!.confidence).toBeGreaterThanOrEqual(insights[i + 1]!.confidence);
     }
   });
 });
