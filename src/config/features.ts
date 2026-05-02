@@ -81,10 +81,19 @@ export function isFeatureEnabled(feature: keyof typeof FEATURE_FLAGS): boolean {
 export function isAIRecommendationsEnabled(
   optOut?: boolean,
 ): boolean {
-  // 1. Test/QA override (web only — Capacitor.Preferences shim writes
-  // through to localStorage so the same key works in dev / preview).
+  // 1. Test/QA override (web only). The Capacitor.Preferences shim
+  // writes through to localStorage on web; native uses the keychain.
+  // The override is intentionally web-only because the only consumer
+  // is the Playwright proxy spec, which runs in a browser. Native
+  // users go through the opt-out toggle, not this override.
+  //
+  // The shim is async, but isAIRecommendationsEnabled() must be sync
+  // for the React render path. The alchohalt: prefix matches the
+  // shim's web layout, so a key written via getPreferences().set()
+  // can also be read here.
   if (typeof window !== 'undefined') {
     try {
+      // eslint-disable-next-line no-restricted-syntax
       const raw = window.localStorage.getItem('alchohalt:ai-recommendations-override');
       if (raw === 'true') return true;
       if (raw === 'false') return false;

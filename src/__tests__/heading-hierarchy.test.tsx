@@ -64,6 +64,7 @@ describe('[R7-E] heading hierarchy — tab surfaces', () => {
     const { container } = render(
       <TrackTab
         drinks={[]}
+        goals={{ dailyCap: 0, weeklyGoal: 0, pricePerStd: 0, baselineMonthlySpend: 0 }}
         presets={[]}
         editing={null}
         onAddDrink={() => undefined}
