@@ -196,7 +196,10 @@
     "intentChosen": "Gewählte Absicht",
     "trackStyleChosen": "Gewählter Tracking-Stil",
     "completedAt": "Abgeschlossen am",
-    "noChoice": "—"
+    "noChoice": "—",
+    "updateIntent": "Meine Absicht aktualisieren",
+    "historyTitle": "Frühere Antworten",
+    "historyCount": "{{n}} frühere Antwort{{s}}"
   },
   "settings": {
     "privacy": {

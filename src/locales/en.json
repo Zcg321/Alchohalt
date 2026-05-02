@@ -199,7 +199,10 @@
     "intentChosen": "Intent chosen",
     "trackStyleChosen": "Tracking style chosen",
     "completedAt": "Completed at",
-    "noChoice": "—"
+    "noChoice": "—",
+    "updateIntent": "Update my intent",
+    "historyTitle": "Prior answers",
+    "historyCount": "{{n}} prior answer{{s}}"
   },
 
   "settings": {

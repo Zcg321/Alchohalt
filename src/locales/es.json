@@ -201,7 +201,10 @@
     "intentChosen": "Intención elegida",
     "trackStyleChosen": "Estilo de seguimiento elegido",
     "completedAt": "Completada el",
-    "noChoice": "—"
+    "noChoice": "—",
+    "updateIntent": "Actualizar mi intención",
+    "historyTitle": "Respuestas anteriores",
+    "historyCount": "{{n}} respuesta{{s}} anterior{{s}}"
   },
   "settings": {
     "privacy": {

@@ -53,6 +53,16 @@ export interface Settings {
   hasCompletedOnboarding?: boolean | undefined;
   onboardingDiagnostics?: OnboardingDiagnostics | undefined;
   /**
+   * [R10-C] Append-only log of past onboarding-diagnostics rows. Each
+   * entry has a tagged `revisedAt` timestamp. The latest row drives
+   * Diagnostics display via `onboardingDiagnostics`; older rows are
+   * preserved here so a user can see how their intent evolved.
+   *
+   * Local-only — same privacy footprint as the active row. Never
+   * transmitted.
+   */
+  onboardingDiagnosticsHistory?: Array<OnboardingDiagnostics & { revisedAt: number }> | undefined;
+  /**
    * [HARD-TIME-ROUND-4] Non-judgmental marker timestamp set by the
    * "stop tracking for tonight" action in the Hard-Time panel. Quieter
    * view rendered while `Date.now() < quietUntilTs`. Auto-clears at
