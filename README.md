@@ -1,9 +1,25 @@
 # alchohalt
 
+> **No ads. No analytics. Trust receipt included.**
+> A calm alcohol tracker. We cryptographically cannot read what you log.
+
 [![Repo Health](https://github.com/Zcg321/Alchohalt/actions/workflows/repo-health.yml/badge.svg)](../../actions/workflows/repo-health.yml)
 
 <!-- Coverage badge - currently at 54.55% with target of 50% for production readiness -->
 <img alt="Coverage Gate" src="https://img.shields.io/badge/coverage-54.55%25-success">
+
+## What it is
+
+Alchohalt is an alcohol-tracking app for people who want to know what's
+happening in their own drinking — without trading their data for the
+privilege. Three commitments anchor the design:
+
+- **No ads.** None. Not now, not when we're profitable, not ever.
+- **No analytics.** No telemetry, no funnels, no SDKs. The Diagnostics
+  view in Settings is local-only and reads what already lives on
+  your phone.
+- **Trust receipt included.** Every storage write and (when sync is
+  on) every network call leaves a hash trail you can audit yourself.
 
 Experimental React app wrapped with Capacitor. Data saved as a single versioned Preferences record (`alchohalt.db`) for easier migration.
 
