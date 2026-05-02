@@ -12,10 +12,10 @@ import {
 } from './moodSteps';
 
 interface Props {
-  onComplete?: (state: EmotionalState) => void;
-  onPatternUpdate?: (pattern: MoodPattern) => void;
-  recentEntries?: EmotionalState[];
-  className?: string;
+  onComplete?: ((state: EmotionalState) => void) | undefined;
+  onPatternUpdate?: ((pattern: MoodPattern) => void) | undefined;
+  recentEntries?: EmotionalState[] | undefined;
+  className?: string | undefined;
 }
 
 interface StepBodyProps {

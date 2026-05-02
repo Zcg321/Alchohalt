@@ -6,7 +6,7 @@ export interface AdvancedGoal {
   target: number;
   current: number;
   unit: string;
-  deadline?: Date;
+  deadline?: Date | undefined;
   isActive: boolean;
 }
 

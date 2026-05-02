@@ -107,12 +107,13 @@ export async function requestAIInsights(
   }
 
   try {
-    const res = await fetch(proxyUrl, {
+    const init: RequestInit = {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body,
-      signal: args.signal,
-    });
+    };
+    if (args.signal) init.signal = args.signal;
+    const res = await fetch(proxyUrl, init);
     if (res.status === 429) return { ok: false, reason: 'rate-limited' };
     if (!res.ok) return { ok: false, reason: 'proxy-error' };
     const json = (await res.json()) as { insights?: AIInsightsResult['insights'] };

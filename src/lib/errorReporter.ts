@@ -26,9 +26,9 @@
 export interface ReporterEvent {
   /** Best-effort error string. May be undefined if the source was
    * `unhandledrejection` with a non-Error reason. */
-  message?: string;
+  message?: string | undefined;
   /** Stack trace if available. */
-  stack?: string;
+  stack?: string | undefined;
   /** Where it came from. */
   source: 'window.onerror' | 'unhandledrejection';
   /** ISO timestamp. */

@@ -167,9 +167,9 @@ function computeCurrentStreak(entries: ReadonlyArray<Entry>): number {
 export interface SanitizeInput {
   entries: ReadonlyArray<Entry>;
   /** How many days of history to roll up. Default 90. */
-  windowDays?: number;
+  windowDays?: number | undefined;
   /** Locale for prompt language. */
-  locale?: 'en' | 'es';
+  locale?: 'en' | 'es' | undefined;
   /** Anonymous instance ID from consent state. Required. */
   instanceId: string;
 }

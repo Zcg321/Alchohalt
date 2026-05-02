@@ -14,7 +14,7 @@ describe('errorReporter — global handler shim', () => {
   });
 
   it('captures unhandledrejection (Error reason)', () => {
-    const captured: Array<{ message?: string; source: string }> = [];
+    const captured: Array<{ message?: string | undefined; source: string }> = [];
     setReporter((e) => captured.push({ message: e.message, source: e.source }));
     installGlobalErrorReporter();
     const err = new Error('boom from a promise');
@@ -31,7 +31,7 @@ describe('errorReporter — global handler shim', () => {
   });
 
   it('captures unhandledrejection (string reason)', () => {
-    const captured: Array<{ message?: string }> = [];
+    const captured: Array<{ message?: string | undefined }> = [];
     setReporter((e) => captured.push({ message: e.message }));
     installGlobalErrorReporter();
     window.dispatchEvent(
@@ -45,7 +45,7 @@ describe('errorReporter — global handler shim', () => {
   });
 
   it('captures window.onerror', () => {
-    const captured: Array<{ message?: string; source: string }> = [];
+    const captured: Array<{ message?: string | undefined; source: string }> = [];
     setReporter((e) => captured.push({ message: e.message, source: e.source }));
     installGlobalErrorReporter();
     const err = new Error('event-handler boom');

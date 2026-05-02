@@ -8,8 +8,8 @@ import { formatTime, formatStdDrinks } from '../../../lib/format';
 
 interface Props {
   drink: Drink;
-  onEdit?: (d: Drink) => void;
-  onDelete?: (ts: number) => void;
+  onEdit?: ((d: Drink) => void) | undefined;
+  onDelete?: ((ts: number) => void) | undefined;
 }
 
 export default function DrinkItem({ drink, onEdit, onDelete }: Props) {

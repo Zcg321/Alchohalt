@@ -25,10 +25,10 @@ import type { DrinkPreset } from '../DrinkPresets';
 
 interface Props {
   onSubmit(drink: Drink): void;
-  initial?: Drink;
-  submitLabel?: string;
-  onCancel?: () => void;
-  presets?: DrinkPreset[];
+  initial?: Drink | undefined;
+  submitLabel?: string | undefined;
+  onCancel?: (() => void) | undefined;
+  presets?: DrinkPreset[] | undefined;
 }
 
 export default function DrinkForm({ onSubmit, initial, submitLabel, onCancel, presets }: Props) {

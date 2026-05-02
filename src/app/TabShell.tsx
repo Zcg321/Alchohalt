@@ -45,8 +45,8 @@ interface Props {
   panels: Record<TabId, React.ReactNode>;
   /** Optional: control the active tab from the parent (e.g. when a CTA
    * elsewhere asks the shell to jump to Insights). */
-  activeTab?: TabId;
-  onChange?: (tab: TabId) => void;
+  activeTab?: TabId | undefined;
+  onChange?: ((tab: TabId) => void) | undefined;
 }
 
 function readInitialTab(): TabId {

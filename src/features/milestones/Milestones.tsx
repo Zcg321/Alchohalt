@@ -33,7 +33,7 @@ interface Milestone {
    * aren't. Matched to `voice-guidelines.md`: trusted-friend tone,
    * questions over declarations, no exclamation marks.
    */
-  reachedSubtitle?: string;
+  reachedSubtitle?: string | undefined;
 }
 
 const MILESTONES: Milestone[] = [
@@ -51,12 +51,12 @@ const MILESTONES: Milestone[] = [
 
 interface Props {
   drinks: Drink[];
-  className?: string;
+  className?: string | undefined;
 }
 
 interface Reached {
   reached: boolean;
-  reachedAt?: number;
+  reachedAt?: number | undefined;
 }
 
 function dateKey(ms: number): string {

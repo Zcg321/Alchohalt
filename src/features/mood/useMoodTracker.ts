@@ -29,8 +29,8 @@ function buildState(partial: Partial<EmotionalState>): EmotionalState | null {
 }
 
 export interface MoodTrackerHookOptions {
-  onComplete?: (state: EmotionalState) => void;
-  onPatternUpdate?: (pattern: MoodPattern) => void;
+  onComplete?: ((state: EmotionalState) => void) | undefined;
+  onPatternUpdate?: ((pattern: MoodPattern) => void) | undefined;
   recentEntries: EmotionalState[];
 }
 

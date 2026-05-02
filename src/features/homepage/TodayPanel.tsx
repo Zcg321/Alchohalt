@@ -27,13 +27,13 @@ interface Props {
   drinks: Drink[];
   goals: Goals;
   /** Open the brief mood / check-in flow. */
-  onCheckIn?: () => void;
+  onCheckIn?: (() => void) | undefined;
   /** Focus the drink-log entry surface. */
-  onLogDrink?: () => void;
+  onLogDrink?: (() => void) | undefined;
   /** Mark today as alcohol-free (logs a 0-std entry). */
-  onMarkAF?: () => void;
+  onMarkAF?: (() => void) | undefined;
   /** Navigate to the Insights tab / progress view. */
-  onSeeProgress?: () => void;
+  onSeeProgress?: (() => void) | undefined;
   /**
    * One-tap exit to crisis resources. Surfaces a tertiary "Having a
    * hard time?" link beneath the primary CTA so a user who already
@@ -41,7 +41,7 @@ interface Props {
    * The AppHeader chip stays — it's the calm-affordance entry; this
    * is the one for the moments that aren't calm.
    */
-  onRoughNight?: () => void;
+  onRoughNight?: (() => void) | undefined;
   /**
    * [HARD-TIME-ROUND-4] Quiet mode. When true, the Day-N hero stays
    * visible but everything else (CTAs, streak badge, stats strip,

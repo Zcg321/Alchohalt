@@ -56,7 +56,7 @@ export function EmotionStep({
   selected,
   onSelect,
 }: {
-  selected?: EmotionKey;
+  selected?: EmotionKey | undefined;
   onSelect: (emotion: EmotionKey) => void;
 }) {
   return (
@@ -91,7 +91,7 @@ export function IntensityStep({
   onContinue,
 }: {
   emotion: (typeof EMOTIONS)[number];
-  selected?: number;
+  selected?: number | undefined;
   onSelect: (intensity: number) => void;
   onContinue: () => void;
 }) {
