@@ -296,6 +296,7 @@ export default function OnboardingFlow() {
             type="button"
             onClick={() => skip('x-button')}
             aria-label={t('onboarding.close', 'Close')}
+            data-testid="onboarding-x-button"
             className="-mt-1 -mr-1 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
           >
             <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

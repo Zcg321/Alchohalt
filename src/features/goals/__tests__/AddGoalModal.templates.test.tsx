@@ -40,7 +40,9 @@ describe('AddGoalModal — templates [R9-4]', () => {
     // Submit the prefilled form. Use the form's submit button (Create Goal).
     fireEvent.click(screen.getByText(/Create Goal/i));
     expect(onAdd).toHaveBeenCalledTimes(1);
-    const arg = onAdd.mock.calls[0][0];
+    const firstCall = onAdd.mock.calls[0];
+    if (!firstCall) throw new Error('onAdd was not called');
+    const arg = firstCall[0];
     expect(arg.type).toBe('reduction');
     expect(arg.title).toBe('Cut to 7 drinks per week');
     expect(arg.target).toBe(7);

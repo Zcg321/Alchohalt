@@ -9,13 +9,20 @@
  * to true so it does not re-fire on next mount.
  */
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import OnboardingFlow from '../OnboardingFlow';
 import { useDB } from '../../../store/db';
 import { __resetPreferencesCacheForTests } from '../../../shared/capacitor';
 
+// [R9-REBASE] BeatOne now defers chip render by 500ms (R8 UX). Tests
+// that interact with chips advance fake timers past the threshold.
+function flushChipDelay() {
+  act(() => { vi.advanceTimersByTime(600); });
+}
+
 beforeEach(() => {
+  vi.useFakeTimers();
   __resetPreferencesCacheForTests();
   if (typeof window !== 'undefined') window.localStorage.clear();
   // Reset onboarding completion to fresh-install.
@@ -23,6 +30,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   __resetPreferencesCacheForTests();
   if (typeof window !== 'undefined') window.localStorage.clear();
 });
@@ -75,8 +83,7 @@ describe('OnboardingFlow — does not re-fire after completion', () => {
 describe('OnboardingFlow — diagnostics [R9-2]', () => {
   it('records skipPath="x-button" when X is clicked', () => {
     render(<OnboardingFlow />);
-    const closes = screen.getAllByLabelText(/skip/i);
-    fireEvent.click(closes[0]);
+    fireEvent.click(screen.getByTestId('onboarding-x-button'));
     const diag = useDB.getState().db.settings.onboardingDiagnostics;
     expect(diag?.status).toBe('skipped');
     expect(diag?.skipPath).toBe('x-button');
@@ -84,6 +91,7 @@ describe('OnboardingFlow — diagnostics [R9-2]', () => {
 
   it('records skipPath="just-looking" when tertiary is clicked', () => {
     render(<OnboardingFlow />);
+    flushChipDelay();
     const tertiary = screen.getByTestId('onboarding-just-looking');
     fireEvent.click(tertiary);
     const diag = useDB.getState().db.settings.onboardingDiagnostics;
@@ -107,8 +115,11 @@ describe('OnboardingFlow — diagnostics [R9-2]', () => {
 
   it('records status="completed" with intent + trackStyle when full flow finishes', () => {
     render(<OnboardingFlow />);
-    fireEvent.click(screen.getByText('Cutting back'));
-    fireEvent.click(screen.getByText('30-day reset'));
+    flushChipDelay();
+    // [R9-REBASE] R8 voice: "Trying to drink less" / "A month off" /
+    // "Get started" — these are the chip labels we kept after merge.
+    fireEvent.click(screen.getByText('Trying to drink less'));
+    fireEvent.click(screen.getByText('A month off'));
     fireEvent.click(screen.getByText(/Get started/i));
     const diag = useDB.getState().db.settings.onboardingDiagnostics;
     expect(diag?.status).toBe('completed');

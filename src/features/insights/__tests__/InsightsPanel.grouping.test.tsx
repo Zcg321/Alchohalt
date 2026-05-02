@@ -14,14 +14,6 @@ import InsightsPanel from '../InsightsPanel';
 import { useDB } from '../../../store/db';
 import { __resetPreferencesCacheForTests } from '../../../shared/capacitor';
 import type { Drink } from '../../drinks/DrinkForm';
-import type { Goals } from '../../../types/common';
-
-const goals: Goals = {
-  dailyCap: 0,
-  weeklyGoal: 0,
-  baselineMonthlySpend: 0,
-  pricePerStd: 5,
-};
 
 beforeEach(() => {
   __resetPreferencesCacheForTests();
@@ -31,7 +23,7 @@ beforeEach(() => {
 
 describe('InsightsPanel — themed groupings [R9-T3]', () => {
   it('renders no group headings when there are zero drinks', () => {
-    render(<InsightsPanel drinks={[]} goals={goals} />);
+    render(<InsightsPanel drinks={[]} />);
     expect(screen.queryByText("What's working")).toBeNull();
     expect(screen.queryByText('Patterns we noticed')).toBeNull();
     expect(screen.queryByText('Things to try')).toBeNull();
@@ -52,7 +44,7 @@ describe('InsightsPanel — themed groupings [R9-T3]', () => {
       { ts: now - 4 * day, volumeMl: 355, abvPct: 5, craving: 1, intention: 'social', halt: [], alt: '' },
     ];
 
-    render(<InsightsPanel drinks={drinks} goals={goals} />);
+    render(<InsightsPanel drinks={drinks} />);
     // Cravings-improving is an achievement → group heading should
     // render. Streak path may or may not trigger depending on the
     // exact day boundary; we assert the heading is present either way.

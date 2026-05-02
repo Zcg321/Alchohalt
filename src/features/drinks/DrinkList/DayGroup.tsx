@@ -5,6 +5,7 @@ import type { Drink } from '../DrinkForm';
 import DrinkItem from './DrinkItem';
 import { formatDate, formatNumber } from '../../../lib/format';
 import { useLanguage } from '../../../i18n';
+import type { Lang } from '../../../i18n';
 
 interface Props {
   day: string;
@@ -17,7 +18,7 @@ interface Props {
 // Timezone-safe date formatting to avoid UTC interpretation issues.
 // Builds the Date in local TZ from the YYYY-MM-DD components, then
 // hands off to the locale-aware formatter so Spanish users see Spanish.
-function formatDateSafe(isoDateString: string, lang: 'en' | 'es'): string {
+function formatDateSafe(isoDateString: string, lang: Lang): string {
   const [year, month, day] = isoDateString.split('-').map(Number);
   if (year === undefined || month === undefined || day === undefined) {
     return isoDateString;
