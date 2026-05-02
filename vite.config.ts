@@ -113,6 +113,14 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
+        // [R10-E] Alias @capacitor/core to a web stub so the bundle
+        // resolves on the browser. The rollup `external: [/^@capacitor\//]`
+        // rule was leaving bare-specifier `import "@capacitor/core"`
+        // statements in lazy chunks (e.g. AdvancedGoalSetting), which
+        // the browser cannot resolve — pageerror "Failed to resolve
+        // module specifier". Native builds (via Capacitor CLI) override
+        // this alias with the real runtime; they don't go through vite.
+        '@capacitor/core': path.resolve(__dirname, 'src/shared/capacitor-web-stub.ts'),
         ...(process.env.CI === 'true'
           ? { 'virtual:pwa-register': '/src/features/pwa/virtual-pwa-register-stub.ts' }
           : {}),
@@ -148,7 +156,18 @@ export default defineConfig(() => {
       reportCompressedSize: false,
       terserOptions: { compress: { pure_funcs: ['console.log'] } },
       rollupOptions: {
-        external: [/^@capacitor\//],
+        // [R10-E] Externalize Capacitor *plugins* (preferences,
+        // local-notifications, etc.) that are only loaded via dynamic
+        // import on native; their import() calls survive externalization
+        // and runtime guards (Capacitor.isNativePlatform()) prevent them
+        // from firing on web. `@capacitor/core` is the exception: it's
+        // statically imported by src/shared/* and src/features/health/*,
+        // so externalizing it left bare specifiers in lazy chunks that
+        // crashed the browser. We alias it to a web stub above.
+        external: [
+          /^@capacitor\/(?!core$)/,
+          /^@capacitor-community\//,
+        ],
         onwarn(warning, warn) {
           if (/circular dependency/.test(warning.message)) return;
           warn(warning);
