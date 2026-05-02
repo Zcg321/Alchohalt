@@ -50,6 +50,14 @@ _legal_site/
 vitest.config.*.timestamp-*.mjs
 vite.config.*.timestamp-*.mjs
 
+# [R7-A3] Playwright persona-walkthrough outputs (CI artifact only).
+# The spec + fixtures live in e2e/ and are tracked; the rendered PNGs
+# and reports are regenerated on every run.
+e2e/screenshots/
+playwright-report/
+playwright-test-output/
+test-results/
+
 # Push helper scripts dropped by automation
 _push_*.bat
 
