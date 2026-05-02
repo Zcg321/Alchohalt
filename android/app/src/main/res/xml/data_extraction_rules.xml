@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  [R6-B] Android 12+ (API 31+) data-extraction rules.
+
+  Two transports to lock down explicitly:
+    - cloud-backup: Google Drive auto-backup
+    - device-transfer: D2D copy when user moves to a new phone
+
+  Both are excluded for sharedpref / database / file domains so the
+  drink log never travels off the device automatically. Users who want
+  cross-device data should use the planned cloud-sync feature with
+  end-to-end encryption.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" />
+        <exclude domain="database" />
+        <exclude domain="file" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" />
+        <exclude domain="database" />
+        <exclude domain="file" />
+    </device-transfer>
+</data-extraction-rules>

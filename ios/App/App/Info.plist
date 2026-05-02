@@ -45,5 +45,28 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<!--
+	  [R6-B] Privacy usage descriptions.
+
+	  Microphone + speech recognition are requested only when the user
+	  taps the (currently flag-gated) voice-log button. Health share/
+	  update is requested only when the user opts in to the (also flag-
+	  gated) health integration. The strings ship even though the
+	  optional Capacitor plugins are not installed in the default build,
+	  so a future release that flips ENABLE_VOICE_LOGGING or
+	  ENABLE_HEALTH_INTEGRATION won't get rejected by App Review for a
+	  missing usage string.
+
+	  Strings are written in plain language — they describe exactly what
+	  the app does with the data, no marketing voice.
+	-->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Alchohalt uses the microphone only when you tap the voice-log button to dictate a drink entry. Audio is converted to text on your device and never sent anywhere.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech recognition is used only when you tap the voice-log button. Recognition runs on your device — the audio and the transcript never leave your phone.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Alchohalt reads sleep, steps, and resting heart rate from Apple Health to show how your drinking patterns line up with the rest of your day. Reading is opt-in and you can revoke it anytime in Settings.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Alchohalt does not currently write to Apple Health. This permission is requested only if you opt in to a future feature that records alcohol intake back to Health.</string>
 </dict>
 </plist>
