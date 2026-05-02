@@ -95,12 +95,19 @@ export default function BACDisclaimerModal({ open, onConfirm, onCancel }: Props)
 
 /**
  * Reads localStorage to determine whether the disclaimer has already
- * been acknowledged on this device. Returns false defensively if
- * localStorage is unavailable (private mode, etc.) so the modal will
- * show in those cases — better to show twice than zero times.
+ * been acknowledged on this device. Sync read because the gate hook
+ * runs at user-event time and must answer immediately. Returns false
+ * defensively if localStorage is unavailable (private mode, etc.) so
+ * the modal will show in those cases — better to show twice than
+ * zero times.
+ *
+ * The Capacitor Preferences shim is async, so this can't go through
+ * src/lib/storage.ts. The lint exception is intentional and matches
+ * the same pattern config/features.ts uses for sync overrides.
  */
 export function isBACDisclaimerAcknowledged(): boolean {
   try {
+    // eslint-disable-next-line no-restricted-syntax
     return localStorage.getItem(BAC_DISCLAIMER_STORAGE_KEY) === 'true';
   } catch {
     return false;
@@ -109,6 +116,7 @@ export function isBACDisclaimerAcknowledged(): boolean {
 
 export function setBACDisclaimerAcknowledged(): void {
   try {
+    // eslint-disable-next-line no-restricted-syntax
     localStorage.setItem(BAC_DISCLAIMER_STORAGE_KEY, 'true');
   } catch {
     // localStorage unavailable — the modal will show again next time.
@@ -120,6 +128,7 @@ export function setBACDisclaimerAcknowledged(): void {
  */
 export function _resetBACDisclaimerForTests(): void {
   try {
+    // eslint-disable-next-line no-restricted-syntax
     localStorage.removeItem(BAC_DISCLAIMER_STORAGE_KEY);
   } catch {
     // ignore

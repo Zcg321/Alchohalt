@@ -86,8 +86,9 @@ export function UpgradePrompt({
         <button
           className="mt-3 px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
           onClick={() => {
-            // TODO: Navigate to subscription page
-            console.log('Navigate to subscription page');
+            // [R11-6] Match SoftPaywall's event-based pattern so the
+            // host (settings panel) routes both CTAs to the same place.
+            window.dispatchEvent(new CustomEvent('alch:open-subscription'));
           }}
         >
           See plans

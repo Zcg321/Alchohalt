@@ -72,8 +72,11 @@ export default function DataRecoveryScreen() {
 
   const handleStartFresh = () => {
     try {
-      // Clear both web localStorage and the Capacitor-mapped key
+      // Sync clear because we're about to reload — async shim would
+      // race the navigation. The eslint exception matches the same
+      // pattern config/features.ts uses for sync localStorage access.
       if (typeof window !== 'undefined' && window.localStorage) {
+        // eslint-disable-next-line no-restricted-syntax
         window.localStorage.removeItem('alchohalt.db');
       }
     } catch {
