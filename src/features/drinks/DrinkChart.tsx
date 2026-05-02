@@ -1,7 +1,7 @@
 // @no-smoke
 import React from "react";
 import { LazyRecharts as R } from "@/shared/charts";
-import { Drink } from "./DrinkForm";
+import type { Drink } from "./DrinkForm";
 import { stdDrinks } from "../../lib/calc";
 
 interface Props {

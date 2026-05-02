@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../../../components/ui/Button';
-import { DrinkPreset } from '../DrinkPresets';
+import type { DrinkPreset } from '../DrinkPresets';
 
 interface Props {
   presets: DrinkPreset[];

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input } from '../../../components/ui/Input';
 import { Label } from '../../../components/ui/Label';
 import { Button } from '../../../components/ui/Button';
-import { DrinkPreset } from './lib';
+import type { DrinkPreset } from './lib';
 
 interface Props {
   onAdd(preset: DrinkPreset): void;

@@ -1,6 +1,6 @@
 // @no-smoke
 import React, { useMemo } from 'react';
-import { Drink } from '../DrinkForm';
+import type { Drink } from '../DrinkForm';
 import DayGroup from './DayGroup';
 import { useLanguage } from '../../../i18n';
 

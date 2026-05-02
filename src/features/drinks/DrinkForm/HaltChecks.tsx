@@ -1,6 +1,7 @@
 // @no-smoke
 import React from 'react';
-import { haltOptions, Halt } from './lib';
+import { haltOptions } from './lib';
+import type { Halt } from './lib';
 import { useLanguage } from '../../../i18n';
 
 interface Props {

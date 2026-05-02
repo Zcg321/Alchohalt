@@ -1,7 +1,7 @@
 // @no-smoke
 import React from 'react';
 import { stdDrinks } from '../../../lib/calc';
-import { Drink } from '../DrinkForm';
+import type { Drink } from '../DrinkForm';
 import DrinkItem from './DrinkItem';
 import { formatDate, formatNumber } from '../../../lib/format';
 import { useLanguage } from '../../../i18n';
