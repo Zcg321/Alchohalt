@@ -20,7 +20,14 @@ import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
-import LegalDocPage, { isLegalSlug, type LegalSlug } from '../features/legal/LegalDocPage';
+import { isLegalSlug, type LegalSlug } from '../features/legal/slugs';
+import { Skeleton } from '../components/ui/Skeleton';
+
+/* [PERF-LAZY-LEGAL] /legal/<slug> is a deep-link surface, not part of
+ * the normal app flow. Splitting it off the eager bundle drops marked
+ * + 5 markdown payloads from the initial download. The slug type +
+ * predicate stay non-lazy because the route resolver needs them. */
+const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
 import { usePWA } from '../hooks/usePWA';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 
@@ -302,7 +309,9 @@ export function AlcoholCoachApp() {
       ) : null}
 
       {legalSlug ? (
-        <LegalDocPage slug={legalSlug} />
+        <React.Suspense fallback={<Skeleton className="mx-auto mt-12 max-w-3xl h-96 rounded-2xl" />}>
+          <LegalDocPage slug={legalSlug} />
+        </React.Suspense>
       ) : (
         <TabShell panels={panels} activeTab={activeTab} onChange={setActiveTab} />
       )}

@@ -17,21 +17,18 @@
 
 import React from 'react';
 import { marked } from 'marked';
+import { type LegalSlug } from './slugs';
 
 // Vite's `?raw` suffix imports the file content as a string at build
-// time. The eager imports below tree-shake unused ones in production.
+// time. Pulled into the lazy chunk so the eager bundle stays clean of
+// the markdown payload until the user actually visits /legal/<slug>.
 import privacyMd from '../../../docs/legal/PRIVACY_POLICY.md?raw';
 import termsMd from '../../../docs/legal/TERMS_OF_SERVICE.md?raw';
 import eulaMd from '../../../docs/legal/EULA.md?raw';
 import subscriptionMd from '../../../docs/legal/SUBSCRIPTION_TERMS.md?raw';
 import healthMd from '../../../docs/legal/CONSUMER_HEALTH_DATA_POLICY.md?raw';
 
-export type LegalSlug =
-  | 'privacy-policy'
-  | 'terms-of-service'
-  | 'eula'
-  | 'subscription-terms'
-  | 'consumer-health-data';
+export { isLegalSlug, LEGAL_SLUGS, type LegalSlug } from './slugs';
 
 const DOCS: Record<LegalSlug, { title: string; body: string }> = {
   'privacy-policy': { title: 'Privacy Policy', body: privacyMd },
@@ -40,12 +37,6 @@ const DOCS: Record<LegalSlug, { title: string; body: string }> = {
   'subscription-terms': { title: 'Subscription Terms', body: subscriptionMd },
   'consumer-health-data': { title: 'Consumer Health Data Policy', body: healthMd },
 };
-
-export const LEGAL_SLUGS = Object.keys(DOCS) as LegalSlug[];
-
-export function isLegalSlug(s: string): s is LegalSlug {
-  return s in DOCS;
-}
 
 interface Props {
   slug: LegalSlug;
