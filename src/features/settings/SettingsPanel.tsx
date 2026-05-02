@@ -6,6 +6,7 @@ import { Skeleton } from '../../components/ui/Skeleton';
 import DevTools from './DevTools';
 import Diagnostics from './Diagnostics';
 import ExportImport from '../drinks/ExportImport';
+import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
@@ -239,6 +240,8 @@ export default function SettingsPanel() {
 
         <PrivacyStatus />
         <TrustReceipt />
+
+        <SharingPanel />
 
         <Diagnostics />
       </section>

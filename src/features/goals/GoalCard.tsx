@@ -2,14 +2,16 @@ import React from 'react';
 import type { AdvancedGoal } from './types';
 import { useLanguage } from '../../i18n';
 import { formatDate } from '../../lib/format';
+import GoalEvolution, { shouldShowEvolution } from './GoalEvolution';
 
 interface Props {
   goal: AdvancedGoal;
   onToggle: () => void;
   onDelete: () => void;
+  onEdit?: ((patch: Partial<AdvancedGoal>) => void) | undefined;
 }
 
-export default function GoalCard({ goal, onToggle, onDelete }: Props) {
+export default function GoalCard({ goal, onToggle, onDelete, onEdit }: Props) {
   const { lang } = useLanguage();
   const progressPercentage = goal.target > 0
     ? Math.min((goal.current / goal.target) * 100, 100)
@@ -58,6 +60,14 @@ export default function GoalCard({ goal, onToggle, onDelete }: Props) {
             <div className="text-xs opacity-70">
               Deadline: {formatDate(goal.deadline, lang)}
             </div>
+          )}
+
+          {onEdit && shouldShowEvolution(goal) && !goal.evolutionDismissedAt && (
+            <GoalEvolution
+              goal={goal}
+              onEvolve={(patch) => onEdit({ ...patch, evolutionDismissedAt: undefined })}
+              onDismiss={() => onEdit({ evolutionDismissedAt: Date.now() })}
+            />
           )}
         </div>
 

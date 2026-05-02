@@ -35,6 +35,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDB } from '../../store/db';
 import { telHref, smsHref } from '../../lib/safeLinks';
+import EscalationPrompt from './EscalationPrompt';
+import { recordHardTimeOpen, shouldEscalate } from './escalation';
 
 interface Props {
   onClose: () => void;
@@ -121,6 +123,19 @@ function BreathingTimer() {
 
 export default function HardTimePanel({ onClose }: Props) {
   const { setSettings } = useDB();
+  const openLog = useDB((s) => s.db.settings.hardTimeOpenLog);
+
+  // [R10-4] Record one open per mount + decide whether to surface the
+  // soft counselor escalation. We persist the log across mounts so
+  // multiple opens within 24h aggregate.
+  useEffect(() => {
+    setSettings({ hardTimeOpenLog: recordHardTimeOpen(openLog) });
+    // openLog intentionally not in deps — we want to record exactly
+    // once per panel mount, not on every state change after.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const showEscalation = shouldEscalate(openLog);
 
   function handleQuietRest() {
     setSettings({ quietUntilTs: nextDayMidnight() });
@@ -135,6 +150,8 @@ export default function HardTimePanel({ onClose }: Props) {
           Pick what helps. The phone numbers go straight to your dialer.
         </p>
       </header>
+
+      {showEscalation && <EscalationPrompt openLog={openLog} />}
 
       <div className="space-y-3">
         <a

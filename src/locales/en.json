@@ -199,7 +199,10 @@
     "intentChosen": "Intent chosen",
     "trackStyleChosen": "Tracking style chosen",
     "completedAt": "Completed at",
-    "noChoice": "—"
+    "noChoice": "—",
+    "updateIntent": "Update my intent",
+    "historyTitle": "Prior answers",
+    "historyCount": "{{n}} prior answer{{s}}"
   },
 
   "settings": {
@@ -239,6 +242,47 @@
     },
     "useTemplate": "Use template",
     "buildMyOwn": "Build my own"
+  },
+
+  "retrospective": {
+    "promptTitle": "It's been a month",
+    "promptBody": "Want to see what's changed in the last {{label}} window?",
+    "open": "See it",
+    "dismiss": "Not now",
+    "viewTitle": "{{label}} retrospective",
+    "viewSubtitle": "Recent {{n}} days vs the prior {{n}}.",
+    "totalDrinks": "Total drinks",
+    "afDays": "AF days",
+    "avgCraving": "Avg craving"
+  },
+
+  "monthlyDelta": {
+    "title": "Month over month",
+    "subtitle": "How this month compares to the one before.",
+    "versus": "vs",
+    "totalDrinks": "Total drinks",
+    "afDays": "AF days",
+    "priorTotal": "Prior: {{n}}",
+    "priorAf": "Prior: {{n}}",
+    "empty": "Not enough history yet. Comes back next month."
+  },
+
+  "goalEvolution": {
+    "title": "You've outgrown this goal",
+    "subtitle": "Day {{n}} alcohol-free. What's next?",
+    "dismiss": "Not now",
+    "extend": {
+      "title": "Keep going",
+      "detail": "New target: {{n}} days"
+    },
+    "maintenance": {
+      "title": "Maintenance: weekly check-in",
+      "detail": "Switch to a once-a-week pulse instead of a streak."
+    },
+    "budget": {
+      "title": "Maintenance budget",
+      "detail": "Allow up to 4 standard drinks per week."
+    }
   },
 
   "medicalDisclaimer": {

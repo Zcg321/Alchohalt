@@ -115,8 +115,26 @@ async function captureOne(
   );
 
   const page: Page = await ctx.newPage();
-  await page.goto(`${DEV_URL}/?tab=${surface.tab}`, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(800);
+  await page.goto(`${DEV_URL}/?tab=${surface.tab}`, { waitUntil: 'domcontentloaded' });
+  // [R10-E] Use the __APP_READY__ handshake from main.tsx instead of
+  // racing networkidle. The handshake fires once first paint AND
+  // zustand persist hydration finish — exactly the right moment to
+  // shoot. 8s ceiling matches the 5s in-app cap plus headroom for
+  // slow CI runners. Falls back to a brief sleep if the handshake
+  // never fires (older builds).
+  try {
+    await page.waitForFunction(
+      () => (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ === true,
+      undefined,
+      { timeout: 8000 },
+    );
+  } catch {
+    // eslint-disable-next-line no-console
+    console.warn(`  ⚠ APP_READY handshake timed out for ${device.id}/${theme}/${surface.id} — falling back to fixed wait`);
+    await page.waitForTimeout(1500);
+  }
+  // Small post-ready settle for animations + layout stabilization.
+  await page.waitForTimeout(300);
 
   if (surface.openCrisis) {
     // Some viewports take longer for React to hydrate the AppHeader

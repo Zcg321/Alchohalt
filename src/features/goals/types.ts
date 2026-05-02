@@ -8,6 +8,12 @@ export interface AdvancedGoal {
   unit: string;
   deadline?: Date | undefined;
   isActive: boolean;
+  /**
+   * [R10-A] Timestamp at which the user dismissed the "outgrew this goal"
+   * evolution prompt. Cleared whenever the goal mutates (target raised,
+   * type changed). Optional/back-compat: undefined means never shown.
+   */
+  evolutionDismissedAt?: number | undefined;
 }
 
 export interface GoalType {

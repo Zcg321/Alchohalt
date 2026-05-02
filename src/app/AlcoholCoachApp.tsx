@@ -29,6 +29,10 @@ import { Skeleton } from '../components/ui/Skeleton';
  * + 5 markdown payloads from the initial download. The slug type +
  * predicate stay non-lazy because the route resolver needs them. */
 const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
+/* [R10-3] /share is a public read-only viewer that decodes a fragment
+ * payload. Lazy-loaded so its bundle doesn't hit the main app on
+ * normal use. */
+const ShareViewer = React.lazy(() => import('../features/sharing/ShareViewer'));
 /* [R8-B] Component gallery — visual-regression baseline. Loaded only
  * when the URL contains ?gallery=1. Lazy so it never enters the
  * eager bundle for normal users. */
@@ -188,6 +192,8 @@ function AlcoholCoachAppInner() {
   const [activeTab, setActiveTab] = useState<TabId | undefined>(undefined);
   // [SHIP-3.1] /legal/<slug> deep-link state.
   const [legalSlug, setLegalSlug] = useState<LegalSlug | null>(null);
+  // [R10-3] /share is the public read-only sharing viewer.
+  const [showShareViewer, setShowShareViewer] = useState(false);
 
   // Crisis modal: Escape closes; focus returns to the element that
   // opened it. Tracked via a ref captured the moment showCrisis flips
@@ -314,6 +320,14 @@ function AlcoholCoachAppInner() {
         setShowCrisis(true);
         return;
       }
+      // [R10-3] /share viewer takes priority over the SPA shell. The
+      // payload sits in the fragment, so we don't need to match it
+      // here — just the path.
+      if (path === '/share') {
+        setShowShareViewer(true);
+        return;
+      }
+      setShowShareViewer(false);
       const legalMatch = path.match(/^\/legal\/([^/]+)\/?$/);
       const slug = legalMatch?.[1];
       if (slug && isLegalSlug(slug)) {
@@ -488,7 +502,11 @@ function AlcoholCoachAppInner() {
         <HardTimeDialog onClose={closeHardTime} />
       ) : null}
 
-      {legalSlug ? (
+      {showShareViewer ? (
+        <React.Suspense fallback={<Skeleton className="mx-auto mt-12 max-w-3xl h-96 rounded-2xl" />}>
+          <ShareViewer />
+        </React.Suspense>
+      ) : legalSlug ? (
         <React.Suspense fallback={<Skeleton className="mx-auto mt-12 max-w-3xl h-96 rounded-2xl" />}>
           <LegalDocPage slug={legalSlug} />
         </React.Suspense>

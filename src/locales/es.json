@@ -201,7 +201,10 @@
     "intentChosen": "Intención elegida",
     "trackStyleChosen": "Estilo de seguimiento elegido",
     "completedAt": "Completada el",
-    "noChoice": "—"
+    "noChoice": "—",
+    "updateIntent": "Actualizar mi intención",
+    "historyTitle": "Respuestas anteriores",
+    "historyCount": "{{n}} respuesta{{s}} anterior{{s}}"
   },
   "settings": {
     "privacy": {
@@ -239,6 +242,44 @@
     },
     "useTemplate": "Usar plantilla",
     "buildMyOwn": "Crear la mía"
+  },
+  "retrospective": {
+    "promptTitle": "Ha pasado un mes",
+    "promptBody": "¿Quieres ver qué ha cambiado en la última ventana de {{label}}?",
+    "open": "Ver",
+    "dismiss": "Ahora no",
+    "viewTitle": "Retrospectiva de {{label}}",
+    "viewSubtitle": "Últimos {{n}} días vs los {{n}} anteriores.",
+    "totalDrinks": "Bebidas totales",
+    "afDays": "Días sin alcohol",
+    "avgCraving": "Antojo promedio"
+  },
+  "monthlyDelta": {
+    "title": "Mes a mes",
+    "subtitle": "Cómo se compara este mes con el anterior.",
+    "versus": "vs",
+    "totalDrinks": "Bebidas totales",
+    "afDays": "Días sin alcohol",
+    "priorTotal": "Anterior: {{n}}",
+    "priorAf": "Anterior: {{n}}",
+    "empty": "Aún no hay suficiente historial. Vuelve el próximo mes."
+  },
+  "goalEvolution": {
+    "title": "Has superado este objetivo",
+    "subtitle": "Día {{n}} sin alcohol. ¿Qué sigue?",
+    "dismiss": "Ahora no",
+    "extend": {
+      "title": "Seguir adelante",
+      "detail": "Nuevo objetivo: {{n}} días"
+    },
+    "maintenance": {
+      "title": "Mantenimiento: chequeo semanal",
+      "detail": "Cambia a un pulso semanal en lugar de una racha."
+    },
+    "budget": {
+      "title": "Presupuesto de mantenimiento",
+      "detail": "Permite hasta 4 bebidas estándar por semana."
+    }
   },
   "openSource": {
     "title": "Código abierto",

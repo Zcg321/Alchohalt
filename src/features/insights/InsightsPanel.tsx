@@ -6,6 +6,8 @@ import { ChartIcon } from './insightGenerators';
 import { generatePremiumInsights } from './premiumInsights';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useDB } from '../../store/db';
+import MonthlyDeltaPanel from './MonthlyDeltaPanel';
+import RetrospectivePanel from './RetrospectivePanel';
 
 interface Props {
   drinks: Drink[];
@@ -76,6 +78,7 @@ export default function InsightsPanel({ drinks }: Props) {
   }, [drinks, canAccessAIInsights, db.entries]);
 
   return (
+    <div className="space-y-6">
     <div className="card">
       <div className="card-header">
         <h2 className="text-xl font-semibold tracking-tight">
@@ -116,6 +119,9 @@ export default function InsightsPanel({ drinks }: Props) {
           <InsightGroups insights={insights} />
         )}
       </div>
+    </div>
+    <MonthlyDeltaPanel />
+    <RetrospectivePanel />
     </div>
   );
 }

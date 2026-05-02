@@ -53,6 +53,29 @@ export interface Settings {
   hasCompletedOnboarding?: boolean | undefined;
   onboardingDiagnostics?: OnboardingDiagnostics | undefined;
   /**
+   * [R10-C] Append-only log of past onboarding-diagnostics rows. Each
+   * entry has a tagged `revisedAt` timestamp. The latest row drives
+   * Diagnostics display via `onboardingDiagnostics`; older rows are
+   * preserved here so a user can see how their intent evolved.
+   *
+   * Local-only — same privacy footprint as the active row. Never
+   * transmitted.
+   */
+  onboardingDiagnosticsHistory?: Array<OnboardingDiagnostics & { revisedAt: number }> | undefined;
+  /**
+   * [R10-2] Last time we showed the retrospective prompt. Used to gate
+   * "It's been a month since your last check-in" so we don't bug the
+   * user every session.
+   */
+  retrospectivePromptLastShownTs?: number | undefined;
+  /**
+   * [R10-4] Timestamps of HardTimePanel opens. Used by the soft
+   * counselor escalation prompt — if 3+ opens in 24h, surface a
+   * gentle "Want to talk to a counselor in 5 min?" with provider
+   * links. Local-only.
+   */
+  hardTimeOpenLog?: number[] | undefined;
+  /**
    * [HARD-TIME-ROUND-4] Non-judgmental marker timestamp set by the
    * "stop tracking for tonight" action in the Hard-Time panel. Quieter
    * view rendered while `Date.now() < quietUntilTs`. Auto-clears at
