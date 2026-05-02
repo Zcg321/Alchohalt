@@ -63,9 +63,10 @@ export function Toast({
         }, duration);
         return () => clearTimeout(timer);
       }
-    } else {
-      setIsVisible(false);
+      return undefined;
     }
+    setIsVisible(false);
+    return undefined;
   }, [show, duration, onClose]);
 
   if (!show) return null;

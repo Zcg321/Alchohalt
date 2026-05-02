@@ -35,13 +35,13 @@ const DEFAULT_SUPPORT_HREF =
   'https://github.com/Zcg321/Alchohalt/issues/new?title=Crash%20report&body=Steps%20to%20reproduce%3A%0A1.%20%0A2.%20%0A%0AError%20message%3A%0A';
 
 export default class ErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, error: null };
+  override state: State = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, info: unknown) {
+  override componentDidCatch(error: Error, info: unknown) {
     console.error('ErrorBoundary caught', error, info);
   }
 
@@ -49,7 +49,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     this.setState({ hasError: false, error: null });
   };
 
-  render() {
+  override render() {
     if (!this.state.hasError) return this.props.children;
 
     const { fallback, label, supportHref = DEFAULT_SUPPORT_HREF, isolate } = this.props;
