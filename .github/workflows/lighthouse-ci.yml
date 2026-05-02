@@ -126,8 +126,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Rebuild native deps (rollup-optional-deps fix)
-        run: npm rebuild rollup esbuild
+      # [R11-CI-FIX-2] Same fix as the desktop job — `npm rebuild`
+      # alone wasn't sufficient for the rollup-optional-deps bug.
+      # See lighthouse-desktop job above for full rationale.
+      - name: Force-install platform-specific native binaries
+        run: |
+          npm install --no-save @rollup/rollup-linux-x64-gnu @esbuild/linux-x64 || true
+          npm rebuild rollup esbuild
 
       - name: Build
         run: npm run build
