@@ -189,7 +189,7 @@
   },
   "privacy": {
     "title": "Tu privacidad está protegida",
-    "onDevice": "Tus datos están en tu dispositivo, cifrados con una clave que solo tú controlas. Criptográficamente no podemos leerlos. Las funciones de IA opcionales pueden cambiar esto — consulta Configuración → IA para ver el flujo completo de datos.",
+    "onDevice": "Las entradas viven en el almacenamiento local de tu teléfono. Nada sale del dispositivo por sí solo. Si activas la copia de seguridad en la nube, el archivo se sella de extremo a extremo con una clave que solo conoce tu dispositivo — nosotros guardamos el blob cifrado, no el contenido. Las funciones de IA opcionales (desactivadas por defecto) son la única vía que puede cambiar esto; consulta Configuración → IA para ver el flujo completo de datos.",
     "dataControl": "Tienes control completo sobre tus datos. Puedes exportar, importar o eliminar toda la información en cualquier momento desde el panel de Configuración."
   },
   "subscription": {
