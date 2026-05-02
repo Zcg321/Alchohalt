@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Alchohalt foreground">
+  <!--
+    Foreground-only variant for Android adaptive icons. The OS masks
+    this with the device's launcher shape (circle, squircle, square,
+    teardrop, etc.) and composites it over a separate background layer
+    (defined in res/values/ic_launcher_background.xml). The safe area
+    is a centered 66% region; the OS may crop anything outside it
+    depending on the mask. Stroke is therefore inset further than the
+    full-bleed icon: 320 → 704 (37.5% safe inset on each side) instead
+    of 244 → 780.
+  -->
+  <line
+    x1="320" y1="512" x2="704" y2="512"
+    stroke="#FFFFFF"
+    stroke-width="96"
+    stroke-linecap="round"
+  />
+</svg>

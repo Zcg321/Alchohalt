@@ -61,7 +61,7 @@ describe('MockIAPProvider — round-trip', () => {
     expect(purchase.productId).toBe('premium_lifetime');
     const restored = await p.restore();
     expect(restored).toHaveLength(1);
-    expect(restored[0].productId).toBe('premium_lifetime');
+    expect(restored[0]!.productId).toBe('premium_lifetime');
   });
 
   it('getEntitlementState reflects approved purchase', async () => {

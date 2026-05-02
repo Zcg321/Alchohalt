@@ -19,6 +19,9 @@ interface Props {
 // hands off to the locale-aware formatter so Spanish users see Spanish.
 function formatDateSafe(isoDateString: string, lang: 'en' | 'es'): string {
   const [year, month, day] = isoDateString.split('-').map(Number);
+  if (year === undefined || month === undefined || day === undefined) {
+    return isoDateString;
+  }
   return formatDate(new Date(year, month - 1, day), lang);
 }
 

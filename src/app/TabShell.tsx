@@ -138,7 +138,9 @@ function makeKeydownHandler(
         return; // Enter/Space: default <button> behavior fires onClick
     }
     e.preventDefault();
-    const nextId = TABS[next].id;
+    const nextTab = TABS[next];
+    if (!nextTab) return;
+    const nextId = nextTab.id;
     onSelect(nextId);
     // After re-render the new tab will be tabIndex=0; focus it.
     requestAnimationFrame(() => {

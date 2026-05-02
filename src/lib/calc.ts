@@ -33,8 +33,8 @@ export function widmarkBAC(
 
 export function computeStreak(drinksByDay: Record<string, number>): number {
   const days = Object.keys(drinksByDay).sort();
-  if (days.length === 0) return 0;
   const earliestKey = days[0];
+  if (!earliestKey) return 0;
   let streak = 0;
   const current = new Date();
   // Walk backwards from today. A streak ends on a drink-day, OR when

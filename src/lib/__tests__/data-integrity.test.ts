@@ -135,10 +135,11 @@ describe('Schema Migration', () => {
 
 describe('Data Integrity Stress Tests', () => {
   it('should handle large datasets', async () => {
+    const baseEntry = mockDB.entries[0]!;
     const largeDB = {
       ...mockDB,
       entries: Array.from({ length: 1000 }, (_, i) => ({
-        ...mockDB.entries[0],
+        ...baseEntry,
         id: `test-${i}`,
         ts: Date.now() + i * 1000
       }))
@@ -153,7 +154,7 @@ describe('Data Integrity Stress Tests', () => {
     const preciseDB = {
       ...mockDB,
       entries: [{
-        ...mockDB.entries[0],
+        ...mockDB.entries[0]!,
         stdDrinks: 1.23456789,
         cost: 12.345,
         ts: 1640995200000 // Specific timestamp
@@ -165,9 +166,9 @@ describe('Data Integrity Stress Tests', () => {
     expect(validation.success).toBe(true);
 
     const { migratedData } = await processImport(exportData, mockDB);
-    expect(migratedData.entries[0].stdDrinks).toBe(1.23456789);
-    expect(migratedData.entries[0].cost).toBe(12.345);
-    expect(migratedData.entries[0].ts).toBe(1640995200000);
+    expect(migratedData.entries[0]!.stdDrinks).toBe(1.23456789);
+    expect(migratedData.entries[0]!.cost).toBe(12.345);
+    expect(migratedData.entries[0]!.ts).toBe(1640995200000);
   });
 
   it('should handle edge cases in data validation', () => {

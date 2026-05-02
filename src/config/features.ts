@@ -34,7 +34,15 @@ export const FEATURE_FLAGS = {
   ENABLE_HEALTH_INTEGRATION: import.meta.env.VITE_ENABLE_HEALTH_INTEGRATION === 'true' || false,
   ENABLE_VOICE_LOGGING: import.meta.env.VITE_ENABLE_VOICE_LOGGING === 'true' || false,
   ENABLE_SOCIAL_FEATURES: import.meta.env.VITE_ENABLE_SOCIAL_FEATURES === 'true' || false,
-  ENABLE_AI_RECOMMENDATIONS: import.meta.env.VITE_ENABLE_AI_RECOMMENDATIONS === 'true' || false,
+  // [R7-A4] Default-on as of 2026-05-02 after the regex-audit + per-state
+  // uniqueness checks in src/lib/__tests__/ai-recommendations.deep.test.ts
+  // and the persona-walkthrough screenshots in e2e/personas/. The opt-out
+  // toggle in Settings → Insights writes db.settings.aiRecommendationsOptOut.
+  // Resolved at runtime via isAIRecommendationsEnabled() rather than this
+  // module-load const, so the QA Playwright spec can flip it via
+  // localStorage('alchohalt:ai-recommendations-override') without a rebuild.
+  ENABLE_AI_RECOMMENDATIONS:
+    import.meta.env.VITE_ENABLE_AI_RECOMMENDATIONS === 'false' ? false : true,
   ENABLE_JOURNALING: import.meta.env.VITE_ENABLE_JOURNALING === 'true' || false,
   ENABLE_THERAPY_RESOURCES: import.meta.env.VITE_ENABLE_THERAPY_RESOURCES === 'true' || false,
 
@@ -52,6 +60,51 @@ export const FEATURE_FLAGS = {
  */
 export function isFeatureEnabled(feature: keyof typeof FEATURE_FLAGS): boolean {
   return FEATURE_FLAGS[feature];
+}
+
+/**
+ * [R7-A4] Resolve the AI-recommendations flag at runtime.
+ *
+ * Precedence:
+ *   1. localStorage('alchohalt:ai-recommendations-override') — QA-only;
+ *      values 'true' / 'false'. Used by the Playwright proxy spec to
+ *      walk both states without a rebuild. Production users will
+ *      never set this.
+ *   2. settings.aiRecommendationsOptOut — owner-facing opt-out toggle
+ *      surfaced in Settings → Insights. Wins over the build default.
+ *   3. FEATURE_FLAGS.ENABLE_AI_RECOMMENDATIONS — build-time default
+ *      (true as of 2026-05-02).
+ *
+ * Pure read; no side effects. Safe to call from React render or any
+ * other non-effect context.
+ */
+export function isAIRecommendationsEnabled(
+  optOut?: boolean,
+): boolean {
+  // 1. Test/QA override (web only). The Capacitor.Preferences shim
+  // writes through to localStorage on web; native uses the keychain.
+  // The override is intentionally web-only because the only consumer
+  // is the Playwright proxy spec, which runs in a browser. Native
+  // users go through the opt-out toggle, not this override.
+  //
+  // The shim is async, but isAIRecommendationsEnabled() must be sync
+  // for the React render path. The alchohalt: prefix matches the
+  // shim's web layout, so a key written via getPreferences().set()
+  // can also be read here.
+  if (typeof window !== 'undefined') {
+    try {
+      // eslint-disable-next-line no-restricted-syntax
+      const raw = window.localStorage.getItem('alchohalt:ai-recommendations-override');
+      if (raw === 'true') return true;
+      if (raw === 'false') return false;
+    } catch {
+      // localStorage may be disabled (private browsing); fall through.
+    }
+  }
+  // 2. User-facing opt-out.
+  if (optOut === true) return false;
+  // 3. Build default.
+  return FEATURE_FLAGS.ENABLE_AI_RECOMMENDATIONS;
 }
 
 /**

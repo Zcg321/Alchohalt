@@ -268,7 +268,7 @@ export function detectRegion(navLanguage?: string | null): RegionCode {
     // for the languages we surface in the app.
     return 'US';
   }
-  const region = parts[parts.length - 1].toUpperCase();
+  const region = (parts[parts.length - 1] ?? '').toUpperCase();
   switch (region) {
     case 'US':
       return 'US';

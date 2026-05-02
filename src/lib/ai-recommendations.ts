@@ -6,7 +6,6 @@
  */
 
 import type { Entry, Settings, HealthMetric } from '../store/db';
-import { FEATURE_FLAGS } from '../config/features';
 import { computeStats } from './stats';
 
 export interface GoalRecommendation {
@@ -96,14 +95,17 @@ function recommendDrinkFreeDays(entries: Entry[], currentGoal: number, readiness
     return null; // Don't recommend lower than current goal
   }
 
+  // [R7-A4] Pluralization fix surfaced by the Playwright proxy:
+  // suggestedValue=1 was rendering "1 alcohol-free days a week".
+  const dayWord = (n: number) => (n === 1 ? 'day' : 'days');
   return {
     id: 'drink-free-days-' + Date.now(),
     type: 'drink-free-days',
-    title: `${suggestedValue} alcohol-free days a week`,
-    description: `Try for ${suggestedValue} alcohol-free days each week.`,
+    title: `${suggestedValue} alcohol-free ${dayWord(suggestedValue)} a week`,
+    description: `Try for ${suggestedValue} alcohol-free ${dayWord(suggestedValue)} each week.`,
     rationale: readiness > 0.7
-      ? `You've averaged ${weeklyFreeDays} alcohol-free days. One more is within reach.`
-      : `You've been at ${weeklyFreeDays} alcohol-free days a week. This nudges that up by one.`,
+      ? `You've averaged ${weeklyFreeDays} alcohol-free ${dayWord(weeklyFreeDays)}. One more is within reach.`
+      : `You've been at ${weeklyFreeDays} alcohol-free ${dayWord(weeklyFreeDays)} a week. This nudges that up by one.`,
     suggestedValue,
     currentValue: currentGoal,
     confidence,
@@ -222,10 +224,13 @@ export function generateGoalRecommendations(
   settings: Settings,
   healthMetrics: HealthMetric[] = []
 ): GoalRecommendation[] {
-  if (!FEATURE_FLAGS.ENABLE_AI_RECOMMENDATIONS) {
-    return [];
-  }
-
+  // [R7-A4] The build-time gate moved to the hosting component
+  // (GoalRecommendations.tsx → isAIRecommendationsEnabled). Generation
+  // here is unconditional so unit tests can drive the recommender
+  // without mocking features.ts and so any consumer that wants to
+  // invoke the recommender directly (e.g. for an export bundle) can.
+  // The runtime-flag + opt-out + override layering all happens at the
+  // surface, not at the data layer.
   const readiness = calculateReadinessScore(entries, healthMetrics);
   const recommendations: GoalRecommendation[] = [];
 

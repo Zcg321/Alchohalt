@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Alchohalt">
+  <!--
+    [R7-A2] Alchohalt brand mark — single-glyph white pause-stroke on
+    sage-700. Reads at 16x16 because the foreground is one primitive
+    (a horizontal line). Sage-700 is the brand action color. The stroke
+    is centered vertically, ~52% width, line-cap=round so it doesn't
+    feel surgical. No stop-sign imagery — the brand is "pause", not
+    "stop". Source canvas 1024x1024; rendered to multi-res PNGs by
+    scripts/gen-app-icons.cjs. Background is fully painted (no
+    transparent edge) so iOS / Android both clip it cleanly into the
+    OS-defined corner shape; no separate "rounded square" path is
+    needed for adaptive icons since Android masks the foreground.
+  -->
+  <rect width="1024" height="1024" fill="#3F6055"/>
+  <line
+    x1="244" y1="512" x2="780" y2="512"
+    stroke="#FFFFFF"
+    stroke-width="96"
+    stroke-linecap="round"
+  />
+</svg>

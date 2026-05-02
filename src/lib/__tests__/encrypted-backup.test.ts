@@ -62,7 +62,7 @@ describe('encryptBackup → decryptBackup — round-trip', () => {
     const file = await encryptBackup(db(), 'correct-pass');
     const lines = file.split('\n');
     // Flip a character in the ciphertext line (last line)
-    const ct = lines[3];
+    const ct = lines[3]!;
     lines[3] = ct[0] === 'A' ? 'B' + ct.slice(1) : 'A' + ct.slice(1);
     await expect(decryptBackup(lines.join('\n'), 'correct-pass')).rejects.toThrow();
   }, 20_000);

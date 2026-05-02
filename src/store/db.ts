@@ -52,6 +52,16 @@ export interface Settings {
     shareDetailedLogs?: boolean;
     syncJournalEntries?: boolean;
   };
+  /**
+   * [R7-A4] User-facing opt-out for the AI-recommendations surface.
+   * Defaults undefined (= feature on per the build default). When the
+   * user toggles "Show AI-suggested goals" off in Settings, this is
+   * set to true and isAIRecommendationsEnabled() short-circuits to
+   * false even when the global flag is on. The flag itself is no
+   * longer surfaced in the UI as a kill-switch — everything is
+   * resolved via this opt-out + the QA override.
+   */
+  aiRecommendationsOptOut?: boolean;
 }
 
 export interface Entry {

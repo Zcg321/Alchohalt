@@ -7,7 +7,7 @@
 import React, { useState, useMemo } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { FEATURE_FLAGS } from '../../config/features';
+import { isAIRecommendationsEnabled } from '../../config/features';
 import { generateGoalRecommendations, type GoalRecommendation } from '../../lib/ai-recommendations';
 import type { Entry, Settings } from '../../store/db';
 
@@ -21,16 +21,17 @@ interface Props {
 export default function GoalRecommendations({ entries, settings, onAcceptRecommendation, className = '' }: Props) {
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
 
+  const enabled = isAIRecommendationsEnabled(settings.aiRecommendationsOptOut);
   const recommendations = useMemo(() => {
-    if (!FEATURE_FLAGS.ENABLE_AI_RECOMMENDATIONS) {
+    if (!enabled) {
       return [];
     }
-    
+
     return generateGoalRecommendations(entries, settings, [])
       .filter(rec => !dismissedIds.includes(rec.id));
-  }, [entries, settings, dismissedIds]);
+  }, [entries, settings, dismissedIds, enabled]);
 
-  if (!FEATURE_FLAGS.ENABLE_AI_RECOMMENDATIONS || recommendations.length === 0) {
+  if (!enabled || recommendations.length === 0) {
     return null;
   }
 
@@ -137,7 +138,7 @@ export default function GoalRecommendations({ entries, settings, onAcceptRecomme
 
       <div className="text-xs text-gray-500 dark:text-gray-400 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
         <p>
-          These come from the patterns in your recent entries. They&rsquo;re meant to feel reachable but not trivial. You can adjust any goal after setting it.
+          These come from your recent entries. The aim is something you can do, not just something we can suggest. You can change any goal after setting it.
         </p>
       </div>
     </div>

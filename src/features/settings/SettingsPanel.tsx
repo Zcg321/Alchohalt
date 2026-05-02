@@ -8,6 +8,7 @@ import ExportImport from '../drinks/ExportImport';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
+import PrivacyStatus from './PrivacyStatus';
 import { hapticForEvent } from '../../shared/haptics';
 
 /* [BUG-PAYWALL-MOUNT] SubscriptionManager was built but never imported
@@ -211,6 +212,8 @@ export default function SettingsPanel() {
       <Suspense fallback={<Skeleton className="h-48 w-full rounded-2xl" />}>
         <SyncPanelLazy />
       </Suspense>
+
+      <PrivacyStatus />
 
       <About />
       <LegalLinks />

@@ -133,6 +133,9 @@ export async function decryptBackup(
   const lines = file.split('\n');
   if (lines.length < 4) throw new Error('Backup file is malformed.');
   const [magic, paramsLine, nonceLine, ciphertextLine] = lines;
+  if (!magic || !paramsLine || !nonceLine || !ciphertextLine) {
+    throw new Error('Backup file is malformed.');
+  }
   if (magic !== MAGIC) {
     throw new Error(
       `Unsupported backup format. Expected ${MAGIC}, got "${magic.slice(0, 32)}".`,

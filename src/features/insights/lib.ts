@@ -28,7 +28,7 @@ export function getCurrentStreak(drinks: Drink[]): number {
   let continueChecking = true;
   while (continueChecking) {
     const key = current.toISOString().slice(0, 10);
-    if (byDay[key] > 0) {
+    if ((byDay[key] ?? 0) > 0) {
       continueChecking = false;
       break;
     }

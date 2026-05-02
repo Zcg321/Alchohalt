@@ -144,6 +144,13 @@ export function AlcoholCoachApp() {
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null);
   const [lastDeleted, setLastDeleted] = useState<Drink | null>(null);
+  /* [R7-B] Live-region announcement for the screen-reader user after
+   * drink-log success. Sighted users see the form clear (and the haptic
+   * tap on native), but SR users had no confirmation that the entry
+   * landed — surfaced by the new-parent persona walkthrough. The
+   * message is short ("Added.") and clears itself after announcement
+   * so the region stays empty between events. */
+  const [logAnnouncement, setLogAnnouncement] = useState('');
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const [showCrisis, setShowCrisis] = useState(false);
@@ -284,8 +291,9 @@ export function AlcoholCoachApp() {
         return;
       }
       const legalMatch = path.match(/^\/legal\/([^/]+)\/?$/);
-      if (legalMatch && isLegalSlug(legalMatch[1])) {
-        setLegalSlug(legalMatch[1]);
+      const slug = legalMatch?.[1];
+      if (slug && isLegalSlug(slug)) {
+        setLegalSlug(slug);
       } else {
         setLegalSlug(null);
       }
@@ -299,6 +307,10 @@ export function AlcoholCoachApp() {
     const entry = legacyDrinkToEntry(drink);
     addEntry(entry);
     const isAFMark = drink.volumeMl === 0 && drink.abvPct === 0;
+    setLogAnnouncement(isAFMark ? 'Marked alcohol-free.' : 'Added.');
+    // Clear the announcement so a re-announce of the same message
+    // works on the next add — aria-live only re-fires on text change.
+    setTimeout(() => setLogAnnouncement(''), 1500);
     /* Haptic map: drink-logged + af-day-marked both fire 'Light'. The
      * AF case (volumeMl=0, abvPct=0) is the same user action — pressing
      * a button — so it gets the same confirmation tap. */
@@ -326,6 +338,8 @@ export function AlcoholCoachApp() {
     editEntry(editing, entry);
     setEditing(null);
     hapticForEvent('drink-logged');
+    setLogAnnouncement('Saved.');
+    setTimeout(() => setLogAnnouncement(''), 1500);
   }
 
   function deleteDrink(drink: Drink) {
@@ -430,6 +444,11 @@ export function AlcoholCoachApp() {
           {t('status.offline')}
         </div>
       )}
+
+      {/* [R7-B] SR-only live region for drink-log confirmations. */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {logAnnouncement}
+      </div>
 
       <AppHeader onOpenCrisis={openCrisis} />
 

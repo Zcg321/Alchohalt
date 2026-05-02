@@ -8,6 +8,6 @@ describe('monthly breakdown', () => {
     const mk = (offset:number, cost:number): Entry => ({ id: String(offset), ts: now+offset*86400000, stdDrinks:1, kind:'beer', intention:'taste', craving:1, halt:{H:false,A:false,L:false,T:false}, cost });
     const entries: Entry[] = [mk(0,5), mk(1,10), mk(2,3)];
     const top = monthlyBreakdown(entries);
-    expect(top[0].cost).toBe(10);
+    expect(top[0]!.cost).toBe(10);
   });
 });

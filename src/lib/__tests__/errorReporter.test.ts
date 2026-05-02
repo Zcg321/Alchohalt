@@ -26,8 +26,8 @@ describe('errorReporter — global handler shim', () => {
       })(err) as unknown as Event,
     );
     expect(captured.length).toBe(1);
-    expect(captured[0].source).toBe('unhandledrejection');
-    expect(captured[0].message).toBe('boom from a promise');
+    expect(captured[0]!.source).toBe('unhandledrejection');
+    expect(captured[0]!.message).toBe('boom from a promise');
   });
 
   it('captures unhandledrejection (string reason)', () => {
@@ -41,7 +41,7 @@ describe('errorReporter — global handler shim', () => {
         }
       })('string-reason') as unknown as Event,
     );
-    expect(captured[0].message).toBe('string-reason');
+    expect(captured[0]!.message).toBe('string-reason');
   });
 
   it('captures window.onerror', () => {
@@ -56,8 +56,8 @@ describe('errorReporter — global handler shim', () => {
         }
       })(),
     );
-    expect(captured[0].source).toBe('window.onerror');
-    expect(captured[0].message).toBe('event-handler boom');
+    expect(captured[0]!.source).toBe('window.onerror');
+    expect(captured[0]!.message).toBe('event-handler boom');
   });
 
   it('install is idempotent', () => {

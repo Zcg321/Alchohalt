@@ -52,9 +52,10 @@ describe('locale parity (en.json ↔ es.json)', () => {
   it('no more than 6 values are identical EN/ES (proper nouns + acronyms only)', () => {
     const E = flatten(en);
     const S = flatten(es);
-    const identical = Object.keys(E).filter(
-      (k) => typeof E[k] === 'string' && E[k].length > 3 && E[k] === S[k],
-    );
+    const identical = Object.keys(E).filter((k) => {
+      const ev = E[k];
+      return typeof ev === 'string' && ev.length > 3 && ev === S[k];
+    });
     /* Headroom for a couple more proper-noun additions; if this trips,
      * either the new value really is a proper noun (raise the cap by
      * one) or someone forgot to translate (translate it). */

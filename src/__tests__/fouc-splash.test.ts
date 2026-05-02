@@ -41,7 +41,7 @@ describe('[BUG-FOUC-SPLASH] cold-load chrome', () => {
   it('meta description follows MARKETING-1 positioning (calm, not AI-powered)', () => {
     const m = HTML.match(/<meta\s+name="description"\s+content="([^"]+)"/);
     expect(m, 'meta description tag missing').not.toBeNull();
-    const desc = m![1];
+    const desc = m![1]!;
     expect(desc.toLowerCase()).not.toMatch(/ai-powered|smart recommendations/);
     expect(desc.toLowerCase()).toMatch(/calm|crisis|leaderboard/);
   });

@@ -41,7 +41,7 @@ describe('non-encryption wedge — hero surfaces', () => {
       /const heroSubcopy[\s\S]*?status\.kind === 'starting'\s*\?\s*'([^']+)'/,
     );
     expect(match, 'could not locate starting-state hero subcopy').not.toBeNull();
-    const subcopy = match![1];
+    const subcopy = match![1]!;
     expect(leadsWithEncryption(subcopy)).toBe(false);
     // And the calm wedge actually shows up
     expect(subcopy.toLowerCase()).toMatch(/calm|leaderboard|help/);
@@ -56,9 +56,9 @@ describe('non-encryption wedge — hero surfaces', () => {
     const headerBlock = src.match(/<header[^>]*>([\s\S]*?)<\/header>/);
     expect(headerBlock).not.toBeNull();
     // First <p> in the header is the tagline (after the h2)
-    const firstP = headerBlock![1].match(/<p[^>]*>\s*([\s\S]*?)\s*<\/p>/);
+    const firstP = headerBlock![1]!.match(/<p[^>]*>\s*([\s\S]*?)\s*<\/p>/);
     expect(firstP).not.toBeNull();
-    const lede = firstP![1].replace(/\s+/g, ' ').trim();
+    const lede = firstP![1]!.replace(/\s+/g, ' ').trim();
     expect(leadsWithEncryption(lede)).toBe(false);
     expect(lede.toLowerCase()).toMatch(/calm|insights|gamif/);
   });
@@ -71,7 +71,7 @@ describe('non-encryption wedge — hero surfaces', () => {
     // Find the search-snippet opener — the first quoted line after the heading
     const m = desc.match(/^>\s*(.+)$/m);
     expect(m, 'expected an App Store opener line marked with `>` blockquote').not.toBeNull();
-    expect(leadsWithEncryption(m![1])).toBe(false);
+    expect(leadsWithEncryption(m![1]!)).toBe(false);
   });
 
   it('manifest.webmanifest description follows MARKETING-1 (calm, not encryption)', () => {

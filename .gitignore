@@ -16,6 +16,12 @@ npm-debug.log*
 
 !public/icons/*.png
 
+# [R7-A2] Native launcher icons need to ship in the repo so iOS / Android
+# build outputs are reproducible without running gen-icons on the build
+# host. Source SVGs live at public/branding/icon-source/.
+!ios/App/App/Assets.xcassets/**/*.png
+!android/app/src/main/res/mipmap-*/*.png
+
 # Health scan reports
 repo_scan.json
 repo_scan_human.txt
@@ -43,6 +49,14 @@ _legal_site/
 # Vitest/Vite config transform artifacts
 vitest.config.*.timestamp-*.mjs
 vite.config.*.timestamp-*.mjs
+
+# [R7-A3] Playwright persona-walkthrough outputs (CI artifact only).
+# The spec + fixtures live in e2e/ and are tracked; the rendered PNGs
+# and reports are regenerated on every run.
+e2e/screenshots/
+playwright-report/
+playwright-test-output/
+test-results/
 
 # Push helper scripts dropped by automation
 _push_*.bat

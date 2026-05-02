@@ -33,7 +33,7 @@ async function getLN(): Promise<AnyLN> {
 function hhmmToNextDate(hhmm: string): Date {
   const [h, m] = hhmm.split(':').map(Number);
   const target = new Date();
-  target.setHours(h, m, 0, 0);
+  target.setHours(h ?? 0, m ?? 0, 0, 0);
   if (target.getTime() <= Date.now()) target.setDate(target.getDate() + 1);
   return target;
 }
@@ -107,8 +107,8 @@ function checkReminderNeeded(lastLogAt: number | undefined, now: number): boolea
 
 function isWithinReminderWindow(time: string, now: number): boolean {
   const [h, m] = time.split(':').map(Number);
-  const tgt = new Date(now); 
-  tgt.setHours(h, m, 0, 0);
+  const tgt = new Date(now);
+  tgt.setHours(h ?? 0, m ?? 0, 0, 0);
   return Math.abs(tgt.getTime() - now) <= 30 * 60 * 1000;
 }
 
@@ -128,7 +128,7 @@ function buildNotifications(times: string[]) {
   return times.map((time, idx) => ({
     id: idx + 1000,
     title: "Alchohalt",
-    body: NOTIFICATION_MESSAGES[idx % NOTIFICATION_MESSAGES.length],
+    body: NOTIFICATION_MESSAGES[idx % NOTIFICATION_MESSAGES.length] ?? "Log your day if you'd like.",
     schedule: { at: hhmmToNextDate(time) }
   }));
 }
