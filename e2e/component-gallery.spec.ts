@@ -32,11 +32,12 @@ import { expect, test } from '@playwright/test';
  * runners and dev macOS will otherwise diff above the 0.5% threshold).
  * Run locally with GALLERY_SNAPSHOT=1 npx playwright test --update-snapshots,
  * commit the baseline PNGs, and the regular CI pipeline picks them up.
- * Skipping by default keeps the existing persona-walkthrough green. */
-test.skip(
-  !process.env.GALLERY_SNAPSHOT,
-  'Set GALLERY_SNAPSHOT=1 to run the visual-regression gallery spec',
-);
+ * Skipping by default keeps the existing persona-walkthrough green.
+ *
+ * Implementation note: the env-gate is per-test, not module-level.
+ * Top-level `test.skip(cond, reason)` throws under @playwright/test
+ * because skip() is only valid inside a test or beforeEach scope. */
+const GALLERY_ENABLED = !!process.env.GALLERY_SNAPSHOT;
 
 const SECTIONS = [
   'button-variants',
@@ -56,6 +57,10 @@ const THEMES = ['light', 'dark'] as const;
 
 for (const theme of THEMES) {
   test.describe(`component gallery — ${theme}`, () => {
+    test.skip(
+      !GALLERY_ENABLED,
+      'Set GALLERY_SNAPSHOT=1 to run the visual-regression gallery spec',
+    );
     test.beforeEach(async ({ page }) => {
       await page.goto(`/?gallery=1&theme=${theme}`);
       // Wait on a meaningful "app rendered" sentinel — the gallery's
