@@ -1,0 +1,260 @@
+{
+  "appName": "alchohalt",
+  "settings": "Paramètres",
+  "language": "Langue",
+  "clearAllData": "Effacer toutes les données",
+  "eraseConfirm": "Effacer toutes les données enregistrées ? Cette action est irréversible.",
+  "dataCleared": "Données effacées",
+  "totalStdDrinks": "Total de boissons standard",
+  "skipToContent": "Aller au contenu",
+  "stats.mostFrequentHalt": "Déclencheur HALT le plus fréquent",
+  "stats.vsPrev30d": "vs 30 j préc.",
+  "stats.daysSinceLast": "Jours depuis le dernier verre",
+  "stats.shareProgress": "Partager les progrès",
+  "stats.afStreak": "Série sans alcool",
+  "stats.best": "Record",
+  "stats.totalAFDays": "Total de jours sans alcool",
+  "stats.softRestart.starting": "Aujourd'hui, c'est un nouveau départ.",
+  "stats.softRestart.restart": "Vous êtes de retour. {{total}} jours sans alcool jusqu'à présent.",
+  "stats.softRestart.building": "{{count}} jours sans alcool. Continuez.",
+  "money.savedThisMonth": "Économisé ce mois-ci",
+  "money.spentLast30": "Dépensé (30 derniers jours)",
+  "money.spentVsBudget": "{{spent}} sur un budget de {{budget}}",
+  "money.setBudgetHint": "Définissez un budget mensuel dans Paramètres pour suivre vos économies.",
+  "paywall.unlock": "Inclus dans Premium.",
+  "paywall.cta": "Voir les offres",
+  "analytics.moodCorrelation.title": "Humeur ↔ schémas de consommation",
+  "analytics.moodCorrelation.window": "{{days}} derniers jours",
+  "analytics.moodCorrelation.empty": "Aucune boisson enregistrée pour cette période.",
+  "analytics.moodCorrelation.topMood": "Humeur la plus fréquente",
+  "analytics.moodCorrelation.topHalt": "Déclencheur HALT le plus fréquent",
+  "analytics.moodCorrelation.showBreakdown": "Afficher le détail",
+  "analytics.moodCorrelation.colMood": "Humeur",
+  "analytics.moodCorrelation.colHalt": "Déclencheur",
+  "analytics.moodCorrelation.colCount": "Boissons",
+  "analytics.moodCorrelation.colMean": "Moy. std",
+  "iconThemes.title": "Icône de l'application",
+  "iconThemes.subtitle": "Choisissez l'apparence d'Alchohalt sur votre écran d'accueil.",
+  "iconThemes.platformNote": "Sur le web, le changement s'applique après réinstallation de la PWA. Sur iOS / Android, il s'appliquera lorsque les ressources natives arriveront dans une prochaine version.",
+  "stats.points": "Points",
+  "stats.weekTotal": "Total de la semaine",
+  "stats.weeklyGoalProgress": "Progression de l'objectif hebdomadaire",
+  "stats.ofGoal": "de l'objectif hebdomadaire",
+  "stats.vsLastWeek": "Vs semaine dernière",
+  "stats.increase": "augmentation",
+  "stats.decrease": "diminution",
+  "stats.noChange": "aucun changement",
+  "stats.avgCraving30d": "Envie moyenne (30 j)",
+  "stats.avgPerDay30d": "Moyenne par jour (30 j)",
+  "stats.avgPerDrinkDay30d": "Moyenne par jour de consommation (30 j)",
+  "stats.coping30d": "Stratégies d'apaisement (30 j)",
+  "stats.copingRatio": "Ratio de stratégies d'apaisement",
+  "stats.afDays30d": "Jours sans alcool (30 j)",
+  "stats.afDaysLabel": "Jours sans alcool",
+  "stats.streakTo30d": "Série vers 30 j",
+  "stats.streakProgressLabel": "Progression vers 30 jours",
+  "stats.longestTo100d": "Plus longue série vers 100 j",
+  "stats.longestStreakProgressLabel": "Progression de la plus longue série",
+  "stats.of100days": "sur 100 jours",
+  "stats.haltCounts": "Décomptes HALT",
+  "stats.monthlySpend": "Dépenses mensuelles",
+  "stats.monthlySpendVsBaseline": "Dépenses mensuelles vs référence",
+  "stats.savings": "Économies",
+  "stats.saved": "Économisé",
+  "stats.showCharts": "Afficher les graphiques",
+  "stats.overBaseline": "Au-dessus de la référence de",
+  "stats.vsBaseline": "vs référence",
+  "stats.share.afStreak": "Série sans alcool",
+  "stats.share.week": "Semaine",
+  "stats.share.avgPerDay": "Moy./jour (30 j)",
+  "stats.daysShort": "j",
+  "stats.std": "std",
+  "stats.progressCopied": "Progrès copiés dans le presse-papiers",
+  "stats.shareProgressDesc": "Partager le résumé des progrès",
+  "stats.exportStats": "Exporter les statistiques",
+  "stats.exportReady": "Téléchargement des statistiques prêt",
+  "disclaimer": "Vos données vous appartiennent. Nous ne pouvons cryptographiquement pas les lire. Ceci n'est pas un avis médical.",
+  "export": "Exporter",
+  "import": "Importer",
+  "add": "Ajouter",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "noDrinks": "Aucune boisson enregistrée pour le moment.",
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "deleteConfirm": "Supprimer cette entrée ?",
+  "drinkDeleted": "Boisson supprimée",
+  "undo": "Annuler",
+  "volume": "Volume ml",
+  "volume.placeholder": "ex. 355",
+  "abv": "% d'alcool",
+  "abv.placeholder": "ex. 5,0",
+  "intentionLabel": "Intention",
+  "cravingLabel": "Envie",
+  "craving.low": "Faible",
+  "craving.high": "Forte",
+  "haltLabel": "HALT",
+  "alternative": "Action alternative",
+  "alternativePlaceholder": "ex. faire une promenade",
+  "intention_celebrate": "fêter",
+  "intention_social": "social",
+  "intention_taste": "goût",
+  "intention_bored": "ennui",
+  "intention_cope": "décompresser",
+  "intention_other": "autre",
+  "halt_hungry": "affamé",
+  "halt_angry": "en colère",
+  "halt_lonely": "seul",
+  "halt_tired": "fatigué",
+  "toggleDark": "Basculer le mode sombre",
+  "lightMode": "Mode clair",
+  "darkMode": "Mode sombre",
+  "enableReminders": "Activer les rappels",
+  "disableReminders": "Désactiver les rappels",
+  "goals.title": "Objectifs",
+  "goals.daily": "Objectif quotidien",
+  "goals.weekly": "Objectif hebdomadaire",
+  "goals.progress.today": "Progression du jour",
+  "goals.progress.week": "Progression de la semaine",
+  "goals.points": "Points",
+  "goals.afStreak": "Série SA",
+  "goals.longestStreak": "Plus longue série SA",
+  "history.title": "Historique",
+  "noDrinksTitle": "Aucune boisson enregistrée",
+  "drinkHistory": "Historique des boissons",
+  "entry": "entrée",
+  "entries": "entrées",
+  "history.date": "Date",
+  "history.kind": "Type",
+  "history.intention": "Intention",
+  "history.craving": "Envie",
+  "history.halt": "HALT",
+  "history.stdDrinks": "Boissons std",
+  "history.cost": "Coût",
+  "history.actions": "Actions",
+  "history.edit": "Modifier",
+  "history.delete": "Supprimer",
+  "history.undo": "Annuler",
+  "status.online": "En ligne",
+  "status.offline": "Hors ligne",
+  "history.deleted": "Entrée supprimée",
+  "toast.undo": "Annuler",
+  "reminder.prompt": "Rappel : enregistrer votre journée ?",
+  "reminder.log": "Enregistrer maintenant",
+  "onboarding": {
+    "welcome": {
+      "title": "Bienvenue dans Alchohalt",
+      "description": "Votre compagnon bien-être personnel et privé pour construire des habitudes plus saines."
+    },
+    "privacy": {
+      "title": "Votre vie privée compte",
+      "description": "Vos données vous appartiennent. Nous ne pouvons cryptographiquement pas les lire. Les fonctionnalités d'IA optionnelles (désactivées par défaut) sont la seule chose qui peut changer cela — vous les contrôlez dans Paramètres → IA."
+    },
+    "tracking": {
+      "title": "Suivi intelligent",
+      "description": "Enregistrez les boissons avec intention, déclencheurs HALT et niveaux d'envie pour comprendre vos schémas."
+    },
+    "insights": {
+      "title": "Analyses personnalisées",
+      "description": "Analyse de schémas sur l'appareil par défaut. Les Analyses IA optionnelles (désactivées tant que vous ne les activez pas) peuvent générer des réflexions écrites à partir de résumés anonymisés."
+    },
+    "goals": {
+      "title": "Définissez vos objectifs",
+      "description": "Créez des objectifs personnalisés et suivez vos progrès avec des compteurs de séries motivants."
+    },
+    "ready": {
+      "title": "Tout est prêt !",
+      "description": "Prêt à démarrer votre parcours bien-être ? Votre première saisie n'est qu'à un toucher."
+    },
+    "quickTips": {
+      "title": "Conseils rapides",
+      "tip1": "Commencez par de petits objectifs atteignables",
+      "tip2": "Enregistrez honnêtement pour de meilleures analyses",
+      "tip3": "Vérifiez vos progrès régulièrement",
+      "tip4": "Exportez vos données à tout moment pour sauvegarde"
+    },
+    "back": "Retour",
+    "skip": "Passer",
+    "skipExplore": "Passer et explorer",
+    "justLooking": "Montrez-moi simplement l'application",
+    "next": "Suivant",
+    "getStarted": "Commencer"
+  },
+  "marketing": {
+    "tagline": "Aucune publicité. Aucune analyse. Reçu de confiance inclus.",
+    "shortTagline": "Aucune publicité. Aucune analyse. À vous.",
+    "moatLine": "Nous ne pouvons cryptographiquement pas lire ce que vous enregistrez."
+  },
+  "diagnostics": {
+    "title": "Diagnostic",
+    "description": "Vue d'auto-expérimentation. Rien de tout cela ne quitte votre téléphone.",
+    "onboarding": "Intégration",
+    "onboardingCompleted": "Terminée",
+    "onboardingSkipped": "Passée",
+    "onboardingNotStarted": "Non commencée",
+    "intentChosen": "Intention choisie",
+    "trackStyleChosen": "Style de suivi choisi",
+    "completedAt": "Terminée le",
+    "noChoice": "—"
+  },
+  "settings": {
+    "privacy": {
+      "heading": "Confidentialité et données",
+      "tagline": "Aucune publicité. Aucune analyse. Reçu de confiance inclus.",
+      "subtitle": "Trois réglages contrôlés ici. Regroupés pour ne plus être qu'une décision au lieu de trois."
+    }
+  },
+  "goalTemplates": {
+    "heading": "Modèles",
+    "subtitle": "Partez d'une forme courante. Vous pouvez ensuite tout personnaliser.",
+    "monthOff": {
+      "title": "30 jours sans",
+      "description": "Un mois complet sans alcool."
+    },
+    "cutToSeven": {
+      "title": "Réduire à 7 verres par semaine",
+      "description": "Ramener le total hebdomadaire à sept boissons standard."
+    },
+    "dryWeekdays": {
+      "title": "Semaine sans alcool",
+      "description": "Sans alcool du lundi au jeudi."
+    },
+    "dryTilThursday": {
+      "title": "Sans alcool jusqu'à jeudi",
+      "description": "Repousser le premier verre plus tard dans la semaine."
+    },
+    "halfMyUsual": {
+      "title": "Moitié de mon habitude",
+      "description": "Réduire la consommation hebdomadaire à la moitié de la moyenne du mois dernier."
+    },
+    "ninetyDayReset": {
+      "title": "Reset de 90 jours",
+      "description": "Une longue période sans alcool pour un vrai reset."
+    },
+    "useTemplate": "Utiliser le modèle",
+    "buildMyOwn": "Créer le mien"
+  },
+  "medicalDisclaimer": {
+    "title": "Avis médical important",
+    "content": "Alchohalt est un outil de suivi personnel et ne fournit aucun avis médical, diagnostic ou traitement. Cette application ne remplace pas une prise en charge médicale professionnelle.",
+    "emergency": "Si vous êtes en situation d'urgence médicale ou avez besoin d'aide immédiate concernant la consommation de substances, contactez immédiatement les services d'urgence ou un professionnel de santé."
+  },
+  "privacy": {
+    "title": "Votre vie privée est protégée",
+    "onDevice": "Vos données vous appartiennent. Nous ne pouvons cryptographiquement pas les lire. Les fonctionnalités d'IA optionnelles (désactivées par défaut) sont la seule chose qui peut changer cela — voir Paramètres → IA pour le flux de données complet.",
+    "dataControl": "Vous avez le contrôle total de vos données. Vous pouvez exporter, importer ou supprimer toutes les informations à tout moment depuis le panneau Paramètres."
+  },
+  "support": {
+    "title": "Support et retours",
+    "description": "Nous sommes là pour vous accompagner dans votre parcours bien-être. Vos retours nous aident à améliorer l'application."
+  },
+  "subscription": {
+    "title": "Informations sur l'abonnement",
+    "coreFeatures": "Les fonctionnalités principales de suivi des habitudes restent gratuites pour toujours. Les fonctionnalités Premium améliorent votre expérience avec des analyses avancées.",
+    "cancellation": "Les abonnements peuvent être annulés à tout moment depuis les paramètres d'abonnement de votre appareil. Aucune donnée n'est perdue lors d'un déclassement."
+  },
+  "openSource": {
+    "title": "Open source",
+    "description": "Alchohalt est un logiciel open source. Vous pouvez consulter notre code, contribuer ou créer votre propre version."
+  }
+}

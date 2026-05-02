@@ -71,3 +71,49 @@ describe('OnboardingFlow — does not re-fire after completion', () => {
     expect(queryByTestId('onboarding-modal')).toBeNull();
   });
 });
+
+describe('OnboardingFlow — diagnostics [R9-2]', () => {
+  it('records skipPath="x-button" when X is clicked', () => {
+    render(<OnboardingFlow />);
+    const closes = screen.getAllByLabelText(/skip/i);
+    fireEvent.click(closes[0]);
+    const diag = useDB.getState().db.settings.onboardingDiagnostics;
+    expect(diag?.status).toBe('skipped');
+    expect(diag?.skipPath).toBe('x-button');
+  });
+
+  it('records skipPath="just-looking" when tertiary is clicked', () => {
+    render(<OnboardingFlow />);
+    const tertiary = screen.getByTestId('onboarding-just-looking');
+    fireEvent.click(tertiary);
+    const diag = useDB.getState().db.settings.onboardingDiagnostics;
+    expect(diag?.status).toBe('skipped');
+    expect(diag?.skipPath).toBe('just-looking');
+  });
+
+  it('records skipPath="skip-explore" when bottom skip is clicked', () => {
+    render(<OnboardingFlow />);
+    fireEvent.click(screen.getByTestId('onboarding-skip'));
+    const diag = useDB.getState().db.settings.onboardingDiagnostics;
+    expect(diag?.skipPath).toBe('skip-explore');
+  });
+
+  it('records skipPath="escape" when Escape is pressed', () => {
+    render(<OnboardingFlow />);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    const diag = useDB.getState().db.settings.onboardingDiagnostics;
+    expect(diag?.skipPath).toBe('escape');
+  });
+
+  it('records status="completed" with intent + trackStyle when full flow finishes', () => {
+    render(<OnboardingFlow />);
+    fireEvent.click(screen.getByText('Cutting back'));
+    fireEvent.click(screen.getByText('30-day reset'));
+    fireEvent.click(screen.getByText(/Get started/i));
+    const diag = useDB.getState().db.settings.onboardingDiagnostics;
+    expect(diag?.status).toBe('completed');
+    expect(diag?.intent).toBe('cut-back');
+    expect(diag?.trackStyle).toBe('thirty-day');
+    expect(diag?.completedAt).toBeGreaterThan(0);
+  });
+});

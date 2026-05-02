@@ -100,7 +100,7 @@
   "intention_social": "social",
   "intention_taste": "taste",
   "intention_bored": "bored",
-  "intention_cope": "cope",
+  "intention_cope": "unwind",
   "intention_other": "other",
   "halt_hungry": "hungry",
   "halt_angry": "angry",
@@ -176,8 +176,69 @@
     },
     "back": "Back",
     "skip": "Skip",
+    "skipExplore": "Skip and explore",
+    "justLooking": "Just show me the app",
+    "close": "Close",
     "next": "Next",
     "getStarted": "Get started"
+  },
+
+  "marketing": {
+    "tagline": "No ads. No analytics. Trust receipt included.",
+    "shortTagline": "No ads. No analytics. Yours.",
+    "moatLine": "We cryptographically cannot read what you log."
+  },
+
+  "diagnostics": {
+    "title": "Diagnostics",
+    "description": "Self-experiment view. None of this leaves your phone.",
+    "onboarding": "Onboarding",
+    "onboardingCompleted": "Completed",
+    "onboardingSkipped": "Skipped",
+    "onboardingNotStarted": "Not started",
+    "intentChosen": "Intent chosen",
+    "trackStyleChosen": "Tracking style chosen",
+    "completedAt": "Completed at",
+    "noChoice": "—"
+  },
+
+  "settings": {
+    "privacy": {
+      "heading": "Privacy & data",
+      "tagline": "No ads. No analytics. Trust receipt included.",
+      "subtitle": "Three places this gets controlled. Grouped here so it's one decision instead of three."
+    }
+  },
+
+  "goalTemplates": {
+    "heading": "Templates",
+    "subtitle": "Start from a common shape. You can still customize everything.",
+    "monthOff": {
+      "title": "30 days clean",
+      "description": "A full alcohol-free month."
+    },
+    "cutToSeven": {
+      "title": "Cut to 7 drinks per week",
+      "description": "Reduce weekly total to seven standard drinks."
+    },
+    "dryWeekdays": {
+      "title": "Dry weekdays",
+      "description": "Alcohol-free Monday through Thursday."
+    },
+    "dryTilThursday": {
+      "title": "Dry-til-Thursday",
+      "description": "Push the first drink later in the week."
+    },
+    "halfMyUsual": {
+      "title": "Half my usual",
+      "description": "Cut weekly intake to half of last month's average."
+    },
+    "ninetyDayReset": {
+      "title": "90-day reset",
+      "description": "A long alcohol-free stretch for a real reset."
+    },
+    "useTemplate": "Use template",
+    "buildMyOwn": "Build my own"
   },
 
   "medicalDisclaimer": {

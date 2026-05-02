@@ -1,0 +1,260 @@
+{
+  "appName": "alchohalt",
+  "settings": "Einstellungen",
+  "language": "Sprache",
+  "clearAllData": "Alle Daten löschen",
+  "eraseConfirm": "Alle gespeicherten Daten löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
+  "dataCleared": "Daten gelöscht",
+  "totalStdDrinks": "Standardgetränke gesamt",
+  "skipToContent": "Zum Inhalt springen",
+  "stats.mostFrequentHalt": "Häufigster HALT-Auslöser",
+  "stats.vsPrev30d": "vs. vorherige 30 T",
+  "stats.daysSinceLast": "Tage seit dem letzten Drink",
+  "stats.shareProgress": "Fortschritt teilen",
+  "stats.afStreak": "AF-Serie",
+  "stats.best": "Bestwert",
+  "stats.totalAFDays": "Alkoholfreie Tage gesamt",
+  "stats.softRestart.starting": "Heute ist ein neuer Anfang.",
+  "stats.softRestart.restart": "Du bist zurück. Bislang {{total}} alkoholfreie Tage.",
+  "stats.softRestart.building": "{{count}} alkoholfreie Tage. Weiter so.",
+  "money.savedThisMonth": "Diesen Monat gespart",
+  "money.spentLast30": "Ausgegeben (letzte 30 Tage)",
+  "money.spentVsBudget": "{{spent}} von {{budget}} Budget",
+  "money.setBudgetHint": "Lege in den Einstellungen ein Monatsbudget fest, um Ersparnisse zu verfolgen.",
+  "paywall.unlock": "Teil von Premium.",
+  "paywall.cta": "Tarife anzeigen",
+  "analytics.moodCorrelation.title": "Stimmung ↔ Trinkmuster",
+  "analytics.moodCorrelation.window": "Letzte {{days}} Tage",
+  "analytics.moodCorrelation.empty": "In diesem Zeitraum sind noch keine Drinks erfasst.",
+  "analytics.moodCorrelation.topMood": "Häufigste Stimmung",
+  "analytics.moodCorrelation.topHalt": "Häufigster HALT-Auslöser",
+  "analytics.moodCorrelation.showBreakdown": "Aufschlüsselung anzeigen",
+  "analytics.moodCorrelation.colMood": "Stimmung",
+  "analytics.moodCorrelation.colHalt": "Auslöser",
+  "analytics.moodCorrelation.colCount": "Drinks",
+  "analytics.moodCorrelation.colMean": "Ø std",
+  "iconThemes.title": "App-Symbol",
+  "iconThemes.subtitle": "Wähle, wie Alchohalt auf deinem Startbildschirm erscheint.",
+  "iconThemes.platformNote": "Im Web wird die Änderung erst nach Neuinstallation der PWA sichtbar. Auf iOS / Android greift sie, sobald die nativen Assets in einer kommenden Version ausgeliefert werden.",
+  "stats.points": "Punkte",
+  "stats.weekTotal": "Wochenwert",
+  "stats.weeklyGoalProgress": "Fortschritt Wochenziel",
+  "stats.ofGoal": "vom Wochenziel",
+  "stats.vsLastWeek": "Vs. letzte Woche",
+  "stats.increase": "Anstieg",
+  "stats.decrease": "Rückgang",
+  "stats.noChange": "keine Änderung",
+  "stats.avgCraving30d": "Ø Verlangen (30 T)",
+  "stats.avgPerDay30d": "Ø pro Tag (30 T)",
+  "stats.avgPerDrinkDay30d": "Ø pro Trinktag (30 T)",
+  "stats.coping30d": "Bewältigungsaktionen (30 T)",
+  "stats.copingRatio": "Bewältigungsquote",
+  "stats.afDays30d": "AF-Tage (30 T)",
+  "stats.afDaysLabel": "Alkoholfreie Tage",
+  "stats.streakTo30d": "Serie bis 30 T",
+  "stats.streakProgressLabel": "Fortschritt 30-Tage-Serie",
+  "stats.longestTo100d": "Längste Serie bis 100 T",
+  "stats.longestStreakProgressLabel": "Fortschritt der längsten Serie",
+  "stats.of100days": "von 100 Tagen",
+  "stats.haltCounts": "HALT-Zählung",
+  "stats.monthlySpend": "Monatsausgaben",
+  "stats.monthlySpendVsBaseline": "Monatsausgaben vs. Referenz",
+  "stats.savings": "Ersparnisse",
+  "stats.saved": "Gespart",
+  "stats.showCharts": "Diagramme anzeigen",
+  "stats.overBaseline": "Über der Referenz um",
+  "stats.vsBaseline": "vs. Referenz",
+  "stats.share.afStreak": "AF-Serie",
+  "stats.share.week": "Woche",
+  "stats.share.avgPerDay": "Ø/Tag (30 T)",
+  "stats.daysShort": "T",
+  "stats.std": "std",
+  "stats.progressCopied": "Fortschritt in die Zwischenablage kopiert",
+  "stats.shareProgressDesc": "Fortschrittszusammenfassung teilen",
+  "stats.exportStats": "Statistik exportieren",
+  "stats.exportReady": "Statistik-Download bereit",
+  "disclaimer": "Deine Daten gehören dir. Wir können sie kryptografisch nicht lesen. Keine medizinische Beratung.",
+  "export": "Exportieren",
+  "import": "Importieren",
+  "add": "Hinzufügen",
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "noDrinks": "Noch keine Drinks erfasst.",
+  "edit": "Bearbeiten",
+  "delete": "Löschen",
+  "deleteConfirm": "Diesen Eintrag löschen?",
+  "drinkDeleted": "Drink gelöscht",
+  "undo": "Rückgängig",
+  "volume": "Volumen ml",
+  "volume.placeholder": "z. B. 355",
+  "abv": "Vol.-%",
+  "abv.placeholder": "z. B. 5,0",
+  "intentionLabel": "Absicht",
+  "cravingLabel": "Verlangen",
+  "craving.low": "Niedrig",
+  "craving.high": "Hoch",
+  "haltLabel": "HALT",
+  "alternative": "Alternative Aktion",
+  "alternativePlaceholder": "z. B. spazieren gehen",
+  "intention_celebrate": "feiern",
+  "intention_social": "gesellig",
+  "intention_taste": "Geschmack",
+  "intention_bored": "Langeweile",
+  "intention_cope": "abschalten",
+  "intention_other": "anderes",
+  "halt_hungry": "hungrig",
+  "halt_angry": "wütend",
+  "halt_lonely": "einsam",
+  "halt_tired": "müde",
+  "toggleDark": "Dunkelmodus umschalten",
+  "lightMode": "Heller Modus",
+  "darkMode": "Dunkler Modus",
+  "enableReminders": "Erinnerungen aktivieren",
+  "disableReminders": "Erinnerungen deaktivieren",
+  "goals.title": "Ziele",
+  "goals.daily": "Tagesziel",
+  "goals.weekly": "Wochenziel",
+  "goals.progress.today": "Tagesfortschritt",
+  "goals.progress.week": "Wochenfortschritt",
+  "goals.points": "Punkte",
+  "goals.afStreak": "AF-Serie",
+  "goals.longestStreak": "Längste AF-Serie",
+  "history.title": "Verlauf",
+  "noDrinksTitle": "Keine Drinks erfasst",
+  "drinkHistory": "Drink-Verlauf",
+  "entry": "Eintrag",
+  "entries": "Einträge",
+  "history.date": "Datum",
+  "history.kind": "Typ",
+  "history.intention": "Absicht",
+  "history.craving": "Verlangen",
+  "history.halt": "HALT",
+  "history.stdDrinks": "Std-Drinks",
+  "history.cost": "Kosten",
+  "history.actions": "Aktionen",
+  "history.edit": "Bearbeiten",
+  "history.delete": "Löschen",
+  "history.undo": "Rückgängig",
+  "status.online": "Online",
+  "status.offline": "Offline",
+  "history.deleted": "Eintrag gelöscht",
+  "toast.undo": "Rückgängig",
+  "reminder.prompt": "Erinnerung: Heute eintragen?",
+  "reminder.log": "Jetzt eintragen",
+  "onboarding": {
+    "welcome": {
+      "title": "Willkommen bei Alchohalt",
+      "description": "Dein persönlicher, privater Wellness-Begleiter für gesündere Trinkgewohnheiten."
+    },
+    "privacy": {
+      "title": "Deine Privatsphäre zählt",
+      "description": "Deine Daten gehören dir. Wir können sie kryptografisch nicht lesen. Optionale KI-Funktionen (standardmäßig aus) sind das Einzige, was das ändern kann — du steuerst sie unter Einstellungen → KI."
+    },
+    "tracking": {
+      "title": "Schlaues Tracking",
+      "description": "Erfasse Drinks mit Absicht, HALT-Auslösern und Verlangenswerten, um deine Muster zu verstehen."
+    },
+    "insights": {
+      "title": "Persönliche Einblicke",
+      "description": "Standardmäßig Mustererkennung auf dem Gerät. Optionale KI-Einblicke (aus, bis du sie aktivierst) erzeugen geschriebene Reflexionen aus anonymisierten Zusammenfassungen."
+    },
+    "goals": {
+      "title": "Ziele setzen",
+      "description": "Erstelle persönliche Ziele und verfolge Fortschritte mit motivierenden Serienzählern."
+    },
+    "ready": {
+      "title": "Alles bereit!",
+      "description": "Bereit, dein Wellness-Vorhaben zu starten? Dein erster Eintrag ist nur ein Tipp entfernt."
+    },
+    "quickTips": {
+      "title": "Schnelltipps",
+      "tip1": "Beginne mit kleinen, erreichbaren Zielen",
+      "tip2": "Trage ehrlich ein, um bessere Einblicke zu bekommen",
+      "tip3": "Prüfe regelmäßig deinen Fortschritt",
+      "tip4": "Exportiere deine Daten jederzeit als Backup"
+    },
+    "back": "Zurück",
+    "skip": "Überspringen",
+    "skipExplore": "Überspringen und erkunden",
+    "justLooking": "Zeig mir einfach die App",
+    "next": "Weiter",
+    "getStarted": "Loslegen"
+  },
+  "marketing": {
+    "tagline": "Keine Werbung. Keine Analytik. Trust-Receipt inklusive.",
+    "shortTagline": "Keine Werbung. Keine Analytik. Deins.",
+    "moatLine": "Wir können kryptografisch nicht lesen, was du einträgst."
+  },
+  "diagnostics": {
+    "title": "Diagnose",
+    "description": "Selbstexperiment-Ansicht. Nichts davon verlässt dein Telefon.",
+    "onboarding": "Einstieg",
+    "onboardingCompleted": "Abgeschlossen",
+    "onboardingSkipped": "Übersprungen",
+    "onboardingNotStarted": "Nicht begonnen",
+    "intentChosen": "Gewählte Absicht",
+    "trackStyleChosen": "Gewählter Tracking-Stil",
+    "completedAt": "Abgeschlossen am",
+    "noChoice": "—"
+  },
+  "settings": {
+    "privacy": {
+      "heading": "Privatsphäre & Daten",
+      "tagline": "Keine Werbung. Keine Analytik. Trust-Receipt inklusive.",
+      "subtitle": "Drei Bereiche, hier zusammengeführt — eine Entscheidung statt drei."
+    }
+  },
+  "goalTemplates": {
+    "heading": "Vorlagen",
+    "subtitle": "Starte mit einer gängigen Form. Du kannst alles weiter anpassen.",
+    "monthOff": {
+      "title": "30 Tage clean",
+      "description": "Ein voller alkoholfreier Monat."
+    },
+    "cutToSeven": {
+      "title": "Auf 7 Drinks pro Woche reduzieren",
+      "description": "Wochensumme auf sieben Standardgetränke senken."
+    },
+    "dryWeekdays": {
+      "title": "Wochentage trocken",
+      "description": "Alkoholfrei von Montag bis Donnerstag."
+    },
+    "dryTilThursday": {
+      "title": "Trocken bis Donnerstag",
+      "description": "Den ersten Drink später in der Woche ansetzen."
+    },
+    "halfMyUsual": {
+      "title": "Hälfte des Üblichen",
+      "description": "Wochenkonsum auf die Hälfte des Vormonatsdurchschnitts reduzieren."
+    },
+    "ninetyDayReset": {
+      "title": "90-Tage-Reset",
+      "description": "Eine lange alkoholfreie Phase für einen echten Reset."
+    },
+    "useTemplate": "Vorlage verwenden",
+    "buildMyOwn": "Eigenes erstellen"
+  },
+  "medicalDisclaimer": {
+    "title": "Wichtiger medizinischer Hinweis",
+    "content": "Alchohalt ist ein persönliches Tracking-Werkzeug und liefert keine medizinische Beratung, Diagnose oder Behandlung. Diese App ersetzt keine professionelle medizinische Versorgung.",
+    "emergency": "Bei einem medizinischen Notfall oder bei Bedarf an sofortiger Hilfe wegen Substanzkonsum wende dich bitte umgehend an Notdienste oder medizinisches Fachpersonal."
+  },
+  "privacy": {
+    "title": "Deine Privatsphäre ist geschützt",
+    "onDevice": "Deine Daten gehören dir. Wir können sie kryptografisch nicht lesen. Optionale KI-Funktionen (standardmäßig aus) sind das Einzige, was das ändern kann — siehe Einstellungen → KI für den vollen Datenfluss.",
+    "dataControl": "Du hast volle Kontrolle über deine Daten. Du kannst alle Informationen jederzeit aus dem Einstellungsbereich exportieren, importieren oder löschen."
+  },
+  "support": {
+    "title": "Support & Feedback",
+    "description": "Wir helfen dir auf deinem Wellness-Weg. Dein Feedback hilft, die App zu verbessern."
+  },
+  "subscription": {
+    "title": "Abo-Informationen",
+    "coreFeatures": "Die Kern-Tracking-Funktionen bleiben für immer kostenlos. Premium-Funktionen erweitern dein Erlebnis um fortgeschrittene Analysen und Einblicke.",
+    "cancellation": "Abos können jederzeit über die Abo-Einstellungen deines Geräts gekündigt werden. Beim Herabstufen gehen keine Daten verloren."
+  },
+  "openSource": {
+    "title": "Open Source",
+    "description": "Alchohalt ist Open-Source-Software. Du kannst den Code einsehen, Verbesserungen beitragen oder deine eigene Version bauen."
+  }
+}

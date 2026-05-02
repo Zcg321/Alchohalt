@@ -100,7 +100,7 @@
   "intention_social": "social",
   "intention_taste": "degustar",
   "intention_bored": "aburrimiento",
-  "intention_cope": "afrontar",
+  "intention_cope": "relajarse",
   "intention_other": "otro",
   "halt_hungry": "hambriento",
   "halt_angry": "enojado",
@@ -180,8 +180,64 @@
     },
     "back": "Atrás",
     "skip": "Omitir",
+    "skipExplore": "Omitir y explorar",
+    "justLooking": "Solo quiero ver la app",
     "next": "Siguiente",
     "getStarted": "Empezar"
+  },
+  "marketing": {
+    "tagline": "Sin anuncios. Sin análisis. Recibo de confianza incluido.",
+    "shortTagline": "Sin anuncios. Sin análisis. Tuyo.",
+    "moatLine": "Criptográficamente no podemos leer lo que registras."
+  },
+  "diagnostics": {
+    "title": "Diagnóstico",
+    "description": "Vista de auto-experimento. Nada de esto sale de tu teléfono.",
+    "onboarding": "Bienvenida",
+    "onboardingCompleted": "Completada",
+    "onboardingSkipped": "Omitida",
+    "onboardingNotStarted": "Sin iniciar",
+    "intentChosen": "Intención elegida",
+    "trackStyleChosen": "Estilo de seguimiento elegido",
+    "completedAt": "Completada el",
+    "noChoice": "—"
+  },
+  "settings": {
+    "privacy": {
+      "heading": "Privacidad y datos",
+      "tagline": "Sin anuncios. Sin análisis. Recibo de confianza incluido.",
+      "subtitle": "Tres ajustes que se controlan aquí. Agrupados para que sea una decisión en lugar de tres."
+    }
+  },
+  "goalTemplates": {
+    "heading": "Plantillas",
+    "subtitle": "Empieza con una forma común. Puedes personalizar todo igualmente.",
+    "monthOff": {
+      "title": "30 días limpios",
+      "description": "Un mes completo sin alcohol."
+    },
+    "cutToSeven": {
+      "title": "Reducir a 7 bebidas por semana",
+      "description": "Bajar el total semanal a siete bebidas estándar."
+    },
+    "dryWeekdays": {
+      "title": "Semana sin alcohol",
+      "description": "Sin alcohol de lunes a jueves."
+    },
+    "dryTilThursday": {
+      "title": "Sin alcohol hasta el jueves",
+      "description": "Mover la primera copa más tarde en la semana."
+    },
+    "halfMyUsual": {
+      "title": "Mitad de lo habitual",
+      "description": "Reducir la ingesta semanal a la mitad del promedio del mes pasado."
+    },
+    "ninetyDayReset": {
+      "title": "Reinicio de 90 días",
+      "description": "Un periodo largo sin alcohol para un verdadero reinicio."
+    },
+    "useTemplate": "Usar plantilla",
+    "buildMyOwn": "Crear la mía"
   },
   "openSource": {
     "title": "Código abierto",
