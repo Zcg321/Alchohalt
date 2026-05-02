@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDB } from '../../store/db';
 import { createExport, validateImport, processImport, downloadData } from '../../lib/data-export';
 import type { ExportData } from '../../lib/data-export';
+import { exportDatabaseToCSV } from '../../lib/csv-export';
 import DataImport from './DataImport';
 
 export default function ExportImport() {
@@ -15,6 +16,15 @@ export default function ExportImport() {
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'try again';
       alert(`Couldn't save your export — ${msg}. If it keeps happening, report this at https://github.com/Zcg321/Alchohalt/issues`);
+    }
+  }
+
+  function doExportCSV() {
+    try {
+      exportDatabaseToCSV(db);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'try again';
+      alert(`Couldn't save your CSV export — ${msg}. If it keeps happening, report this at https://github.com/Zcg321/Alchohalt/issues`);
     }
   }
 
@@ -90,14 +100,23 @@ export default function ExportImport() {
       <div>
         <h3 className="text-lg font-semibold mb-2">Export</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          A JSON file of everything — entries, goals, presets, settings. Includes a checksum so you can verify it later.
+          Your data, your file. JSON is the round-trip format (export then import to restore everything, with a checksum). CSV opens cleanly in Excel, Numbers, or Google Sheets.
         </p>
-        <button
-          onClick={doExport}
-          className="btn btn-primary"
-        >
-          Export to JSON
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={doExport}
+            className="btn btn-primary"
+          >
+            Export to JSON
+          </button>
+          <button
+            onClick={doExportCSV}
+            className="btn btn-secondary"
+            data-testid="export-csv-button"
+          >
+            Export to CSV
+          </button>
+        </div>
       </div>
 
       <div>

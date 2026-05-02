@@ -5,8 +5,9 @@
  *   - Hybrid: Free + Monthly + Annual + Lifetime
  *   - Prices: $0 / $4.99/mo / $24.99/yr / $69 once
  *   - Free covers ~75% of value (logging, streak, money saved, journal,
- *     crisis resources, biometric lock, one reminder)
- *   - Premium adds analytics, multi-reminder, CSV/PDF export, encrypted
+ *     crisis resources, biometric lock, one reminder, full data export
+ *     in JSON + CSV — round-11 ethics call: data ownership ≠ paywall)
+ *   - Premium adds analytics, multi-reminder, PDF export, encrypted
  *     backup, multi-preset, advanced viz, icon themes, future AI insights
  *
  * This file is the SINGLE SOURCE OF TRUTH for what's free vs paid.
@@ -103,14 +104,14 @@ export type FeatureKey =
   | 'biometric_lock'        // privacy floor, never gated
   | 'local_only_privacy'    // the wedge
   | 'one_default_reminder'  // single reminder, free
-  | 'json_export'           // basic JSON export+import (existing)
+  | 'json_export'           // basic JSON export+import (existing) — free per R10 ethics judge: data ownership ≠ paywall
+  | 'csv_export'             // [R11-C] moved to free per R10 ethics judge: data ownership ≠ paywall
   | 'dark_mode'             // free polish
   | 'multi_language'        // free polish
   // PREMIUM — soft-paywalled (preview + Unlock CTA)
   | 'mood_drink_correlation'  // on-device pattern analytics
   | 'multi_reminders'         // multiple custom reminders + messages
-  | 'csv_export'              // CSV (PDF in v1.1)
-  | 'pdf_export'              // PDF report
+  | 'pdf_export'              // PDF report (premium for now — formatting / charts ≠ raw data)
   | 'encrypted_backup'        // libsodium .alch-backup file
   | 'custom_drink_presets'    // multiple cost templates
   | 'advanced_viz'            // heatmaps, day-of-week patterns
@@ -132,12 +133,12 @@ export const FEATURE_TIER: Record<FeatureKey, 'free' | 'premium'> = {
   local_only_privacy:    'free',
   one_default_reminder:  'free',
   json_export:           'free',
+  csv_export:            'free', // [R11-C] data ownership shouldn't be paywalled (round-10 ethics judge)
   dark_mode:             'free',
   multi_language:        'free',
 
   mood_drink_correlation: 'premium',
   multi_reminders:        'premium',
-  csv_export:             'premium',
   pdf_export:             'premium',
   encrypted_backup:       'premium',
   custom_drink_presets:   'premium',
