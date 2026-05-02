@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDB } from '../../store/db';
 import { createExport, validateImport, processImport, downloadData } from '../../lib/data-export';
 import type { ExportData } from '../../lib/data-export';
+import DataImport from './DataImport';
 
 export default function ExportImport() {
   const [importing, setImporting] = useState(false);
@@ -115,6 +116,8 @@ export default function ExportImport() {
           />
         </label>
       </div>
+
+      <DataImport />
 
       <div>
         <h3 className="text-lg font-semibold mb-2 text-red-600">Clear all data</h3>
