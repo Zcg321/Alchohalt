@@ -55,10 +55,11 @@ export default function AISettingsPanel() {
               AI Insights
             </h3>
             <p className="mt-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-              Optional, opt-in feature that sends an anonymized summary
-              of your patterns to Anthropic for written reflections.
-              Off by default — your raw data never leaves the phone
-              unless you turn this on.
+              Off by default. Turn it on and the app will send a
+              short, anonymous summary of how you&rsquo;ve been
+              logging to Anthropic, which sends back text reflecting
+              on what it sees. Your raw entries don&rsquo;t leave the
+              phone.
             </p>
           </div>
           <span

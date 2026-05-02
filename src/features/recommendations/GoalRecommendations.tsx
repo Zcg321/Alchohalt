@@ -138,7 +138,7 @@ export default function GoalRecommendations({ entries, settings, onAcceptRecomme
 
       <div className="text-xs text-gray-500 dark:text-gray-400 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
         <p>
-          These come from the patterns in your recent entries. They&rsquo;re meant to feel reachable but not trivial. You can adjust any goal after setting it.
+          These come from your recent entries. The aim is something you can do, not just something we can suggest. You can change any goal after setting it.
         </p>
       </div>
     </div>
