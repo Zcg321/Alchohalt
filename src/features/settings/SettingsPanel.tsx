@@ -112,7 +112,11 @@ export default function SettingsPanel() {
             Reminders
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Daily check-in notifications.
+            {/* [SETTINGS-DEEPENING-ROUND-4] Reminders are off by default;
+                spelling that out beats a user wondering why they're not
+                getting any. Adding times alone doesn't enable them — the
+                checkbox does. */}
+            Off by default. The checkbox below turns daily check-in notifications on.
           </p>
         </div>
         <div className="card-content space-y-4">
@@ -167,13 +171,14 @@ export default function SettingsPanel() {
       <section className="card">
         <div className="card-header">
           <h2 className="text-lg font-semibold tracking-tight">
-            Data Management
+            Your data
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Your data stays on your device, encrypted with a key only
-            you control. We cryptographically cannot read it. Opt-in
-            AI features can change this — see AI Insights below. Not
-            medical advice.
+            {/* [SETTINGS-DEEPENING-ROUND-4] Renamed from "Data Management"
+                — warmer, plainer. Section copy now points at the actions
+                below (export / import / clear) instead of restating the
+                privacy claim, which already sits in About → Privacy. */}
+            Export to JSON, import a previous backup, or clear everything on this device.
           </p>
         </div>
         <div className="card-content">

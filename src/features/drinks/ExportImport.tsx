@@ -1,10 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useDB } from '../../store/db';
 import { createExport, validateImport, processImport, downloadData } from '../../lib/data-export';
 import type { ExportData } from '../../lib/data-export';
 
 export default function ExportImport() {
-  const aRef = useRef<HTMLAnchorElement>(null);
   const [importing, setImporting] = useState(false);
   const { db, wipeAll } = useDB(s => ({ db: s.db, wipeAll: s.wipeAll }));
 
@@ -120,7 +119,7 @@ export default function ExportImport() {
       <div>
         <h3 className="text-lg font-semibold mb-2 text-red-600">Clear all data</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Deletes everything on this device — entries, goals, presets, settings. Can&rsquo;t be undone. Type WIPE to confirm.
+          Deletes everything on this device — entries, goals, presets, settings. This can&rsquo;t be undone. Type WIPE to confirm.
         </p>
         <button
           onClick={doWipe}
@@ -129,8 +128,6 @@ export default function ExportImport() {
           Clear all data
         </button>
       </div>
-      
-      <a ref={aRef} className="hidden" />
     </div>
   );
 }
