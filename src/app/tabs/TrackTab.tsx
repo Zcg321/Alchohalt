@@ -26,6 +26,10 @@ interface Props {
   onStartEdit: (drink: Drink) => void;
   onDeleteDrink: (drink: Drink) => void;
   onCancelEdit: () => void;
+  /** [R12-2] Bulk-edit handlers, optional for backward compat. */
+  onBulkDelete?: ((tsList: number[]) => void) | undefined;
+  onBulkShiftTime?: ((tsList: number[], deltaMinutes: number) => void) | undefined;
+  onBulkScaleStd?: ((tsList: number[], factor: number) => void) | undefined;
 }
 
 export default function TrackTab({
@@ -37,6 +41,9 @@ export default function TrackTab({
   onStartEdit,
   onDeleteDrink,
   onCancelEdit,
+  onBulkDelete,
+  onBulkShiftTime,
+  onBulkScaleStd,
 }: Props) {
   const empty = drinks.length === 0;
 
@@ -76,6 +83,9 @@ export default function TrackTab({
                 const drink = drinks.find((d) => d.ts === ts);
                 if (drink) onDeleteDrink(drink);
               }}
+              onBulkDelete={onBulkDelete}
+              onBulkShiftTime={onBulkShiftTime}
+              onBulkScaleStd={onBulkScaleStd}
             />
           </Suspense>
         )}

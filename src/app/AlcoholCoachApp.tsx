@@ -412,6 +412,55 @@ function AlcoholCoachAppInner() {
     setEditing(null);
   }
 
+  /* [R12-2] Bulk-edit ops. Each takes a list of legacy ts values
+   * (the DrinkList keys) and resolves them to entry IDs before
+   * dispatching mutations. Single haptic per batch — n×Light pulses
+   * would feel like a malfunction; one confirmation tap reads as the
+   * batch landing. */
+  function bulkDelete(tsList: number[]) {
+    const ids = tsList
+      .map((ts) => db.entries.find((e) => e.ts === ts)?.id)
+      .filter((id): id is string => id !== undefined);
+    for (const id of ids) deleteEntry(id);
+    if (ids.length > 0) {
+      hapticForEvent('drink-undo');
+      setLogAnnouncement(`${ids.length} ${ids.length === 1 ? 'drink' : 'drinks'} deleted.`);
+      setTimeout(() => setLogAnnouncement(''), 1500);
+    }
+  }
+
+  function bulkShiftTime(tsList: number[], deltaMinutes: number) {
+    const deltaMs = deltaMinutes * 60_000;
+    const updates = tsList
+      .map((ts) => {
+        const entry = db.entries.find((e) => e.ts === ts);
+        return entry ? { id: entry.id, newTs: entry.ts + deltaMs } : null;
+      })
+      .filter((u): u is { id: string; newTs: number } => u !== null);
+    for (const u of updates) editEntry(u.id, { ts: u.newTs });
+    if (updates.length > 0) {
+      hapticForEvent('drink-logged');
+      const sign = deltaMinutes >= 0 ? '+' : '';
+      setLogAnnouncement(`${updates.length} drink time${updates.length === 1 ? '' : 's'} shifted ${sign}${deltaMinutes}m.`);
+      setTimeout(() => setLogAnnouncement(''), 1500);
+    }
+  }
+
+  function bulkScaleStd(tsList: number[], factor: number) {
+    const updates = tsList
+      .map((ts) => {
+        const entry = db.entries.find((e) => e.ts === ts);
+        return entry ? { id: entry.id, newStd: entry.stdDrinks * factor } : null;
+      })
+      .filter((u): u is { id: string; newStd: number } => u !== null);
+    for (const u of updates) editEntry(u.id, { stdDrinks: u.newStd });
+    if (updates.length > 0) {
+      hapticForEvent('drink-logged');
+      setLogAnnouncement(`${updates.length} drink${updates.length === 1 ? '' : 's'} rescaled.`);
+      setTimeout(() => setLogAnnouncement(''), 1500);
+    }
+  }
+
   function onGoalsChange(newGoals: Goals) {
     const settingsUpdate = legacyGoalsToSettings(newGoals);
     setSettings(settingsUpdate);
@@ -446,6 +495,9 @@ function AlcoholCoachAppInner() {
         onStartEdit={startEdit}
         onDeleteDrink={deleteDrink}
         onCancelEdit={cancelEdit}
+        onBulkDelete={bulkDelete}
+        onBulkShiftTime={bulkShiftTime}
+        onBulkScaleStd={bulkScaleStd}
       />
     ),
     goals: <GoalsTab goals={goals} onGoalsChange={onGoalsChange} />,
