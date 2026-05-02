@@ -235,6 +235,16 @@
     "useTemplate": "Utiliser le modèle",
     "buildMyOwn": "Créer le mien"
   },
+  "monthlyDelta": {
+    "title": "D'un mois à l'autre",
+    "subtitle": "Comment ce mois se compare au précédent.",
+    "versus": "vs",
+    "totalDrinks": "Verres au total",
+    "afDays": "Jours sans alcool",
+    "priorTotal": "Précédent : {{n}}",
+    "priorAf": "Précédent : {{n}}",
+    "empty": "Pas encore assez d'historique. À voir le mois prochain."
+  },
   "goalEvolution": {
     "title": "Tu as dépassé cet objectif",
     "subtitle": "Jour {{n}} sans alcool. Et maintenant ?",

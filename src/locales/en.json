@@ -241,6 +241,17 @@
     "buildMyOwn": "Build my own"
   },
 
+  "monthlyDelta": {
+    "title": "Month over month",
+    "subtitle": "How this month compares to the one before.",
+    "versus": "vs",
+    "totalDrinks": "Total drinks",
+    "afDays": "AF days",
+    "priorTotal": "Prior: {{n}}",
+    "priorAf": "Prior: {{n}}",
+    "empty": "Not enough history yet. Comes back next month."
+  },
+
   "goalEvolution": {
     "title": "You've outgrown this goal",
     "subtitle": "Day {{n}} alcohol-free. What's next?",

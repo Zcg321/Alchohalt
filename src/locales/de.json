@@ -235,6 +235,16 @@
     "useTemplate": "Vorlage verwenden",
     "buildMyOwn": "Eigenes erstellen"
   },
+  "monthlyDelta": {
+    "title": "Monat für Monat",
+    "subtitle": "So schneidet dieser Monat im Vergleich zum vorherigen ab.",
+    "versus": "vs",
+    "totalDrinks": "Getränke gesamt",
+    "afDays": "Alkoholfreie Tage",
+    "priorTotal": "Zuvor: {{n}}",
+    "priorAf": "Zuvor: {{n}}",
+    "empty": "Noch nicht genug Verlauf. Kommt nächsten Monat zurück."
+  },
   "goalEvolution": {
     "title": "Du bist über dieses Ziel hinausgewachsen",
     "subtitle": "Tag {{n}} alkoholfrei. Was kommt als Nächstes?",

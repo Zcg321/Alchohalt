@@ -240,6 +240,16 @@
     "useTemplate": "Usar plantilla",
     "buildMyOwn": "Crear la mía"
   },
+  "monthlyDelta": {
+    "title": "Mes a mes",
+    "subtitle": "Cómo se compara este mes con el anterior.",
+    "versus": "vs",
+    "totalDrinks": "Bebidas totales",
+    "afDays": "Días sin alcohol",
+    "priorTotal": "Anterior: {{n}}",
+    "priorAf": "Anterior: {{n}}",
+    "empty": "Aún no hay suficiente historial. Vuelve el próximo mes."
+  },
   "goalEvolution": {
     "title": "Has superado este objetivo",
     "subtitle": "Día {{n}} sin alcohol. ¿Qué sigue?",
