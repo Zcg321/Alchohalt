@@ -42,6 +42,7 @@
     "scan:full": "bash ./tools/scan_report.sh",
     "gen-icons": "node ./scripts/gen-app-icons.cjs",
     "release:checklist": "bash ./scripts/release-checklist.sh",
+    "translation:review": "node ./tools/translation/generate_review_doc.cjs",
     "build:android": "npx cap sync android && cd android && ./gradlew assembleRelease",
     "build:ios": "npx cap sync ios && cd ios && xcodebuild -workspace App/App.xcworkspace -scheme App -configuration Release -archivePath App/build/App.xcarchive archive"
   },
