@@ -10,8 +10,8 @@ module.exports = {
     es2020: true,
     node: true
   },
-  plugins: ['@typescript-eslint'],
-  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+  plugins: ['@typescript-eslint', 'react-hooks'],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended', 'plugin:react-hooks/recommended', 'prettier'],
   settings: {
     react: {
       version: '18.2.0'
@@ -23,6 +23,8 @@ module.exports = {
     'max-lines': ['warn', { max: 600, skipBlankLines: true, skipComments: true }],
     'max-lines-per-function': ['warn', { max: 80, skipBlankLines: true, skipComments: true, IIFEs: true }],
     '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error',
     // [AUDIT-2026-05-01-C] Direct localStorage access bypasses the
     // Capacitor.Preferences shim and breaks on iOS/Android.
     'no-restricted-syntax': [

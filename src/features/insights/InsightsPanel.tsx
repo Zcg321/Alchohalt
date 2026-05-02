@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import type { Drink } from '../drinks/DrinkForm';
-import type { Goals } from '../../types/common';
 import InsightCard from './InsightCard';
 import { getCurrentStreak, analyzeWeekendPattern, analyzeCravingTrend, type Insight } from './lib';
 import { ChartIcon } from './insightGenerators';
@@ -10,10 +9,9 @@ import { useDB } from '../../store/db';
 
 interface Props {
   drinks: Drink[];
-  goals: Goals;
 }
 
-export default function InsightsPanel({ drinks, goals }: Props) {
+export default function InsightsPanel({ drinks }: Props) {
   const { canAccessAIInsights } = usePremiumFeatures();
   const { db } = useDB();
 
@@ -75,7 +73,7 @@ export default function InsightsPanel({ drinks, goals }: Props) {
     }
     
     return basicInsights.sort((a, b) => (b.priority || 0) - (a.priority || 0));
-  }, [drinks, goals, canAccessAIInsights, db.entries]);
+  }, [drinks, canAccessAIInsights, db.entries]);
 
   return (
     <div className="card">

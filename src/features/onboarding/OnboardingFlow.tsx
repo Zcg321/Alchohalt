@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
@@ -180,14 +180,14 @@ export default function OnboardingFlow() {
    * call only logs to console.debug in dev. Wiring the call now means
    * the moment the shim grows a real opt-in destination, the data is
    * already flowing. */
-  function complete(reason: 'finished' | 'skipped' = 'skipped') {
+  const complete = useCallback((reason: 'finished' | 'skipped' = 'skipped') => {
     analytics.track(
       reason === 'finished' ? 'onboarding-complete' : 'onboarding-skipped',
       { step }, // 0 / 1 / 2 — which beat user was on. No identifiers.
     );
     setSettings({ hasCompletedOnboarding: true });
     setIsVisible(false);
-  }
+  }, [setSettings, step]);
 
   // [BUG-9] Esc dismisses + persists.
   useEffect(() => {

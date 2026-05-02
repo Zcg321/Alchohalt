@@ -72,7 +72,10 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
   const { db } = useDB();
   
   // Get health metrics from store if health integration is enabled
-  const healthMetrics = FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION ? (db.healthMetrics || []) : [];
+  const healthMetrics = useMemo(
+    () => (FEATURE_FLAGS.ENABLE_HEALTH_INTEGRATION ? (db.healthMetrics || []) : []),
+    [db.healthMetrics]
+  );
 
   const wellnessMetrics = useMemo((): WellnessMetric[] => {
     const last30Days = drinks.filter(d => d.ts > Date.now() - 30 * 24 * 60 * 60 * 1000);
