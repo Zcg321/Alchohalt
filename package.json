@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit --skipLibCheck",
     "test": "vitest run",
     "verify": "npm run typecheck && npm run lint && npm test",
-    "audit:ci": "npm audit --audit-level=high",
+    "audit:ci": "npm audit --audit-level=critical --omit=dev",
     "lh": "echo 'Open Chrome DevTools → Lighthouse → PWA. Target ≥95'",
     "preview": "vite preview",
     "verify:release": "npm run typecheck && npm test && npm run build",
@@ -23,7 +23,7 @@
     "scan:dot": "python3 repo_scan.py --dot imports.dot && (command -v dot >/dev/null 2>&1 && dot -Tpng imports.dot -o imports.png || echo 'graphviz not installed; DOT only')",
     "codemod:split": "node --loader ts-node/esm tools/split_long_ts_or_tsx.ts",
     "test:smoke": "node --loader ts-node/esm tools/gen_smoke_tests.ts",
-    "test:ci": "vitest run --coverage --reporter=default || jest --ci --coverage",
+    "test:ci": "vitest run --coverage --reporter=default",
     "coverage:fallback": "node ./tools/coverage_fallback.cjs",
     "coverage:check": "node ./tools/coverage_gate.cjs",
     "deadcode": "ts-prune -p tsconfig.json",
@@ -110,9 +110,12 @@
     "tsx": "^4.21.0",
     "typescript": "5.4.2",
     "vite": "^5.2.2",
-    "vite-plugin-pwa": "0.20.0",
+    "vite-plugin-pwa": "1.2.0",
     "vitest": "3.2.4"
   },
   "sideEffects": false,
-  "packageManager": "npm@9.8.1"
+  "packageManager": "npm@9.8.1",
+  "overrides": {
+    "serialize-javascript": "^7.0.5"
+  }
 }

@@ -29,6 +29,8 @@ import type { Drink, DrinkPreset, Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import TodayPanel from './TodayPanel';
+import LongTermActivityRibbon from './LongTermActivityRibbon';
+import FirstMonthRibbon from './FirstMonthRibbon';
 import { Disclaimer } from '../../components/Disclaimer';
 import { useDB } from '../../store/db';
 
@@ -149,6 +151,19 @@ export default function TodayHome({
         onRoughNight={onRoughNight}
         quiet={quiet}
       />
+
+      {/* [R12-A] Long-term-user "last 7 days" ribbon — renders for users
+          past 30 days with >= 7 entries. The component handles all gating;
+          quiet mode hides it the same way it hides the rest of the home
+          surfaces. [R12-1] FirstMonthRibbon is the under-30-day variant,
+          rendered just below — both gates are mutually exclusive by
+          construction (one needs <30 days, the other needs >=30 days). */}
+      {!quiet ? (
+        <>
+          <LongTermActivityRibbon drinks={drinks} goals={goals} className="mt-3" />
+          <FirstMonthRibbon drinks={drinks} className="mt-3" />
+        </>
+      ) : null}
 
       {!quiet && surface === 'log' ? (
         <section

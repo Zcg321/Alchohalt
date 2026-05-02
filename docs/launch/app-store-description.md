@@ -20,8 +20,8 @@ Cut to fit each store's snippet length cleanly:
 ```
 A calm alcohol tracker. No ads. No analytics. Trust receipt included.
 
-No streaks-leaderboards, no levels, no rocket emojis. Just clean
-tracking and real help when you need it.
+No streaks-leaderboards, no levels, no rocket emojis. Tracking without
+the spreadsheet — and real help when you need it.
 
 Curated crisis lines on every screen — 988, SAMHSA, AA, SMART Recovery,
 plus international support (AU, UK, CA, IE). Tap "Need help?" anywhere
@@ -30,19 +30,23 @@ in the app. Never gated, never paid, never behind a feature flag.
 Track drinks the way that fits your life. Set a daily or weekly goal,
 journal what you're feeling, see where your money goes. The free tier
 covers what most people need forever — drink log, streak, money saved,
-basic journal, biometric lock, one reminder. Upgrade to premium when
-you want analytics, multi-reminders, exports, encrypted backup.
+basic journal, biometric lock, one reminder, and your full data export
+(JSON + CSV). Upgrade to premium when you want analytics,
+multi-reminders, PDF reports, end-to-end encrypted backup.
 
-— Free tier never moves features into paid.
-— Premium adds: mood/drink correlations, multi-reminders, CSV/PDF
-  export, encrypted backup, custom drink presets, advanced viz, icon
-  themes, and AI Insights (opt-in, off by default).
+— Free tier never moves features into paid. Your data — including
+  exports — stays free, always.
+— Premium adds: mood/drink correlations, multi-reminders, PDF report
+  export, end-to-end encrypted backup (the server holds only
+  ciphertext; only your device has the key), custom drink presets,
+  advanced viz, icon themes, and AI Insights (opt-in, off by default).
 — Lifetime ($69 once) — pay once, yours forever, no subscription trap.
 
 Your data stays on your phone. We cryptographically cannot read what
 you log. The trust receipt logs every storage write and every network
-call (when sync is on) so you can audit it yourself. Encrypted backup
-is opt-in. AI Insights is opt-in. Crisis resources work offline.
+call (when sync is on) so you can audit it yourself. End-to-end
+encrypted backup is opt-in. AI Insights is opt-in. Crisis resources
+work offline.
 
 No ads. No analytics. Not now, not when we're profitable, not ever.
 
