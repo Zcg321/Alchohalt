@@ -31,6 +31,12 @@ export function widmarkBAC(
   return bac;
 }
 
+/* [R8-F] Date arithmetic uses UTC throughout. Mixing setDate/getDate
+ * (local time) with toISOString().slice(0,10) (UTC) caused streak
+ * vs longest-streak to disagree across DST transitions — uncovered by
+ * the round-8 random-fixture resilience sweep with a 1/200 hit rate.
+ * Switching to setUTCDate/getUTCDate keeps the iteration pinned to
+ * UTC midnights, which matches how the keys are produced. */
 export function computeStreak(drinksByDay: Record<string, number>): number {
   const days = Object.keys(drinksByDay).sort();
   const earliestKey = days[0];
@@ -46,7 +52,7 @@ export function computeStreak(drinksByDay: Record<string, number>): number {
     const val = drinksByDay[key] ?? 0;
     if (val > 0) break;
     streak++;
-    current.setDate(current.getDate() - 1);
+    current.setUTCDate(current.getUTCDate() - 1);
   }
   return streak;
 }
@@ -57,7 +63,7 @@ export function computeLongestStreak(
   const days = Object.keys(drinksByDay);
   if (days.length === 0) return 0;
   const times = days
-    .map((d) => new Date(d).getTime())
+    .map((d) => Date.parse(`${d}T00:00:00Z`))
     .filter((n) => Number.isFinite(n));
   if (times.length === 0) return 0;
   let longest = 0;
@@ -73,7 +79,7 @@ export function computeLongestStreak(
       longest = Math.max(longest, currentStreak);
       currentStreak = 0;
     }
-    current.setDate(current.getDate() + 1);
+    current.setUTCDate(current.getUTCDate() + 1);
   }
   longest = Math.max(longest, currentStreak);
   return longest;
@@ -88,7 +94,7 @@ export function daysSinceLastDrink(drinksByDay: Record<string, number>): number 
     const val = drinksByDay[key] ?? 0;
     if (val > 0) break;
     days++;
-    current.setDate(current.getDate() - 1);
+    current.setUTCDate(current.getUTCDate() - 1);
     if (days > 3650) break;
   }
   return days;
@@ -118,7 +124,7 @@ export function computeTotalAFDays(drinksByDay: Record<string, number>): number 
   const days = Object.keys(drinksByDay);
   if (days.length === 0) return 0;
   const times = days
-    .map((d) => new Date(d).getTime())
+    .map((d) => Date.parse(`${d}T00:00:00Z`))
     .filter((n) => Number.isFinite(n));
   if (times.length === 0) return 0;
   let total = 0;
@@ -127,7 +133,7 @@ export function computeTotalAFDays(drinksByDay: Record<string, number>): number 
   while (current <= today) {
     const key = current.toISOString().slice(0, 10);
     if ((drinksByDay[key] ?? 0) === 0) total++;
-    current.setDate(current.getDate() + 1);
+    current.setUTCDate(current.getUTCDate() + 1);
   }
   return total;
 }
