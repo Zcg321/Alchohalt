@@ -44,7 +44,7 @@ interface Props {
   onSaveDrink: (drink: Drink) => void;
   onCancelEdit: () => void;
   /** Used by the panel "See progress" CTA. */
-  onOpenInsights?: () => void;
+  onOpenInsights?: (() => void) | undefined;
   /**
    * Tertiary "having a hard time" entry-point that bypasses the normal
    * primary CTA and opens the always-on crisis surface directly. The
@@ -52,7 +52,7 @@ interface Props {
    * is for users who already know they're not okay and want one tap to
    * the resources, not a conversation.
    */
-  onRoughNight?: () => void;
+  onRoughNight?: (() => void) | undefined;
 }
 
 type Surface = 'panel' | 'log' | 'check-in';

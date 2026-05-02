@@ -117,10 +117,10 @@ export async function stopVoiceRecognition(): Promise<void> {
 }
 
 export interface ParsedDrinkInput {
-  quantity?: number;
-  drinkType?: 'beer' | 'wine' | 'spirits' | 'custom';
-  volumeMl?: number;
-  abvPct?: number;
+  quantity?: number | undefined;
+  drinkType?: 'beer' | 'wine' | 'spirits' | 'custom' | undefined;
+  volumeMl?: number | undefined;
+  abvPct?: number | undefined;
   confidence: number; // 0-1
   originalText: string;
 }

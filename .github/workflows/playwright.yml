@@ -30,6 +30,22 @@ jobs:
         env:
           CI: '1'
 
+      # [R8-B] Component visual-regression gallery is shipped but
+      # gated behind GALLERY_SNAPSHOT=1 — baselines need to be
+      # generated on Linux CI first. Run locally on a clean Linux
+      # checkout: `GALLERY_SNAPSHOT=1 npx playwright test
+      # component-gallery --update-snapshots`, commit the resulting
+      # PNGs to e2e/component-gallery.spec.ts-snapshots/, then
+      # uncomment the step below to enable per-PR regression checks.
+      #
+      # - name: Component-gallery visual regression
+      #   run: npx playwright test component-gallery
+      #   env: { CI: '1', GALLERY_SNAPSHOT: '1' }
+      #
+      # Until baselines exist, the DOM-snapshot path
+      # (src/components/__tests__/visual-regression.test.tsx) runs
+      # under vitest and catches structural regressions today.
+
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4

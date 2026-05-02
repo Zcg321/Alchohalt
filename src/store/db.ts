@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // DNA: Alchohalt v1 • Unified DB • Do not add network calls.
 import { create } from 'zustand';
-import { persist, StateStorage, createJSONStorage } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import type { StateStorage } from 'zustand/middleware';
 import { getPreferences } from "@/shared/capacitor";
 import { nanoid } from 'nanoid';
 import { computeStats, startOfDay, isSameDay } from '../lib/stats';
@@ -31,37 +32,29 @@ export interface Settings {
   monthlyBudget: number;
   reminders: { enabled: boolean; times: string[] };
   showBAC: boolean;
-  profile?: { weightKg?: number; sex?: 'm'|'f'|'other' };
-  notificationFallbackMessage?: string;
-  hasCompletedOnboarding?: boolean;
+  profile?: { weightKg?: number | undefined; sex?: 'm'|'f'|'other' | undefined } | undefined;
+  notificationFallbackMessage?: string | undefined;
+  hasCompletedOnboarding?: boolean | undefined;
   /**
    * [HARD-TIME-ROUND-4] Non-judgmental marker timestamp set by the
-   * "stop tracking for tonight" action in the Hard-Time panel. While
-   * this is in the future, TodayHome renders a quieter view (just the
-   * calm Day-N hero, no stats / no log surfaces) so a user in a tough
-   * moment doesn't get the regular dashboard yelling at them.
-   * Auto-clears at next-day rollover (the home-render check is
-   * `Date.now() < quietUntilTs`).
+   * "stop tracking for tonight" action in the Hard-Time panel. Quieter
+   * view rendered while `Date.now() < quietUntilTs`. Auto-clears at
+   * next-day rollover.
    */
-  quietUntilTs?: number;
+  quietUntilTs?: number | undefined;
   // Enhanced features
-  healthPermissionsGranted?: boolean;
-  voicePermissionsGranted?: boolean;
+  healthPermissionsGranted?: boolean | undefined;
+  voicePermissionsGranted?: boolean | undefined;
   privacySettings?: {
-    shareWithFriends?: boolean;
-    shareDetailedLogs?: boolean;
-    syncJournalEntries?: boolean;
-  };
+    shareWithFriends?: boolean | undefined;
+    shareDetailedLogs?: boolean | undefined;
+    syncJournalEntries?: boolean | undefined;
+  } | undefined;
   /**
    * [R7-A4] User-facing opt-out for the AI-recommendations surface.
-   * Defaults undefined (= feature on per the build default). When the
-   * user toggles "Show AI-suggested goals" off in Settings, this is
-   * set to true and isAIRecommendationsEnabled() short-circuits to
-   * false even when the global flag is on. The flag itself is no
-   * longer surfaced in the UI as a kill-switch — everything is
-   * resolved via this opt-out + the QA override.
+   * undefined = feature on per build default; true = opted out.
    */
-  aiRecommendationsOptOut?: boolean;
+  aiRecommendationsOptOut?: boolean | undefined;
 }
 
 export interface Entry {
@@ -69,24 +62,24 @@ export interface Entry {
   ts: number;
   kind: DrinkKind;
   stdDrinks: number;
-  cost?: number;
+  cost?: number | undefined;
   intention: Intention;
   craving: number;
   halt: HALT;
-  altAction?: string;
-  notes?: string;
-  editedAt?: number;
+  altAction?: string | undefined;
+  notes?: string | undefined;
+  editedAt?: number | undefined;
   // Enhanced features
-  journal?: string;  // Free-form journaling text
-  mood?: 'happy' | 'sad' | 'anxious' | 'stressed' | 'calm' | 'excited' | 'neutral';
-  voiceTranscript?: string;  // Original voice input if logged via voice
+  journal?: string | undefined;
+  mood?: 'happy' | 'sad' | 'anxious' | 'stressed' | 'calm' | 'excited' | 'neutral' | undefined;
+  voiceTranscript?: string | undefined;
 }
 
 export interface HealthMetric {
   date: string; // YYYY-MM-DD format
-  steps?: number;
-  sleepHours?: number;
-  heartRate?: number;
+  steps?: number | undefined;
+  sleepHours?: number | undefined;
+  heartRate?: number | undefined;
   source: 'manual' | 'apple-health' | 'google-fit';
 }
 
@@ -98,9 +91,9 @@ export interface DB {
   settings: Settings;
   advancedGoals: AdvancedGoal[];
   presets: DrinkPreset[];
-  healthMetrics?: HealthMetric[];  // Optional health data from integrations
-  meta: { lastUndo?: Undo; reminderSuppressedUntil?: number };
-  _lastLogAt?: number; // derived
+  healthMetrics?: HealthMetric[] | undefined;  // Optional health data from integrations
+  meta: { lastUndo?: Undo | undefined; reminderSuppressedUntil?: number | undefined };
+  _lastLogAt?: number | undefined; // derived
 }
 
 const CURRENT_DB_VERSION = 1;

@@ -1,14 +1,14 @@
 // @no-smoke
 import React, { useMemo } from 'react';
-import { Drink } from '../DrinkForm';
+import type { Drink } from '../DrinkForm';
 import DayGroup from './DayGroup';
 import { useLanguage } from '../../../i18n';
 
 interface Props {
   drinks: Drink[];
-  onDelete?: (ts: number) => void;
-  onEdit?: (drink: Drink) => void;
-  dailyCap?: number;
+  onDelete?: ((ts: number) => void) | undefined;
+  onEdit?: ((drink: Drink) => void) | undefined;
+  dailyCap?: number | undefined;
 }
 
 export default function DrinkList({ drinks, onDelete, onEdit, dailyCap }: Props) {

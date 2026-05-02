@@ -1,7 +1,7 @@
 // @no-smoke
 import React from 'react';
 import { stdDrinks } from '../../../lib/calc';
-import { Drink } from '../DrinkForm';
+import type { Drink } from '../DrinkForm';
 import DrinkItem from './DrinkItem';
 import { formatDate, formatNumber } from '../../../lib/format';
 import { useLanguage } from '../../../i18n';
@@ -9,9 +9,9 @@ import { useLanguage } from '../../../i18n';
 interface Props {
   day: string;
   drinks: Drink[];
-  dailyCap?: number;
-  onEdit?: (d: Drink) => void;
-  onDelete?: (ts: number) => void;
+  dailyCap?: number | undefined;
+  onEdit?: ((d: Drink) => void) | undefined;
+  onDelete?: ((ts: number) => void) | undefined;
 }
 
 // Timezone-safe date formatting to avoid UTC interpretation issues.

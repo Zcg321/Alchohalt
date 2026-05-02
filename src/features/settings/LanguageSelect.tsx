@@ -1,4 +1,5 @@
-import { useLanguage, Lang } from '../../i18n';
+import { useLanguage } from '../../i18n';
+import type { Lang } from '../../i18n';
 
 export function LanguageSelect() {
   const { lang, setLang, t } = useLanguage();

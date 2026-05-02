@@ -35,9 +35,9 @@ export interface Purchase {
 
 export interface EntitlementState {
   isPremium: boolean;
-  productId?: ProductId;
-  expiryDate?: Date;
-  isTrialActive?: boolean;
+  productId?: ProductId | undefined;
+  expiryDate?: Date | undefined;
+  isTrialActive?: boolean | undefined;
 }
 
 export interface IAPProvider {

@@ -2,7 +2,7 @@
 import React from 'react';
 import PresetItem from './PresetItem';
 import AddPresetForm from './AddPresetForm';
-import { DrinkPreset } from './lib';
+import type { DrinkPreset } from './lib';
 
 interface Props {
   presets: DrinkPreset[];

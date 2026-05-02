@@ -35,7 +35,7 @@ export interface ActivityEntry {
   id: string;
   kind: ActivityKind;
   ts: number;
-  detail?: string;
+  detail?: string | undefined;
 }
 
 interface SyncState {

@@ -29,6 +29,10 @@ import { Skeleton } from '../components/ui/Skeleton';
  * + 5 markdown payloads from the initial download. The slug type +
  * predicate stay non-lazy because the route resolver needs them. */
 const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
+/* [R8-B] Component gallery — visual-regression baseline. Loaded only
+ * when the URL contains ?gallery=1. Lazy so it never enters the
+ * eager bundle for normal users. */
+const ComponentGallery = React.lazy(() => import('../styles/ComponentGallery'));
 import { usePWA } from '../hooks/usePWA';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { hapticForEvent } from '../shared/haptics';
@@ -140,7 +144,27 @@ function HardTimeDialog({ onClose }: { onClose: () => void }) {
   );
 }
 
+/* [R8-B] Component gallery short-circuit. When ?gallery=1 is in the
+ * URL we skip the entire app and render the visual-regression
+ * baseline instead. Optional ?theme=dark forces the dark palette so
+ * the Playwright spec doesn't have to drive system-color emulation
+ * to verify dark-mode tokens. Lifted to its own component so the
+ * conditional return runs BEFORE any hooks (rules-of-hooks). */
 export function AlcoholCoachApp() {
+  const galleryParams =
+    typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  if (galleryParams?.get('gallery') === '1') {
+    const theme = galleryParams.get('theme') === 'dark' ? 'dark' : 'light';
+    return (
+      <React.Suspense fallback={null}>
+        <ComponentGallery theme={theme} />
+      </React.Suspense>
+    );
+  }
+  return <AlcoholCoachAppInner />;
+}
+
+function AlcoholCoachAppInner() {
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null);
   const [lastDeleted, setLastDeleted] = useState<Drink | null>(null);

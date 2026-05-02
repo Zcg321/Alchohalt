@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Input } from '../../../components/ui/Input';
 import { Label } from '../../../components/ui/Label';
 import { Button } from '../../../components/ui/Button';
-import { DrinkPreset, updatePreset } from './lib';
+import { updatePreset } from './lib';
+import type { DrinkPreset } from './lib';
 
 interface Props {
   preset: DrinkPreset;
