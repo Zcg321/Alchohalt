@@ -56,13 +56,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # [R10-F] Defensive workaround for npm/cli#4828 — rollup's
-      # platform-specific optional dependencies sometimes get pruned
-      # on CI runners using `npm ci`, leading to "Cannot find module
-      # @rollup/rollup-linux-x64-gnu" at build time. `npm rebuild`
-      # forces re-resolution of native binaries.
-      - name: Rebuild native deps (rollup-optional-deps fix)
-        run: npm rebuild rollup esbuild
+      # [R11-CI-FIX-2] Defensive workaround for npm/cli#4828 — rollup
+      # and esbuild's platform-specific optional dependencies get
+      # pruned on CI runners using `npm ci`, leading to "Cannot find
+      # module @rollup/rollup-linux-x64-gnu" at build time.
+      #
+      # The R10-F fix (`npm rebuild`) was insufficient on its own —
+      # rebuild can't materialize a binary that wasn't downloaded. The
+      # PR-43 first run (commit 0d5f2f7) failed with this exact error
+      # despite the rebuild step. Explicitly installing the linux-x64
+      # binaries with --no-save is the proven fix from the upstream
+      # issue thread.
+      - name: Force-install platform-specific native binaries
+        run: |
+          npm install --no-save @rollup/rollup-linux-x64-gnu @esbuild/linux-x64 || true
+          npm rebuild rollup esbuild
 
       - name: Build
         run: npm run build
