@@ -239,6 +239,7 @@ export function AlcoholCoachApp() {
         onSaveDrink={saveDrink}
         onCancelEdit={cancelEdit}
         onOpenInsights={() => setActiveTab('insights')}
+        onRoughNight={openCrisis}
       />
     ),
     track: (
