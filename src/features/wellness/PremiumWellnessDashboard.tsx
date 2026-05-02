@@ -181,7 +181,13 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         value: haltTaggedCount,
         unit: 'in 30 days',
         trend: haltTaggedCount <= 3 ? 'up' : haltTaggedCount <= 7 ? 'stable' : 'down',
-        description: 'Drinks you tagged as hungry, angry, lonely, or tired.',
+        /* [COPILOT-FIX] The stressIndicators filter above only matches
+         * angry / lonely / tired (the original surface tracked these
+         * three specifically — hungry is intentionally excluded since
+         * a hungry-tagged drink is not the kind of stress signal this
+         * tile is meant to surface). Description updated to match the
+         * filter exactly. Round-4 review caught the label/value mismatch. */
+        description: 'Drinks you tagged as angry, lonely, or tired.',
         icon: '🧘'
       },
       {

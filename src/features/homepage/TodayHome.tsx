@@ -24,7 +24,7 @@
  *   - Levels / Points gamification (gone for now; full strip in `[IA-5]`)
  */
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import type { Drink, DrinkPreset, Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
 import ErrorBoundary from '../../components/ErrorBoundary';
@@ -73,8 +73,23 @@ export default function TodayHome({
    * the future, the home view renders only the Day-N hero + the
    * "Having a hard time?" link (kept available so the user can
    * re-enter the panel). The DrinkForm and EnhancedMoodTracker also
-   * stay hidden — quiet mode means quiet, not "log something quietly". */
+   * stay hidden — quiet mode means quiet, not "log something quietly".
+   *
+   * [ROUND-4-COPILOT-FIX] Midnight recompute: `Date.now() < quietUntilTs`
+   * is computed at render time, but the only thing that triggers a
+   * re-render is store changes — and quietUntilTs doesn't change at
+   * midnight. A user who keeps the app open across midnight would stay
+   * in quiet mode indefinitely. Schedule a re-render at exactly the
+   * threshold via setTimeout so the home view comes back the moment
+   * quiet expires. The local-state tick is the cheapest force-render. */
   const quietUntilTs = useDB((s) => s.db.settings.quietUntilTs ?? 0);
+  const [, setNowTick] = useState(0);
+  useEffect(() => {
+    if (quietUntilTs <= Date.now()) return;
+    const ms = quietUntilTs - Date.now();
+    const id = window.setTimeout(() => setNowTick((t) => t + 1), ms);
+    return () => window.clearTimeout(id);
+  }, [quietUntilTs]);
   const quiet = Date.now() < quietUntilTs;
 
   // If the parent flips into edit mode, surface the log form so the
