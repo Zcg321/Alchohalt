@@ -16,6 +16,12 @@ npm-debug.log*
 
 !public/icons/*.png
 
+# [R7-A2] Native launcher icons need to ship in the repo so iOS / Android
+# build outputs are reproducible without running gen-icons on the build
+# host. Source SVGs live at public/branding/icon-source/.
+!ios/App/App/Assets.xcassets/**/*.png
+!android/app/src/main/res/mipmap-*/*.png
+
 # Health scan reports
 repo_scan.json
 repo_scan_human.txt
