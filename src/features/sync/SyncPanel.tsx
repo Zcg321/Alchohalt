@@ -43,6 +43,7 @@ import {
 } from '../../lib/sync/keys';
 import { generate as generateMnemonic } from '../../lib/sync/mnemonic';
 import type { SyncTransport } from '../../lib/sync/transport';
+import { humanizeSyncError } from './syncErrorMessage';
 
 interface Props {
   transport: SyncTransport;
@@ -221,7 +222,7 @@ export default function SyncPanel({ transport }: Props) {
       setPendingMnemonic(mnemonic);
       setPhase('mnemonic-shown');
     } catch (err) {
-      setFieldError('form', (err as Error).message);
+      setFieldError('form', humanizeSyncError((err as Error).message));
     } finally {
       setBusy(false);
     }
@@ -243,7 +244,7 @@ export default function SyncPanel({ transport }: Props) {
       recordSync('success', 'initial push');
       resetForm();
     } catch (err) {
-      setFieldError('form', (err as Error).message);
+      setFieldError('form', humanizeSyncError((err as Error).message));
       recordSync('error', (err as Error).message);
     } finally {
       setBusy(false);
@@ -283,7 +284,7 @@ export default function SyncPanel({ transport }: Props) {
       recordSync('success', `pulled ${result.blobs.length} blob(s)`);
       resetForm();
     } catch (err) {
-      setFieldError('form', (err as Error).message);
+      setFieldError('form', humanizeSyncError((err as Error).message));
     } finally {
       setBusy(false);
     }
