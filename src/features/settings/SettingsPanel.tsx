@@ -9,6 +9,7 @@ import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
 import PrivacyStatus from './PrivacyStatus';
+import TrustReceipt from './TrustReceipt';
 import { hapticForEvent } from '../../shared/haptics';
 
 /* [BUG-PAYWALL-MOUNT] SubscriptionManager was built but never imported
@@ -214,6 +215,7 @@ export default function SettingsPanel() {
       </Suspense>
 
       <PrivacyStatus />
+      <TrustReceipt />
 
       <About />
       <LegalLinks />

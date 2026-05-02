@@ -1,7 +1,9 @@
 import { getPreferences } from "@/shared/capacitor";
+import { recordStorageEvent } from "./trust/receipt";
 
 export async function getJSON<T>(key: string, defaultValue: T): Promise<T> {
   const { value } = await (await getPreferences()).get({ key });
+  recordStorageEvent('get', key, { hit: value != null });
   if (!value) return defaultValue;
   try {
     return JSON.parse(value) as T;
@@ -11,7 +13,9 @@ export async function getJSON<T>(key: string, defaultValue: T): Promise<T> {
 }
 
 export async function setJSON(key: string, value: unknown): Promise<void> {
-  await (await getPreferences()).set({ key, value: JSON.stringify(value) });
+  const serialized = JSON.stringify(value);
+  recordStorageEvent('set', key, { bytes: serialized.length });
+  await (await getPreferences()).set({ key, value: serialized });
 }
 
 const timers = new Map<string, ReturnType<typeof setTimeout>>();

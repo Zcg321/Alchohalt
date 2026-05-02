@@ -9,7 +9,15 @@ import { registerSW } from './features/pwa/registerSW';
 import { bootstrapIAPOnStartup } from './features/iap/restoreEntitlement';
 import { installReminderSync } from './lib/notify';
 import { installGlobalErrorReporter } from './lib/errorReporter';
+import { installFetchWrap } from './lib/trust/receipt';
 import { LanguageProvider } from './i18n';
+
+/* [R8-C] Trust Receipt fetch wrap. Installed before any feature code
+ * runs so every outbound request is captured. Pass-through behavior
+ * (1:1 with native fetch) — no perf or correctness impact for
+ * callers. Buffer stays in memory only and is invisible until the
+ * user opens Settings → Privacy → Show trust receipt. */
+installFetchWrap();
 
 // [ROUND-5-E] Global error/unhandledrejection capture. No-op shim
 // by default (logs to console, no network call). The native build
