@@ -235,6 +235,23 @@
     "useTemplate": "Utiliser le modèle",
     "buildMyOwn": "Créer le mien"
   },
+  "goalEvolution": {
+    "title": "Tu as dépassé cet objectif",
+    "subtitle": "Jour {{n}} sans alcool. Et maintenant ?",
+    "dismiss": "Plus tard",
+    "extend": {
+      "title": "Continuer",
+      "detail": "Nouvel objectif : {{n}} jours"
+    },
+    "maintenance": {
+      "title": "Entretien : point hebdomadaire",
+      "detail": "Passe à un rendez-vous hebdomadaire plutôt qu'une série."
+    },
+    "budget": {
+      "title": "Budget d'entretien",
+      "detail": "Autorise jusqu'à 4 verres standards par semaine."
+    }
+  },
   "medicalDisclaimer": {
     "title": "Avis médical important",
     "content": "Alchohalt est un outil de suivi personnel et ne fournit aucun avis médical, diagnostic ou traitement. Cette application ne remplace pas une prise en charge médicale professionnelle.",

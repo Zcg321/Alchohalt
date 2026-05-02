@@ -235,6 +235,23 @@
     "useTemplate": "Vorlage verwenden",
     "buildMyOwn": "Eigenes erstellen"
   },
+  "goalEvolution": {
+    "title": "Du bist über dieses Ziel hinausgewachsen",
+    "subtitle": "Tag {{n}} alkoholfrei. Was kommt als Nächstes?",
+    "dismiss": "Nicht jetzt",
+    "extend": {
+      "title": "Weiter machen",
+      "detail": "Neues Ziel: {{n}} Tage"
+    },
+    "maintenance": {
+      "title": "Wartung: wöchentlicher Check-in",
+      "detail": "Wechsle zu einem wöchentlichen Puls statt einer Strähne."
+    },
+    "budget": {
+      "title": "Wartungsbudget",
+      "detail": "Erlaubt bis zu 4 Standardgetränke pro Woche."
+    }
+  },
   "medicalDisclaimer": {
     "title": "Wichtiger medizinischer Hinweis",
     "content": "Alchohalt ist ein persönliches Tracking-Werkzeug und liefert keine medizinische Beratung, Diagnose oder Behandlung. Diese App ersetzt keine professionelle medizinische Versorgung.",

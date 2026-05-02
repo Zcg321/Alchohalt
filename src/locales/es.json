@@ -240,6 +240,23 @@
     "useTemplate": "Usar plantilla",
     "buildMyOwn": "Crear la mía"
   },
+  "goalEvolution": {
+    "title": "Has superado este objetivo",
+    "subtitle": "Día {{n}} sin alcohol. ¿Qué sigue?",
+    "dismiss": "Ahora no",
+    "extend": {
+      "title": "Seguir adelante",
+      "detail": "Nuevo objetivo: {{n}} días"
+    },
+    "maintenance": {
+      "title": "Mantenimiento: chequeo semanal",
+      "detail": "Cambia a un pulso semanal en lugar de una racha."
+    },
+    "budget": {
+      "title": "Presupuesto de mantenimiento",
+      "detail": "Permite hasta 4 bebidas estándar por semana."
+    }
+  },
   "openSource": {
     "title": "Código abierto",
     "description": "Alchohalt es código abierto. Puedes leer el código, sugerir cambios o construir tu propia versión."

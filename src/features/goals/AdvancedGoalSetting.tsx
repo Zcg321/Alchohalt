@@ -15,7 +15,7 @@ export default function AdvancedGoalSetting({ goals, onChange }: Props) {
   const [showAddGoal, setShowAddGoal] = useState(false);
   
   // Use the DB store instead of local state
-  const { db: { advancedGoals }, addAdvancedGoal, toggleAdvancedGoal, deleteAdvancedGoal } = useDB();
+  const { db: { advancedGoals }, addAdvancedGoal, toggleAdvancedGoal, deleteAdvancedGoal, editAdvancedGoal } = useDB();
 
   const handleAddGoal = (newGoal: Omit<AdvancedGoal, 'id'>) => {
     addAdvancedGoal(newGoal);
@@ -52,11 +52,12 @@ export default function AdvancedGoalSetting({ goals, onChange }: Props) {
         {/* Active Goals */}
         <div className="space-y-3">
           {advancedGoals.map(goal => (
-            <GoalCard 
-              key={goal.id} 
-              goal={goal} 
+            <GoalCard
+              key={goal.id}
+              goal={goal}
               onToggle={() => handleToggleGoal(goal.id)}
               onDelete={() => handleDeleteGoal(goal.id)}
+              onEdit={(patch) => editAdvancedGoal(goal.id, patch)}
             />
           ))}
         </div>

@@ -241,6 +241,24 @@
     "buildMyOwn": "Build my own"
   },
 
+  "goalEvolution": {
+    "title": "You've outgrown this goal",
+    "subtitle": "Day {{n}} alcohol-free. What's next?",
+    "dismiss": "Not now",
+    "extend": {
+      "title": "Keep going",
+      "detail": "New target: {{n}} days"
+    },
+    "maintenance": {
+      "title": "Maintenance: weekly check-in",
+      "detail": "Switch to a once-a-week pulse instead of a streak."
+    },
+    "budget": {
+      "title": "Maintenance budget",
+      "detail": "Allow up to 4 standard drinks per week."
+    }
+  },
+
   "medicalDisclaimer": {
     "title": "Important medical disclaimer",
     "content": "Alchohalt is a personal tracking tool and does not provide medical advice, diagnosis, or treatment. This app is not a substitute for professional medical care.",
