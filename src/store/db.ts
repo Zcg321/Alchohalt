@@ -34,6 +34,16 @@ export interface Settings {
   profile?: { weightKg?: number; sex?: 'm'|'f'|'other' };
   notificationFallbackMessage?: string;
   hasCompletedOnboarding?: boolean;
+  /**
+   * [HARD-TIME-ROUND-4] Non-judgmental marker timestamp set by the
+   * "stop tracking for tonight" action in the Hard-Time panel. While
+   * this is in the future, TodayHome renders a quieter view (just the
+   * calm Day-N hero, no stats / no log surfaces) so a user in a tough
+   * moment doesn't get the regular dashboard yelling at them.
+   * Auto-clears at next-day rollover (the home-render check is
+   * `Date.now() < quietUntilTs`).
+   */
+  quietUntilTs?: number;
   // Enhanced features
   healthPermissionsGranted?: boolean;
   voicePermissionsGranted?: boolean;

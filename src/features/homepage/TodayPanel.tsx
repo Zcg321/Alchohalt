@@ -42,6 +42,16 @@ interface Props {
    * is the one for the moments that aren't calm.
    */
   onRoughNight?: () => void;
+  /**
+   * [HARD-TIME-ROUND-4] Quiet mode. When true, the Day-N hero stays
+   * visible but everything else (CTAs, streak badge, stats strip,
+   * what's-next card) hides. Set by the "stop tracking until
+   * tomorrow" action in HardTimePanel; auto-clears at next-day
+   * rollover via the `Date.now() < quietUntilTs` check upstream.
+   * The "Having a hard time?" link still renders — a user who's
+   * back in this state should not have to hunt the support entry.
+   */
+  quiet?: boolean;
 }
 
 const NEXT_MILESTONES = [1, 3, 7, 14, 30, 60, 90, 180, 365];
@@ -91,6 +101,7 @@ export default function TodayPanel({
   onMarkAF,
   onSeeProgress,
   onRoughNight,
+  quiet = false,
 }: Props) {
   const drinksByDay = buildDrinksByDay(drinks);
   const totalAF = computeTotalAFDays(drinksByDay);
@@ -160,6 +171,11 @@ export default function TodayPanel({
       ? `${milestone - dayCount} day${milestone - dayCount === 1 ? '' : 's'} to ${milestone}`
       : null;
 
+  /* [HARD-TIME-ROUND-4] In quiet mode, the hero subcopy reads as a
+   * literal "we'll be here tomorrow" so the user knows the dashboard
+   * isn't broken. Action-first, no consoling filler. */
+  const quietSubcopy = quiet ? 'Resting until midnight. The dashboard comes back tomorrow.' : null;
+
   return (
     <section
       data-testid="today-panel"
@@ -175,86 +191,92 @@ export default function TodayPanel({
         >
           {status.kind === 'starting' ? 'Day 0' : `Day ${dayCount}`}
         </p>
-        {heroSubcopy ? (
+        {quietSubcopy ? (
+          <p className="mt-3 text-caption text-ink-soft max-w-md mx-auto">{quietSubcopy}</p>
+        ) : heroSubcopy ? (
           <p className="mt-3 text-caption text-ink-soft max-w-md mx-auto">{heroSubcopy}</p>
         ) : null}
 
-        {/* Primary action */}
-        <div className="mt-8 flex flex-col items-center gap-3">
-          <button
-            type="button"
-            onClick={cta.onClick}
-            className="inline-flex items-center justify-center rounded-pill bg-sage-700 px-6 py-3 text-base font-medium text-white shadow-card hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[48px] min-w-[180px]"
-          >
-            {cta.label}
-          </button>
-          {cta.secondary ? (
+        {/* Primary action — hidden in quiet mode */}
+        {!quiet ? (
+          <div className="mt-8 flex flex-col items-center gap-3">
             <button
               type="button"
-              onClick={cta.secondary.onClick}
-              className="text-caption text-ink-soft underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-none"
+              onClick={cta.onClick}
+              className="inline-flex items-center justify-center rounded-pill bg-sage-700 px-6 py-3 text-base font-medium text-white shadow-card hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[48px] min-w-[180px]"
             >
-              {cta.secondary.label}
+              {cta.label}
             </button>
-          ) : null}
-        </div>
+            {cta.secondary ? (
+              <button
+                type="button"
+                onClick={cta.secondary.onClick}
+                className="text-caption text-ink-soft underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-none"
+              >
+                {cta.secondary.label}
+              </button>
+            ) : null}
+          </div>
+        ) : null}
 
-        {/* Subtle streak badge — only when on a streak >= 1 */}
-        {status.kind === 'building' && totalAF > dayCount ? (
+        {/* Subtle streak badge — only when on a streak >= 1 (and not quiet) */}
+        {!quiet && status.kind === 'building' && totalAF > dayCount ? (
           <p className="mt-4 text-caption text-ink-subtle">
             <span className="stat-num">{totalAF}</span> alcohol-free days lifetime
           </p>
         ) : null}
 
-        {/* Tertiary rough-night entry — quiet, one tap to crisis. The
-            link reads as a question, not an alarm; the actual surface
-            it opens is the always-on Crisis modal, which is loud where
-            it should be loud. */}
+        {/* Tertiary rough-night entry — quiet, one tap to the Hard-Time
+            panel. Renders even in quiet mode: a user who's back in this
+            state should not have to hunt the support entry. The link
+            reads as a question, not an alarm. */}
         {onRoughNight ? (
           <p className="mt-6 text-caption">
             <button
               type="button"
               onClick={onRoughNight}
+              data-testid="rough-night-link"
               className="text-ink-soft underline-offset-4 hover:underline hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
             >
-              Having a hard time? See crisis support.
+              Having a hard time?
             </button>
           </p>
         ) : null}
       </div>
 
-      {/* Below-fold stats strip */}
-      {drinks.length === 0 ? (
-        <div
-          className="rounded-lg border border-border-soft bg-surface-elevated px-5 py-6 text-center"
-          data-testid="day-zero-empty-stats"
-        >
-          <p className="text-body text-ink">
-            Log your first to see your week shape up.
-          </p>
-          <p className="mt-1 text-caption text-ink-soft">
-            Today, 7 days, and 30 days will fill in as you log.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <Stat label="Today" value={todayStd.toFixed(1)} unit="std" />
-          <Stat label="7 days" value={weekStd.toFixed(1)} unit="std" />
-          <Stat
-            label="30 days"
-            value={pricePerStd > 0 ? `$${monthSpent.toFixed(0)}` : `${monthStd.toFixed(0)}`}
-            unit={pricePerStd > 0 ? 'spent' : 'std'}
-          />
-        </div>
-      )}
+      {!quiet ? (
+        <>
+          {/* Below-fold stats strip */}
+          {drinks.length === 0 ? (
+            <div
+              className="rounded-lg border border-border-soft bg-surface-elevated px-5 py-6 text-center"
+              data-testid="day-zero-empty-stats"
+            >
+              <p className="text-body text-ink">
+                Log your first to see your week shape up.
+              </p>
+              <p className="mt-1 text-caption text-ink-soft">
+                Today, 7 days, and 30 days will fill in as you log.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <Stat label="Today" value={todayStd.toFixed(1)} unit="std" />
+              <Stat label="7 days" value={weekStd.toFixed(1)} unit="std" />
+              <Stat
+                label="30 days"
+                value={pricePerStd > 0 ? `$${monthSpent.toFixed(0)}` : `${monthStd.toFixed(0)}`}
+                unit={pricePerStd > 0 ? 'spent' : 'std'}
+              />
+            </div>
+          )}
 
-      {/* Optional "What's next" prompt card. Only shows if there's a
-          concrete next-step worth surfacing. Quiet by default. */}
-      {status.kind !== 'starting' && goals.dailyCap > 0 && todayStd > 0 ? (
-        <WhatsNextCard
-          todayStd={todayStd}
-          dailyCap={goals.dailyCap}
-        />
+          {/* Optional "What's next" prompt card. Only shows if there's a
+              concrete next-step worth surfacing. Quiet by default. */}
+          {status.kind !== 'starting' && goals.dailyCap > 0 && todayStd > 0 ? (
+            <WhatsNextCard todayStd={todayStd} dailyCap={goals.dailyCap} />
+          ) : null}
+        </>
       ) : null}
     </section>
   );

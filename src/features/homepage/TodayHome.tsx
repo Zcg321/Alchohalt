@@ -30,6 +30,7 @@ import { Skeleton } from '../../components/ui/Skeleton';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import TodayPanel from './TodayPanel';
 import { Disclaimer } from '../../components/Disclaimer';
+import { useDB } from '../../store/db';
 
 const DrinkForm = React.lazy(() => import('../drinks/DrinkForm'));
 const EnhancedMoodTracker = React.lazy(() => import('../mood/EnhancedMoodTracker'));
@@ -68,6 +69,13 @@ export default function TodayHome({
   onRoughNight,
 }: Props) {
   const [surface, setSurface] = useState<Surface>('panel');
+  /* [HARD-TIME-ROUND-4] Quiet mode: while settings.quietUntilTs is in
+   * the future, the home view renders only the Day-N hero + the
+   * "Having a hard time?" link (kept available so the user can
+   * re-enter the panel). The DrinkForm and EnhancedMoodTracker also
+   * stay hidden — quiet mode means quiet, not "log something quietly". */
+  const quietUntilTs = useDB((s) => s.db.settings.quietUntilTs ?? 0);
+  const quiet = Date.now() < quietUntilTs;
 
   // If the parent flips into edit mode, surface the log form so the
   // user can see the entry they're editing.
@@ -105,9 +113,10 @@ export default function TodayHome({
         onMarkAF={handleMarkAF}
         onSeeProgress={onOpenInsights}
         onRoughNight={onRoughNight}
+        quiet={quiet}
       />
 
-      {surface === 'log' ? (
+      {!quiet && surface === 'log' ? (
         <section
           aria-labelledby="log-heading"
           className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
@@ -144,7 +153,7 @@ export default function TodayHome({
         </section>
       ) : null}
 
-      {surface === 'check-in' ? (
+      {!quiet && surface === 'check-in' ? (
         <section
           aria-labelledby="checkin-heading"
           className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"

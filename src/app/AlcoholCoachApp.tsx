@@ -20,6 +20,7 @@ import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
+import HardTimePanel from '../features/crisis/HardTimePanel';
 import { isLegalSlug, type LegalSlug } from '../features/legal/slugs';
 import { Skeleton } from '../components/ui/Skeleton';
 
@@ -86,6 +87,59 @@ import { useLanguage } from '../i18n';
 import { attachForegroundSync } from '../lib/sync/scheduler';
 import { attachDbBridge } from '../lib/sync/dbBridge';
 
+/* [HARD-TIME-ROUND-4] Sibling dialog wrapper around HardTimePanel.
+ * Same focus-trap + Escape + backdrop-click pattern as CrisisDialog.
+ * Inline so the file stays the central inspectable place for all
+ * always-on safety surfaces. */
+function HardTimeDialog({ onClose }: { onClose: () => void }) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+  useFocusTrap(dialogRef, true);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    window.addEventListener('keydown', onKey);
+    closeRef.current?.focus();
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hard-time-dialog-title"
+      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-charcoal-900/70 backdrop-blur-sm p-4 animate-fade-in"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="my-8 w-full max-w-md rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-fade-in">
+        <div className="flex items-center justify-between border-b border-border-soft px-5 py-4">
+          <h2 id="hard-time-dialog-title" className="text-h3 text-ink">
+            Having a hard time?
+          </h2>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
+          >
+            <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <HardTimePanel onClose={onClose} />
+      </div>
+    </div>
+  );
+}
+
 export function AlcoholCoachApp() {
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null);
@@ -93,6 +147,11 @@ export function AlcoholCoachApp() {
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const [showCrisis, setShowCrisis] = useState(false);
+  /* [HARD-TIME-ROUND-4] Hard-Time panel is the urgent-mode subset of
+   * crisis support — fewer doors, action-first. Distinct from the
+   * full CrisisResources dialog the AppHeader pill opens. The
+   * TodayPanel "Having a hard time?" link now opens this. */
+  const [showHardTime, setShowHardTime] = useState(false);
   // [IA-2] active tab — controlled here so other surfaces (the Today
   // panel "See progress" CTA) can request a jump to Insights.
   const [activeTab, setActiveTab] = useState<TabId | undefined>(undefined);
@@ -126,6 +185,23 @@ export function AlcoholCoachApp() {
   function closeCrisis() {
     setShowCrisis(false);
     // Restore focus to the trigger after the dialog unmounts.
+    queueMicrotask(() => crisisOpenerRef.current?.focus?.());
+  }
+
+  /* [HARD-TIME-ROUND-4] Hard-Time panel uses the same focus-restore
+   * pattern as CrisisDialog. Re-uses crisisOpenerRef since only one of
+   * the two dialogs can be open at a time (state is mutually exclusive
+   * by design — opening one closes the other implicitly via the
+   * mount/unmount cycle below). */
+  function openHardTime() {
+    if (typeof document !== 'undefined') {
+      crisisOpenerRef.current = document.activeElement as HTMLElement | null;
+    }
+    setShowHardTime(true);
+  }
+
+  function closeHardTime() {
+    setShowHardTime(false);
     queueMicrotask(() => crisisOpenerRef.current?.focus?.());
   }
 
@@ -303,7 +379,7 @@ export function AlcoholCoachApp() {
         onSaveDrink={saveDrink}
         onCancelEdit={cancelEdit}
         onOpenInsights={() => setActiveTab('insights')}
-        onRoughNight={openCrisis}
+        onRoughNight={openHardTime}
       />
     ),
     track: (
@@ -363,6 +439,10 @@ export function AlcoholCoachApp() {
           closeRef={crisisCloseRef}
           onClose={closeCrisis}
         />
+      ) : null}
+
+      {showHardTime ? (
+        <HardTimeDialog onClose={closeHardTime} />
       ) : null}
 
       {legalSlug ? (
