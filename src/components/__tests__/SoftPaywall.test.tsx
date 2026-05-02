@@ -15,9 +15,11 @@ afterEach(() => {
 
 describe('SoftPaywall — premium feature behavior on free tier', () => {
   it('renders preview + Unlock CTA when feature is gated', () => {
+    // [R11-C] csv_export moved to free; pdf_export stays premium and
+    // is the canonical gated-export example.
     render(
-      <SoftPaywall feature="csv_export">
-        <div data-testid="real-content">CSV export here</div>
+      <SoftPaywall feature="pdf_export">
+        <div data-testid="real-content">PDF export here</div>
       </SoftPaywall>,
     );
     // The preview IS rendered (children present, just dimmed)
@@ -28,7 +30,7 @@ describe('SoftPaywall — premium feature behavior on free tier', () => {
 
   it('preview is aria-hidden + non-interactive (pointer-events-none)', () => {
     const { container } = render(
-      <SoftPaywall feature="csv_export">
+      <SoftPaywall feature="pdf_export">
         <button>Click me</button>
       </SoftPaywall>,
     );
@@ -100,6 +102,7 @@ describe('SoftPaywall — never gates a free feature', () => {
       'biometric_lock',
       'one_default_reminder',
       'json_export',
+      'csv_export', // [R11-C] data ownership ≠ paywall
       'dark_mode',
       'multi_language',
     ] as const;

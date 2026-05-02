@@ -23,7 +23,7 @@ privilege. Three commitments anchor the design:
 
 Experimental React app wrapped with Capacitor. Data saved as a single versioned Preferences record (`alchohalt.db`) for easier migration.
 
-Currently includes basic drink logging with intention, craving rating, HALT flags, and optional alternative actions, persisted with Capacitor Preferences. It offers minimal Tailwind styling, streak and points stats, goal settings for daily caps and weekly totals, and an installable PWA with Workbox-powered offline caching and proper icons. Optional check-in reminders can be enabled via local notifications. Recent additions include JSON export/import of drink history from the settings panel, per-entry editing and deletion, daily grouping with totals, a clear data option, a weekly consumption chart, and a top-level error boundary to catch unexpected issues.
+Currently includes basic drink logging with intention, craving rating, HALT flags, and optional alternative actions, persisted with Capacitor Preferences. It offers minimal Tailwind styling, streak and consistency-score stats, goal settings for daily caps and weekly totals, and an installable PWA with Workbox-powered offline caching and proper icons. Optional check-in reminders can be enabled via local notifications. Recent additions include JSON export/import of drink history from the settings panel, per-entry editing and deletion, daily grouping with totals, a clear data option, a weekly consumption chart, and a top-level error boundary to catch unexpected issues.
 Stats now surface a 30-day average craving score, HALT trigger counts, and your longest alcohol-free streak.
 A color-coded badge in Stats highlights your current AF streak for a quick motivational glance.
 

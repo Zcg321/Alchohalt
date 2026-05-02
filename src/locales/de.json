@@ -36,7 +36,7 @@
   "iconThemes.title": "App-Symbol",
   "iconThemes.subtitle": "Wähle, wie Alchohalt auf deinem Startbildschirm erscheint.",
   "iconThemes.platformNote": "Im Web wird die Änderung erst nach Neuinstallation der PWA sichtbar. Auf iOS / Android greift sie, sobald die nativen Assets in einer kommenden Version ausgeliefert werden.",
-  "stats.points": "Punkte",
+  "stats.points": "Konstanz-Wert",
   "stats.weekTotal": "Wochenwert",
   "stats.weeklyGoalProgress": "Fortschritt Wochenziel",
   "stats.ofGoal": "vom Wochenziel",
@@ -116,7 +116,7 @@
   "goals.weekly": "Wochenziel",
   "goals.progress.today": "Tagesfortschritt",
   "goals.progress.week": "Wochenfortschritt",
-  "goals.points": "Punkte",
+  "goals.points": "Konstanz-Wert",
   "goals.afStreak": "AF-Serie",
   "goals.longestStreak": "Längste AF-Serie",
   "history.title": "Verlauf",
@@ -247,7 +247,21 @@
     "viewSubtitle": "Letzte {{n}} Tage vs die {{n}} davor.",
     "totalDrinks": "Getränke gesamt",
     "afDays": "Alkoholfreie Tage",
-    "avgCraving": "Durchschnittliches Verlangen"
+    "avgCraving": "Durchschnittliches Verlangen",
+    "placeholderTitle": "Dein Rückblick kommt",
+    "placeholderTomorrow": "Dein erster Rückblick wird morgen freigeschaltet — ein Vergleich der letzten 30 Tage mit den 30 davor, sobald es genug Verlauf gibt, damit der Vergleich ehrlich ist.",
+    "placeholderInDays": "Dein erster Rückblick wird in etwa {{n}} Tagen freigeschaltet — ein Vergleich der letzten 30 Tage mit den 30 davor, sobald es genug Verlauf gibt, damit der Vergleich ehrlich ist."
+  },
+  "funnel": {
+    "title": "Onboarding-Funnel",
+    "empty": "Noch keine Versuche aufgezeichnet. Daten löschen und Onboarding neu durchlaufen, um Daten zu erzeugen.",
+    "subtitleOne": "Gerätelokale Zählung über {{n}} Versuch. Wird nie übertragen.",
+    "subtitleMany": "Gerätelokale Zählung über {{n}} Versuche. Wird nie übertragen.",
+    "attempts": "Versuche",
+    "completed": "Abgeschlossen",
+    "completion": "Abschlussrate",
+    "reached": "{{n}} erreicht ({{pct}}%)",
+    "droppedHere": "Hier abgebrochen:"
   },
   "monthlyDelta": {
     "title": "Monat für Monat",

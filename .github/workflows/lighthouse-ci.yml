@@ -21,6 +21,13 @@ name: Lighthouse CI
 # step fails with "Cannot find module @rollup/rollup-linux-x64-gnu"
 # — masquerades as a Lighthouse failure because lhci runs `npm run
 # build` internally.
+#
+# [R11-3] Added a second job (lighthouse-mobile) that runs Lighthouse
+# in mobile preset = Moto G Power-class CPU + 4G slow throttle. Both
+# jobs share the same build artifact path and rebuild routine; only
+# the lighthouserc config differs. Mobile thresholds: perf ≥ 0.75,
+# LCP < 4000ms, TTI < 5000ms — these correspond to the brief's
+# low-end Android targets.
 
 permissions:
   contents: read
@@ -32,7 +39,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lighthouse:
+  lighthouse-desktop:
     runs-on: ubuntu-22.04
     timeout-minutes: 15
 
@@ -49,13 +56,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # [R10-F] Defensive workaround for npm/cli#4828 — rollup's
-      # platform-specific optional dependencies sometimes get pruned
-      # on CI runners using `npm ci`, leading to "Cannot find module
-      # @rollup/rollup-linux-x64-gnu" at build time. `npm rebuild`
-      # forces re-resolution of native binaries.
-      - name: Rebuild native deps (rollup-optional-deps fix)
-        run: npm rebuild rollup esbuild
+      # [R11-CI-FIX-2] Defensive workaround for npm/cli#4828 — rollup
+      # and esbuild's platform-specific optional dependencies get
+      # pruned on CI runners using `npm ci`, leading to "Cannot find
+      # module @rollup/rollup-linux-x64-gnu" at build time.
+      #
+      # The R10-F fix (`npm rebuild`) was insufficient on its own —
+      # rebuild can't materialize a binary that wasn't downloaded. The
+      # PR-43 first run (commit 0d5f2f7) failed with this exact error
+      # despite the rebuild step. Explicitly installing the linux-x64
+      # binaries with --no-save is the proven fix from the upstream
+      # issue thread.
+      - name: Force-install platform-specific native binaries
+        run: |
+          npm install --no-save @rollup/rollup-linux-x64-gnu @esbuild/linux-x64 || true
+          npm rebuild rollup esbuild
 
       - name: Build
         run: npm run build
@@ -63,9 +78,12 @@ jobs:
           CI: 'true'
 
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.4
+        # [R11-CI-FIX-3] Pin corrected from 0.14.4 (R10-F typo — that
+        # patch was never published) to 0.14.0, the actual 0.14.x
+        # release. PR-43 first run hit ETARGET on the typo.
+        run: npm install -g @lhci/cli@0.14.0
 
-      - name: Run Lighthouse CI
+      - name: Run Lighthouse CI (desktop)
         run: lhci autorun --config=./lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
@@ -78,10 +96,65 @@ jobs:
       # [R10-F] Always upload the Lighthouse report as an artifact so a
       # failed run is debuggable. 7-day retention because LHR JSON is
       # only useful for the immediate PR review window.
-      - name: Upload Lighthouse report
+      - name: Upload Lighthouse report (desktop)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lighthouse-report
+          name: lighthouse-report-desktop
+          path: .lighthouseci/
+          retention-days: 7
+
+  # [R11-3] Mobile profile — emulates Moto G Power-class hardware on a
+  # 4G slow connection (Lighthouse's `mobile` preset). Real low-end
+  # Android coverage was missing as of round 10. A separate job (rather
+  # than a second config in the same job) so a desktop-only regression
+  # doesn't mask a mobile one and vice versa.
+  lighthouse-mobile:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # [R11-CI-FIX-2] Same fix as the desktop job — `npm rebuild`
+      # alone wasn't sufficient for the rollup-optional-deps bug.
+      # See lighthouse-desktop job above for full rationale.
+      - name: Force-install platform-specific native binaries
+        run: |
+          npm install --no-save @rollup/rollup-linux-x64-gnu @esbuild/linux-x64 || true
+          npm rebuild rollup esbuild
+
+      - name: Build
+        run: npm run build
+        env:
+          CI: 'true'
+
+      - name: Install Lighthouse CI
+        # [R11-CI-FIX-3] Pin corrected from 0.14.4 (R10-F typo — that
+        # patch was never published) to 0.14.0, the actual 0.14.x
+        # release. PR-43 first run hit ETARGET on the typo.
+        run: npm install -g @lhci/cli@0.14.0
+
+      - name: Run Lighthouse CI (mobile / Moto G class)
+        run: lhci autorun --config=./lighthouserc.mobile.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        continue-on-error: false
+
+      - name: Upload Lighthouse report (mobile)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-mobile
           path: .lighthouseci/
           retention-days: 7

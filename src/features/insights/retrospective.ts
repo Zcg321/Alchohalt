@@ -122,22 +122,74 @@ export function computeRetrospective(
 }
 
 /**
- * Pick the largest window with prior-window data available. So a
- * 90-day-old user sees the 90-day retrospective, a 365-day-old user
- * sees the 12-month one.
+ * [R11-D] Minimum distinct-days of data required in the prior window
+ * for a retrospective to be honest. Below this, the comparison is
+ * statistical noise — Copilot review on round 10 caught the bug where
+ * a 45-day-old user with one entry at day 45 would get a 30-day
+ * retrospective with one prior data point, leading to misleading
+ * +/-1000% deltas.
+ */
+export const MIN_PRIOR_WINDOW_DAYS = 7;
+
+/**
+ * Pick the largest window where (a) the prior window starts at or
+ * after the user's earliest entry — so the comparison is fair across
+ * the user's full tracked period — AND (b) the prior window has at
+ * least MIN_PRIOR_WINDOW_DAYS of distinct days with data.
+ *
+ * Gate (a) is the round-11 fix per Copilot review: if the user
+ * signed up 45 days ago, a 30-day retro's prior window (days 30-60)
+ * extends 15 days beyond their history. The deltas would compare
+ * "what they actually did" against "mostly empty space."
+ *
+ * Gate (b) catches the orthogonal sparse-data case: a user who's
+ * been on the app 200 days but only logged 3 entries in the prior
+ * window still wouldn't get an honest comparison.
  */
 export function pickRetrospectiveWindow(
   entries: Entry[],
   now: number = Date.now()
 ): RetrospectiveWindow | null {
+  if (entries.length === 0) return null;
   const dayMs = 86400000;
+  const earliestTs = Math.min(...entries.map((e) => e.ts));
   for (const w of [...RETROSPECTIVE_WINDOWS].reverse()) {
     const priorStart = now - 2 * w.days * dayMs;
     const priorEnd = now - w.days * dayMs;
-    const hasPriorData = entries.some((e) => e.ts >= priorStart && e.ts < priorEnd);
-    if (hasPriorData) return w;
+    if (priorStart < earliestTs) continue; // fair-comparison gate
+    const distinctDays = new Set<number>();
+    for (const e of entries) {
+      if (e.ts >= priorStart && e.ts < priorEnd) {
+        distinctDays.add(startOfDay(e.ts));
+      }
+    }
+    if (distinctDays.size >= MIN_PRIOR_WINDOW_DAYS) return w;
   }
   return null;
+}
+
+/**
+ * [R11-D] If no retrospective is currently available but the user has
+ * SOME data, returns how many days until the smallest (30-day)
+ * retrospective unlocks. Returns null if the user already has one
+ * available, or has no data at all (in which case there's nothing
+ * meaningful to say). UI uses this for the "your retrospective starts
+ * in N days" placeholder.
+ */
+export function daysUntilFirstRetrospective(
+  entries: Entry[],
+  now: number = Date.now()
+): number | null {
+  if (entries.length === 0) return null;
+  if (pickRetrospectiveWindow(entries, now) !== null) return null;
+  const dayMs = 86400000;
+  const earliestTs = Math.min(...entries.map((e) => e.ts));
+  // Smallest retrospective is 30-day; needs priorStart >= earliestTs.
+  // priorStart = now - 60*DAY, so we need now >= earliestTs + 60*DAY.
+  const requiredNow = earliestTs + 2 * 30 * dayMs;
+  const remainingMs = requiredNow - now;
+  if (remainingMs <= 0) return 0;
+  return Math.ceil(remainingMs / dayMs);
 }
 
 export const RETRO_PROMPT_INTERVAL_DAYS = 30;

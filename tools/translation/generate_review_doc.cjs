@@ -77,6 +77,44 @@ function toneFor(key) {
   return TONE_BY_SURFACE[surface] || 'No specific tone note. Match calm trusted-friend baseline.';
 }
 
+/**
+ * [R11-F] User-impact priority for surface ordering. The translator
+ * should review onboarding first because it's the highest-traffic
+ * funnel — a clumsy onboarding sentence costs us users on day one.
+ * Settings is reviewed last because it's the lowest-traffic surface.
+ *
+ * Lower number = higher priority = appears earlier in the doc.
+ * Surfaces not in this list get priority 100 (after everything explicit).
+ */
+const SURFACE_PRIORITY = {
+  onboarding: 1,
+  marketing: 2,
+  appName: 3,
+  goals: 4,            // home Today panel reads many of these
+  goalTemplates: 5,
+  goalEvolution: 6,
+  goal: 7,
+  stats: 10,           // home Stats top section
+  monthlyDelta: 11,    // home Insights surface
+  retrospective: 12,
+  analytics: 13,
+  money: 14,
+  history: 15,
+  iconThemes: 20,
+  privacy: 30,
+  medicalDisclaimer: 31,
+  paywall: 32,
+  subscription: 33,
+  diagnostics: 40,
+  settings: 41,
+  support: 42,
+  openSource: 43,
+};
+
+function priorityFor(surface) {
+  return SURFACE_PRIORITY[surface] !== undefined ? SURFACE_PRIORITY[surface] : 100;
+}
+
 function main() {
   const en = flatten(loadLocale('en'));
   const es = flatten(loadLocale('es'));
@@ -131,7 +169,29 @@ function main() {
   lines.push(`- **German (machine pass — needs native review):** ${Object.keys(de).length}`);
   lines.push('');
 
-  for (const surface of Object.keys(surfaces).sort()) {
+  // [R11-F] Sort surfaces by user-impact priority so onboarding +
+  // home come first; settings + diagnostics come last. This means
+  // a translator who only has 30 minutes spends them on the highest-
+  // traffic copy.
+  const orderedSurfaces = Object.keys(surfaces).sort((a, b) => {
+    const pa = priorityFor(a);
+    const pb = priorityFor(b);
+    if (pa !== pb) return pa - pb;
+    return a.localeCompare(b);
+  });
+  lines.push('## Review order (by user-impact priority)');
+  lines.push('');
+  lines.push('Surfaces are listed in the order a translator should review them.');
+  lines.push('Onboarding and home come first because they are the highest-traffic.');
+  lines.push('Settings / Diagnostics come last because they are reviewed least often.');
+  lines.push('');
+  for (const s of orderedSurfaces) {
+    const p = priorityFor(s);
+    lines.push(`- ${p === 100 ? '·' : p}. \`${s}\` (${surfaces[s].length} key${surfaces[s].length === 1 ? '' : 's'})`);
+  }
+  lines.push('');
+
+  for (const surface of orderedSurfaces) {
     const keys = surfaces[surface];
     lines.push(`## \`${surface}\` (${keys.length} key${keys.length === 1 ? '' : 's'})`);
     lines.push('');

@@ -24,6 +24,10 @@ const REQUIRED_FREE: FeatureKey[] = [
   'local_only_privacy',
   'one_default_reminder',
   'json_export',
+  // [R11-C] CSV export moved free: data ownership shouldn't be paywalled
+  // (round-10 ethics judge). PDF stays premium because that's
+  // formatting/charts, not raw data.
+  'csv_export',
   'dark_mode',
   'multi_language',
 ];
@@ -31,7 +35,6 @@ const REQUIRED_FREE: FeatureKey[] = [
 const REQUIRED_PREMIUM: FeatureKey[] = [
   'mood_drink_correlation',
   'multi_reminders',
-  'csv_export',
   'pdf_export',
   'encrypted_backup',
   'custom_drink_presets',

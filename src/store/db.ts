@@ -7,6 +7,8 @@ import { getPreferences } from "@/shared/capacitor";
 import { nanoid } from 'nanoid';
 import { computeStats, startOfDay, isSameDay } from '../lib/stats';
 import { migrateDB } from '../lib/migrate';
+import { validateDB } from '../lib/dbValidate';
+import { reportCorruption } from '../lib/dbRecovery';
 /* [BUG-MADGE-CYCLE] Reminder resync is now driven by a Zustand
  * subscription installed from main.tsx (see lib/notify.ts:
  * installReminderSync). The previous direct import of
@@ -37,6 +39,14 @@ export interface OnboardingDiagnostics {
   trackStyle?: 'day-by-day' | 'thirty-day' | 'custom' | undefined;
   completedAt?: number | undefined;
   skipPath?: 'x-button' | 'escape' | 'backdrop' | 'skip-explore' | 'just-looking' | undefined;
+  /**
+   * [R11-1] Step the user was on when they skipped (0=intro/intent,
+   * 1=track-style, 2=ready). Combined with skipPath, this answers
+   * "where in the funnel did the drop happen?" in the on-device
+   * Diagnostics → Onboarding funnel view. Local-only; never
+   * transmitted.
+   */
+  skipStep?: 0 | 1 | 2 | undefined;
 }
 
 export interface Settings {
@@ -451,7 +461,20 @@ export const useDB = create<Store>()(
       // db became unrecoverable.
       storage: createJSONStorage(() => preferencesStorage),
       migrate: async (persisted: unknown, v: number) => {
-        const migrated = migrateDB((persisted as { db: DB } | undefined)?.db, v, CURRENT_DB_VERSION);
+        // [R11-2] Defensive validation before migration. If the
+        // persisted blob is corrupt (browser bug, OS crash, malicious
+        // extension wrote garbage), report it to dbRecovery so the
+        // DataRecoveryScreen can surface options to the user, and
+        // return undefined so Zustand falls back to the store's
+        // initial state. The user keeps a working app; nothing
+        // unrecoverable happens behind their back.
+        const inner = (persisted as { db: unknown } | undefined)?.db;
+        const validation = validateDB(inner);
+        if (!validation.ok && validation.reason !== 'empty') {
+          reportCorruption(validation.reason, inner);
+          return undefined;
+        }
+        const migrated = migrateDB(validation.ok ? validation.db : undefined, v, CURRENT_DB_VERSION);
         return migrated ? { db: migrated } : undefined;
       },
       partialize: (s: Store): { db: DB } => ({ db: s.db })

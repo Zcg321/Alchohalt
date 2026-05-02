@@ -5,6 +5,7 @@ import {
   computeRetrospective,
   pickRetrospectiveWindow,
   shouldShowRetrospectivePrompt,
+  daysUntilFirstRetrospective,
 } from './retrospective';
 
 /**
@@ -28,7 +29,36 @@ export default function RetrospectivePanel() {
   const window = pickRetrospectiveWindow(db.entries);
   const shouldPrompt = shouldShowRetrospectivePrompt(db.settings.retrospectivePromptLastShownTs);
 
-  if (!window) return null; // No prior-window data → no retro to show
+  // [R11-D] Placeholder for thin-history users so the UI doesn't go silent
+  // — instead it tells them when to expect their first retrospective.
+  if (!window) {
+    const daysAway = daysUntilFirstRetrospective(db.entries);
+    if (daysAway === null || daysAway === 0) return null;
+    return (
+      <section
+        aria-labelledby="retro-placeholder-heading"
+        className="card border-l-4 border-neutral-300 dark:border-neutral-700"
+        data-testid="retro-placeholder"
+      >
+        <div className="card-content">
+          <h3 id="retro-placeholder-heading" className="font-semibold text-base">
+            {t('retrospective.placeholderTitle', 'Your retrospective is coming')}
+          </h3>
+          <p className="text-sm text-ink-soft mt-1">
+            {daysAway === 1
+              ? t(
+                  'retrospective.placeholderTomorrow',
+                  'Your first retrospective unlocks tomorrow — a 30-day-vs-prior-30-day comparison once there’s enough history to make it honest.'
+                )
+              : t(
+                  'retrospective.placeholderInDays',
+                  'Your first retrospective unlocks in about {{n}} days — a 30-day-vs-prior-30-day comparison once there’s enough history to make it honest.'
+                ).replace('{{n}}', String(daysAway))}
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   const dismiss = () => {
     setSettings({ retrospectivePromptLastShownTs: Date.now() });

@@ -36,7 +36,7 @@
   "iconThemes.title": "Ícono de la app",
   "iconThemes.subtitle": "Elige cómo se ve Alchohalt en tu pantalla.",
   "iconThemes.platformNote": "En web verás el cambio al reinstalar la PWA. En iOS / Android se aplica cuando se incluyan los recursos nativos en una próxima versión.",
-  "stats.points": "Puntos",
+  "stats.points": "Puntuación de constancia",
   "stats.weekTotal": "Total semanal",
   "stats.weeklyGoalProgress": "Progreso de la meta semanal",
   "stats.ofGoal": "de la meta semanal",
@@ -116,7 +116,7 @@
   "goals.weekly": "Meta semanal",
   "goals.progress.today": "Progreso de hoy",
   "goals.progress.week": "Progreso semanal",
-  "goals.points": "Puntos",
+  "goals.points": "Puntuación de constancia",
   "goals.afStreak": "Racha AF",
   "goals.longestStreak": "Racha AF más larga",
   "history.title": "Historial",
@@ -252,7 +252,21 @@
     "viewSubtitle": "Últimos {{n}} días vs los {{n}} anteriores.",
     "totalDrinks": "Bebidas totales",
     "afDays": "Días sin alcohol",
-    "avgCraving": "Antojo promedio"
+    "avgCraving": "Antojo promedio",
+    "placeholderTitle": "Tu retrospectiva está en camino",
+    "placeholderTomorrow": "Tu primera retrospectiva se desbloquea mañana — comparación de los últimos 30 días con los 30 anteriores, en cuanto haya historial suficiente para que sea honesta.",
+    "placeholderInDays": "Tu primera retrospectiva se desbloquea en unos {{n}} días — comparación de los últimos 30 días con los 30 anteriores, en cuanto haya historial suficiente para que sea honesta."
+  },
+  "funnel": {
+    "title": "Embudo de incorporación",
+    "empty": "Aún no se han registrado intentos. Borra los datos y vuelve a hacer la incorporación para llenar esto.",
+    "subtitleOne": "Conteos en el dispositivo a partir de {{n}} intento. Nunca se transmite.",
+    "subtitleMany": "Conteos en el dispositivo a partir de {{n}} intentos. Nunca se transmite.",
+    "attempts": "Intentos",
+    "completed": "Completados",
+    "completion": "Finalización",
+    "reached": "{{n}} alcanzaron ({{pct}}%)",
+    "droppedHere": "Abandonaron aquí:"
   },
   "monthlyDelta": {
     "title": "Mes a mes",
