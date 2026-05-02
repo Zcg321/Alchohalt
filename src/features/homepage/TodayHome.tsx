@@ -44,6 +44,14 @@ interface Props {
   onCancelEdit: () => void;
   /** Used by the panel "See progress" CTA. */
   onOpenInsights?: () => void;
+  /**
+   * Tertiary "having a hard time" entry-point that bypasses the normal
+   * primary CTA and opens the always-on crisis surface directly. The
+   * AppHeader pill is calm-by-design (indigo, "Need help?"); this route
+   * is for users who already know they're not okay and want one tap to
+   * the resources, not a conversation.
+   */
+  onRoughNight?: () => void;
 }
 
 type Surface = 'panel' | 'log' | 'check-in';
@@ -57,6 +65,7 @@ export default function TodayHome({
   onSaveDrink,
   onCancelEdit,
   onOpenInsights,
+  onRoughNight,
 }: Props) {
   const [surface, setSurface] = useState<Surface>('panel');
 
@@ -95,6 +104,7 @@ export default function TodayHome({
         onLogDrink={() => setSurface('log')}
         onMarkAF={handleMarkAF}
         onSeeProgress={onOpenInsights}
+        onRoughNight={onRoughNight}
       />
 
       {surface === 'log' ? (

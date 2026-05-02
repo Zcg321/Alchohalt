@@ -103,12 +103,15 @@ export default function InsightsPanel({ drinks, goals }: Props) {
       
       <div className="card-content space-y-4">
         {insights.length === 0 ? (
-          <div className="text-center py-8">
+          <div className="text-center py-8 max-w-sm mx-auto">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
               <ChartIcon />
             </div>
-            <p className="text-ink-soft">
-              A few more entries and the patterns start showing up here.
+            <p className="text-ink mb-2">Nothing to read yet.</p>
+            <p className="text-caption text-ink-soft">
+              Log a drink or mark today AF on the home screen. After about a week,
+              this is where weekend bias, craving trends, and time-of-day patterns
+              show up — only based on what you log, only on this device.
             </p>
           </div>
         ) : (

@@ -58,7 +58,7 @@ export default class ErrorBoundary extends Component<Props, State> {
 
     const heading = label
       ? `${label} couldn't load`
-      : 'Something went wrong';
+      : 'This screen tripped over something';
 
     // Compact inline fallback for isolated tiles.
     if (isolate) {
@@ -71,8 +71,8 @@ export default class ErrorBoundary extends Component<Props, State> {
             {heading}
           </p>
           <p className="mt-1 text-ink-soft">
-            This section hit an unexpected error. The rest of the app
-            should still work.
+            One section choked. The rest of the app is fine — your data
+            stays put. Try again when you&apos;re ready.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <button
@@ -121,9 +121,10 @@ export default class ErrorBoundary extends Component<Props, State> {
           {heading}
         </h1>
         <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-          We hit an unexpected error. Your data is safe — it stays on
-          your device. Try again, or reload the app if the problem
-          persists.
+          Your entries are still on your device — none of this lost any
+          of them. Try again, or reload if it sticks. If it keeps
+          happening, the report button below sends us the technical
+          details so we can fix it.
         </p>
         {this.state.error?.message ? (
           <details className="mt-3 text-left text-xs text-ink-subtle">

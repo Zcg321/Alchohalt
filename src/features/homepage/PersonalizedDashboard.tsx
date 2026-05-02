@@ -1,10 +1,15 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import type { Drink } from '../drinks/DrinkForm';
 import type { Goals } from '../../types/common';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useAnalytics } from '../analytics/analytics';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import {
+  type PersonalizationData,
+  getPersonalizedContent,
+  usePersonalization,
+} from './usePersonalization';
 
 interface Props {
   drinks?: Drink[];
@@ -12,203 +17,121 @@ interface Props {
   onQuickAction?: (action: string) => void;
 }
 
-interface PersonalizationData {
-  preferredDrinkTypes: string[];
-  riskTimes: string[];
-  motivationalTrend: 'improving' | 'stable' | 'concerning';
-  personalityType: 'goal-oriented' | 'social' | 'health-focused' | 'casual';
-  engagementLevel: 'high' | 'medium' | 'low';
+const TREND_GLYPH: Record<PersonalizationData['motivationalTrend'], string> = {
+  improving: '↗',
+  stable: '→',
+  concerning: '↘',
+};
+
+const TREND_LABEL: Record<PersonalizationData['motivationalTrend'], string> = {
+  improving: 'Trending up',
+  stable: 'Steady',
+  concerning: 'Worth a closer look',
+};
+
+const TREND_PILL_CLASS: Record<PersonalizationData['motivationalTrend'], string> = {
+  improving: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+  stable: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+  concerning: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300',
+};
+
+function DashboardGreeting({
+  greeting,
+  focusArea,
+  motivationalMessage,
+  isPremium,
+}: {
+  greeting: string;
+  focusArea: string;
+  motivationalMessage: string;
+  isPremium: boolean;
+}) {
+  return (
+    <div className="text-center mb-6">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">{greeting}</h2>
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <Badge variant="secondary">{focusArea}</Badge>
+        {isPremium && (
+          <Badge variant="primary" className="text-xs">
+            Adapted to you
+          </Badge>
+        )}
+      </div>
+      <p className="text-gray-600 dark:text-gray-300 italic">{motivationalMessage}</p>
+    </div>
+  );
+}
+
+function TrendIndicator({ trend }: { trend: PersonalizationData['motivationalTrend'] }) {
+  return (
+    <div className="flex justify-center mb-6">
+      <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${TREND_PILL_CLASS[trend]}`}>
+        <span className="text-lg" aria-hidden>
+          {TREND_GLYPH[trend]}
+        </span>
+        <span>{TREND_LABEL[trend]}</span>
+      </div>
+    </div>
+  );
+}
+
+function ActionGrid({
+  primaryAction,
+  secondaryActions,
+  onAction,
+}: {
+  primaryAction: string;
+  secondaryActions: string[];
+  onAction: (action: string) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <Button variant="primary" className="h-12 text-base font-medium" onClick={() => onAction(primaryAction)}>
+        {primaryAction}
+      </Button>
+      {secondaryActions.map((action, index) => (
+        <Button
+          key={action}
+          variant={index === 0 ? 'secondary' : 'outline'}
+          className="h-12"
+          onClick={() => onAction(action)}
+        >
+          {action}
+        </Button>
+      ))}
+    </div>
+  );
 }
 
 export default function PersonalizedDashboard({ drinks = [], goals, onQuickAction = () => {} }: Props) {
   const { isPremium } = usePremiumFeatures();
   const { trackFeatureUsage } = useAnalytics();
+  const personalization = usePersonalization(drinks, goals);
+  const content = getPersonalizedContent(personalization);
 
-  const personalization = useMemo((): PersonalizationData => {
-    const last30Days = drinks.filter(d => d.ts > Date.now() - 30 * 24 * 60 * 60 * 1000);
-    
-    // Analyze drink preferences
-    const drinkTypes = last30Days.reduce((acc, drink) => {
-      if (drink.volumeMl > 300) acc.beer = (acc.beer || 0) + 1;
-      else if (drink.abvPct > 15) acc.spirits = (acc.spirits || 0) + 1;
-      else acc.wine = (acc.wine || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const preferredDrinkTypes = Object.entries(drinkTypes)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 2)
-      .map(([type]) => type);
-
-    // Analyze risk times
-    const hourCounts = last30Days.reduce((acc, drink) => {
-      const hour = new Date(drink.ts).getHours();
-      if (hour >= 17 && hour <= 22) acc.evening++;
-      else if (hour >= 12 && hour <= 16) acc.afternoon++;
-      else if (hour >= 22 || hour <= 2) acc.night++;
-      else acc.other++;
-      return acc;
-    }, { evening: 0, afternoon: 0, night: 0, other: 0 });
-
-    const riskTimes = Object.entries(hourCounts)
-      .filter(([, count]) => count > 0)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 2)
-      .map(([time]) => time);
-
-    // Determine motivational trend
-    const recent = drinks.slice(0, 7);
-    const previous = drinks.slice(7, 14);
-    const recentAvg = recent.length > 0 ? recent.reduce((sum, d) => sum + d.craving, 0) / recent.length : 0;
-    const previousAvg = previous.length > 0 ? previous.reduce((sum, d) => sum + d.craving, 0) / previous.length : 0;
-    
-    const motivationalTrend = recentAvg < previousAvg ? 'improving' : 
-                             recentAvg === previousAvg ? 'stable' : 'concerning';
-
-    // Determine personality type based on goals and behavior
-    let personalityType: PersonalizationData['personalityType'] = 'casual';
-    if (goals && (goals.dailyCap > 0 || goals.weeklyGoal > 0)) personalityType = 'goal-oriented';
-    if (last30Days.some(d => d.intention === 'social')) personalityType = 'social';
-    if (last30Days.some(d => d.halt?.includes('angry') || d.halt?.includes('lonely'))) {
-      personalityType = 'health-focused';
-    }
-
-    // Determine engagement level
-    const recentEntries = drinks.filter(d => d.ts > Date.now() - 7 * 24 * 60 * 60 * 1000).length;
-    const engagementLevel = recentEntries > 5 ? 'high' : recentEntries > 2 ? 'medium' : 'low';
-
-    return {
-      preferredDrinkTypes,
-      riskTimes,
-      motivationalTrend,
-      personalityType,
-      engagementLevel
-    };
-  }, [drinks, goals]);
-
-  const personalizedContent = useMemo(() => {
-    const content = {
-      greeting: '',
-      primaryAction: '',
-      secondaryActions: [] as string[],
-      motivationalMessage: '',
-      focusArea: ''
-    };
-
-    // Voice [VOICE-4]: drop time-of-day greeting. A static "How are
-    // you today?" reads honest; "Good morning!" at 9 PM reads weird,
-    // and any time-zone slip makes it worse. Trusted-friend tone:
-    // questions, not declarations; no exclamation marks.
-    const greeting = 'How are you today?';
-
-    switch (personalization.personalityType) {
-      case 'goal-oriented':
-        content.greeting = greeting;
-        content.primaryAction = 'Check goal progress';
-        content.secondaryActions = ['Set a new goal', 'View trends'];
-        content.motivationalMessage = 'Consistency over intensity.';
-        content.focusArea = 'Progress';
-        break;
-
-      case 'social':
-        content.greeting = greeting;
-        content.primaryAction = 'Social alternatives';
-        content.secondaryActions = ['Plan an AF event', 'Set a social goal'];
-        content.motivationalMessage = "Connection doesn't need alcohol.";
-        content.focusArea = 'Social';
-        break;
-
-      case 'health-focused':
-        content.greeting = greeting;
-        content.primaryAction = 'Mood check-in';
-        content.secondaryActions = ['HALT patterns', 'See trends'];
-        content.motivationalMessage = 'Take care of yourself today.';
-        content.focusArea = 'How you feel';
-        break;
-
-      default:
-        content.greeting = greeting;
-        content.primaryAction = 'Quick log';
-        content.secondaryActions = ['Look around', 'Set a goal'];
-        content.motivationalMessage = 'One day at a time.';
-        content.focusArea = 'Today';
-    }
-
-    return content;
-  }, [personalization]);
-
-  const handlePersonalizedAction = (action: string) => {
-    trackFeatureUsage('personalized_dashboard_action', { 
-      action, 
+  const handleAction = (action: string) => {
+    trackFeatureUsage('personalized_dashboard_action', {
+      action,
       personality_type: personalization.personalityType,
-      engagement_level: personalization.engagementLevel
+      engagement_level: personalization.engagementLevel,
     });
     onQuickAction(action);
   };
 
   return (
     <div className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6 rounded-xl border border-primary-100 dark:border-gray-700 mb-6">
-      {/* Personalized Greeting */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-          {personalizedContent.greeting}
-        </h2>
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <Badge variant="secondary">{personalizedContent.focusArea}</Badge>
-          {isPremium && (
-            <Badge variant="primary" className="text-xs">
-              Adapted to you
-            </Badge>
-          )}
-        </div>
-        <p className="text-gray-600 dark:text-gray-300 italic">
-          {personalizedContent.motivationalMessage}
-        </p>
-      </div>
-
-      {/* Trend Indicator */}
-      <div className="flex justify-center mb-6">
-        <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-          personalization.motivationalTrend === 'improving' 
-            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-            : personalization.motivationalTrend === 'stable'
-            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-            : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-        }`}>
-          <span className="text-lg" aria-hidden>
-            {personalization.motivationalTrend === 'improving' ? '↗' :
-             personalization.motivationalTrend === 'stable' ? '→' : '↘'}
-          </span>
-          <span>
-            {personalization.motivationalTrend === 'improving' ? 'Trending up' :
-             personalization.motivationalTrend === 'stable' ? 'Steady' : 'Worth a closer look'}
-          </span>
-        </div>
-      </div>
-
-      {/* Personalized Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Button 
-          variant="primary"
-          className="h-12 text-base font-medium"
-          onClick={() => handlePersonalizedAction(personalizedContent.primaryAction)}
-        >
-          {personalizedContent.primaryAction}
-        </Button>
-        
-        {personalizedContent.secondaryActions.map((action, index) => (
-          <Button 
-            key={action}
-            variant={index === 0 ? "secondary" : "outline"}
-            className="h-12"
-            onClick={() => handlePersonalizedAction(action)}
-          >
-            {action}
-          </Button>
-        ))}
-      </div>
-
-      {/* Premium upsell block removed [VOICE-1]. */}
+      <DashboardGreeting
+        greeting={content.greeting}
+        focusArea={content.focusArea}
+        motivationalMessage={content.motivationalMessage}
+        isPremium={isPremium}
+      />
+      <TrendIndicator trend={personalization.motivationalTrend} />
+      <ActionGrid
+        primaryAction={content.primaryAction}
+        secondaryActions={content.secondaryActions}
+        onAction={handleAction}
+      />
     </div>
   );
 }

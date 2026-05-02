@@ -31,9 +31,14 @@ export default function GoalsTab({ goals, onGoalsChange }: Props) {
       </header>
 
       {!hasGoals ? (
-        <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center">
+        <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center max-w-md mx-auto">
           <p className="text-body text-ink">No goals yet.</p>
-          <p className="mt-1 text-caption text-ink-soft">Start with a daily limit you&rsquo;d feel good about.</p>
+          <p className="mt-1 text-caption text-ink-soft">
+            Start with a daily limit you&rsquo;d feel good about. Most people pick
+            something modest — say 2 standard drinks — and adjust from there. You
+            can change either limit anytime, and crossing one isn&rsquo;t failure;
+            it&rsquo;s information.
+          </p>
         </div>
       ) : null}
 

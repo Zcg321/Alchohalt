@@ -26,14 +26,27 @@ interface Milestone {
   id: string;
   label: string;
   days: number;
+  /**
+   * Quiet subtitle shown only on REACHED milestones. Calibrated so each
+   * tier earns its own moment — "first day" reads softer than "1 year".
+   * Day-3 and Day-30 should not feel the same; the user knows they
+   * aren't. Matched to `voice-guidelines.md`: trusted-friend tone,
+   * questions over declarations, no exclamation marks.
+   */
+  reachedSubtitle?: string;
 }
 
 const MILESTONES: Milestone[] = [
-  { id: 'first-day',  label: 'First alcohol-free day', days: 1 },
-  { id: 'one-week',   label: '1 week alcohol-free',    days: 7 },
-  { id: 'thirty-day', label: '30 days alcohol-free',   days: 30 },
-  { id: 'ninety-day', label: '90 days alcohol-free',   days: 90 },
-  { id: 'one-year',   label: '1 year alcohol-free',    days: 365 },
+  { id: 'first-day',  label: 'First alcohol-free day', days: 1,
+    reachedSubtitle: 'You did the hardest part — starting.' },
+  { id: 'one-week',   label: '1 week alcohol-free',    days: 7,
+    reachedSubtitle: 'Past the first week. The hard stretch is usually behind you.' },
+  { id: 'thirty-day', label: '30 days alcohol-free',   days: 30,
+    reachedSubtitle: 'A month back. Sleep and mornings tend to feel different around here.' },
+  { id: 'ninety-day', label: '90 days alcohol-free',   days: 90,
+    reachedSubtitle: '90 days. Your body has noticed.' },
+  { id: 'one-year',   label: '1 year alcohol-free',    days: 365,
+    reachedSubtitle: 'A year. Pause and let that land.' },
 ];
 
 interface Props {
@@ -133,12 +146,12 @@ export default function Milestones({ drinks, className = '' }: Props) {
           return (
           <li
             key={m.id}
-            className="flex items-center justify-between gap-3 py-2 border-b border-border-soft last:border-0"
+            className="flex items-start justify-between gap-3 py-2 border-b border-border-soft last:border-0"
           >
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
               <span
                 aria-hidden
-                className={`inline-flex h-6 w-6 items-center justify-center rounded-pill text-caption transition-colors ${
+                className={`mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-pill text-caption transition-colors ${
                   m.reached
                     ? `bg-sage-100 text-sage-700${reachedRecently ? ' animate-scale-up' : ''}`
                     : 'bg-cream-50 text-ink-subtle'
@@ -146,9 +159,14 @@ export default function Milestones({ drinks, className = '' }: Props) {
               >
                 {m.reached ? '✓' : '—'}
               </span>
-              <span className="truncate text-body text-ink">{m.label}</span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-body text-ink">{m.label}</p>
+                {m.reached && m.reachedSubtitle ? (
+                  <p className="mt-0.5 text-caption text-ink-soft">{m.reachedSubtitle}</p>
+                ) : null}
+              </div>
             </div>
-            <span className="text-caption text-ink-soft tabular-nums">
+            <span className="shrink-0 mt-0.5 text-caption text-ink-soft tabular-nums">
               {m.reached && m.reachedAt
                 ? dateFmt.format(new Date(m.reachedAt))
                 : '—'}

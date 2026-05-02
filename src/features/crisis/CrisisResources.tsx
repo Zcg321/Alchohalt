@@ -1,5 +1,6 @@
 import React from 'react';
 import { detectRegionFromBrowser, getPack, US_PACK, type RegionCode } from './regions';
+import { telHref, smsHref, safeHttpUrl } from '../../lib/safeLinks';
 
 /**
  * Crisis resources — always-on, never gated by feature flags or
@@ -39,29 +40,6 @@ const PRIMARY_LINK_CLASSES =
 
 const SECONDARY_LINK_CLASSES =
   'shrink-0 inline-flex items-center justify-center rounded-full border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink no-underline hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 dark:hover:bg-charcoal-700 min-h-[44px]';
-
-/** Sanitize a phone number for a tel: anchor. Keeps a leading + and digits. */
-function telHref(phone: string): string {
-  const digits = phone.replace(/[^\d+]/g, '');
-  return digits ? `tel:${digits}` : '';
-}
-
-/** Sanitize a number for an sms: anchor and pre-fill the keyword body. */
-function smsHref(keyword: string, number: string): string {
-  const digits = number.replace(/[^\d]/g, '');
-  return digits ? `sms:${digits}?&body=${encodeURIComponent(keyword)}` : '';
-}
-
-/** Reject non-http(s) URLs so we never emit `javascript:` etc. */
-function safeHttpUrl(url: string): string {
-  try {
-    const u = new URL(url);
-    if (u.protocol !== 'https:' && u.protocol !== 'http:') return '';
-    return url;
-  } catch {
-    return '';
-  }
-}
 
 function ImmediateCard({ r }: { r: Resource }) {
   return (

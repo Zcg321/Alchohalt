@@ -60,12 +60,12 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
       }}
     >
       <div className="card max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="card-header">
-          <h3 id="add-goal-title" className="font-semibold">Create New Goal</h3>
+        <div className="card-header flex items-start justify-between gap-3">
+          <h3 id="add-goal-title" className="font-semibold flex-1 min-w-0">Create New Goal</h3>
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 text-ink-subtle hover:text-ink"
+            className="shrink-0 -mt-1 -mr-1 p-2 text-ink-subtle hover:text-ink min-h-[44px] min-w-[44px] flex items-center justify-center rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500"
             aria-label="Close"
           >
             <CloseIcon />

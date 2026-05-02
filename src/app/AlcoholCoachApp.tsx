@@ -20,9 +20,17 @@ import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
-import LegalDocPage, { isLegalSlug, type LegalSlug } from '../features/legal/LegalDocPage';
+import { isLegalSlug, type LegalSlug } from '../features/legal/slugs';
+import { Skeleton } from '../components/ui/Skeleton';
+
+/* [PERF-LAZY-LEGAL] /legal/<slug> is a deep-link surface, not part of
+ * the normal app flow. Splitting it off the eager bundle drops marked
+ * + 5 markdown payloads from the initial download. The slug type +
+ * predicate stay non-lazy because the route resolver needs them. */
+const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
 import { usePWA } from '../hooks/usePWA';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { hapticForEvent } from '../shared/haptics';
 
 /* [REFACTOR-LONG-FN] Crisis dialog extracted as a sibling component to
  * shrink AlcoholCoachApp's render function. The dialog is presentation
@@ -182,6 +190,11 @@ export function AlcoholCoachApp() {
   function addDrink(drink: Drink) {
     const entry = legacyDrinkToEntry(drink);
     addEntry(entry);
+    /* Haptic map: drink-logged + af-day-marked both fire 'Light'. The
+     * AF case (volumeMl=0, abvPct=0) is the same user action — pressing
+     * a button — so it gets the same confirmation tap. Goal-hit /
+     * milestone-reached fire elsewhere when those events land. */
+    hapticForEvent(drink.volumeMl === 0 && drink.abvPct === 0 ? 'af-day-marked' : 'drink-logged');
   }
 
   function saveDrink(drink: Drink) {
@@ -189,6 +202,7 @@ export function AlcoholCoachApp() {
     const entry = legacyDrinkToEntry(drink);
     editEntry(editing, entry);
     setEditing(null);
+    hapticForEvent('drink-logged');
   }
 
   function deleteDrink(drink: Drink) {
@@ -239,6 +253,7 @@ export function AlcoholCoachApp() {
         onSaveDrink={saveDrink}
         onCancelEdit={cancelEdit}
         onOpenInsights={() => setActiveTab('insights')}
+        onRoughNight={openCrisis}
       />
     ),
     track: (
@@ -301,7 +316,9 @@ export function AlcoholCoachApp() {
       ) : null}
 
       {legalSlug ? (
-        <LegalDocPage slug={legalSlug} />
+        <React.Suspense fallback={<Skeleton className="mx-auto mt-12 max-w-3xl h-96 rounded-2xl" />}>
+          <LegalDocPage slug={legalSlug} />
+        </React.Suspense>
       ) : (
         <TabShell panels={panels} activeTab={activeTab} onChange={setActiveTab} />
       )}

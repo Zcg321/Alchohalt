@@ -34,6 +34,14 @@ interface Props {
   onMarkAF?: () => void;
   /** Navigate to the Insights tab / progress view. */
   onSeeProgress?: () => void;
+  /**
+   * One-tap exit to crisis resources. Surfaces a tertiary "Having a
+   * hard time?" link beneath the primary CTA so a user who already
+   * knows they need help doesn't have to hunt the AppHeader pill.
+   * The AppHeader chip stays — it's the calm-affordance entry; this
+   * is the one for the moments that aren't calm.
+   */
+  onRoughNight?: () => void;
 }
 
 const NEXT_MILESTONES = [1, 3, 7, 14, 30, 60, 90, 180, 365];
@@ -82,6 +90,7 @@ export default function TodayPanel({
   onLogDrink,
   onMarkAF,
   onSeeProgress,
+  onRoughNight,
 }: Props) {
   const drinksByDay = buildDrinksByDay(drinks);
   const totalAF = computeTotalAFDays(drinksByDay);
@@ -194,6 +203,22 @@ export default function TodayPanel({
         {status.kind === 'building' && totalAF > dayCount ? (
           <p className="mt-4 text-caption text-ink-subtle">
             <span className="stat-num">{totalAF}</span> alcohol-free days lifetime
+          </p>
+        ) : null}
+
+        {/* Tertiary rough-night entry — quiet, one tap to crisis. The
+            link reads as a question, not an alarm; the actual surface
+            it opens is the always-on Crisis modal, which is loud where
+            it should be loud. */}
+        {onRoughNight ? (
+          <p className="mt-6 text-caption">
+            <button
+              type="button"
+              onClick={onRoughNight}
+              className="text-ink-soft underline-offset-4 hover:underline hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
+            >
+              Having a hard time? See crisis support.
+            </button>
           </p>
         ) : null}
       </div>
