@@ -90,6 +90,7 @@
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-react": "7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "fast-glob": "^3.3.3",
     "glob": "^10.3.10",
     "jsdom": "^26.1.0",

@@ -33,7 +33,7 @@ export default function About() {
         <h2 className="font-semibold mb-3 text-primary">About Alchohalt</h2>
         <div className="space-y-3 text-sm text-secondary">
           <p>{t('disclaimer')}</p>
-          <p>Built by one person.</p>
+          <p>Built by one person with AI assistance.</p>
           <p className="text-xs text-muted">Version {pkg.version}</p>
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function About() {
         </h3>
         <div className="text-sm text-success-700 dark:text-success-300 space-y-2">
           <p>
-            {t('privacy.onDevice', 'Your data stays on your device, encrypted with a key only you control. We cryptographically cannot read it. Opt-in AI features can change this — see Settings → AI for the full data flow.')}
+            {t('privacy.onDevice', 'Entries live in your phone’s local storage. Nothing leaves the device on its own. If you turn on cloud backup, the file is sealed end-to-end with a key only your device knows — we hold the encrypted blob, not the contents. Opt-in AI features (off by default) are the only path that can change this; see Settings → AI for the full data flow.')}
           </p>
           <p>
             {t('privacy.dataControl', 'You have complete control over your data. You can export, import, or delete all information at any time from the Settings panel.')}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  [R6-B] No automatic backup of any user data.
+
+  Even though the manifest sets allowBackup=false, this file is read
+  by the Auto Backup framework on Android 6.0–11. Excluding root
+  domains here makes the intent explicit: nothing in shared_prefs/
+  (where Capacitor Preferences stores the drink log) and nothing in
+  databases/ ever leaves the device automatically.
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" />
+    <exclude domain="database" />
+    <exclude domain="file" />
+</full-backup-content>

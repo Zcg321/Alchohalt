@@ -66,7 +66,7 @@ export default function InsightsTab({ drinks, goals }: Props) {
       </Suspense>
 
       <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
-        <InsightsPanel drinks={drinks} goals={goals} />
+        <InsightsPanel drinks={drinks} />
       </Suspense>
 
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>

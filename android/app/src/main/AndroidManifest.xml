@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--
+        [R6-B] allowBackup=false: Android's auto-backup ships
+        SharedPreferences (where Capacitor stores the user's drink log)
+        to Google Drive by default. The app's privacy claim is "your
+        data, your device" — auto-backup violates it. Users who want
+        cross-device sync can opt in via the planned cloud-sync feature
+        once that ships with end-to-end encryption.
+
+        fullBackupContent=@xml/backup_rules and dataExtractionRules=
+        @xml/data_extraction_rules belt-and-suspenders the same intent
+        for Android 12+ (API 31+) where the new D2D/cloud transports
+        otherwise have separate config surfaces.
+    -->
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"

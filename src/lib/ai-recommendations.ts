@@ -171,10 +171,10 @@ function recommendCravingManagement(entries: Entry[]): GoalRecommendation | null
     id: 'craving-management-' + Date.now(),
     type: 'craving-management',
     title: 'Track when cravings hit hardest',
-    description: `Notice the cravings. Logging them often makes them lighter — ${targetCraving} on the scale, instead of ${Math.round(avgCraving)}.`,
+    description: `Aim to log cravings as they happen. Average rating around ${targetCraving} on the scale instead of ${Math.round(avgCraving)} would be a step down.`,
     rationale: highCravingEntries.length > 0
-      ? `You've had ${highCravingEntries.length} strong cravings recently. Knowing the pattern is the start of changing it.`
-      : `Cravings have been steady. Logging them surfaces what's driving them.`,
+      ? `You've logged ${highCravingEntries.length} strong cravings recently. The log itself shows when they cluster — useful context for whatever you decide to try.`
+      : `Cravings have been steady. Logging them shows the patterns more clearly than memory does.`,
     suggestedValue: targetCraving,
     currentValue: Math.round(avgCraving),
     confidence: 0.7,

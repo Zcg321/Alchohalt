@@ -26,7 +26,6 @@ export const FEATURE_FLAGS = {
   ENABLE_MULTI_DEVICE_SYNC: false,
   ENABLE_PDF_CSV_EXPORT: false,
   ENABLE_CLOUD_BACKUP: false,
-  ENABLE_LOCAL_ENCRYPTION: import.meta.env.VITE_ENABLE_LOCAL_ENCRYPTION === 'true' || false,
   ENABLE_APP_LOCK: import.meta.env.VITE_ENABLE_APP_LOCK === 'true' || false,
   ENABLE_IAP: import.meta.env.VITE_ENABLE_IAP === 'true' || false,
   ENABLE_ANALYTICS_TILES: import.meta.env.VITE_ENABLE_ANALYTICS_TILES === 'true' || false,
