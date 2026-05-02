@@ -229,6 +229,9 @@ export default function OnboardingFlow() {
       trackStyle,
       completedAt: Date.now(),
       skipPath: path,
+      // [R11-1] Capture step at moment of skip so the local funnel
+      // view can compute drop-off per beat.
+      skipStep: step as 0 | 1 | 2,
     });
   }, [persist, intent, trackStyle, step]);
 

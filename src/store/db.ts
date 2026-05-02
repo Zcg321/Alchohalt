@@ -37,6 +37,14 @@ export interface OnboardingDiagnostics {
   trackStyle?: 'day-by-day' | 'thirty-day' | 'custom' | undefined;
   completedAt?: number | undefined;
   skipPath?: 'x-button' | 'escape' | 'backdrop' | 'skip-explore' | 'just-looking' | undefined;
+  /**
+   * [R11-1] Step the user was on when they skipped (0=intro/intent,
+   * 1=track-style, 2=ready). Combined with skipPath, this answers
+   * "where in the funnel did the drop happen?" in the on-device
+   * Diagnostics → Onboarding funnel view. Local-only; never
+   * transmitted.
+   */
+  skipStep?: 0 | 1 | 2 | undefined;
 }
 
 export interface Settings {
