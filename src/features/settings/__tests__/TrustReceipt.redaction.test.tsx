@@ -90,6 +90,32 @@ describe('TrustReceipt — redaction guarantee', () => {
     expect(panelText).toContain('derived 32-byte key');
   });
 
+  it('toggle survives hydration race — fast user click is not clobbered by async getJSON', async () => {
+    /* [R8-C-FIX regression] Codex review caught: the initial
+     * getJSON(...).then(setEnabled) resolution previously overwrote
+     * any user toggle that fired before it landed. This test pins the
+     * fix: render the panel, immediately click the toggle on (before
+     * the storage read can resolve), and assert the toggled-on state
+     * is preserved after waitFor settles all async reads. */
+    const view = render(<TrustReceipt />);
+    const toggleInput = view.container.querySelector('input[type="checkbox"]');
+    expect(toggleInput).not.toBeNull();
+    // User clicks BEFORE waitFor — simulates a fast interaction.
+    await act(async () => {
+      fireEvent.click(toggleInput as HTMLInputElement);
+    });
+    // Now wait for any pending async reads to flush.
+    await waitFor(() => {
+      // List should be visible because user said enabled=true.
+      expect(view.container.querySelector('ul')).not.toBeNull();
+    });
+    // The user's intent must win.
+    const finalToggle = view.container.querySelector('input[type="checkbox"]') as
+      | HTMLInputElement
+      | null;
+    expect(finalToggle?.checked).toBe(true);
+  });
+
   it('redacts even when a buggy caller would shove PII into detail', async () => {
     /* Simulate the regression: someone calls
      *   recordStorageEvent('set', 'entries', { lastJournal: PII })

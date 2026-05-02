@@ -29,7 +29,7 @@
  * reload, but the events do not.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Toggle } from '../../components/ui/Toggle';
 import { Button } from '../../components/ui/Button';
@@ -109,12 +109,22 @@ function EventRow({ event }: { event: TrustEvent }) {
 export default function TrustReceipt() {
   const [enabled, setEnabled] = useState(false);
   const events = useTrustEvents();
+  /* [R8-C-FIX] Codex review caught a hydration race: the async getJSON
+   * resolution unconditionally called setEnabled after mount, so a
+   * user toggle that fired before resolution would be clobbered when
+   * the read landed. The ref tracks whether the user has interacted;
+   * if they have, we drop the persisted value rather than overwrite
+   * their intent. */
+  const userInteractedRef = useRef(false);
 
   useEffect(() => {
-    void getJSON<boolean>(STORAGE_KEY, false).then(setEnabled);
+    void getJSON<boolean>(STORAGE_KEY, false).then((v) => {
+      if (!userInteractedRef.current) setEnabled(v);
+    });
   }, []);
 
   const flip = (next: boolean) => {
+    userInteractedRef.current = true;
     setEnabled(next);
     void setJSON(STORAGE_KEY, next);
   };
