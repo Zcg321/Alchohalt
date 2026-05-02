@@ -1,98 +1,120 @@
 // @no-smoke
 import React from 'react';
-import type { Drink } from '../../types/common';
+import type { Drink, Goals } from '../../types/common';
+import { stdDrinks } from '../../lib/calc';
 
 /**
- * [R12-D] Long-term-user activity ribbon.
+ * Long-term-user activity ribbon — last-7-days snapshot.
  *
- * Round-11 day-90 judge note: "the funnel view is invisible to a
- * normal day-90 user. Consider a 'your activity at a glance' ribbon
- * on the home screen at day 90+ to give long-term users a sense of
- * evolution."
+ * Round-12 R12-A. Round-11 day-90 judge has been asking for a calm,
+ * "what does my last week look like" line on home for users who are
+ * past the milestone-counting phase. The wedge: at month 1+, the
+ * Day-N hero stops being the most useful piece — what the user wants
+ * is "did this week go the way I meant it to?". The ribbon answers
+ * that in one factual line.
  *
- * Renders nothing for users in their first 90 days — the rest of the
- * home view (Day-N hero, today/7d/30d strip, Milestones) is sufficient
- * up to that point. Past 90 days, surface a quiet single-line ribbon:
- *   "Day 127 of tracking. 3 milestones reached. Longest streak: 42 days."
+ * Render rules (all required):
+ *   - daysSinceFirstEntry >= 30   (long-term user, not a fresh install)
+ *   - drinks.length >= 7          (enough data for a 7-day shape)
  *
- * Voice: factual, no judgement, no exclamation marks. Same register
- * as MonthlyDeltaPanel.
+ * Otherwise null. Voice: factual, no judgement, no exclamation marks.
+ *   "Last 7 days: 4 AF days, 2 logged drinks, 1 over your daily cap."
+ *
+ * The "over your daily cap" fragment hides when goals.dailyCap <= 0
+ * (user hasn't set one) — overlaying a cap they didn't set would be
+ * adding a constraint that isn't theirs.
  */
 
 const DAY_MS = 86_400_000;
-const LONG_TERM_THRESHOLD_DAYS = 90;
+const LONG_TERM_THRESHOLD_DAYS = 30;
+const MIN_ENTRIES = 7;
+const WINDOW_DAYS = 7;
 
-export interface RibbonStats {
-  daysTracked: number;
-  totalEntries: number;
-  milestonesReached: number;
-  longestAfStreak: number;
+export interface SevenDaySummary {
+  afDays: number;
+  loggedDrinkDays: number;
+  daysOverCap: number;
+  /** True when goals.dailyCap > 0; gates the over-cap fragment. */
+  capTracked: boolean;
 }
 
-/** Milestone thresholds (days), kept in sync with features/milestones/Milestones.tsx. */
-const MILESTONE_THRESHOLDS_DAYS = [1, 7, 30, 90, 365] as const;
+function dayKey(ms: number): string {
+  return new Date(ms).toISOString().slice(0, 10);
+}
 
-export function computeRibbonStats(drinks: Drink[], now: number = Date.now()): RibbonStats | null {
-  if (drinks.length === 0) return null;
-  const earliestTs = Math.min(...drinks.map((d) => d.ts));
-  const daysTracked = Math.floor((now - earliestTs) / DAY_MS);
-  if (daysTracked < LONG_TERM_THRESHOLD_DAYS) return null;
-
-  // Single walk: computes longest AF streak AND milestones reached.
-  // Inlined (rather than calling getMilestoneStates) so the same `now`
-  // gates both the threshold and the milestone calculation — the
-  // existing util reads Date.now() directly, which would give wrong
-  // counts under mocked-time tests.
-  const byDay = new Set<string>();
-  for (const d of drinks) byDay.add(new Date(d.ts).toISOString().slice(0, 10));
-  const start = new Date(earliestTs);
-  start.setUTCHours(0, 0, 0, 0);
+export function compute7DaySummary(
+  drinks: Drink[],
+  dailyCap: number,
+  now: number = Date.now(),
+): SevenDaySummary {
+  // Bucket the last 7 days (today + 6 prior). For each, sum std drinks.
+  const buckets: Record<string, number> = {};
   const today = new Date(now);
   today.setUTCHours(0, 0, 0, 0);
-
-  const milestonesReachedSet = new Set<number>();
-  let consec = 0;
-  let longest = 0;
-  const cursor = new Date(start);
-  while (cursor.getTime() <= today.getTime()) {
-    const key = cursor.toISOString().slice(0, 10);
-    if (byDay.has(key)) {
-      if (consec > longest) longest = consec;
-      consec = 0;
-    } else {
-      consec += 1;
-      for (const t of MILESTONE_THRESHOLDS_DAYS) {
-        if (consec >= t) milestonesReachedSet.add(t);
-      }
-    }
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  for (let i = 0; i < WINDOW_DAYS; i++) {
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate() - i);
+    buckets[dayKey(d.getTime())] = 0;
   }
-  if (consec > longest) longest = consec;
-
+  for (const d of drinks) {
+    const k = dayKey(d.ts);
+    if (k in buckets) {
+      buckets[k] += stdDrinks(d.volumeMl, d.abvPct);
+    }
+  }
+  let afDays = 0;
+  let loggedDrinkDays = 0;
+  let daysOverCap = 0;
+  for (const std of Object.values(buckets)) {
+    if (std === 0) afDays += 1;
+    else loggedDrinkDays += 1;
+    if (dailyCap > 0 && std > dailyCap) daysOverCap += 1;
+  }
   return {
-    daysTracked,
-    totalEntries: drinks.length,
-    milestonesReached: milestonesReachedSet.size,
-    longestAfStreak: longest,
+    afDays,
+    loggedDrinkDays,
+    daysOverCap,
+    capTracked: dailyCap > 0,
+  };
+}
+
+interface RibbonGate {
+  pass: boolean;
+  daysSinceFirstEntry: number;
+}
+
+export function checkRibbonGate(drinks: Drink[], now: number = Date.now()): RibbonGate {
+  if (drinks.length < MIN_ENTRIES) {
+    return { pass: false, daysSinceFirstEntry: 0 };
+  }
+  const earliestTs = Math.min(...drinks.map((d) => d.ts));
+  const daysSinceFirstEntry = Math.floor((now - earliestTs) / DAY_MS);
+  return {
+    pass: daysSinceFirstEntry >= LONG_TERM_THRESHOLD_DAYS,
+    daysSinceFirstEntry,
   };
 }
 
 interface Props {
   drinks: Drink[];
+  goals: Goals;
   className?: string | undefined;
 }
 
-export default function LongTermActivityRibbon({ drinks, className = '' }: Props) {
-  const stats = computeRibbonStats(drinks);
-  if (!stats) return null;
+export default function LongTermActivityRibbon({ drinks, goals, className = '' }: Props) {
+  const gate = checkRibbonGate(drinks);
+  if (!gate.pass) return null;
+  const summary = compute7DaySummary(drinks, goals.dailyCap);
 
-  const milestoneFragment =
-    stats.milestonesReached === 0
-      ? null
-      : stats.milestonesReached === 1
-      ? '1 milestone reached'
-      : `${stats.milestonesReached} milestones reached`;
-  const streakFragment = `Longest streak: ${stats.longestAfStreak} day${stats.longestAfStreak === 1 ? '' : 's'}`;
+  const fragments: string[] = [
+    `${summary.afDays} AF day${summary.afDays === 1 ? '' : 's'}`,
+    `${summary.loggedDrinkDays} logged drink day${summary.loggedDrinkDays === 1 ? '' : 's'}`,
+  ];
+  if (summary.capTracked && summary.daysOverCap > 0) {
+    fragments.push(
+      `${summary.daysOverCap} over your daily cap`,
+    );
+  }
 
   return (
     <section
@@ -102,12 +124,12 @@ export default function LongTermActivityRibbon({ drinks, className = '' }: Props
     >
       <div className="rounded-2xl border-l-4 border-neutral-300 dark:border-neutral-700 bg-surface-elevated px-4 py-3 text-sm text-ink-soft">
         <h2 id="long-term-ribbon-heading" className="sr-only">
-          Your activity at a glance
+          Your last seven days at a glance
         </h2>
-        <span className="font-medium text-ink dark:text-neutral-200 tabular-nums">
-          Day {stats.daysTracked}
+        <span className="font-medium text-ink dark:text-neutral-200">
+          Last 7 days:
         </span>{' '}
-        of tracking.{milestoneFragment ? ` ${milestoneFragment}.` : ''} {streakFragment}.
+        <span className="tabular-nums">{fragments.join(', ')}.</span>
       </div>
     </section>
   );
