@@ -238,6 +238,17 @@
     "useTemplate": "Utiliser le modèle",
     "buildMyOwn": "Créer le mien"
   },
+  "retrospective": {
+    "promptTitle": "Cela fait un mois",
+    "promptBody": "Tu veux voir ce qui a changé sur la fenêtre {{label}} ?",
+    "open": "Voir",
+    "dismiss": "Plus tard",
+    "viewTitle": "Rétrospective {{label}}",
+    "viewSubtitle": "Derniers {{n}} jours vs les {{n}} précédents.",
+    "totalDrinks": "Verres au total",
+    "afDays": "Jours sans alcool",
+    "avgCraving": "Envie moyenne"
+  },
   "monthlyDelta": {
     "title": "D'un mois à l'autre",
     "subtitle": "Comment ce mois se compare au précédent.",

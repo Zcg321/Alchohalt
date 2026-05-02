@@ -63,6 +63,12 @@ export interface Settings {
    */
   onboardingDiagnosticsHistory?: Array<OnboardingDiagnostics & { revisedAt: number }> | undefined;
   /**
+   * [R10-2] Last time we showed the retrospective prompt. Used to gate
+   * "It's been a month since your last check-in" so we don't bug the
+   * user every session.
+   */
+  retrospectivePromptLastShownTs?: number | undefined;
+  /**
    * [HARD-TIME-ROUND-4] Non-judgmental marker timestamp set by the
    * "stop tracking for tonight" action in the Hard-Time panel. Quieter
    * view rendered while `Date.now() < quietUntilTs`. Auto-clears at

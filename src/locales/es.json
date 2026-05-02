@@ -243,6 +243,17 @@
     "useTemplate": "Usar plantilla",
     "buildMyOwn": "Crear la mía"
   },
+  "retrospective": {
+    "promptTitle": "Ha pasado un mes",
+    "promptBody": "¿Quieres ver qué ha cambiado en la última ventana de {{label}}?",
+    "open": "Ver",
+    "dismiss": "Ahora no",
+    "viewTitle": "Retrospectiva de {{label}}",
+    "viewSubtitle": "Últimos {{n}} días vs los {{n}} anteriores.",
+    "totalDrinks": "Bebidas totales",
+    "afDays": "Días sin alcohol",
+    "avgCraving": "Antojo promedio"
+  },
   "monthlyDelta": {
     "title": "Mes a mes",
     "subtitle": "Cómo se compara este mes con el anterior.",

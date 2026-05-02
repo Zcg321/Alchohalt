@@ -244,6 +244,18 @@
     "buildMyOwn": "Build my own"
   },
 
+  "retrospective": {
+    "promptTitle": "It's been a month",
+    "promptBody": "Want to see what's changed in the last {{label}} window?",
+    "open": "See it",
+    "dismiss": "Not now",
+    "viewTitle": "{{label}} retrospective",
+    "viewSubtitle": "Recent {{n}} days vs the prior {{n}}.",
+    "totalDrinks": "Total drinks",
+    "afDays": "AF days",
+    "avgCraving": "Avg craving"
+  },
+
   "monthlyDelta": {
     "title": "Month over month",
     "subtitle": "How this month compares to the one before.",

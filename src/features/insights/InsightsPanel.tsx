@@ -7,6 +7,7 @@ import { generatePremiumInsights } from './premiumInsights';
 import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useDB } from '../../store/db';
 import MonthlyDeltaPanel from './MonthlyDeltaPanel';
+import RetrospectivePanel from './RetrospectivePanel';
 
 interface Props {
   drinks: Drink[];
@@ -120,6 +121,7 @@ export default function InsightsPanel({ drinks }: Props) {
       </div>
     </div>
     <MonthlyDeltaPanel />
+    <RetrospectivePanel />
     </div>
   );
 }

@@ -238,6 +238,17 @@
     "useTemplate": "Vorlage verwenden",
     "buildMyOwn": "Eigenes erstellen"
   },
+  "retrospective": {
+    "promptTitle": "Es ist ein Monat vergangen",
+    "promptBody": "Möchtest du sehen, was sich im Zeitraum von {{label}} geändert hat?",
+    "open": "Ansehen",
+    "dismiss": "Nicht jetzt",
+    "viewTitle": "{{label}}-Rückblick",
+    "viewSubtitle": "Letzte {{n}} Tage vs die {{n}} davor.",
+    "totalDrinks": "Getränke gesamt",
+    "afDays": "Alkoholfreie Tage",
+    "avgCraving": "Durchschnittliches Verlangen"
+  },
   "monthlyDelta": {
     "title": "Monat für Monat",
     "subtitle": "So schneidet dieser Monat im Vergleich zum vorherigen ab.",
