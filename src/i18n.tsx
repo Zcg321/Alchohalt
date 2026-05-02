@@ -3,7 +3,12 @@ import type { ReactNode } from 'react';
 import { getJSON, setJSON } from './lib/storage';
 import en from './locales/en.json';
 
-export type Lang = 'en' | 'es';
+export type Lang = 'en' | 'es' | 'fr' | 'de';
+
+const SUPPORTED_LANGS: ReadonlyArray<Lang> = ['en', 'es', 'fr', 'de'];
+function isSupportedLang(value: string): value is Lang {
+  return (SUPPORTED_LANGS as ReadonlyArray<string>).includes(value);
+}
 
 type Dictionary = Record<string, string>;
 export const dictionaries: Partial<Record<Lang, Dictionary>> = { en: en as unknown as Dictionary };
@@ -26,8 +31,12 @@ const LanguageContext = createContext<{
 
 export async function loadInitialLang(): Promise<Lang> {
   const stored = await getJSON<Lang | null>('lang', null);
-  const nav = typeof navigator !== 'undefined' ? navigator.language.slice(0, 2) : 'en';
-  const lang: Lang = (stored ?? (nav === 'es' ? 'es' : 'en')) as Lang;
+  if (stored && isSupportedLang(stored)) {
+    if (stored !== 'en') await loadLocale(stored);
+    return stored;
+  }
+  const nav = typeof navigator !== 'undefined' ? navigator.language.slice(0, 2).toLowerCase() : 'en';
+  const lang: Lang = isSupportedLang(nav) ? nav : 'en';
   if (lang !== 'en') await loadLocale(lang);
   return lang;
 }

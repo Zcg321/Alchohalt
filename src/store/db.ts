@@ -17,11 +17,27 @@ import type { AdvancedGoal } from '../features/goals/types';
 import type { DrinkPreset } from '../types/common';
 
 export type UUID = string;
-export type Language = 'en' | 'es';
+export type Language = 'en' | 'es' | 'fr' | 'de';
 export type Theme = 'light' | 'dark' | 'system';
 export type Intention = 'celebrate'|'social'|'taste'|'bored'|'cope'|'other';
 export type DrinkKind = 'beer'|'wine'|'spirits'|'custom';
 export type HALT = { H:boolean; A:boolean; L:boolean; T:boolean };
+
+/**
+ * [R9-2] Local-only onboarding diagnostics. Recorded on-device so the
+ * owner / a self-experimenter can see *which* skip path they took
+ * without us shipping any telemetry. `status: 'completed'` means the
+ * user reached "Get started"; `status: 'skipped'` means the X / Esc /
+ * backdrop / just-looking path. None of this is ever transmitted —
+ * Settings → Diagnostics is the only surface that reads it.
+ */
+export interface OnboardingDiagnostics {
+  status: 'not-started' | 'completed' | 'skipped';
+  intent?: 'cut-back' | 'quit' | 'curious' | undefined;
+  trackStyle?: 'day-by-day' | 'thirty-day' | 'custom' | undefined;
+  completedAt?: number | undefined;
+  skipPath?: 'x-button' | 'escape' | 'backdrop' | 'skip-explore' | 'just-looking' | undefined;
+}
 
 export interface Settings {
   version: number;
@@ -35,6 +51,7 @@ export interface Settings {
   profile?: { weightKg?: number | undefined; sex?: 'm'|'f'|'other' | undefined } | undefined;
   notificationFallbackMessage?: string | undefined;
   hasCompletedOnboarding?: boolean | undefined;
+  onboardingDiagnostics?: OnboardingDiagnostics | undefined;
   /**
    * [HARD-TIME-ROUND-4] Non-judgmental marker timestamp set by the
    * "stop tracking for tonight" action in the Hard-Time panel. Quieter

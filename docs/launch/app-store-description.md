@@ -8,18 +8,20 @@ headline.
 
 ## Search-snippet opener (first ~60 chars — what users see in search)
 
-> A calm alcohol tracker. No streaks-leaderboards. Real crisis support when you need it.
+> A calm alcohol tracker. No ads. No analytics. Trust receipt included.
 
 Cut to fit each store's snippet length cleanly:
 
-- **App Store (subtitle, 30 chars):** "Calm tracking. Real support."
-- **Play Store (short description, 80 chars):** "A calm alcohol tracker. No leaderboards. Real crisis support when you need it."
+- **App Store (subtitle, 30 chars):** "No ads. No analytics. Yours."
+- **Play Store (short description, 80 chars):** "A calm alcohol tracker. No ads. No analytics. Trust receipt included."
 
 ## Long description
 
 ```
-A calm alcohol tracker. No streaks-leaderboards, no levels, no rocket
-emojis. Just clean tracking and real help when you need it.
+A calm alcohol tracker. No ads. No analytics. Trust receipt included.
+
+No streaks-leaderboards, no levels, no rocket emojis. Just clean
+tracking and real help when you need it.
 
 Curated crisis lines on every screen — 988, SAMHSA, AA, SMART Recovery,
 plus international support (AU, UK, CA, IE). Tap "Need help?" anywhere
@@ -37,8 +39,12 @@ you want analytics, multi-reminders, exports, encrypted backup.
   themes, and AI Insights (opt-in, off by default).
 — Lifetime ($69 once) — pay once, yours forever, no subscription trap.
 
-Your data stays on your phone. Encrypted backup is opt-in. AI Insights
-is opt-in. Crisis resources work offline.
+Your data stays on your phone. We cryptographically cannot read what
+you log. The trust receipt logs every storage write and every network
+call (when sync is on) so you can audit it yourself. Encrypted backup
+is opt-in. AI Insights is opt-in. Crisis resources work offline.
+
+No ads. No analytics. Not now, not when we're profitable, not ever.
 
 Recovery isn't a video game. We're not going to celebrate your streak
 with a rocket emoji. We're going to be a calm, useful tool — and on

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDB } from '../../store/db';
+import type { OnboardingDiagnostics } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { analytics } from '../analytics/analytics';
@@ -34,8 +35,10 @@ type TrackStyle = 'day-by-day' | 'thirty-day' | 'custom';
 
 interface BeatOneProps {
   onChoose: (intent: Intent) => void;
+  onJustLooking: () => void;
+  justLookingLabel: string;
 }
-function BeatOne({ onChoose }: BeatOneProps) {
+function BeatOne({ onChoose, onJustLooking, justLookingLabel }: BeatOneProps) {
   /* [ONBOARDING-ROUND-4] Half-second pause before chips appear. The
    * user just opened the app on Day 0 — let the question land before
    * the answer prompts crowd in. The chips fade in via the existing
@@ -56,26 +59,42 @@ function BeatOne({ onChoose }: BeatOneProps) {
         Whatever you pick stays on your phone. You can change your mind anytime.
       </p>
       {showChips ? (
-        <div className="mt-5 grid gap-2.5 motion-safe:animate-fade-in">
-          {([
-            ['cut-back', 'Trying to drink less'],
-            ['quit', 'Trying to stop'],
-            ['curious', 'Not sure yet'],
-          ] as const).map(([id, label]) => (
+        <>
+          <div className="mt-5 grid gap-2.5 motion-safe:animate-fade-in">
+            {([
+              ['cut-back', 'Trying to drink less'],
+              ['quit', 'Trying to stop'],
+              ['curious', 'Not sure yet'],
+            ] as const).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => onChoose(id)}
+                className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {/* [R9-T2] Tertiary skip-ahead. Distinct from the bottom "Skip and
+              explore" so we can tell from local Diagnostics whether users
+              jump straight in or pick a chip first. */}
+          <div className="mt-4 text-center motion-safe:animate-fade-in">
             <button
-              key={id}
               type="button"
-              onClick={() => onChoose(id)}
-              className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+              onClick={onJustLooking}
+              data-testid="onboarding-just-looking"
+              className="text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 rounded"
             >
-              {label}
+              {justLookingLabel}
             </button>
-          ))}
-        </div>
+          </div>
+        </>
       ) : (
         /* Reserved-space placeholder so the dialog doesn't reflow when
-         * the chips arrive. Three rows × 56px (button + gap). */
-        <div aria-hidden className="mt-5 h-[164px]" />
+         * the chips arrive. Three rows × 56px (button + gap) plus the
+         * R9-T2 tertiary skip row. */
+        <div aria-hidden className="mt-5 h-[200px]" />
       )}
     </>
   );
@@ -167,6 +186,10 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [isVisible, setIsVisible] = useState(false);
   const dialogRef = useRef<HTMLDivElement | null>(null);
+  // [R9-2] Local-only diagnostics buffer. Persisted on `complete()` /
+  // `skip()` so we don't write on every chip tap.
+  const [intent, setIntent] = useState<Intent | undefined>();
+  const [trackStyle, setTrackStyle] = useState<TrackStyle | undefined>();
 
   useEffect(() => {
     if (!db.settings?.hasCompletedOnboarding) setIsVisible(true);
@@ -180,24 +203,44 @@ export default function OnboardingFlow() {
    * call only logs to console.debug in dev. Wiring the call now means
    * the moment the shim grows a real opt-in destination, the data is
    * already flowing. */
-  const complete = useCallback((reason: 'finished' | 'skipped' = 'skipped') => {
-    analytics.track(
-      reason === 'finished' ? 'onboarding-complete' : 'onboarding-skipped',
-      { step }, // 0 / 1 / 2 — which beat user was on. No identifiers.
-    );
-    setSettings({ hasCompletedOnboarding: true });
+  const persist = useCallback((diag: OnboardingDiagnostics) => {
+    setSettings({
+      hasCompletedOnboarding: true,
+      onboardingDiagnostics: diag,
+    });
     setIsVisible(false);
-  }, [setSettings, step]);
+  }, [setSettings]);
 
-  // [BUG-9] Esc dismisses + persists.
+  const complete = useCallback(() => {
+    analytics.track('onboarding-complete', { step });
+    persist({
+      status: 'completed',
+      intent,
+      trackStyle,
+      completedAt: Date.now(),
+    });
+  }, [persist, intent, trackStyle, step]);
+
+  const skip = useCallback((path: NonNullable<OnboardingDiagnostics['skipPath']>) => {
+    analytics.track('onboarding-skipped', { step });
+    persist({
+      status: 'skipped',
+      intent,
+      trackStyle,
+      completedAt: Date.now(),
+      skipPath: path,
+    });
+  }, [persist, intent, trackStyle, step]);
+
+  // [BUG-9] Esc dismisses + persists. [R9-2] Records the skip path.
   useEffect(() => {
     if (!isVisible) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') complete();
+      if (e.key === 'Escape') skip('escape');
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isVisible, complete]);
+  }, [isVisible, skip]);
 
   /* [A11Y-FOCUS-TRAP] Tab inside the onboarding dialog wraps to first/
    * last focusable element. Without it, Tab from the last button (Get
@@ -217,8 +260,9 @@ export default function OnboardingFlow() {
       data-testid="onboarding-modal"
       className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center overflow-y-auto bg-neutral-950/70 backdrop-blur-sm p-0 sm:p-4 animate-fade-in"
       onClick={(e) => {
-        // [BUG-9] Backdrop click dismisses + persists.
-        if (e.target === e.currentTarget) complete();
+        // [BUG-9] Backdrop click dismisses + persists. [R9-2] tracked
+        // as a distinct skip path in local diagnostics.
+        if (e.target === e.currentTarget) skip('backdrop');
       }}
     >
       <div className="w-full max-w-md rounded-t-3xl sm:rounded-3xl bg-white p-6 shadow-xl ring-1 ring-neutral-200/70 dark:bg-neutral-900 dark:ring-neutral-800 animate-slide-up">
@@ -250,8 +294,9 @@ export default function OnboardingFlow() {
           </div>
           <button
             type="button"
-            onClick={() => complete('skipped')}
+            onClick={() => skip('x-button')}
             aria-label={t('onboarding.close', 'Close')}
+            data-testid="onboarding-x-button"
             className="-mt-1 -mr-1 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
           >
             <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -262,9 +307,19 @@ export default function OnboardingFlow() {
         </div>
 
         <div className="mt-5">
-          {step === 0 && <BeatOne onChoose={() => setStep(1)} />}
-          {step === 1 && <BeatTwo onChoose={() => setStep(2)} />}
-          {step === 2 && <BeatThree onStart={() => complete('finished')} />}
+          {step === 0 && (
+            <BeatOne
+              onChoose={(i) => { setIntent(i); setStep(1); }}
+              onJustLooking={() => skip('just-looking')}
+              justLookingLabel={t('onboarding.justLooking', "I'm just looking")}
+            />
+          )}
+          {step === 1 && (
+            <BeatTwo
+              onChoose={(s) => { setTrackStyle(s); setStep(2); }}
+            />
+          )}
+          {step === 2 && <BeatThree onStart={complete} />}
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-3 text-xs text-neutral-500 dark:text-neutral-400">
@@ -279,11 +334,11 @@ export default function OnboardingFlow() {
           ) : <span />}
           <button
             type="button"
-            onClick={() => complete('skipped')}
+            onClick={() => skip('skip-explore')}
             data-testid="onboarding-skip"
             className="hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline"
           >
-            {t('onboarding.skip', 'Skip and explore')}
+            {t('onboarding.skipExplore', 'Skip and explore')}
           </button>
         </div>
       </div>

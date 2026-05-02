@@ -99,7 +99,7 @@ export default function InsightsPanel({ drinks }: Props) {
         </p>
       </div>
       
-      <div className="card-content space-y-4">
+      <div className="card-content space-y-6">
         {insights.length === 0 ? (
           <div className="text-center py-8 max-w-sm mx-auto">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-sage-50 dark:bg-sage-900/30 flex items-center justify-center">
@@ -113,11 +113,56 @@ export default function InsightsPanel({ drinks }: Props) {
             </p>
           </div>
         ) : (
-          insights.map((insight, index) => (
-            <InsightCard key={index} insight={insight} />
-          ))
+          <InsightGroups insights={insights} />
         )}
       </div>
     </div>
   );
+}
+
+/**
+ * [R9-T3] Group flat insight list into themed sections so users
+ * scanning a long stack see structure instead of one tall column.
+ *
+ *   • "What's working" — wins (achievements)
+ *   • "Patterns we noticed" — pattern detections + warnings
+ *   • "Things to try" — actionable tips
+ *
+ * Empty groups render nothing (no awkward heading-with-nothing-below).
+ */
+function InsightGroups({ insights }: { insights: Insight[] }) {
+  const wins = insights.filter((i) => i.type === 'achievement');
+  const patterns = insights.filter((i) => i.type === 'pattern' || i.type === 'warning');
+  const tips = insights.filter((i) => i.type === 'tip');
+
+  return (
+    <>
+      <InsightGroup title="What's working" items={wins} />
+      <InsightGroup title="Patterns we noticed" items={patterns} />
+      <InsightGroup title="Things to try" items={tips} />
+    </>
+  );
+}
+
+function InsightGroup({ title, items }: { title: string; items: Insight[] }) {
+  if (items.length === 0) return null;
+  return (
+    <section aria-labelledby={`insight-group-${slug(title)}`} className="space-y-3">
+      <h3
+        id={`insight-group-${slug(title)}`}
+        className="text-xs font-semibold uppercase tracking-wider text-ink-soft"
+      >
+        {title}
+      </h3>
+      <div className="space-y-3">
+        {items.map((insight, index) => (
+          <InsightCard key={`${title}-${index}`} insight={insight} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function slug(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
