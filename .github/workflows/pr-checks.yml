@@ -22,7 +22,13 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
-      
+
+      # [R11-CI-FIX] npm/cli#4828: rollup/esbuild platform-specific
+      # binaries skip install on `npm ci` runners. Same fix as
+      # repo-health-strict.yml + lighthouse-ci.yml.
+      - name: Rebuild native deps (rollup-optional-deps fix)
+        run: npm rebuild rollup esbuild
+
       - name: Verify (typecheck + lint + test)
         run: npm run verify
       

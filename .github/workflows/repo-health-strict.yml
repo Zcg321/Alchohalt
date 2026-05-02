@@ -17,6 +17,14 @@ jobs:
           cache: 'npm'
       - name: Install
         run: npm install
+      # [R11-CI-FIX] npm/cli#4828: rollup's platform-specific optional
+      # dependencies sometimes get pruned on CI runners, leading to
+      # "Cannot find module @rollup/rollup-linux-x64-gnu" at vitest
+      # transform time (because vitest uses rollup internally).
+      # Same fix as the lighthouse-ci.yml workflow — npm rebuild
+      # forces re-resolution of native binaries.
+      - name: Rebuild native deps (rollup-optional-deps fix)
+        run: npm rebuild rollup esbuild
       - name: Repo Scan (full)
         run: npm run scan:full
       - name: Upload scan JSON
