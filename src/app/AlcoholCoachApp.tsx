@@ -19,6 +19,7 @@ import SettingsTab from './tabs/SettingsTab';
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
+import DataRecoveryScreen from '../features/recovery/DataRecoveryScreen';
 import CrisisResources from '../features/crisis/CrisisResources';
 import HardTimePanel from '../features/crisis/HardTimePanel';
 import { isLegalSlug, type LegalSlug } from '../features/legal/slugs';
@@ -457,6 +458,10 @@ function AlcoholCoachAppInner() {
       {/* [A11Y-1] Skip-to-content. Visually hidden until focused; lets
           keyboard / SR users jump straight into <main>. */}
       <a href="#main" className="skip-link">Skip to main content</a>
+
+      {/* [R11-2] Renders only if hydration found a corrupt persisted
+          DB. Always mounted at the top so it overlays everything. */}
+      <DataRecoveryScreen />
 
       <OnboardingFlow />
 
