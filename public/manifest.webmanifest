@@ -11,6 +11,13 @@
   "categories": ["health", "lifestyle", "productivity"],
   "shortcuts": [
     {
+      "name": "Right now",
+      "short_name": "Right now",
+      "description": "Crisis lines and a one-minute breathing exercise.",
+      "url": "/crisis",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
       "name": "Quick log",
       "short_name": "Log",
       "url": "/log",

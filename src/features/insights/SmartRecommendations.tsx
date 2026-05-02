@@ -62,7 +62,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     if ((today === 5 || today === 6) && hasWeekendPattern(drinks)) {
       recommendations.push({
         title: 'Weekends tend to add up',
-        description: "Your weekend numbers run higher than weekdays. Worth picking one weekend activity that doesn't involve a drink — or setting a weekend limit.",
+        description: "Your weekend totals run higher than weekday totals. Pick one weekend activity that doesn't involve a drink, or set a weekend limit.",
         action: {
           label: 'Set a weekend goal',
           onClick: () => {/* Open goal setting */}
