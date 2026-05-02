@@ -140,7 +140,16 @@ function main() {
     lines.push('| Key | English | Spanish | French | German | Notes |');
     lines.push('| --- | --- | --- | --- | --- | --- |');
     for (const k of keys.sort()) {
-      const cell = (s) => (s ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' ').trim();
+      // Escape backslash FIRST so we don't double-escape the pipes we
+      // insert next. Then handle pipes (Markdown table separator) and
+      // newlines. Order matters: escaping backslashes after pipe
+      // escaping would turn `\|` into `\\|`.
+      const cell = (s) =>
+        (s ?? '')
+          .replace(/\\/g, '\\\\')
+          .replace(/\|/g, '\\|')
+          .replace(/\r?\n/g, ' ')
+          .trim();
       lines.push(
         `| \`${k}\` | ${cell(en[k])} | ${cell(es[k])} | ${cell(fr[k])} | ${cell(de[k])} |  |`
       );
