@@ -225,12 +225,20 @@ export default function OnboardingFlow() {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <span id="onboarding-title" className="sr-only">
-              Quick intro
+              Quick intro, step {step + 1} of 3
             </span>
-            <div className="flex gap-1.5" aria-hidden>
+            <div
+              role="progressbar"
+              aria-valuenow={step + 1}
+              aria-valuemin={1}
+              aria-valuemax={3}
+              aria-label={`Step ${step + 1} of 3`}
+              className="flex gap-1.5"
+            >
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
+                  aria-hidden
                   className={`h-1 flex-1 rounded-full transition-colors ${
                     i <= step
                       ? 'bg-neutral-800 dark:bg-neutral-100'
@@ -243,7 +251,7 @@ export default function OnboardingFlow() {
           <button
             type="button"
             onClick={() => complete('skipped')}
-            aria-label={t('onboarding.skip', 'Skip')}
+            aria-label={t('onboarding.close', 'Close')}
             className="-mt-1 -mr-1 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
           >
             <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

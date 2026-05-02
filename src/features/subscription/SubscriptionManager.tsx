@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSubscriptionStore } from './subscriptionStore';
-import type { PlanId } from '../../config/plans';
+import { PLANS, type PlanId } from '../../config/plans';
 import { ORDER } from './subscriptionPlans';
 import { PlanCard } from './PlanCard';
 import { useSubscriptionPurchase } from './useSubscriptionPurchase';
@@ -57,9 +57,19 @@ export default function SubscriptionManager({ onSubscribe, className }: Props) {
   const { subscription } = useSubscriptionStore();
   const { pendingPlan, error, handleSubscribe } = useSubscriptionPurchase(onSubscribe);
 
+  const currentPlanName = PLANS[subscription.plan]?.name ?? 'Free';
+
   return (
     <div className={`mx-auto max-w-5xl ${className ?? ''}`}>
       <PricingHeader />
+      <div
+        className="mx-auto mb-6 inline-flex w-full justify-center"
+        aria-live="polite"
+      >
+        <span className="rounded-full border border-border-soft bg-surface-elevated px-3 py-1 text-xs text-ink-soft">
+          You&rsquo;re on {currentPlanName}
+        </span>
+      </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {ORDER.map((planId) => (
           <PlanCard

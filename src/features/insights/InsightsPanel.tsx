@@ -104,7 +104,7 @@ export default function InsightsPanel({ drinks, goals }: Props) {
       <div className="card-content space-y-4">
         {insights.length === 0 ? (
           <div className="text-center py-8 max-w-sm mx-auto">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-sage-50 dark:bg-sage-900/30 flex items-center justify-center">
               <ChartIcon />
             </div>
             <p className="text-ink mb-2">Nothing to read yet.</p>

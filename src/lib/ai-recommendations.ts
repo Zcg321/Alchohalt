@@ -99,11 +99,11 @@ function recommendDrinkFreeDays(entries: Entry[], currentGoal: number, readiness
   return {
     id: 'drink-free-days-' + Date.now(),
     type: 'drink-free-days',
-    title: `${suggestedValue} Alcohol-Free Days Per Week`,
-    description: `Aim for ${suggestedValue} drink-free days each week`,
+    title: `${suggestedValue} alcohol-free days a week`,
+    description: `Try for ${suggestedValue} alcohol-free days each week.`,
     rationale: readiness > 0.7
-      ? `You've been doing great! You averaged ${weeklyFreeDays} drink-free days recently. You're ready for the next challenge.`
-      : `Based on your recent progress (${weeklyFreeDays} drink-free days/week), this goal is within reach and will help build momentum.`,
+      ? `You've averaged ${weeklyFreeDays} alcohol-free days. One more is within reach.`
+      : `You've been at ${weeklyFreeDays} alcohol-free days a week. This nudges that up by one.`,
     suggestedValue,
     currentValue: currentGoal,
     confidence,
@@ -141,9 +141,9 @@ function recommendWeeklyLimit(entries: Entry[], currentGoal: number, readiness: 
   return {
     id: 'weekly-limit-' + Date.now(),
     type: 'weekly-limit',
-    title: `${suggestedValue} Standard Drinks Per Week`,
-    description: `Limit your weekly consumption to ${suggestedValue} standard drinks`,
-    rationale: `Your recent average is ${Math.round(avgWeekly)} drinks/week. Gradually reducing to ${suggestedValue} is a healthy next step.`,
+    title: `${suggestedValue} standard drinks a week`,
+    description: `Cap your week at ${suggestedValue} standard drinks.`,
+    rationale: `You've been averaging about ${Math.round(avgWeekly)} a week. ${suggestedValue} is a step down, not a jump.`,
     suggestedValue,
     currentValue: currentGoal,
     confidence: readiness,
@@ -170,11 +170,11 @@ function recommendCravingManagement(entries: Entry[]): GoalRecommendation | null
   return {
     id: 'craving-management-' + Date.now(),
     type: 'craving-management',
-    title: 'Reduce Average Craving Score',
-    description: `Work on reducing your average craving intensity to ${targetCraving}/10`,
-    rationale: `Your recent average craving score is ${avgCraving.toFixed(1)}/10. ${highCravingEntries.length > 0 
-      ? `You've experienced ${highCravingEntries.length} high-craving moments. ` 
-      : ''}Developing coping strategies can help manage these urges.`,
+    title: 'Track when cravings hit hardest',
+    description: `Notice the cravings. Logging them often makes them lighter — ${targetCraving} on the scale, instead of ${Math.round(avgCraving)}.`,
+    rationale: highCravingEntries.length > 0
+      ? `You've had ${highCravingEntries.length} strong cravings recently. Knowing the pattern is the start of changing it.`
+      : `Cravings have been steady. Logging them surfaces what's driving them.`,
     suggestedValue: targetCraving,
     currentValue: Math.round(avgCraving),
     confidence: 0.7,
@@ -203,9 +203,9 @@ function recommendBudget(entries: Entry[], currentBudget: number): GoalRecommend
   return {
     id: 'monthly-budget-' + Date.now(),
     type: 'monthly-budget',
-    title: `$${suggestedValue} Monthly Budget`,
-    description: `Set a monthly alcohol budget of $${suggestedValue}`,
-    rationale: `You spent $${Math.round(totalSpent)} last month. Reducing to $${suggestedValue} saves $${Math.round(savings)}/month while allowing reasonable enjoyment.`,
+    title: `$${suggestedValue} a month`,
+    description: `Cap monthly spend at $${suggestedValue}.`,
+    rationale: `You spent $${Math.round(totalSpent)} last month. $${suggestedValue} keeps $${Math.round(savings)} in your pocket.`,
     suggestedValue,
     currentValue: currentBudget,
     confidence: 0.75,

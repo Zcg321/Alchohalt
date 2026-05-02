@@ -98,6 +98,25 @@ export default function TodayHome({
     if (editing) setSurface('log');
   }, [editing]);
 
+  // [ROUND-5-D] Idle-time prefetch of likely-next tabs. After Today
+  // mounts, warm the chunk cache for Track + Insights so the next
+  // tap is instant. Bounded by requestIdleCallback (Chrome / Edge /
+  // Firefox; falls back to a 1.5s setTimeout on Safari) so we never
+  // contend with the user's first interaction.
+  React.useEffect(() => {
+    const ric = (cb: () => void) => {
+      const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
+      if (typeof idle === 'function') idle(cb);
+      else window.setTimeout(cb, 1500);
+    };
+    ric(() => {
+      void import('../drinks/DrinkForm');
+      void import('../mood/EnhancedMoodTracker');
+      void import('../insights/InsightsPanel');
+      void import('../insights/ProgressVisualization');
+    });
+  }, []);
+
   function handleDrinkSubmit(drink: Drink) {
     if (editing) onSaveDrink(drink);
     else onAddDrink(drink);

@@ -8,7 +8,14 @@ import './index.css';
 import { registerSW } from './features/pwa/registerSW';
 import { bootstrapIAPOnStartup } from './features/iap/restoreEntitlement';
 import { installReminderSync } from './lib/notify';
+import { installGlobalErrorReporter } from './lib/errorReporter';
 import { LanguageProvider } from './i18n';
+
+// [ROUND-5-E] Global error/unhandledrejection capture. No-op shim
+// by default (logs to console, no network call). The native build
+// can flip on a real reporter via setReporter() AFTER explicit
+// user consent — never silently.
+installGlobalErrorReporter();
 
 registerSW();
 void bootstrapIAPOnStartup();

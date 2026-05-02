@@ -149,8 +149,8 @@ function analyzeCravingCorrelations(entries: Entry[]): PremiumInsight[] {
       
       if (difference > 1) {
         insights.push({
-          title: 'Cravings track with bigger nights',
-          description: `High-craving days run ${difference.toFixed(1)} standard drinks higher than low-craving days. The ten-minute rule (do anything else for ten minutes first) usually helps most here.`,
+          title: 'Stronger cravings, bigger nights',
+          description: `High-craving days are ${difference.toFixed(1)} standard drinks higher on average than low-craving days. When the craving hits hard, try waiting ten minutes — do something else first, then decide.`,
           type: 'pattern',
           icon: '🧠',
           priority: 80,
