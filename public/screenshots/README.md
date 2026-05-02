@@ -1,117 +1,97 @@
-# App Store Assets
+# App Store screenshot assets
 
-This directory contains screenshots and promotional materials for app store submissions.
+This folder is the destination for App Store / Play Store screenshots
+once the owner registers Apple Developer + Google Play and we run a
+deterministic capture pass.
 
-## Directory Structure
+## Directory layout (target)
 
 ```
 public/screenshots/
 ├── ios/
 │   ├── en/
-│   │   ├── 01-main-dashboard.png
-│   │   ├── 02-drink-logging.png
-│   │   ├── 03-analytics-insights.png
-│   │   ├── 04-streak-tracking.png
-│   │   └── 05-settings-privacy.png
-│   └── es/
-│       ├── 01-main-dashboard.png
-│       ├── 02-drink-logging.png
-│       ├── 03-analytics-insights.png
-│       ├── 04-streak-tracking.png
-│       └── 05-settings-privacy.png
+│   │   ├── 01-today.png            # Day N hero + primary CTA
+│   │   ├── 02-log-drink.png        # DrinkForm with chips selected
+│   │   ├── 03-insights.png         # Trend tile + smart rec
+│   │   ├── 04-crisis.png           # Hard time panel + 988 button
+│   │   └── 05-settings.png         # Data Management + plan chip
+│   └── es/                         # Same five, Spanish locale
 ├── android/
-│   ├── en/
-│   │   ├── 01-main-dashboard.png
-│   │   ├── 02-drink-logging.png
-│   │   ├── 03-analytics-insights.png
-│   │   ├── 04-streak-tracking.png
-│   │   └── 05-settings-privacy.png
-│   └── es/
-│       ├── 01-main-dashboard.png
-│       ├── 02-drink-logging.png
-│       ├── 03-analytics-insights.png
-│       ├── 04-streak-tracking.png
-│       └── 05-settings-privacy.png
-├── feature-graphics/
-│   ├── ios-feature-graphic.png
-│   └── android-feature-graphic.png
-└── icons/
-    ├── ios-icon-1024.png
-    ├── android-icon-512.png
-    └── adaptive-icon/
-        ├── foreground.png
-        └── background.png
+│   ├── en/  (same five)
+│   └── es/  (same five)
+└── feature-graphics/
+    ├── ios-feature-graphic.png
+    └── android-feature-graphic.png
 ```
 
-## Screenshot Guidelines
+## Capture targets
 
 ### iOS App Store
-- iPhone screenshots: 1290 x 2796 pixels (iPhone 14 Pro)
-- iPad screenshots: 2048 x 2732 pixels (iPad Pro 12.9")
-- Include device frames for better presentation
-- Show key features: privacy, insights, streak tracking, goal setting
-
-### Google Play Store  
-- Phone screenshots: 1080 x 1920 pixels minimum
-- Tablet screenshots: 1200 x 1920 pixels minimum
-- Feature graphic: 1024 x 500 pixels
-- Include compelling headlines and feature callouts
-
-## Key Screenshots to Capture
-
-1. **Main Dashboard** - Show clean interface, streak counter, quick insights
-2. **Drink Logging** - Demonstrate easy logging with intentions and HALT triggers  
-3. **Analytics & Insights** - Highlight 30-day trends and pattern recognition
-4. **Privacy & Data Control** - Show export/import and local storage benefits
-5. **Goal Setting & Progress** - Display customizable goals and achievement tracking
-
-## Marketing Copy for Screenshots
-
-### English
-- "Track your wellness journey with complete privacy"
-- "Understand your patterns with AI-powered insights" 
-- "Build lasting habits with streak motivation"
-- "Your data stays on your device - always"
-- "Set personalized goals and celebrate progress"
-
-### Spanish
-- "Rastrea tu bienestar con total privacidad"
-- "Comprende tus patrones con insights impulsados por IA"
-- "Construye hábitos duraderos con motivación de rachas"
-- "Tus datos permanecen en tu dispositivo - siempre"
-- "Establece metas personalizadas y celebra el progreso"
-
-## App Store Descriptions
-
-### Short Description (80 chars max)
-**English:** "Private alcohol tracking with AI insights & streak motivation"
-**Spanish:** "Seguimiento privado de alcohol con insights de IA y motivación"
-
-### Full Description Key Points
-- 100% private - data never leaves your device
-- AI-powered pattern recognition and insights
-- HALT trigger tracking for mindful awareness
-- Customizable goals and streak badges
-- Export/import for complete data control
-- No ads, no tracking, no cloud storage
-- Available in English and Spanish
-
-## Icon Requirements
-
-### iOS
-- 1024x1024 px master icon
-- Clean, recognizable design that works at small sizes
-- Consistent with app branding and theme colors
-
-### Android
-- 512x512 px high-res icon
-- Adaptive icon with foreground and background layers
-- Material Design guidelines compliance
-
-## Feature Graphics
+- iPhone: **1290 × 2796** (iPhone 15 Pro)
+- iPad: **2048 × 2732** (iPad Pro 12.9")
+- No device frames — Apple now generates these in the listing.
 
 ### Google Play Store
-- 1024 x 500 px feature graphic
-- Showcase key value proposition: "Privacy-First Wellness Tracking"
-- Include app screenshots and key benefit callouts
-- Professional design that stands out in store listings
+- Phone: **1080 × 1920** minimum
+- Tablet: **1200 × 1920** minimum
+- Feature graphic: **1024 × 500**
+
+## What to capture
+
+1. **Today** — Day-N hero, "Log a drink" or "Mark today AF" CTA, the
+   stats-strip below. Shows the calm voice + the primary verb.
+2. **Log a drink** — DrinkForm with a chip selected (e.g. "Beer"),
+   time set, "Add detail" expanded once. Shows progressive disclosure.
+3. **Insights** — One progress tile + one smart recommendation. Picks
+   honest copy ("Past the first week"), avoids the wellness panel
+   (Premium-only).
+4. **Right now** — Hard-time panel with the 988 / SAMHSA / breathing
+   buttons visible. The "calm + real crisis support" promise made
+   tangible.
+5. **Settings → Data Management** — Plan chip + the "Nobody else,
+   including us, can see what you log" copy. Shows the privacy
+   story.
+
+## Caption copy (per screenshot)
+
+The store listings allow a short caption ABOVE each screenshot. Use
+the round-4 voice. Sentence case. No exclamation marks. No emoji.
+
+| # | Caption |
+|---|---|
+| 1 | Day-N counter. Quiet wins count. |
+| 2 | Log a drink in three taps. |
+| 3 | Patterns from your last 30 days. Not medical advice. |
+| 4 | Crisis lines on every screen. One tap, no friction. |
+| 5 | Your logs stay on your device. We can&rsquo;t read them. |
+
+## Old marketing copy (deleted)
+
+The previous version of this README had banned phrases per round-4
+voice guide:
+- "wellness journey"  → banned
+- "AI-powered insights"  → AI is now opt-in, off by default; can&rsquo;t
+  be the headline.
+- "100% private — data never leaves your device"  → old opening,
+  replaced by the calm + crisis-support headline (see
+  `docs/launch/app-store-description.md`).
+- "celebrate progress"  → banned ("hollow praise" per voice guide).
+
+The current canon for the listing is:
+
+> A calm alcohol tracker. No streaks-leaderboards, no levels, no
+> rocket emojis. Just clean tracking and real help when you need it.
+
+See `docs/launch/app-store-description.md` for the full long copy
+ready to paste into App Store Connect / Play Console.
+
+## Generating the screenshots
+
+Once a real iOS / Android sim or emulator is available, the easiest
+path is:
+- iOS: open in iPhone-15-Pro simulator, hit ⌘⇧4 with Quick Time
+  recording, save with the right resolution.
+- Android: `adb shell screencap` from a Pixel 8 emulator at 1080×1920.
+- A future round can automate this with Playwright once a Chromium
+  binary is available on the build machine. For now, manual is fine —
+  this is a one-time submission asset, not a CI artifact.
