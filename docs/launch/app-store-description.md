@@ -20,8 +20,8 @@ Cut to fit each store's snippet length cleanly:
 ```
 A calm alcohol tracker. No ads. No analytics. Trust receipt included.
 
-No streaks-leaderboards, no levels, no rocket emojis. Just clean
-tracking and real help when you need it.
+No streaks-leaderboards, no levels, no rocket emojis. Tracking without
+the spreadsheet — and real help when you need it.
 
 Curated crisis lines on every screen — 988, SAMHSA, AA, SMART Recovery,
 plus international support (AU, UK, CA, IE). Tap "Need help?" anywhere
