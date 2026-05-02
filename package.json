@@ -110,9 +110,12 @@
     "tsx": "^4.21.0",
     "typescript": "5.4.2",
     "vite": "^5.2.2",
-    "vite-plugin-pwa": "0.20.0",
+    "vite-plugin-pwa": "1.2.0",
     "vitest": "3.2.4"
   },
   "sideEffects": false,
-  "packageManager": "npm@9.8.1"
+  "packageManager": "npm@9.8.1",
+  "overrides": {
+    "serialize-javascript": "^7.0.5"
+  }
 }

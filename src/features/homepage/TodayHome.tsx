@@ -29,6 +29,7 @@ import type { Drink, DrinkPreset, Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import TodayPanel from './TodayPanel';
+import LongTermActivityRibbon from './LongTermActivityRibbon';
 import { Disclaimer } from '../../components/Disclaimer';
 import { useDB } from '../../store/db';
 
@@ -149,6 +150,9 @@ export default function TodayHome({
         onRoughNight={onRoughNight}
         quiet={quiet}
       />
+
+      {/* [R12-D] Long-term-user ribbon — renders only at day 90+. */}
+      {!quiet && <LongTermActivityRibbon drinks={drinks} className="mt-3" />}
 
       {!quiet && surface === 'log' ? (
         <section
