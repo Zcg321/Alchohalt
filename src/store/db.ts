@@ -177,19 +177,19 @@ function addEntry(set: any, get: any, e: Omit<Entry,'id'>) {
 function editEntry(set: any, get: any, id: UUID, patch: Partial<Entry>) {
   const db = {
     ...get().db,
-    entries: get().db.entries.map(e => e.id === id ? { ...e, ...patch, editedAt: Date.now() } : e)
+    entries: get().db.entries.map((e: Entry) => e.id === id ? { ...e, ...patch, editedAt: Date.now() } : e)
   };
   set({ db }); get()._recompute();
 }
 
 function deleteEntry(set: any, get: any, id: UUID) {
-  const found = get().db.entries.find(e=>e.id===id);
+  const found = get().db.entries.find((e: Entry)=>e.id===id);
   if (!found) return;
   const trash = { id, snapshot: found, deletedAt: Date.now() };
   const expiresAt = Date.now() + 10*60_000;
   const db = {
     ...get().db,
-    entries: get().db.entries.filter(e=>e.id!==id),
+    entries: get().db.entries.filter((e: Entry)=>e.id!==id),
     trash: [...get().db.trash, trash],
     meta: { ...get().db.meta, lastUndo: { action: 'delete' as const, payload: { id }, expiresAt } }
   };
@@ -202,12 +202,13 @@ function undo(set: any, get: any) {
   if (Date.now() > u.expiresAt) { set({ db: { ...get().db, meta: { ...get().db.meta, lastUndo: undefined } } }); return; }
   if (u.action === 'delete') {
     const tid = (u.payload as { id: string } | undefined)?.id;
-    const item = get().db.trash.find(t=>t.id===tid);
+    type Trashed = { id: UUID; snapshot: Entry; deletedAt: number };
+    const item = get().db.trash.find((t: Trashed)=>t.id===tid);
     if (item) {
       const db = {
         ...get().db,
         entries: [...get().db.entries, item.snapshot],
-        trash: get().db.trash.filter(t=>t.id!==tid),
+        trash: get().db.trash.filter((t: Trashed)=>t.id!==tid),
         meta: { ...get().db.meta, lastUndo: undefined },
         _lastLogAt: Math.max(get().db._lastLogAt ?? 0, item.snapshot.ts)
       };
@@ -278,7 +279,7 @@ function addAdvancedGoal(set: any, get: any, goal: Omit<AdvancedGoal, 'id'>) {
 function editAdvancedGoal(set: any, get: any, id: string, patch: Partial<AdvancedGoal>) {
   const db = {
     ...get().db,
-    advancedGoals: get().db.advancedGoals.map(g => g.id === id ? { ...g, ...patch } : g)
+    advancedGoals: get().db.advancedGoals.map((g: AdvancedGoal) => g.id === id ? { ...g, ...patch } : g)
   };
   set({ db }); get()._recompute();
 }
@@ -286,7 +287,7 @@ function editAdvancedGoal(set: any, get: any, id: string, patch: Partial<Advance
 function deleteAdvancedGoal(set: any, get: any, id: string) {
   const db = {
     ...get().db,
-    advancedGoals: get().db.advancedGoals.filter(g => g.id !== id)
+    advancedGoals: get().db.advancedGoals.filter((g: AdvancedGoal) => g.id !== id)
   };
   set({ db }); get()._recompute();
 }
@@ -294,7 +295,7 @@ function deleteAdvancedGoal(set: any, get: any, id: string) {
 function toggleAdvancedGoal(set: any, get: any, id: string) {
   const db = {
     ...get().db,
-    advancedGoals: get().db.advancedGoals.map(g => 
+    advancedGoals: get().db.advancedGoals.map((g: AdvancedGoal) =>
       g.id === id ? { ...g, isActive: !g.isActive } : g
     )
   };
@@ -304,7 +305,7 @@ function toggleAdvancedGoal(set: any, get: any, id: string) {
 // Preset CRUD operations
 function addPreset(set: any, get: any, preset: DrinkPreset) {
   // Check if preset with same name already exists
-  const exists = get().db.presets.find(p => p.name === preset.name);
+  const exists = get().db.presets.find((p: DrinkPreset) => p.name === preset.name);
   if (exists) return; // Don't add duplicates
   
   const db = { ...get().db, presets: [...get().db.presets, preset] };
@@ -314,7 +315,7 @@ function addPreset(set: any, get: any, preset: DrinkPreset) {
 function editPreset(set: any, get: any, name: string, preset: DrinkPreset) {
   const db = {
     ...get().db,
-    presets: get().db.presets.map(p => p.name === name ? preset : p)
+    presets: get().db.presets.map((p: DrinkPreset) => p.name === name ? preset : p)
   };
   set({ db }); get()._recompute();
 }
@@ -322,7 +323,7 @@ function editPreset(set: any, get: any, name: string, preset: DrinkPreset) {
 function deletePreset(set: any, get: any, name: string) {
   const db = {
     ...get().db,
-    presets: get().db.presets.filter(p => p.name !== name)
+    presets: get().db.presets.filter((p: DrinkPreset) => p.name !== name)
   };
   set({ db }); get()._recompute();
 }
@@ -331,14 +332,14 @@ function deletePreset(set: any, get: any, name: string) {
 function addHealthMetric(set: any, get: any, metric: HealthMetric) {
   const metrics = get().db.healthMetrics || [];
   // Replace existing metric for the same date
-  const filtered = metrics.filter(m => m.date !== metric.date);
+  const filtered = metrics.filter((m: HealthMetric) => m.date !== metric.date);
   const db = { ...get().db, healthMetrics: [...filtered, metric] };
   set({ db });
 }
 
 function getHealthMetricsForDateRange(get: any, startDate: string, endDate: string): HealthMetric[] {
   const metrics = get().db.healthMetrics || [];
-  return metrics.filter(m => m.date >= startDate && m.date <= endDate);
+  return metrics.filter((m: HealthMetric) => m.date >= startDate && m.date <= endDate);
 }
 
 function createStore(set: any, get: any) {

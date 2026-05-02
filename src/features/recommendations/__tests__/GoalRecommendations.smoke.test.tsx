@@ -5,7 +5,7 @@ import GoalRecommendations from '../GoalRecommendations';
 describe('GoalRecommendations.tsx', () => {
   it('mounts without crashing', () => {
     const mockOnAccept = vi.fn();
-    const mockEntries = [];
+    const mockEntries: never[] = [];
     const mockSettings = {
       version: 1,
       language: 'en' as const,
