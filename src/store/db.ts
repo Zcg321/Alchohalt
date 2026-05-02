@@ -69,6 +69,13 @@ export interface Settings {
    */
   retrospectivePromptLastShownTs?: number | undefined;
   /**
+   * [R10-4] Timestamps of HardTimePanel opens. Used by the soft
+   * counselor escalation prompt — if 3+ opens in 24h, surface a
+   * gentle "Want to talk to a counselor in 5 min?" with provider
+   * links. Local-only.
+   */
+  hardTimeOpenLog?: number[] | undefined;
+  /**
    * [HARD-TIME-ROUND-4] Non-judgmental marker timestamp set by the
    * "stop tracking for tonight" action in the Hard-Time panel. Quieter
    * view rendered while `Date.now() < quietUntilTs`. Auto-clears at
