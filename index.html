@@ -16,9 +16,19 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Preconnect to external resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      [PERF-PRECONNECT-ROUND-4] Dropped fonts.googleapis.com /
+      fonts.gstatic.com / dns-prefetch. The app uses system-stack
+      Inter via the inline @media style below — there's no Google
+      Fonts request to "preconnect" to. Each preconnect costs a
+      DNS+TCP+TLS handshake the user pays for on every cold load
+      regardless of whether the resource is fetched. Same-origin
+      Vercel assets are already covered by the document fetch.
+      Crisis-line URLs (988lifeline.org / samhsa.gov / etc.) are
+      hand-tap targets — preconnecting them on every cold load is
+      a steady cost for an unlikely benefit; skipped.
+    -->
+
 
     <!-- iOS PWA optimization -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -35,16 +45,21 @@
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#5A8073" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#3D4F7A" />
     <meta name="msapplication-navbutton-color" content="#5A8073" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     
     <!-- SEO and social optimization -->
     <meta name="description" content="A calm alcohol tracker. No streaks-leaderboards. Real crisis support when you need it." />
     <meta name="keywords" content="alcohol tracker, sobriety, recovery, calm, crisis support, mindful drinking" />
     <meta name="author" content="Alchohalt" />
 
-    <!-- Performance hints -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-    <link rel="prefetch" href="/icons/icon-512.png" />
+    <!--
+      [PERF-PRECONNECT-ROUND-4] Dropped the dns-prefetch (fonts.googleapis.com
+      isn't fetched anywhere) and the icon-512.png prefetch. The 512 icon is
+      used only as an apple-touch-startup-image / PWA-install asset; the
+      regular cold-load path does NOT request it, so prefetching it pulls
+      28 KB of bytes on every cold load that the user only needs at home-
+      screen-install time.
+    -->
+
 
     <!--
       [BUG-FOUC-SPLASH] Inline critical CSS for the cold-load splash.

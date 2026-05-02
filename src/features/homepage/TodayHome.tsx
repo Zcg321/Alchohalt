@@ -24,12 +24,13 @@
  *   - Levels / Points gamification (gone for now; full strip in `[IA-5]`)
  */
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import type { Drink, DrinkPreset, Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import TodayPanel from './TodayPanel';
 import { Disclaimer } from '../../components/Disclaimer';
+import { useDB } from '../../store/db';
 
 const DrinkForm = React.lazy(() => import('../drinks/DrinkForm'));
 const EnhancedMoodTracker = React.lazy(() => import('../mood/EnhancedMoodTracker'));
@@ -68,6 +69,28 @@ export default function TodayHome({
   onRoughNight,
 }: Props) {
   const [surface, setSurface] = useState<Surface>('panel');
+  /* [HARD-TIME-ROUND-4] Quiet mode: while settings.quietUntilTs is in
+   * the future, the home view renders only the Day-N hero + the
+   * "Having a hard time?" link (kept available so the user can
+   * re-enter the panel). The DrinkForm and EnhancedMoodTracker also
+   * stay hidden — quiet mode means quiet, not "log something quietly".
+   *
+   * [ROUND-4-COPILOT-FIX] Midnight recompute: `Date.now() < quietUntilTs`
+   * is computed at render time, but the only thing that triggers a
+   * re-render is store changes — and quietUntilTs doesn't change at
+   * midnight. A user who keeps the app open across midnight would stay
+   * in quiet mode indefinitely. Schedule a re-render at exactly the
+   * threshold via setTimeout so the home view comes back the moment
+   * quiet expires. The local-state tick is the cheapest force-render. */
+  const quietUntilTs = useDB((s) => s.db.settings.quietUntilTs ?? 0);
+  const [, setNowTick] = useState(0);
+  useEffect(() => {
+    if (quietUntilTs <= Date.now()) return;
+    const ms = quietUntilTs - Date.now();
+    const id = window.setTimeout(() => setNowTick((t) => t + 1), ms);
+    return () => window.clearTimeout(id);
+  }, [quietUntilTs]);
+  const quiet = Date.now() < quietUntilTs;
 
   // If the parent flips into edit mode, surface the log form so the
   // user can see the entry they're editing.
@@ -105,9 +128,10 @@ export default function TodayHome({
         onMarkAF={handleMarkAF}
         onSeeProgress={onOpenInsights}
         onRoughNight={onRoughNight}
+        quiet={quiet}
       />
 
-      {surface === 'log' ? (
+      {!quiet && surface === 'log' ? (
         <section
           aria-labelledby="log-heading"
           className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
@@ -144,7 +168,7 @@ export default function TodayHome({
         </section>
       ) : null}
 
-      {surface === 'check-in' ? (
+      {!quiet && surface === 'check-in' ? (
         <section
           aria-labelledby="checkin-heading"
           className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"

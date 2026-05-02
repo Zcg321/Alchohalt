@@ -8,6 +8,7 @@ import ExportImport from '../drinks/ExportImport';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
+import { hapticForEvent } from '../../shared/haptics';
 
 /* [BUG-PAYWALL-MOUNT] SubscriptionManager was built but never imported
  * outside of `PremiumFeatureGate` (a named export from the same file).
@@ -71,10 +72,13 @@ export default function SettingsPanel() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="label">Theme</label>
-              <select 
-                aria-label="Theme" 
-                value={settings.theme} 
-                onChange={e=>setTheme(e.target.value as Theme)} 
+              <select
+                aria-label="Theme"
+                value={settings.theme}
+                onChange={(e) => {
+                  setTheme(e.target.value as Theme);
+                  hapticForEvent('settings-toggle');
+                }}
                 className="input cursor-pointer"
               >
                 <option value="system">System</option>
@@ -85,10 +89,13 @@ export default function SettingsPanel() {
             
             <div className="space-y-1">
               <label className="label">Language</label>
-              <select 
-                aria-label="Language" 
-                value={settings.language} 
-                onChange={e=>setLanguage(e.target.value as Language)} 
+              <select
+                aria-label="Language"
+                value={settings.language}
+                onChange={(e) => {
+                  setLanguage(e.target.value as Language);
+                  hapticForEvent('settings-toggle');
+                }}
                 className="input cursor-pointer"
               >
                 <option value="en">English</option>
@@ -105,15 +112,22 @@ export default function SettingsPanel() {
             Reminders
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Daily check-in notifications.
+            {/* [SETTINGS-DEEPENING-ROUND-4] Reminders are off by default;
+                spelling that out beats a user wondering why they're not
+                getting any. Adding times alone doesn't enable them — the
+                checkbox does. */}
+            Off by default. The checkbox below turns daily check-in notifications on.
           </p>
         </div>
         <div className="card-content space-y-4">
           <label className="flex items-center gap-3 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={settings.reminders.enabled} 
-              onChange={e=>setRemindersEnabled(e.target.checked)}
+            <input
+              type="checkbox"
+              checked={settings.reminders.enabled}
+              onChange={(e) => {
+                setRemindersEnabled(e.target.checked);
+                hapticForEvent('settings-toggle');
+              }}
               className="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500 focus:ring-2"
             />
             <span className="text-sm font-medium">Enable daily reminders</span>
@@ -157,13 +171,14 @@ export default function SettingsPanel() {
       <section className="card">
         <div className="card-header">
           <h2 className="text-lg font-semibold tracking-tight">
-            Data Management
+            Your data
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-            Your data stays on your device, encrypted with a key only
-            you control. We cryptographically cannot read it. Opt-in
-            AI features can change this — see AI Insights below. Not
-            medical advice.
+            {/* [SETTINGS-DEEPENING-ROUND-4] Renamed from "Data Management"
+                — warmer, plainer. Section copy now points at the actions
+                below (export / import / clear) instead of restating the
+                privacy claim, which already sits in About → Privacy. */}
+            Export to JSON, import a previous backup, or clear everything on this device.
           </p>
         </div>
         <div className="card-content">

@@ -88,18 +88,22 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       ? last30Days.reduce((sum, d) => sum + d.craving, 0) / last30Days.length 
       : 0;
     
-    // Calculate sleep quality proxy (based on evening drinking patterns)
+    // Drinks logged in the 6pm-10pm evening window. Late drinks
+    // correlate with lighter sleep — described in the tile copy
+    // without overpromising a clinical reading.
     const eveningDrinks = last30Days.filter(d => {
       const hour = new Date(d.ts).getHours();
       return hour >= 18 && hour <= 22;
     });
-    const sleepScore = Math.max(0, 100 - (eveningDrinks.length * 3));
-    
-    // Calculate stress level (based on HALT patterns)
-    const stressIndicators = last30Days.filter(d => 
+
+    // Drinks tagged with one of the HALT states (Hungry / Angry /
+    // Lonely / Tired). Hunger is included implicitly via the broader
+    // .includes('hungry') check users can apply, but the original
+    // surface tracked angry / lonely / tired specifically — kept the
+    // same tags here so historical data renders the same.
+    const stressIndicators = last30Days.filter(d =>
       d.halt?.includes('angry') || d.halt?.includes('lonely') || d.halt?.includes('tired')
     );
-    const stressLevel = Math.min(100, (stressIndicators.length / last30Days.length) * 100);
     
     // Calculate social wellness (based on social drinking vs alternatives)
     const socialDrinks = last30Days.filter(d => d.intention === 'social');
@@ -129,6 +133,20 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       ? Math.round(recentHealthMetrics.reduce((sum, m) => sum + (m.heartRate || 0), 0) / recentHealthMetrics.filter(m => m.heartRate).length)
       : 0;
 
+    /* [WELLNESS-COPY-ROUND-4] Metrics rewritten to remove label/value
+     * mismatches and fake-precision scores. The previous "Average
+     * craving: 80%" tile was confusing — the math computed (5-avg)*20
+     * which a reader would parse as "craving is 80%" (high). The
+     * "Evening drinking: 76/100" / "HALT-tagged drinks: 65/100" tiles
+     * had the same shape: a behaviour-named tile showing a derived
+     * 0-100 score. Each tile now shows the raw count or average it's
+     * named after, with the trend computed against the same
+     * thresholds. Honest naming + honest math.
+     *
+     * Per-day rounding: avgCraving is on a 1-5 scale, displayed to one
+     * decimal. Counts are whole numbers. No /100 abstraction. */
+    const eveningCount = eveningDrinks.length;
+    const haltTaggedCount = stressIndicators.length;
     const baseMetrics = [
       {
         id: 'alcohol-free-days',
@@ -140,39 +158,45 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         icon: '🌟'
       },
       {
-        id: 'craving-control',
+        id: 'avg-craving',
         name: 'Average craving',
-        value: Math.round((5 - avgCraving) * 20),
-        unit: '%',
-        trend: avgCraving <= 2 ? 'up' : avgCraving <= 3 ? 'stable' : 'down',
-        description: 'Higher means lower average craving on logged days.',
+        value: last30Days.length === 0 ? '—' : avgCraving.toFixed(1),
+        unit: last30Days.length === 0 ? 'no drinks logged' : '/ 5',
+        trend: last30Days.length === 0 ? 'stable' : avgCraving <= 2 ? 'up' : avgCraving <= 3 ? 'stable' : 'down',
+        description: 'Average rating you logged on drinks this month. 1 is low, 5 is strong.',
         icon: '🛡️'
       },
       {
-        id: 'sleep-quality',
-        name: 'Evening drinking',
-        value: Math.round(sleepScore),
-        unit: '/100',
-        trend: sleepScore >= 80 ? 'up' : sleepScore >= 60 ? 'stable' : 'down',
-        description: 'Higher means fewer drinks logged after 6pm. Late drinks correlate with worse sleep.',
+        id: 'evening-drinks',
+        name: 'Drinks after 6pm',
+        value: eveningCount,
+        unit: 'in 30 days',
+        trend: eveningCount <= 4 ? 'up' : eveningCount <= 10 ? 'stable' : 'down',
+        description: 'Late-evening drinks tend to track with lighter sleep.',
         icon: '😴'
       },
       {
-        id: 'stress-management',
+        id: 'halt-tagged',
         name: 'HALT-tagged drinks',
-        value: Math.round(Math.max(0, 100 - stressLevel)),
-        unit: '/100',
-        trend: stressLevel <= 30 ? 'up' : stressLevel <= 50 ? 'stable' : 'down',
-        description: 'Higher means fewer drinks tied to angry / lonely / tired.',
+        value: haltTaggedCount,
+        unit: 'in 30 days',
+        trend: haltTaggedCount <= 3 ? 'up' : haltTaggedCount <= 7 ? 'stable' : 'down',
+        /* [COPILOT-FIX] The stressIndicators filter above only matches
+         * angry / lonely / tired (the original surface tracked these
+         * three specifically — hungry is intentionally excluded since
+         * a hungry-tagged drink is not the kind of stress signal this
+         * tile is meant to surface). Description updated to match the
+         * filter exactly. Round-4 review caught the label/value mismatch. */
+        description: 'Drinks you tagged as angry, lonely, or tired.',
         icon: '🧘'
       },
       {
-        id: 'social-wellness',
-        name: 'Social with alternatives',
-        value: Math.round(socialWellness),
-        unit: '%',
+        id: 'social-with-alts',
+        name: 'Social drinks with an alternative noted',
+        value: socialDrinks.length === 0 ? '—' : `${Math.round(socialWellness)}%`,
+        unit: socialDrinks.length === 0 ? 'no social drinks logged' : `of ${socialDrinks.length}`,
         trend: socialWellness >= 70 ? 'up' : socialWellness >= 50 ? 'stable' : 'down',
-        description: 'Share of social drinks where you also noted an alternative action.',
+        description: 'Share of social drinks where you also wrote what else helped.',
         icon: '🤝'
       },
       // [LEGAL-1] Liver-health-estimate metric removed.
@@ -351,39 +375,24 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
             <Badge variant="primary" className="text-xs">From your last 14 days</Badge>
           </h3>
           
+          {/* [WELLNESS-COPY-ROUND-4] Dropped HIGH/MEDIUM/LOW badge and
+              fake-precision "85% confidence" number. The badge implied
+              clinical urgency we don't have, and the confidence value
+              was a hardcoded constant — vibes-by-numbers. Sage-tinted
+              left-border replaces the red/yellow/blue heatmap; calm
+              sits better with the rest of the surface. Order alone
+              still encodes priority. */}
           <div className="space-y-4">
             {healthInsights.map((insight, index) => (
-              <div 
+              <div
                 key={index}
-                className={`p-4 rounded-lg border-l-4 ${
-                  insight.priority === 'high' ? 'border-red-500 bg-red-50 dark:bg-red-900/20' :
-                  insight.priority === 'medium' ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' :
-                  'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                }`}
+                className="p-4 rounded-lg border-l-4 border-sage-500 bg-sage-50 dark:bg-sage-900/20"
               >
-                <div className="flex items-start justify-between mb-2">
-                  <h4 className="font-semibold text-sm">{insight.title}</h4>
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="secondary" 
-                      className={`text-xs ${
-                        insight.priority === 'high' ? 'bg-red-100 text-red-800' :
-                        insight.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-blue-100 text-blue-800'
-                      }`}
-                    >
-                      {insight.priority.toUpperCase()}
-                    </Badge>
-                    <span className="text-xs text-ink-subtle">
-                      {insight.confidence}% confidence
-                    </span>
-                  </div>
-                </div>
-                
+                <h4 className="font-semibold text-sm text-ink mb-2">{insight.title}</h4>
                 <p className="text-sm text-ink mb-3">
                   {insight.insight}
                 </p>
-                
+
                 <div className="bg-surface-elevated p-3 rounded border border-border-soft">
                   <p className="text-sm font-medium text-ink mb-1">
                     Worth trying

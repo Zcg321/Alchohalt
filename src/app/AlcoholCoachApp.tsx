@@ -20,6 +20,7 @@ import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import CrisisResources from '../features/crisis/CrisisResources';
+import HardTimePanel from '../features/crisis/HardTimePanel';
 import { isLegalSlug, type LegalSlug } from '../features/legal/slugs';
 import { Skeleton } from '../components/ui/Skeleton';
 
@@ -31,6 +32,7 @@ const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
 import { usePWA } from '../hooks/usePWA';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { hapticForEvent } from '../shared/haptics';
+import { getMilestoneStates } from '../features/milestones/Milestones';
 
 /* [REFACTOR-LONG-FN] Crisis dialog extracted as a sibling component to
  * shrink AlcoholCoachApp's render function. The dialog is presentation
@@ -85,6 +87,59 @@ import { useLanguage } from '../i18n';
 import { attachForegroundSync } from '../lib/sync/scheduler';
 import { attachDbBridge } from '../lib/sync/dbBridge';
 
+/* [HARD-TIME-ROUND-4] Sibling dialog wrapper around HardTimePanel.
+ * Same focus-trap + Escape + backdrop-click pattern as CrisisDialog.
+ * Inline so the file stays the central inspectable place for all
+ * always-on safety surfaces. */
+function HardTimeDialog({ onClose }: { onClose: () => void }) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+  useFocusTrap(dialogRef, true);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    window.addEventListener('keydown', onKey);
+    closeRef.current?.focus();
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hard-time-dialog-title"
+      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-charcoal-900/70 backdrop-blur-sm p-4 animate-fade-in"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="my-8 w-full max-w-md rounded-2xl bg-surface-elevated shadow-strong ring-1 ring-border animate-fade-in">
+        <div className="flex items-center justify-between border-b border-border-soft px-5 py-4">
+          <h2 id="hard-time-dialog-title" className="text-h3 text-ink">
+            Having a hard time?
+          </h2>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-pill text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
+          >
+            <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <HardTimePanel onClose={onClose} />
+      </div>
+    </div>
+  );
+}
+
 export function AlcoholCoachApp() {
   const { db, addEntry, editEntry, deleteEntry, undo, setSettings } = useDB();
   const [editing, setEditing] = useState<string | null>(null);
@@ -92,6 +147,11 @@ export function AlcoholCoachApp() {
   const [showInstallBanner, setShowInstallBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(true);
   const [showCrisis, setShowCrisis] = useState(false);
+  /* [HARD-TIME-ROUND-4] Hard-Time panel is the urgent-mode subset of
+   * crisis support — fewer doors, action-first. Distinct from the
+   * full CrisisResources dialog the AppHeader pill opens. The
+   * TodayPanel "Having a hard time?" link now opens this. */
+  const [showHardTime, setShowHardTime] = useState(false);
   // [IA-2] active tab — controlled here so other surfaces (the Today
   // panel "See progress" CTA) can request a jump to Insights.
   const [activeTab, setActiveTab] = useState<TabId | undefined>(undefined);
@@ -125,6 +185,23 @@ export function AlcoholCoachApp() {
   function closeCrisis() {
     setShowCrisis(false);
     // Restore focus to the trigger after the dialog unmounts.
+    queueMicrotask(() => crisisOpenerRef.current?.focus?.());
+  }
+
+  /* [HARD-TIME-ROUND-4] Hard-Time panel uses the same focus-restore
+   * pattern as CrisisDialog. Re-uses crisisOpenerRef since only one of
+   * the two dialogs can be open at a time (state is mutually exclusive
+   * by design — opening one closes the other implicitly via the
+   * mount/unmount cycle below). */
+  function openHardTime() {
+    if (typeof document !== 'undefined') {
+      crisisOpenerRef.current = document.activeElement as HTMLElement | null;
+    }
+    setShowHardTime(true);
+  }
+
+  function closeHardTime() {
+    setShowHardTime(false);
     queueMicrotask(() => crisisOpenerRef.current?.focus?.());
   }
 
@@ -162,6 +239,37 @@ export function AlcoholCoachApp() {
     };
   }, []);
 
+  /* [HAPTICS-ROUND-4] Milestone-reached watcher. Tracks which milestones
+   * are currently "reached" and fires a Medium tap on any false→true
+   * transition. The first run (prevMilestonesRef === null) seeds the
+   * set without firing — important so opening the app on a steady-state
+   * Day 30 doesn't bump the user every cold-start. Re-checks on
+   * visibility-change so a user who keeps the app backgrounded across
+   * midnight gets the celebration when they return. */
+  const prevMilestonesRef = useRef<Set<string> | null>(null);
+  useEffect(() => {
+    function check() {
+      const drinksList = db.entries.map(entryToLegacyDrink);
+      const reachedNow = new Set(
+        getMilestoneStates(drinksList)
+          .filter((m) => m.reached)
+          .map((m) => m.id),
+      );
+      if (prevMilestonesRef.current !== null) {
+        let isNewlyReached = false;
+        reachedNow.forEach((id) => {
+          if (!prevMilestonesRef.current!.has(id)) isNewlyReached = true;
+        });
+        if (isNewlyReached) hapticForEvent('milestone-reached');
+      }
+      prevMilestonesRef.current = reachedNow;
+    }
+    check();
+    if (typeof document === 'undefined') return;
+    document.addEventListener('visibilitychange', check);
+    return () => document.removeEventListener('visibilitychange', check);
+  }, [db.entries]);
+
   // [ROUTE-1] /crisis (and #crisis) deep-link.
   // [SHIP-3.1] /legal/<slug> deep-link. The Vercel deployment rewrites
   // any unmatched path back to index.html, so this client-side check
@@ -190,11 +298,26 @@ export function AlcoholCoachApp() {
   function addDrink(drink: Drink) {
     const entry = legacyDrinkToEntry(drink);
     addEntry(entry);
+    const isAFMark = drink.volumeMl === 0 && drink.abvPct === 0;
     /* Haptic map: drink-logged + af-day-marked both fire 'Light'. The
      * AF case (volumeMl=0, abvPct=0) is the same user action — pressing
-     * a button — so it gets the same confirmation tap. Goal-hit /
-     * milestone-reached fire elsewhere when those events land. */
-    hapticForEvent(drink.volumeMl === 0 && drink.abvPct === 0 ? 'af-day-marked' : 'drink-logged');
+     * a button — so it gets the same confirmation tap. */
+    hapticForEvent(isAFMark ? 'af-day-marked' : 'drink-logged');
+    /* [HAPTICS-ROUND-4] Goal-hit fires on a weekly-AF-cycle close:
+     * count of std=0 entries in the past 7 days hits a positive
+     * multiple of 7. The post-add list is `[...drinks, drink]`. We
+     * only check on AF marks because logging a real drink can never
+     * "land" a stay-under goal — only abstaining can. */
+    if (isAFMark) {
+      const sevenAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const after = [...drinks, drink];
+      const afCount = after.filter(
+        (d) => d.ts >= sevenAgo && d.volumeMl === 0 && d.abvPct === 0,
+      ).length;
+      if (afCount > 0 && afCount % 7 === 0) {
+        hapticForEvent('goal-hit');
+      }
+    }
   }
 
   function saveDrink(drink: Drink) {
@@ -222,6 +345,9 @@ export function AlcoholCoachApp() {
     undo();
     setLastDeleted(null);
     if (undoTimer.current) clearTimeout(undoTimer.current);
+    /* [HAPTICS-ROUND-4] Selection tap on undo — same confirmation
+     * feel as logging. */
+    hapticForEvent('drink-undo');
   }
 
   function startEdit(drink: Drink) {
@@ -253,7 +379,7 @@ export function AlcoholCoachApp() {
         onSaveDrink={saveDrink}
         onCancelEdit={cancelEdit}
         onOpenInsights={() => setActiveTab('insights')}
-        onRoughNight={openCrisis}
+        onRoughNight={openHardTime}
       />
     ),
     track: (
@@ -313,6 +439,10 @@ export function AlcoholCoachApp() {
           closeRef={crisisCloseRef}
           onClose={closeCrisis}
         />
+      ) : null}
+
+      {showHardTime ? (
+        <HardTimeDialog onClose={closeHardTime} />
       ) : null}
 
       {legalSlug ? (
