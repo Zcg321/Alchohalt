@@ -20,7 +20,7 @@ const goals: Goals = {
   dailyCap: 0,
   weeklyGoal: 0,
   baselineMonthlySpend: 0,
-  pricePerStdDrink: 5,
+  pricePerStd: 5,
 };
 
 beforeEach(() => {
@@ -45,12 +45,12 @@ describe('InsightsPanel — themed groupings [R9-T3]', () => {
     const day = 24 * 60 * 60 * 1000;
     const drinks: Drink[] = [
       // Older 14-28 days ago, high craving
-      { ts: now - 20 * day, kind: 'beer', volumeMl: 355, abvPct: 5, craving: 8, intention: 'cope', halt: { H: false, A: false, L: false, T: false } },
-      { ts: now - 18 * day, kind: 'beer', volumeMl: 355, abvPct: 5, craving: 8, intention: 'cope', halt: { H: false, A: false, L: false, T: false } },
+      { ts: now - 20 * day, volumeMl: 355, abvPct: 5, craving: 8, intention: 'cope', halt: [], alt: '' },
+      { ts: now - 18 * day, volumeMl: 355, abvPct: 5, craving: 8, intention: 'cope', halt: [], alt: '' },
       // Recent 0-14, low
-      { ts: now - 5 * day, kind: 'beer', volumeMl: 355, abvPct: 5, craving: 1, intention: 'social', halt: { H: false, A: false, L: false, T: false } },
-      { ts: now - 4 * day, kind: 'beer', volumeMl: 355, abvPct: 5, craving: 1, intention: 'social', halt: { H: false, A: false, L: false, T: false } },
-    ] as Drink[];
+      { ts: now - 5 * day, volumeMl: 355, abvPct: 5, craving: 1, intention: 'social', halt: [], alt: '' },
+      { ts: now - 4 * day, volumeMl: 355, abvPct: 5, craving: 1, intention: 'social', halt: [], alt: '' },
+    ];
 
     render(<InsightsPanel drinks={drinks} goals={goals} />);
     // Cravings-improving is an achievement → group heading should
