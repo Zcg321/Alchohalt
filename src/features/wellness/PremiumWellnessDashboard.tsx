@@ -89,7 +89,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
       : 0;
     
     // Drinks logged in the 6pm-10pm evening window. Late drinks
-    // correlate with lighter sleep — described in the tile copy
+    // often lead to lighter sleep — described in the tile copy
     // without overpromising a clinical reading.
     const eveningDrinks = last30Days.filter(d => {
       const hour = new Date(d.ts).getHours();
@@ -172,7 +172,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         value: eveningCount,
         unit: 'in 30 days',
         trend: eveningCount <= 4 ? 'up' : eveningCount <= 10 ? 'stable' : 'down',
-        description: 'Late-evening drinks tend to track with lighter sleep.',
+        description: 'Late-evening drinks often lead to lighter sleep.',
         icon: '😴'
       },
       {
@@ -277,7 +277,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
         type: 'stress',
         title: 'Drinks tied to hard moments',
         insight: `${stressfulDays.length} drinks in the last two weeks lined up with anger, loneliness, or a high-craving moment.`,
-        recommendation: 'When the urge ties to a feeling, the feeling tends to pass faster than the urge. Buying ten minutes (a walk, a call, water first) usually helps.',
+        recommendation: 'When the urge ties to a feeling, the feeling often passes faster than the urge. Wait ten minutes first — go for a walk, call someone, drink water — and see how it shifts.',
         confidence: 90,
         priority: 'high'
       });
@@ -351,9 +351,11 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     <div className={className}>
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-ink mb-2 flex items-center gap-2">
+        <span className="inline-block text-[11px] font-medium uppercase tracking-wide text-ink-soft mb-1">
+          Premium
+        </span>
+        <h2 className="text-xl font-bold text-ink mb-2">
           Patterns over time
-          <Badge variant="primary" className="text-xs">Premium</Badge>
         </h2>
         <p className="text-sm text-ink-soft">
           Patterns from your last 30 days. Not medical advice.

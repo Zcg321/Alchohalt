@@ -41,10 +41,10 @@ interface Props {
 }
 
 const PRIMARY_BTN =
-  'inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-sage-700 px-5 py-4 text-base font-semibold text-white no-underline shadow-card hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[56px]';
+  'flex w-full flex-col items-center justify-center gap-1 rounded-2xl bg-sage-700 px-5 py-4 text-base font-semibold text-white text-center no-underline shadow-card hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[56px] sm:flex-row sm:gap-2';
 
 const SECONDARY_BTN =
-  'inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-surface-elevated px-5 py-4 text-base font-semibold text-ink no-underline hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[56px]';
+  'flex w-full flex-col items-center justify-center gap-1 rounded-2xl border border-border bg-surface-elevated px-5 py-4 text-base font-semibold text-ink text-center no-underline hover:bg-cream-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors min-h-[56px] sm:flex-row sm:gap-2';
 
 /**
  * Next-day midnight in local time. Anchors the quiet-mode auto-expire
@@ -142,24 +142,24 @@ export default function HardTimePanel({ onClose }: Props) {
           className={PRIMARY_BTN}
           data-testid="hard-time-call-988"
         >
-          Call 988
-          <span className="text-caption font-normal opacity-90">— Suicide &amp; Crisis Lifeline</span>
+          <span>Call 988</span>
+          <span className="text-caption font-normal opacity-90">Suicide &amp; Crisis Lifeline</span>
         </a>
         <a
           href={smsHref('HOME', '741741')}
           className={SECONDARY_BTN}
           data-testid="hard-time-text-741741"
         >
-          Text HOME to 741741
-          <span className="text-caption font-normal opacity-90">— Crisis Text Line</span>
+          <span>Text HOME to 741741</span>
+          <span className="text-caption font-normal opacity-90">Crisis Text Line</span>
         </a>
         <a
           href={telHref('1-800-662-4357')}
           className={SECONDARY_BTN}
           data-testid="hard-time-call-samhsa"
         >
-          Call 1-800-662-HELP
-          <span className="text-caption font-normal opacity-90">— SAMHSA, 24/7</span>
+          <span>Call 1-800-662-HELP</span>
+          <span className="text-caption font-normal opacity-90">SAMHSA, 24/7</span>
         </a>
       </div>
 

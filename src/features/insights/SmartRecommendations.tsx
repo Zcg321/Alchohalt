@@ -77,7 +77,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     if (recentHighCravings > 5) {
       recommendations.push({
         title: 'High cravings recently',
-        description: 'When the craving hits hard, the ten-minute rule usually helps: do anything else for ten minutes — a walk, a glass of water, a call — before deciding.',
+        description: 'When the craving hits hard, try waiting ten minutes — go for a walk, drink a glass of water, call someone — before deciding.',
         type: 'health',
         urgency: 'medium'
       });
@@ -104,7 +104,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     if (getAlternativeUsage(monthDrinks) < 30 && monthDrinks.length > 0) {
       recommendations.push({
         title: "An alternative when the craving's there",
-        description: 'When the craving shows up: a walk, a call to someone, anything that buys you ten minutes.',
+        description: 'When the craving shows up, try a walk, a call to someone, or anything that takes ten minutes.',
         type: 'planning',
         urgency: 'low'
       });
