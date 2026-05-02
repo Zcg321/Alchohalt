@@ -11,8 +11,8 @@ interface Props {
 export default function HaltChecks({ selected, onChange }: Props) {
   const { t } = useLanguage();
   return (
-    <div>
-      <span className="block font-medium">{t('haltLabel')}</span>
+    <fieldset>
+      <legend className="block font-medium">{t('haltLabel')}</legend>
       {haltOptions.map((h) => (
         <label key={h} className="mr-2">
           <input
@@ -29,6 +29,6 @@ export default function HaltChecks({ selected, onChange }: Props) {
           {t(`halt_${h}`)}
         </label>
       ))}
-    </div>
+    </fieldset>
   );
 }

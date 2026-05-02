@@ -38,10 +38,11 @@ describe('OnboardingFlow — Skip button [BUG-4]', () => {
 
   it('top-right close (X) button also completes onboarding', () => {
     render(<OnboardingFlow />);
-    // The X is labelled by the same i18n "Skip" string (aria-label).
-    const closes = screen.getAllByLabelText(/skip/i);
-    expect(closes.length).toBeGreaterThan(0);
-    fireEvent.click(closes[0]);
+    // [ROUND-5-B] X uses aria-label="Close" (was "Skip"). Two distinct
+    // dismiss controls share the dialog: the icon X (Close) and the
+    // bottom "Skip and explore" text link.
+    const closeBtn = screen.getByLabelText(/close/i);
+    fireEvent.click(closeBtn);
     expect(useDB.getState().db.settings.hasCompletedOnboarding).toBe(true);
   });
 });
