@@ -33,7 +33,7 @@ export default function About() {
         <h2 className="font-semibold mb-3 text-primary">About Alchohalt</h2>
         <div className="space-y-3 text-sm text-secondary">
           <p>{t('disclaimer')}</p>
-          <p>Built by one person.</p>
+          <p>Built by one person with AI assistance.</p>
           <p className="text-xs text-muted">Version {pkg.version}</p>
         </div>
       </div>
