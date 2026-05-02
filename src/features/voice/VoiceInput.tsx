@@ -61,13 +61,12 @@ export default function VoiceInput({ onVoiceResult, onError, className = '' }: P
       // Start listening
       const results = await startVoiceRecognition();
       
-      if (results.length === 0) {
+      const bestMatch = results[0];
+      if (!bestMatch) {
         onError?.('No speech detected. Please try again.');
         setIsListening(false);
         return;
       }
-
-      const bestMatch = results[0];
       setTranscript(bestMatch);
 
       // Parse the voice input

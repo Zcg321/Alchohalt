@@ -45,8 +45,8 @@ export function entriesToCSV(entries: Entry[], options: CSVExportOptions = {}): 
   // Add data rows
   for (const entry of entries) {
     const date = new Date(entry.ts);
-    const dateStr = dateFormat === 'iso' 
-      ? date.toISOString().split('T')[0]
+    const dateStr = dateFormat === 'iso'
+      ? (date.toISOString().split('T')[0] ?? '')
       : date.toLocaleDateString(locale);
     const timeStr = date.toLocaleTimeString(locale);
 

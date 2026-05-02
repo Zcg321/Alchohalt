@@ -37,8 +37,9 @@ export function chipForEntry(d?: Drink): DrinkChipId {
 export function useDrinkForm(initial: Drink | undefined, onSubmit: (d: Drink) => void) {
   const [chip, setChip] = useState<DrinkChipId>(() => chipForEntry(initial));
   const [time, setTime] = useState<string>(() => toLocalInput(initial?.ts ?? Date.now()));
-  const [volume, setVolume] = useState(initial ? String(initial.volumeMl) : String(CHIPS[0].volumeMl));
-  const [abv, setAbv] = useState(initial ? String(initial.abvPct) : String(CHIPS[0].abvPct));
+  const defaultChip = CHIPS[0]!;
+  const [volume, setVolume] = useState(initial ? String(initial.volumeMl) : String(defaultChip.volumeMl));
+  const [abv, setAbv] = useState(initial ? String(initial.abvPct) : String(defaultChip.abvPct));
   const [intention, setIntention] = useState<Intention>(initial?.intention ?? 'social');
   const [craving, setCraving] = useState(initial?.craving ?? 0);
   const [halt, setHalt] = useState<Halt[]>(initial?.halt ?? []);
@@ -88,8 +89,8 @@ export function useDrinkForm(initial: Drink | undefined, onSubmit: (d: Drink) =>
     if (!initial) {
       setChip('beer');
       setTime(toLocalInput(Date.now()));
-      setVolume(String(CHIPS[0].volumeMl));
-      setAbv(String(CHIPS[0].abvPct));
+      setVolume(String(defaultChip.volumeMl));
+      setAbv(String(defaultChip.abvPct));
       setIntention('social');
       setCraving(0);
       setHalt([]);

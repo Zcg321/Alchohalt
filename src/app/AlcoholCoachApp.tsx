@@ -284,8 +284,9 @@ export function AlcoholCoachApp() {
         return;
       }
       const legalMatch = path.match(/^\/legal\/([^/]+)\/?$/);
-      if (legalMatch && isLegalSlug(legalMatch[1])) {
-        setLegalSlug(legalMatch[1]);
+      const slug = legalMatch?.[1];
+      if (slug && isLegalSlug(slug)) {
+        setLegalSlug(slug);
       } else {
         setLegalSlug(null);
       }

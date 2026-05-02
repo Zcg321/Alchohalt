@@ -17,13 +17,14 @@ export function WeeklyPatternsTile({ onToggle }: { onToggle?: () => void }) {
 
   entries.forEach(entry => {
     const day = new Date(entry.ts).getDay();
-    dayTotals[day] += entry.stdDrinks;
-    dayCounts[day]++;
+    dayTotals[day] = (dayTotals[day] ?? 0) + entry.stdDrinks;
+    dayCounts[day] = (dayCounts[day] ?? 0) + 1;
   });
 
-  const dayAverages = dayTotals.map((total, i) => 
-    dayCounts[i] > 0 ? total / dayCounts[i] : 0
-  );
+  const dayAverages = dayTotals.map((total, i) => {
+    const count = dayCounts[i] ?? 0;
+    return count > 0 ? total / count : 0;
+  });
 
   const maxAvg = Math.max(...dayAverages, 1);
 
@@ -47,19 +48,22 @@ export function WeeklyPatternsTile({ onToggle }: { onToggle?: () => void }) {
       </div>
 
       <div className="space-y-2">
-        {DAYS.map((day, i) => (
-          <div key={day} className="flex items-center gap-3">
-            <div className="w-10 text-sm text-secondary">{day}</div>
-            <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
-              <div
-                className="bg-primary-600 h-full flex items-center justify-end px-2 text-white text-xs font-medium transition-all"
-                style={{ width: `${(dayAverages[i] / maxAvg) * 100}%` }}
-              >
-                {dayAverages[i] > 0 && dayAverages[i].toFixed(1)}
+        {DAYS.map((day, i) => {
+          const avg = dayAverages[i] ?? 0;
+          return (
+            <div key={day} className="flex items-center gap-3">
+              <div className="w-10 text-sm text-secondary">{day}</div>
+              <div className="flex-1 bg-muted rounded-full h-6 overflow-hidden">
+                <div
+                  className="bg-primary-600 h-full flex items-center justify-end px-2 text-white text-xs font-medium transition-all"
+                  style={{ width: `${(avg / maxAvg) * 100}%` }}
+                >
+                  {avg > 0 && avg.toFixed(1)}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {entries.length === 0 && (

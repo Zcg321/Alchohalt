@@ -34,5 +34,7 @@ export function smsHrefFromTextString(s: string): string {
   if (!s.startsWith('Text ')) return '';
   const parts = s.replace('Text ', '').split(' to ');
   if (parts.length !== 2) return '';
-  return smsHref(parts[0].trim(), parts[1].trim());
+  const [keyword, number] = parts;
+  if (!keyword || !number) return '';
+  return smsHref(keyword.trim(), number.trim());
 }

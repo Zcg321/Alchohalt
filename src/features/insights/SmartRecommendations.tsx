@@ -224,7 +224,7 @@ function getCurrentStreak(drinks: Drink[]): number {
   let continueChecking = true;
   while (continueChecking) {
     const key = current.toISOString().slice(0, 10);
-    if (byDay[key] > 0) {
+    if ((byDay[key] ?? 0) > 0) {
       continueChecking = false;
       break;
     }
@@ -249,6 +249,7 @@ function getHaltRecommendation(drinks: Drink[]): Recommendation | null {
   if (total < 3) return null;
 
   const topHalt = Object.entries(haltCounts).sort(([,a], [,b]) => b - a)[0];
+  if (!topHalt) return null;
   const percentage = (topHalt[1] / total) * 100;
 
   if (percentage < 40) return null;

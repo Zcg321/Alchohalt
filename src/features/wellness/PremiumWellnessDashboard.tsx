@@ -121,8 +121,8 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
     // below is also removed.
 
     // Get recent health metrics if available
-    const last7DaysDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    const todayDate = new Date().toISOString().split('T')[0];
+    const last7DaysDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] ?? '';
+    const todayDate = new Date().toISOString().split('T')[0] ?? '';
     const recentHealthMetrics = healthMetrics.filter(m => m.date >= last7DaysDate && m.date <= todayDate);
     
     // Calculate average health metrics

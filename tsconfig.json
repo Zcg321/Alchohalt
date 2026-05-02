@@ -15,6 +15,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "resolveJsonModule": true,

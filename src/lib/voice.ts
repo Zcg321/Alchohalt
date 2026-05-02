@@ -91,7 +91,8 @@ export async function startVoiceRecognition(language: string = 'en-US'): Promise
       'a shot of whiskey',
       'three bottles of beer'
     ];
-    return [mockPhrases[Math.floor(Math.random() * mockPhrases.length)]];
+    const phrase = mockPhrases[Math.floor(Math.random() * mockPhrases.length)] ?? mockPhrases[0]!;
+    return [phrase];
   } catch (error) {
     console.error('Failed to start voice recognition:', error);
     throw error;
@@ -154,9 +155,9 @@ export function parseVoiceInput(transcript: string): ParsedDrinkInput {
     if (match) {
       foundQuantity = true;
       const qty = match[1];
-      if (qty in numberWords) {
+      if (qty && qty in numberWords) {
         result.quantity = numberWords[qty];
-      } else if (!isNaN(parseInt(qty))) {
+      } else if (qty && !isNaN(parseInt(qty))) {
         result.quantity = parseInt(qty);
       } else {
         result.quantity = 1;

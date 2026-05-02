@@ -233,8 +233,8 @@ export async function importHealthMetrics(startDate: Date, endDate: Date): Promi
   const current = new Date(startDate);
 
   while (current <= endDate) {
-    const dateStr = current.toISOString().split('T')[0];
-    
+    const dateStr = current.toISOString().split('T')[0] ?? '';
+
     const [steps, sleepHours, heartRate] = await Promise.all([
       getSteps(current, new Date(current.getTime() + 24 * 60 * 60 * 1000)),
       getSleepHours(current),

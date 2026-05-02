@@ -46,9 +46,10 @@ function analyzeHALTPatterns(entries: Entry[]): PremiumInsight[] {
     const { halt } = entry;
     ['H', 'A', 'L', 'T'].forEach(state => {
       if (halt[state as keyof typeof halt]) {
-        acc[state] = acc[state] || { count: 0, totalDrinks: 0 };
-        acc[state].count++;
-        acc[state].totalDrinks += entry.stdDrinks;
+        const bucket = acc[state] ?? { count: 0, totalDrinks: 0 };
+        bucket.count++;
+        bucket.totalDrinks += entry.stdDrinks;
+        acc[state] = bucket;
       }
     });
     return acc;
@@ -93,25 +94,27 @@ function analyzeTimePatterns(entries: Entry[]): PremiumInsight[] {
   
   entries.forEach(entry => {
     const hour = new Date(entry.ts).getHours();
-    hourlyStats[hour].count++;
-    hourlyStats[hour].totalDrinks += entry.stdDrinks;
+    const bucket = hourlyStats[hour];
+    if (!bucket) return;
+    bucket.count++;
+    bucket.totalDrinks += entry.stdDrinks;
   });
 
   // Find peak drinking hours
   const peakHours = hourlyStats
-    .map((stats, hour) => ({ 
-      hour, 
+    .map((stats, hour) => ({
+      hour,
       avg: stats.count > 0 ? stats.totalDrinks / stats.count : 0,
-      count: stats.count 
+      count: stats.count
     }))
     .filter(h => h.count >= 3) // Need significant data
     .sort((a, b) => b.avg - a.avg)
     .slice(0, 2);
 
-  if (peakHours.length > 0) {
-    const peak = peakHours[0];
+  const peak = peakHours[0];
+  if (peak) {
     const timeDesc = peak.hour < 12 ? 'morning' : peak.hour < 18 ? 'afternoon' : 'evening';
-    
+
     insights.push({
       title: `${timeDesc.charAt(0).toUpperCase() + timeDesc.slice(1)} runs heavier`,
       description: `Drinks logged around ${peak.hour}:00 tend to be larger. If there's a routine that fits in that hour and doesn't involve alcohol, planting it there usually helps.`,
@@ -193,15 +196,17 @@ function analyzeCostImpacts(entries: Entry[]): PremiumInsight[] {
 
   // Find most expensive drink types
   const costByKind = entriesWithCost.reduce((acc, entry) => {
-    acc[entry.kind] = acc[entry.kind] || { count: 0, totalCost: 0 };
-    acc[entry.kind].count++;
-    acc[entry.kind].totalCost += entry.cost || 0;
+    const bucket = acc[entry.kind] ?? { count: 0, totalCost: 0 };
+    bucket.count++;
+    bucket.totalCost += entry.cost || 0;
+    acc[entry.kind] = bucket;
     return acc;
   }, {} as Record<string, { count: number; totalCost: number }>);
 
-  const expensiveKind = Object.entries(costByKind)
+  const sortedByCost = Object.entries(costByKind)
     .map(([kind, stats]) => ({ kind, avgCost: stats.totalCost / stats.count }))
-    .sort((a, b) => b.avgCost - a.avgCost)[0];
+    .sort((a, b) => b.avgCost - a.avgCost);
+  const expensiveKind = sortedByCost[0];
 
   if (expensiveKind && expensiveKind.avgCost > avgCostPerDrink * 1.5) {
     insights.push({
@@ -226,10 +231,11 @@ function analyzeIntentionEffectiveness(entries: Entry[]): PremiumInsight[] {
   // Analyze which intentions lead to better control (lower drinks/craving)
   const intentionStats = entries.reduce((acc, entry) => {
     const intention = entry.intention;
-    acc[intention] = acc[intention] || { count: 0, totalDrinks: 0, totalCraving: 0 };
-    acc[intention].count++;
-    acc[intention].totalDrinks += entry.stdDrinks;
-    acc[intention].totalCraving += entry.craving;
+    const bucket = acc[intention] ?? { count: 0, totalDrinks: 0, totalCraving: 0 };
+    bucket.count++;
+    bucket.totalDrinks += entry.stdDrinks;
+    bucket.totalCraving += entry.craving;
+    acc[intention] = bucket;
     return acc;
   }, {} as Record<string, { count: number; totalDrinks: number; totalCraving: number }>);
 
@@ -242,10 +248,10 @@ function analyzeIntentionEffectiveness(entries: Entry[]): PremiumInsight[] {
     }))
     .sort((a, b) => a.avgDrinks - b.avgDrinks);
 
-  if (intentionAnalysis.length >= 2) {
-    const best = intentionAnalysis[0];
-    const worst = intentionAnalysis[intentionAnalysis.length - 1];
-    
+  const best = intentionAnalysis[0];
+  const worst = intentionAnalysis[intentionAnalysis.length - 1];
+
+  if (best && worst && worst !== best) {
     if (worst.avgDrinks > best.avgDrinks * 1.5) {
       const intentionMap: Record<string, string> = {
         celebrate: 'celebrating',

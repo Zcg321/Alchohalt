@@ -34,7 +34,7 @@ export function getCurrentStreak(drinks: Drink[]): number {
   const current = new Date();
   while (streak <= 365) {
     const key = current.toISOString().slice(0, 10);
-    if (byDay[key] > 0) break;
+    if ((byDay[key] ?? 0) > 0) break;
     streak++;
     current.setDate(current.getDate() - 1);
   }
