@@ -19,20 +19,19 @@ const tsOnDay = (offset: number, hour = 20) =>
 
 const goals: Goals = {
   dailyCap: 2,
-  weeklyCap: 14,
+  weeklyGoal: 14,
   pricePerStd: 5,
   baselineMonthlySpend: 200,
 };
 
 const beer = (over: Partial<Drink>): Drink => ({
   ts: over.ts ?? FIXED_NOW,
-  kind: 'beer',
   volumeMl: 355,
   abvPct: 5,
   intention: over.intention ?? 'social',
   craving: over.craving ?? 5,
   halt: over.halt ?? [],
-  alt: over.alt,
+  alt: over.alt ?? '',
   ...over,
 });
 
