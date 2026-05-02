@@ -3,7 +3,9 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { useLanguage } from '../../i18n';
 import type { AdvancedGoal, GoalType } from './types';
+import { GOAL_TEMPLATES, type GoalTemplate } from './templates';
 
 interface Props {
   goalTypes: GoalType[];
@@ -12,6 +14,8 @@ interface Props {
 }
 
 export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
+  const { t } = useLanguage();
+  const [phase, setPhase] = useState<'template' | 'detail'>('template');
   const [selectedType, setSelectedType] = useState<AdvancedGoal['type']>('streak');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -29,6 +33,14 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
+
+  function applyTemplate(tpl: GoalTemplate) {
+    setSelectedType(tpl.type);
+    setTitle(t(`goalTemplates.${tpl.id}.title`, tpl.title));
+    setDescription(t(`goalTemplates.${tpl.id}.description`, tpl.description));
+    setTarget(tpl.target);
+    setPhase('detail');
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +83,49 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
             <CloseIcon />
           </button>
         </div>
-        
+
+        {phase === 'template' ? (
+          <div className="card-content space-y-4" data-testid="goal-template-picker">
+            <div>
+              <Label>{t('goalTemplates.heading', 'Templates')}</Label>
+              <p className="text-xs text-ink-subtle mt-1">
+                {t(
+                  'goalTemplates.subtitle',
+                  'Start from a common shape. You can still customize everything.',
+                )}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-2">
+              {GOAL_TEMPLATES.map((tpl) => (
+                <button
+                  key={tpl.id}
+                  type="button"
+                  onClick={() => applyTemplate(tpl)}
+                  data-testid={`goal-template-${tpl.id}`}
+                  className="w-full rounded-2xl border border-border-soft bg-white px-4 py-3 text-left hover:bg-neutral-50 hover:border-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-neutral-800/60 dark:hover:bg-neutral-800 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">{tpl.icon}</span>
+                    <span className="font-medium text-sm">
+                      {t(`goalTemplates.${tpl.id}.title`, tpl.title)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-ink-subtle mt-1">
+                    {t(`goalTemplates.${tpl.id}.description`, tpl.description)}
+                  </p>
+                </button>
+              ))}
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setPhase('detail')}
+              className="w-full"
+            >
+              {t('goalTemplates.buildMyOwn', 'Build my own')}
+            </Button>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="card-content space-y-4">
           {/* Goal Type Selection */}
           <div>
@@ -155,6 +209,7 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
             </Button>
           </div>
         </form>
+        )}
       </div>
     </div>
   );
