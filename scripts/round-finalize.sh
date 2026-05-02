@@ -43,10 +43,14 @@ echo "==> round ${ROUND_NUM} finalize"
 echo "--- typecheck"
 npm run typecheck
 echo "--- lint"
+# [R8-E-FIX Copilot] grep -oP is GNU-only (PCRE); BSD grep on macOS
+# rejects it. Parse "N errors" with portable awk on the eslint
+# summary line ("✖ N problems (M errors, K warnings)").
 npm run lint || {
-  ERR_COUNT="$(npm run lint 2>&1 | grep -oP '\d+ errors?' | head -1 || echo '0 errors')"
-  if [[ "$ERR_COUNT" != "0 errors" ]]; then
-    echo "✗ lint errors present — fix before finalizing" >&2
+  ERR_COUNT="$(npm run lint 2>&1 | awk '/[0-9]+ errors?/ { for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+$/ && $(i+1) ~ /^errors?/) { print $i; exit } }')"
+  ERR_COUNT="${ERR_COUNT:-0}"
+  if [[ "$ERR_COUNT" != "0" ]]; then
+    echo "✗ lint errors present ($ERR_COUNT) — fix before finalizing" >&2
     exit 1
   fi
 }

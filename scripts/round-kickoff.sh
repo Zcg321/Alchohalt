@@ -70,7 +70,9 @@ echo "✓ on branch ${BRANCH}"
 echo "==> capturing baseline measurements"
 mkdir -p audit-walkthrough
 
-TEST_COUNT="$(npx vitest run --coverage=false --reporter=default 2>&1 | grep -E '^\s*Tests' | head -1 || echo 'unknown')"
+# [R8-E-FIX Copilot] '\s' isn't an ERE escape — POSIX character class
+# [[:space:]] is portable across BSD grep (macOS) + GNU grep (Linux).
+TEST_COUNT="$(npx vitest run --coverage=false --reporter=default 2>&1 | grep -E '^[[:space:]]*Tests' | head -1 || echo 'unknown')"
 LINT_OUT="$(npm run lint 2>&1 | tail -3 | tr -d '\r' || echo 'lint failed')"
 {
   echo "# Round ${ROUND_NUM} — baseline (${DATE})"

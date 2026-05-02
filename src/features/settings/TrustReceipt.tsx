@@ -78,28 +78,71 @@ function TypeBadge({ type }: { type: TrustEvent['type'] }) {
   );
 }
 
+/* [R8-C-FIX Copilot] Render detail JSON safely:
+ *   - Replacer drops non-serializable values (functions, symbols).
+ *   - Object cycle detection short-circuits with "[circular]".
+ * Combined with the recordStorageEvent contract that callers pass
+ * only metadata (key, bytes, hit, ms), the panel can never crash
+ * when a row is expanded. */
+function safeStringify(value: unknown): string {
+  const seen = new WeakSet();
+  try {
+    return JSON.stringify(
+      value,
+      (_key, v) => {
+        if (typeof v === 'object' && v !== null) {
+          if (seen.has(v as object)) return '[circular]';
+          seen.add(v as object);
+        }
+        if (typeof v === 'function' || typeof v === 'symbol') return '[unserializable]';
+        if (typeof v === 'bigint') return `${v.toString()}n`;
+        return v;
+      },
+      2,
+    );
+  } catch {
+    return '[unrenderable]';
+  }
+}
+
 function EventRow({ event }: { event: TrustEvent }) {
   const [open, setOpen] = useState(false);
-  const hasDetail = event.detail && Object.keys(event.detail).length > 0;
+  const hasDetail = !!event.detail && Object.keys(event.detail).length > 0;
+  /* [R8-C-FIX Copilot] When there's no detail to expand, render a
+   * non-interactive <div> instead of a focusable <button> with a
+   * no-op handler. Removes the button from tab order entirely. */
+  const Header = hasDetail ? (
+    <button
+      type="button"
+      className="flex w-full items-start gap-3 text-left"
+      onClick={() => setOpen((o) => !o)}
+      aria-expanded={open}
+    >
+      <span className="font-mono text-[11px] text-neutral-500 dark:text-neutral-500">
+        {formatTime(event.ts)}
+      </span>
+      <TypeBadge type={event.type} />
+      <span className="min-w-0 flex-1 break-all font-mono text-xs text-neutral-700 dark:text-neutral-300">
+        {event.summary}
+      </span>
+    </button>
+  ) : (
+    <div className="flex w-full items-start gap-3 text-left">
+      <span className="font-mono text-[11px] text-neutral-500 dark:text-neutral-500">
+        {formatTime(event.ts)}
+      </span>
+      <TypeBadge type={event.type} />
+      <span className="min-w-0 flex-1 break-all font-mono text-xs text-neutral-700 dark:text-neutral-300">
+        {event.summary}
+      </span>
+    </div>
+  );
   return (
     <li className="border-b border-neutral-200/60 py-2 last:border-b-0 dark:border-neutral-700/60">
-      <button
-        type="button"
-        className="flex w-full items-start gap-3 text-left"
-        onClick={() => hasDetail && setOpen((o) => !o)}
-        aria-expanded={hasDetail ? open : undefined}
-      >
-        <span className="font-mono text-[11px] text-neutral-500 dark:text-neutral-500">
-          {formatTime(event.ts)}
-        </span>
-        <TypeBadge type={event.type} />
-        <span className="min-w-0 flex-1 break-all font-mono text-xs text-neutral-700 dark:text-neutral-300">
-          {event.summary}
-        </span>
-      </button>
+      {Header}
       {hasDetail && open ? (
         <pre className="ml-12 mt-1 overflow-x-auto rounded bg-neutral-50 p-2 text-[11px] text-neutral-700 dark:bg-neutral-900/60 dark:text-neutral-300">
-{JSON.stringify(event.detail, null, 2)}
+{safeStringify(event.detail)}
         </pre>
       ) : null}
     </li>

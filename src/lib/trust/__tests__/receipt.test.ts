@@ -108,6 +108,17 @@ describe('TrustReceipt — fetch wrap', () => {
     expect(events[0]?.detail).toMatchObject({ error: expect.stringContaining('net down') });
   });
 
+  it('records Request.method when callers pass a Request without init.method', async () => {
+    /* [R8-C-FIX Copilot] Pre-fix: defaulting to GET on Request inputs
+     * mis-logged POST/PUT/DELETE. Now: if init.method is missing,
+     * the Request's own method wins. */
+    const fetchImpl = vi.fn().mockResolvedValue(new Response(null, { status: 201 }));
+    installFetchWrap({ fetchImpl: fetchImpl as unknown as typeof fetch });
+    const req = new Request('https://example.com/r', { method: 'POST' });
+    await globalThis.fetch(req);
+    expect(getTrustEvents()[0]?.summary).toBe('POST https://example.com/r → 201');
+  });
+
   it('is idempotent — second installFetchWrap call is a no-op', async () => {
     const a = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
     const b = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));

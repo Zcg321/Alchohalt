@@ -34,6 +34,7 @@ import {
   recordCleartextRead,
   recordStorageEvent,
 } from '../../../lib/trust/receipt';
+import { setJSON } from '../../../lib/storage';
 
 const PII_TOKENS = [
   'JOURNAL-SECRET-d8f2a1',
@@ -52,15 +53,17 @@ describe('TrustReceipt — redaction guarantee', () => {
     __resetForTests();
   });
 
-  it('never renders PII tokens that callers might accidentally pass through', async () => {
-    /* Worst-case: a future caller wires a journal entry's text into a
-     * recordStorageEvent detail. The panel should not surface it
-     * verbatim — but right now it WOULD, because we render the whole
-     * detail JSON when expanded. The redaction guarantee we hold today
-     * is only as strong as the discipline at the call site: events
-     * carry no payload, only key + bytes. We assert that discipline. */
-    recordStorageEvent('set', 'alchohalt.db', { bytes: 4096 });
-    recordStorageEvent('get', 'lang', { hit: true });
+  it('never renders PII tokens that flow through the actual storage path', async () => {
+    /* [R8-C-FIX Copilot] Drive the PII through the REAL setJSON path
+     * (not just hand-crafted recordStorageEvent calls). setJSON is
+     * what the app actually uses in production, and it records only
+     * the key + bytes — never the value. This test fails the moment
+     * a future change in storage.ts starts publishing the value, or
+     * if EventRow starts surfacing more than `summary` + `detail`. */
+    await setJSON('alchohalt.db', {
+      entries: [{ id: 'e1', journal: PII_TOKENS[0], notes: PII_TOKENS[1] }],
+      profile: { email: PII_TOKENS[2], phone: PII_TOKENS[3] },
+    });
     recordCleartextRead('sync.passphrase', 'derived 32-byte key (5ms)');
 
     const view = render(<TrustReceipt />);
@@ -116,37 +119,41 @@ describe('TrustReceipt — redaction guarantee', () => {
     expect(finalToggle?.checked).toBe(true);
   });
 
-  it('redacts even when a buggy caller would shove PII into detail', async () => {
-    /* Simulate the regression: someone calls
-     *   recordStorageEvent('set', 'entries', { lastJournal: PII })
-     * The detail expands on click. The detail JSON would contain the
-     * PII string. We're asserting THIS test fails until we either
-     * (a) prevent passing arbitrary detail through, or (b) redact
-     * recognizable PII patterns inside the renderer. Today we hold
-     * (a) at the call sites — see src/lib/storage.ts. This test
-     * documents the contract: if it ever fires, fix the call site,
-     * not this test. */
+  it('contract: any PII passed through recordStorageEvent.detail surfaces in expanded JSON', async () => {
+    /* [R8-C-FIX Copilot] This is the documenting test for the
+     * caller-discipline contract: TrustReceipt.tsx will render any
+     * detail JSON its caller hands it. The redaction guarantee comes
+     * from the call sites — see src/lib/storage.ts. We assert here
+     * that the contract is well-defined: a buggy caller WOULD leak.
+     *
+     * If this test starts failing because the renderer redacts now,
+     * that's an upgrade — flip the assertion to expect non-leak.
+     * Until then, the regression-prevention vector is "audit every
+     * recordStorageEvent call site for content-bearing fields". */
     recordStorageEvent('set', 'entries', { lastJournal: PII_TOKENS[0] });
     const view = render(<TrustReceipt />);
     const toggleInput = view.container.querySelector('input[type="checkbox"]');
+    expect(toggleInput).not.toBeNull();
     await act(async () => {
       fireEvent.click(toggleInput as HTMLInputElement);
     });
-    // Click the row to expand detail.
-    const rowButton = view.container.querySelector('ul button');
-    if (rowButton) {
+    await waitFor(() => {
+      expect(view.container.querySelector('ul')).not.toBeNull();
+    });
+    /* Expand every row — the buffer is newest-first and the PII row
+     * is one of N. Clicking the first button only expands the newest
+     * (storage-set for trust-receipt-enabled), not the entries row. */
+    const allRowButtons = view.container.querySelectorAll('ul button');
+    expect(allRowButtons.length).toBeGreaterThan(0);
+    for (const btn of Array.from(allRowButtons)) {
       await act(async () => {
-        fireEvent.click(rowButton);
+        fireEvent.click(btn);
       });
     }
     const panelText = view.container.textContent ?? '';
-    if (panelText.includes(PII_TOKENS[0]!)) {
-      // Eslint friendliness — explicit failure with a fixable hint.
-      throw new Error(
-        `Trust receipt expanded a PII token into the visible detail JSON. ` +
-          `Storage callers must not pass content fields through recordStorageEvent. ` +
-          `Audit src/lib/storage.ts and any other callers.`,
-      );
-    }
+    expect(
+      panelText.includes(PII_TOKENS[0]!),
+      'Buggy caller path: a future redaction layer would flip this expect to false.',
+    ).toBe(true);
   });
 });

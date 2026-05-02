@@ -131,7 +131,12 @@ export function installFetchWrap(options: FetchInstallOptions = {}): void {
         : input instanceof URL
         ? input.href
         : input.url;
-    const method = (init?.method ?? 'GET').toUpperCase();
+    /* [R8-C-FIX Copilot] When callers pass a Request object without an
+     * init.method, defaulting to GET would mis-log POST/PUT/etc. Read
+     * the method from the Request when present; init.method overrides. */
+    const requestMethod =
+      typeof input !== 'string' && !(input instanceof URL) ? input.method : undefined;
+    const method = (init?.method ?? requestMethod ?? 'GET').toUpperCase();
     const start = performance.now();
     try {
       const res = await original.call(globalThis, input, init);
