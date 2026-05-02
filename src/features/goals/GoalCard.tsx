@@ -1,5 +1,7 @@
 import React from 'react';
 import type { AdvancedGoal } from './types';
+import { useLanguage } from '../../i18n';
+import { formatDate } from '../../lib/format';
 
 interface Props {
   goal: AdvancedGoal;
@@ -8,7 +10,8 @@ interface Props {
 }
 
 export default function GoalCard({ goal, onToggle, onDelete }: Props) {
-  const progressPercentage = goal.target > 0 
+  const { lang } = useLanguage();
+  const progressPercentage = goal.target > 0
     ? Math.min((goal.current / goal.target) * 100, 100)
     : 0;
   const isCompleted = goal.current >= goal.target;
@@ -53,7 +56,7 @@ export default function GoalCard({ goal, onToggle, onDelete }: Props) {
           {/* Deadline */}
           {goal.deadline && (
             <div className="text-xs opacity-70">
-              Deadline: {goal.deadline.toLocaleDateString()}
+              Deadline: {formatDate(goal.deadline, lang)}
             </div>
           )}
         </div>

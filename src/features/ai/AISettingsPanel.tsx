@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAIConsent } from '../../lib/ai/consent';
 import AIInsightsConsent from './AIInsightsConsent';
+import { useLanguage } from '../../i18n';
+import { formatDate } from '../../lib/format';
 
 /**
  * Settings → AI panel.
@@ -15,14 +17,15 @@ import AIInsightsConsent from './AIInsightsConsent';
  */
 
 export default function AISettingsPanel() {
+  const { lang } = useLanguage();
   const { consent, isValid, revoke } = useAIConsent();
   const [showConsent, setShowConsent] = useState(false);
 
   const grantedDate = consent.grantedAt
-    ? new Date(consent.grantedAt).toLocaleDateString()
+    ? formatDate(consent.grantedAt, lang)
     : null;
   const revokedDate = consent.revokedAt
-    ? new Date(consent.revokedAt).toLocaleDateString()
+    ? formatDate(consent.revokedAt, lang)
     : null;
 
   return (
