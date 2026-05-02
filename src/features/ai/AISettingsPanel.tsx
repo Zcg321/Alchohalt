@@ -3,6 +3,8 @@ import { useAIConsent } from '../../lib/ai/consent';
 import AIInsightsConsent from './AIInsightsConsent';
 import { useLanguage } from '../../i18n';
 import { formatDate } from '../../lib/format';
+import { useDB } from '../../store/db';
+import { hapticForEvent } from '../../shared/haptics';
 
 /**
  * Settings → AI panel.
@@ -20,6 +22,15 @@ export default function AISettingsPanel() {
   const { lang } = useLanguage();
   const { consent, isValid, revoke } = useAIConsent();
   const [showConsent, setShowConsent] = useState(false);
+  /* [R7-A4] Local AI suggestions opt-out. Default value undefined →
+   * resolves to "on" via isAIRecommendationsEnabled(). Toggling the
+   * checkbox writes db.settings.aiRecommendationsOptOut, which the
+   * GoalRecommendations component reads to gate its render. */
+  const { aiOptOut, setAIOptOut } = useDB((s) => ({
+    aiOptOut: s.db.settings.aiRecommendationsOptOut === true,
+    setAIOptOut: (v: boolean) =>
+      s.setSettings({ aiRecommendationsOptOut: v }),
+  }));
 
   const grantedDate = consent.grantedAt
     ? formatDate(consent.grantedAt, lang)
@@ -139,6 +150,41 @@ export default function AISettingsPanel() {
           >
             WA Consumer Health Data Privacy Policy →
           </a>
+        </div>
+
+        {/*
+         * [R7-A4] Local AI suggestions toggle. The recommender runs on
+         * device, with no network calls — it's heuristic pattern math,
+         * not an LLM. The privacy contract is therefore weaker than
+         * AI Insights (which sends data) and the default is on. The
+         * toggle below honors the same "you decide" posture: one click
+         * to opt out, no questions asked.
+         */}
+        <div className="border-t border-neutral-200/70 pt-4 dark:border-neutral-700/60">
+          <label className="flex items-start justify-between gap-3 cursor-pointer">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                Local AI suggestions
+              </p>
+              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                Pattern-based goal suggestions on the Goals tab. Runs
+                on this device — no data leaves your phone. On by
+                default; turn off if you&rsquo;d rather set goals
+                yourself.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              role="switch"
+              aria-label="Local AI suggestions"
+              checked={!aiOptOut}
+              onChange={(e) => {
+                setAIOptOut(!e.target.checked);
+                hapticForEvent('settings-toggle');
+              }}
+              className="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-neutral-300 text-primary-600 focus:ring-primary-500 focus:ring-2"
+            />
+          </label>
         </div>
       </div>
     </section>

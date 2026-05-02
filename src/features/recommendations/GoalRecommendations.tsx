@@ -7,7 +7,7 @@
 import React, { useState, useMemo } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { FEATURE_FLAGS } from '../../config/features';
+import { isAIRecommendationsEnabled } from '../../config/features';
 import { generateGoalRecommendations, type GoalRecommendation } from '../../lib/ai-recommendations';
 import type { Entry, Settings } from '../../store/db';
 
@@ -21,16 +21,17 @@ interface Props {
 export default function GoalRecommendations({ entries, settings, onAcceptRecommendation, className = '' }: Props) {
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
 
+  const enabled = isAIRecommendationsEnabled(settings.aiRecommendationsOptOut);
   const recommendations = useMemo(() => {
-    if (!FEATURE_FLAGS.ENABLE_AI_RECOMMENDATIONS) {
+    if (!enabled) {
       return [];
     }
-    
+
     return generateGoalRecommendations(entries, settings, [])
       .filter(rec => !dismissedIds.includes(rec.id));
-  }, [entries, settings, dismissedIds]);
+  }, [entries, settings, dismissedIds, enabled]);
 
-  if (!FEATURE_FLAGS.ENABLE_AI_RECOMMENDATIONS || recommendations.length === 0) {
+  if (!enabled || recommendations.length === 0) {
     return null;
   }
 

@@ -6,13 +6,22 @@
  *
  * Empty state: "No goals yet. Pick a daily limit you'd feel good
  * about — you can change it anytime."
+ *
+ * [R7-A4] Mounts GoalRecommendations between Daily-limit and Advanced
+ * goals. The recommendation surface gates itself on
+ * isAIRecommendationsEnabled() so personas without enough data, or
+ * users who opted out in Settings, render no extra cards.
  */
 import React, { Suspense } from 'react';
 import type { Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
+import { useDB } from '../../store/db';
 
 const GoalSettings = React.lazy(() => import('../../features/goals/GoalSettings'));
 const AdvancedGoalSetting = React.lazy(() => import('../../features/goals/AdvancedGoalSetting'));
+const GoalRecommendations = React.lazy(
+  () => import('../../features/recommendations/GoalRecommendations'),
+);
 
 interface Props {
   goals: Goals;
@@ -21,6 +30,8 @@ interface Props {
 
 export default function GoalsTab({ goals, onGoalsChange }: Props) {
   const hasGoals = goals.dailyCap > 0 || goals.weeklyGoal > 0;
+  const entries = useDB((s) => s.db.entries);
+  const settings = useDB((s) => s.db.settings);
   return (
     <main id="main" className="mx-auto w-full max-w-2xl px-4 py-section-y-mobile lg:py-section-y-desktop space-y-8">
       <header className="text-center">
@@ -48,6 +59,27 @@ export default function GoalsTab({ goals, onGoalsChange }: Props) {
           <GoalSettings goals={goals} onChange={onGoalsChange} />
         </Suspense>
       </section>
+
+      <Suspense fallback={null}>
+        <GoalRecommendations
+          entries={entries}
+          settings={settings}
+          onAcceptRecommendation={(rec) => {
+            // Map the recommendation type to its corresponding goal
+            // field. drink-free-days and weekly-limit both write
+            // weeklyGoal (the recommendation's suggestedValue is
+            // already rendered in the right unit). monthly-budget
+            // lives on db.settings.monthlyBudget rather than the
+            // Goals type, so it's intentionally not wired here —
+            // accepting a budget rec dismisses the card via the
+            // component's local state. craving-management is
+            // informational, also dismissed locally.
+            if (rec.type === 'drink-free-days' || rec.type === 'weekly-limit') {
+              onGoalsChange({ ...goals, weeklyGoal: rec.suggestedValue });
+            }
+          }}
+        />
+      </Suspense>
 
       <section aria-labelledby="goals-advanced" className="space-y-3">
         <h3 id="goals-advanced" className="text-h3 text-ink">Advanced goals</h3>

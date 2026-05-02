@@ -30,7 +30,7 @@ export default defineConfig({
   ],
   outputDir: 'playwright-test-output',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:5180',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     locale: 'en-US',
@@ -45,8 +45,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev -- --port 5173 --host 127.0.0.1',
-    url: 'http://localhost:5173',
+    command: 'npm run dev -- --port 5180 --host 127.0.0.1',
+    url: 'http://localhost:5180',
     reuseExistingServer: !process.env.CI,
     stdout: 'ignore',
     stderr: 'pipe',
