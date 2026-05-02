@@ -10,6 +10,17 @@ name: Lighthouse CI
 # 95/95/95/95 ask: 95 leaves no headroom for normal CSS / dependency
 # noise on shared CI runners. 90 is still the "Lighthouse green
 # zone" and a clear regression signal.
+#
+# [R10-F] Pinned to ubuntu-22.04 (not ubuntu-latest) to prevent
+# silent runner-image migrations from changing baseline scores
+# under our feet. @lhci/cli pinned to 0.14.4 (was floating 0.14.x
+# which let patch-version drift introduce flake). Added an `npm
+# rebuild` defensive step against the rollup-optional-deps issue
+# (npm/cli#4828) where rollup's platform-specific binary skips
+# install on CI runners using `npm ci`. Without rebuild, the build
+# step fails with "Cannot find module @rollup/rollup-linux-x64-gnu"
+# — masquerades as a Lighthouse failure because lhci runs `npm run
+# build` internally.
 
 permissions:
   contents: read
@@ -22,7 +33,7 @@ on:
 
 jobs:
   lighthouse:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
 
     steps:
@@ -32,11 +43,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20.18.x'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
+
+      # [R10-F] Defensive workaround for npm/cli#4828 — rollup's
+      # platform-specific optional dependencies sometimes get pruned
+      # on CI runners using `npm ci`, leading to "Cannot find module
+      # @rollup/rollup-linux-x64-gnu" at build time. `npm rebuild`
+      # forces re-resolution of native binaries.
+      - name: Rebuild native deps (rollup-optional-deps fix)
+        run: npm rebuild rollup esbuild
 
       - name: Build
         run: npm run build
@@ -44,9 +63,25 @@ jobs:
           CI: 'true'
 
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
+        run: npm install -g @lhci/cli@0.14.4
 
       - name: Run Lighthouse CI
         run: lhci autorun --config=./lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        # [R10-F] If LHCI_GITHUB_APP_TOKEN isn't set (forks, contributors
+        # without secrets), the upload step warns but the assert step
+        # still runs. continue-on-error: false intentionally — assertion
+        # failures should fail the PR.
+        continue-on-error: false
+
+      # [R10-F] Always upload the Lighthouse report as an artifact so a
+      # failed run is debuggable. 7-day retention because LHR JSON is
+      # only useful for the immediate PR review window.
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 7
