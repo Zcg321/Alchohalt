@@ -1,12 +1,11 @@
 {
-  "_comment": "[R11-3] Low-end mobile profile — Moto G4 + 4G slow throttle. Lighthouse's default mobile preset emulates a Moto G Power-class device; we use that as the round-11 baseline for lower-end Android. Thresholds are looser than desktop because mobile networks/CPUs simply are slower; they still catch real regressions (a perf score < 0.75 means something genuinely got worse, not just expected mobile overhead).",
+  "_comment": "[R11-3] Low-end mobile profile — Moto G Power-class CPU + 4G slow throttle. Lighthouse's mobile-class emulation is the DEFAULT when no preset is specified, so this config simply omits `preset` (which would otherwise need to be one of perf/experimental/desktop). Thresholds are looser than desktop because mobile networks/CPUs simply are slower; they still catch real regressions (a perf score < 0.75 means something genuinely got worse, not just expected mobile overhead). [R11-CI-FIX-5] removed invalid `preset: mobile` that ETARGETed in run #9.",
   "ci": {
     "collect": {
       "staticDistDir": "./dist",
       "url": ["http://localhost/index.html"],
       "numberOfRuns": 1,
       "settings": {
-        "preset": "mobile",
         "skipAudits": ["uses-http2", "redirects-http"]
       }
     },
