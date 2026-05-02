@@ -64,7 +64,7 @@ describe('[R11-2] DataRecoveryScreen', () => {
   });
 
   it('salvage triggers a download (URL.createObjectURL invoked with a Blob)', () => {
-    const createObjectURL = vi.fn(() => 'blob:salvage');
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:salvage');
     const revokeObjectURL = vi.fn();
     Object.defineProperty(window.URL, 'createObjectURL', {
       writable: true,
@@ -78,7 +78,9 @@ describe('[R11-2] DataRecoveryScreen', () => {
     render(<DataRecoveryScreen />);
     fireEvent.click(screen.getByTestId('recovery-salvage'));
     expect(createObjectURL).toHaveBeenCalledTimes(1);
-    expect(createObjectURL.mock.calls[0]?.[0]).toBeInstanceOf(Blob);
+    const firstCall = createObjectURL.mock.calls[0];
+    expect(firstCall).toBeDefined();
+    expect(firstCall?.[0]).toBeInstanceOf(Blob);
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:salvage');
   });
 });
