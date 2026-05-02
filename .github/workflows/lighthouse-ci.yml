@@ -78,7 +78,10 @@ jobs:
           CI: 'true'
 
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.4
+        # [R11-CI-FIX-3] Pin corrected from 0.14.4 (R10-F typo — that
+        # patch was never published) to 0.14.0, the actual 0.14.x
+        # release. PR-43 first run hit ETARGET on the typo.
+        run: npm install -g @lhci/cli@0.14.0
 
       - name: Run Lighthouse CI (desktop)
         run: lhci autorun --config=./lighthouserc.json
@@ -132,7 +135,10 @@ jobs:
           CI: 'true'
 
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.4
+        # [R11-CI-FIX-3] Pin corrected from 0.14.4 (R10-F typo — that
+        # patch was never published) to 0.14.0, the actual 0.14.x
+        # release. PR-43 first run hit ETARGET on the typo.
+        run: npm install -g @lhci/cli@0.14.0
 
       - name: Run Lighthouse CI (mobile / Moto G class)
         run: lhci autorun --config=./lighthouserc.mobile.json
