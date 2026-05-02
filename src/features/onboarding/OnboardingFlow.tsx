@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { analytics } from '../analytics/analytics';
 
 /**
  * [ONBOARD-1] Three-beat conversational onboarding.
@@ -35,6 +36,17 @@ interface BeatOneProps {
   onChoose: (intent: Intent) => void;
 }
 function BeatOne({ onChoose }: BeatOneProps) {
+  /* [ONBOARDING-ROUND-4] Half-second pause before chips appear. The
+   * user just opened the app on Day 0 — let the question land before
+   * the answer prompts crowd in. The chips fade in via the existing
+   * animate-fade-in keyframe. Reduced-motion users get an instant
+   * mount without the fade. */
+  const [showChips, setShowChips] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setShowChips(true), 500);
+    return () => window.clearTimeout(t);
+  }, []);
+
   return (
     <>
       <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
@@ -43,22 +55,28 @@ function BeatOne({ onChoose }: BeatOneProps) {
       <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
         Whatever you pick stays on your phone. You can change your mind anytime.
       </p>
-      <div className="mt-5 grid gap-2.5">
-        {([
-          ['cut-back', 'Trying to drink less'],
-          ['quit', 'Trying to stop'],
-          ['curious', 'Not sure yet'],
-        ] as const).map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onChoose(id)}
-            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      {showChips ? (
+        <div className="mt-5 grid gap-2.5 motion-safe:animate-fade-in">
+          {([
+            ['cut-back', 'Trying to drink less'],
+            ['quit', 'Trying to stop'],
+            ['curious', 'Not sure yet'],
+          ] as const).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onChoose(id)}
+              className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      ) : (
+        /* Reserved-space placeholder so the dialog doesn't reflow when
+         * the chips arrive. Three rows × 56px (button + gap). */
+        <div aria-hidden className="mt-5 h-[164px]" />
+      )}
     </>
   );
 }
@@ -67,6 +85,10 @@ interface BeatTwoProps {
   onChoose: (style: TrackStyle) => void;
 }
 function BeatTwo({ onChoose }: BeatTwoProps) {
+  /* [ONBOARDING-ROUND-4] Each option now has a 1-line preview
+   * underneath so the user can pick informed without committing
+   * blind. Wording stays literal — describes what the choice looks
+   * like in the app, not what it says about the user. */
   return (
     <>
       <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
@@ -77,17 +99,18 @@ function BeatTwo({ onChoose }: BeatTwoProps) {
       </p>
       <div className="mt-5 grid gap-2.5">
         {([
-          ['day-by-day', 'One day at a time'],
-          ['thirty-day', 'A month off'],
-          ['custom', 'Set my own'],
-        ] as const).map(([id, label]) => (
+          ['day-by-day', 'One day at a time', 'Daily check-in. No streaks, no targets.'],
+          ['thirty-day', 'A month off', 'A 30-day window. Just the count.'],
+          ['custom', 'Set my own', 'Custom daily and weekly caps.'],
+        ] as const).map(([id, label, preview]) => (
           <button
             key={id}
             type="button"
             onClick={() => onChoose(id)}
-            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[56px]"
           >
-            {label}
+            <div>{label}</div>
+            <div className="mt-0.5 text-xs font-normal text-neutral-500 dark:text-neutral-400">{preview}</div>
           </button>
         ))}
       </div>
@@ -99,6 +122,11 @@ interface BeatThreeProps {
   onStart: () => void;
 }
 function BeatThree({ onStart }: BeatThreeProps) {
+  /* [ONBOARDING-ROUND-4] Optional "Tell me how" disclosure for users
+   * who want to verify the privacy claim before tapping Get started.
+   * Native <details> stays keyboard-accessible by default and inherits
+   * the dialog's focus trap. Copy stays calm — describes mechanism in
+   * plain language without crypto jargon. */
   return (
     <>
       <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
@@ -109,6 +137,19 @@ function BeatThree({ onStart }: BeatThreeProps) {
         features (off by default) are the only thing that can change
         this — you control them in Settings.
       </p>
+      <details className="mt-3 rounded-xl border border-neutral-200/70 bg-neutral-50 px-4 py-3 text-xs leading-relaxed text-neutral-600 open:bg-white dark:border-neutral-700/60 dark:bg-neutral-800/40 dark:text-neutral-400 dark:open:bg-neutral-800/70">
+        <summary className="cursor-pointer select-none font-medium text-neutral-800 dark:text-neutral-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 rounded">
+          Tell me how
+        </summary>
+        <div className="mt-2 space-y-2">
+          <p>
+            Entries live in your phone&apos;s local storage. Nothing leaves the device unless you turn on cloud sync, and then they&apos;re sealed end-to-end with a key only your device knows. We hold the encrypted blobs, not the contents.
+          </p>
+          <p>
+            If you turn on AI insights (off by default), an anonymized summary is sent to the model — no entries, no identifiers. The full data flow is in Settings.
+          </p>
+        </div>
+      </details>
       <button
         type="button"
         onClick={onStart}
@@ -131,7 +172,19 @@ export default function OnboardingFlow() {
     if (!db.settings?.hasCompletedOnboarding) setIsVisible(true);
   }, [db.settings]);
 
-  function complete() {
+  /* [ONBOARDING-ROUND-4] Skip-vs-complete event for the no-op analytics
+   * shim. Differentiates the path: explicit Get-started click counts
+   * as "complete"; skip-link / Esc / backdrop-click count as "skip".
+   * No PII — just the event name. The shim is no-op in production
+   * (audit-flagged in src/features/analytics/analytics.ts), so this
+   * call only logs to console.debug in dev. Wiring the call now means
+   * the moment the shim grows a real opt-in destination, the data is
+   * already flowing. */
+  function complete(reason: 'finished' | 'skipped' = 'skipped') {
+    analytics.track(
+      reason === 'finished' ? 'onboarding-complete' : 'onboarding-skipped',
+      { step }, // 0 / 1 / 2 — which beat user was on. No identifiers.
+    );
     setSettings({ hasCompletedOnboarding: true });
     setIsVisible(false);
   }
@@ -189,7 +242,7 @@ export default function OnboardingFlow() {
           </div>
           <button
             type="button"
-            onClick={complete}
+            onClick={() => complete('skipped')}
             aria-label={t('onboarding.skip', 'Skip')}
             className="-mt-1 -mr-1 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink-soft hover:bg-cream-50 hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 transition-colors"
           >
@@ -203,7 +256,7 @@ export default function OnboardingFlow() {
         <div className="mt-5">
           {step === 0 && <BeatOne onChoose={() => setStep(1)} />}
           {step === 1 && <BeatTwo onChoose={() => setStep(2)} />}
-          {step === 2 && <BeatThree onStart={complete} />}
+          {step === 2 && <BeatThree onStart={() => complete('finished')} />}
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-3 text-xs text-neutral-500 dark:text-neutral-400">
@@ -218,7 +271,7 @@ export default function OnboardingFlow() {
           ) : <span />}
           <button
             type="button"
-            onClick={complete}
+            onClick={() => complete('skipped')}
             data-testid="onboarding-skip"
             className="hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline"
           >
