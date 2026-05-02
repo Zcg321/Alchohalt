@@ -80,7 +80,7 @@ export default function SharingPanel() {
         <h3 id="sharing-heading" className="text-lg font-semibold">Share with someone you trust</h3>
         <p className="text-sm text-ink-soft mt-1">
           A read-only link for a partner or therapist. Pick what to include —
-          nothing you don't tick is shared. The link expires in 24 hours and
+          nothing you don&rsquo;t tick is shared. The link expires in 24 hours and
           contains the values directly (no server holds it).
         </p>
       </div>

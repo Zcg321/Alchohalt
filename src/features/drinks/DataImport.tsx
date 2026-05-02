@@ -97,7 +97,7 @@ export default function DataImport() {
         <h3 className="text-lg font-semibold">Import from another tracker</h3>
         <p className="text-sm text-ink-soft mt-1">
           Bring history in from Drinkaware, Reframe, Dryy, Sunnyside, or any
-          spreadsheet. CSV or JSON. We'll preview before changing anything.
+          spreadsheet. CSV or JSON. We&rsquo;ll preview before changing anything.
         </p>
       </div>
       <div className="card-content space-y-3">

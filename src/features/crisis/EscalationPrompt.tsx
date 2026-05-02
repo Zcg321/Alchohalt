@@ -28,8 +28,8 @@ export default function EscalationPrompt({ openLog, providers = DEFAULT_PROVIDER
         Talking to someone might help
       </h2>
       <p className="mt-1 text-sm text-ink-soft">
-        You've come back here {count} time{count === 1 ? '' : 's'} in the last day.
-        That's a lot to carry. If you'd like to talk to a counselor — voice, text, or video —
+        You&rsquo;ve come back here {count} time{count === 1 ? '' : 's'} in the last day.
+        That&rsquo;s a lot to carry. If you&rsquo;d like to talk to a counselor — voice, text, or video —
         these are some places to start.
       </p>
       <ul className="mt-3 space-y-2">
@@ -54,9 +54,9 @@ export default function EscalationPrompt({ openLog, providers = DEFAULT_PROVIDER
         ))}
       </ul>
       <p className="mt-3 text-xs text-ink-subtle">
-        We don't earn anything from these links. They're starting points — you can
-        also search for "in-person therapist near me" or use your insurance
-        provider's directory.
+        We don&rsquo;t earn anything from these links. They&rsquo;re starting points — you can
+        also search for &ldquo;in-person therapist near me&rdquo; or use your insurance
+        provider&rsquo;s directory.
       </p>
     </section>
   );

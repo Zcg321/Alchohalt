@@ -71,7 +71,7 @@ export default function ShareViewer() {
       </dl>
 
       <footer className="mt-8 text-xs text-ink-soft border-t border-current/10 pt-4">
-        <p>This is a one-way snapshot — it can't message back, request more, or be shared further.</p>
+        <p>This is a one-way snapshot — it can&rsquo;t message back, request more, or be shared further.</p>
       </footer>
     </main>
   );
