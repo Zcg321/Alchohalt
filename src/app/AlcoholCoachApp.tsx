@@ -31,6 +31,7 @@ const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
 import { usePWA } from '../hooks/usePWA';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { hapticForEvent } from '../shared/haptics';
+import { getMilestoneStates } from '../features/milestones/Milestones';
 
 /* [REFACTOR-LONG-FN] Crisis dialog extracted as a sibling component to
  * shrink AlcoholCoachApp's render function. The dialog is presentation
@@ -162,6 +163,37 @@ export function AlcoholCoachApp() {
     };
   }, []);
 
+  /* [HAPTICS-ROUND-4] Milestone-reached watcher. Tracks which milestones
+   * are currently "reached" and fires a Medium tap on any false→true
+   * transition. The first run (prevMilestonesRef === null) seeds the
+   * set without firing — important so opening the app on a steady-state
+   * Day 30 doesn't bump the user every cold-start. Re-checks on
+   * visibility-change so a user who keeps the app backgrounded across
+   * midnight gets the celebration when they return. */
+  const prevMilestonesRef = useRef<Set<string> | null>(null);
+  useEffect(() => {
+    function check() {
+      const drinksList = db.entries.map(entryToLegacyDrink);
+      const reachedNow = new Set(
+        getMilestoneStates(drinksList)
+          .filter((m) => m.reached)
+          .map((m) => m.id),
+      );
+      if (prevMilestonesRef.current !== null) {
+        let isNewlyReached = false;
+        reachedNow.forEach((id) => {
+          if (!prevMilestonesRef.current!.has(id)) isNewlyReached = true;
+        });
+        if (isNewlyReached) hapticForEvent('milestone-reached');
+      }
+      prevMilestonesRef.current = reachedNow;
+    }
+    check();
+    if (typeof document === 'undefined') return;
+    document.addEventListener('visibilitychange', check);
+    return () => document.removeEventListener('visibilitychange', check);
+  }, [db.entries]);
+
   // [ROUTE-1] /crisis (and #crisis) deep-link.
   // [SHIP-3.1] /legal/<slug> deep-link. The Vercel deployment rewrites
   // any unmatched path back to index.html, so this client-side check
@@ -190,11 +222,26 @@ export function AlcoholCoachApp() {
   function addDrink(drink: Drink) {
     const entry = legacyDrinkToEntry(drink);
     addEntry(entry);
+    const isAFMark = drink.volumeMl === 0 && drink.abvPct === 0;
     /* Haptic map: drink-logged + af-day-marked both fire 'Light'. The
      * AF case (volumeMl=0, abvPct=0) is the same user action — pressing
-     * a button — so it gets the same confirmation tap. Goal-hit /
-     * milestone-reached fire elsewhere when those events land. */
-    hapticForEvent(drink.volumeMl === 0 && drink.abvPct === 0 ? 'af-day-marked' : 'drink-logged');
+     * a button — so it gets the same confirmation tap. */
+    hapticForEvent(isAFMark ? 'af-day-marked' : 'drink-logged');
+    /* [HAPTICS-ROUND-4] Goal-hit fires on a weekly-AF-cycle close:
+     * count of std=0 entries in the past 7 days hits a positive
+     * multiple of 7. The post-add list is `[...drinks, drink]`. We
+     * only check on AF marks because logging a real drink can never
+     * "land" a stay-under goal — only abstaining can. */
+    if (isAFMark) {
+      const sevenAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const after = [...drinks, drink];
+      const afCount = after.filter(
+        (d) => d.ts >= sevenAgo && d.volumeMl === 0 && d.abvPct === 0,
+      ).length;
+      if (afCount > 0 && afCount % 7 === 0) {
+        hapticForEvent('goal-hit');
+      }
+    }
   }
 
   function saveDrink(drink: Drink) {
@@ -222,6 +269,9 @@ export function AlcoholCoachApp() {
     undo();
     setLastDeleted(null);
     if (undoTimer.current) clearTimeout(undoTimer.current);
+    /* [HAPTICS-ROUND-4] Selection tap on undo — same confirmation
+     * feel as logging. */
+    hapticForEvent('drink-undo');
   }
 
   function startEdit(drink: Drink) {

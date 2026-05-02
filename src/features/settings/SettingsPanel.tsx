@@ -8,6 +8,7 @@ import ExportImport from '../drinks/ExportImport';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import AISettingsPanel from '../ai/AISettingsPanel';
+import { hapticForEvent } from '../../shared/haptics';
 
 /* [BUG-PAYWALL-MOUNT] SubscriptionManager was built but never imported
  * outside of `PremiumFeatureGate` (a named export from the same file).
@@ -71,10 +72,13 @@ export default function SettingsPanel() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="label">Theme</label>
-              <select 
-                aria-label="Theme" 
-                value={settings.theme} 
-                onChange={e=>setTheme(e.target.value as Theme)} 
+              <select
+                aria-label="Theme"
+                value={settings.theme}
+                onChange={(e) => {
+                  setTheme(e.target.value as Theme);
+                  hapticForEvent('settings-toggle');
+                }}
                 className="input cursor-pointer"
               >
                 <option value="system">System</option>
@@ -85,10 +89,13 @@ export default function SettingsPanel() {
             
             <div className="space-y-1">
               <label className="label">Language</label>
-              <select 
-                aria-label="Language" 
-                value={settings.language} 
-                onChange={e=>setLanguage(e.target.value as Language)} 
+              <select
+                aria-label="Language"
+                value={settings.language}
+                onChange={(e) => {
+                  setLanguage(e.target.value as Language);
+                  hapticForEvent('settings-toggle');
+                }}
                 className="input cursor-pointer"
               >
                 <option value="en">English</option>
@@ -110,10 +117,13 @@ export default function SettingsPanel() {
         </div>
         <div className="card-content space-y-4">
           <label className="flex items-center gap-3 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={settings.reminders.enabled} 
-              onChange={e=>setRemindersEnabled(e.target.checked)}
+            <input
+              type="checkbox"
+              checked={settings.reminders.enabled}
+              onChange={(e) => {
+                setRemindersEnabled(e.target.checked);
+                hapticForEvent('settings-toggle');
+              }}
               className="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500 focus:ring-2"
             />
             <span className="text-sm font-medium">Enable daily reminders</span>
