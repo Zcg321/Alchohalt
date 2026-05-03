@@ -19,7 +19,7 @@ import type { AdvancedGoal } from '../features/goals/types';
 import type { DrinkPreset } from '../types/common';
 
 export type UUID = string;
-export type Language = 'en' | 'es' | 'fr' | 'de';
+export type Language = 'en' | 'es' | 'fr' | 'de' | 'pl' | 'ru';
 export type Theme = 'light' | 'dark' | 'system';
 export type Intention = 'celebrate'|'social'|'taste'|'bored'|'cope'|'other';
 export type DrinkKind = 'beer'|'wine'|'spirits'|'custom';

@@ -59,31 +59,92 @@ interface Props {
 
 type Surface = 'panel' | 'log' | 'check-in';
 
-export default function TodayHome({
-  drinks,
-  goals,
-  presets,
-  editing,
-  onAddDrink,
-  onSaveDrink,
-  onCancelEdit,
-  onOpenInsights,
-  onRoughNight,
-}: Props) {
-  const [surface, setSurface] = useState<Surface>('panel');
-  /* [HARD-TIME-ROUND-4] Quiet mode: while settings.quietUntilTs is in
-   * the future, the home view renders only the Day-N hero + the
-   * "Having a hard time?" link (kept available so the user can
-   * re-enter the panel). The DrinkForm and EnhancedMoodTracker also
-   * stay hidden — quiet mode means quiet, not "log something quietly".
-   *
-   * [ROUND-4-COPILOT-FIX] Midnight recompute: `Date.now() < quietUntilTs`
-   * is computed at render time, but the only thing that triggers a
-   * re-render is store changes — and quietUntilTs doesn't change at
-   * midnight. A user who keeps the app open across midnight would stay
-   * in quiet mode indefinitely. Schedule a re-render at exactly the
-   * threshold via setTimeout so the home view comes back the moment
-   * quiet expires. The local-state tick is the cheapest force-render. */
+interface LogSectionProps {
+  editing: Drink | null;
+  presets: DrinkPreset[];
+  onSubmit: (drink: Drink) => void;
+  onClose: () => void;
+}
+
+function LogSection({ editing, presets, onSubmit, onClose }: LogSectionProps) {
+  return (
+    <section
+      aria-labelledby="log-heading"
+      className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
+    >
+      <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
+        <div className="flex items-center justify-between mb-4">
+          <h2 id="log-heading" className="text-h3 text-ink">
+            {editing ? 'Edit drink' : 'Log a drink'}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-caption text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
+          >
+            Close
+          </button>
+        </div>
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <DrinkForm
+            onSubmit={onSubmit}
+            initial={editing || undefined}
+            submitLabel={editing ? 'Save' : 'Add'}
+            onCancel={onClose}
+            presets={presets}
+          />
+        </Suspense>
+      </div>
+    </section>
+  );
+}
+
+function CheckInSection({ onClose }: { onClose: () => void }) {
+  return (
+    <section
+      aria-labelledby="checkin-heading"
+      className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
+    >
+      <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
+        <div className="flex items-center justify-between mb-4">
+          <h2 id="checkin-heading" className="text-h3 text-ink">
+            How are you today?
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-caption text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
+          >
+            Close
+          </button>
+        </div>
+        <ErrorBoundary isolate label="Mood check-in">
+          <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+            <EnhancedMoodTracker
+              onComplete={onClose}
+              onPatternUpdate={() => { /* handled in Insights tab */ }}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
+    </section>
+  );
+}
+
+/* [HARD-TIME-ROUND-4] Quiet mode: while settings.quietUntilTs is in
+ * the future, the home view renders only the Day-N hero + the
+ * "Having a hard time?" link (kept available so the user can
+ * re-enter the panel). The DrinkForm and EnhancedMoodTracker also
+ * stay hidden — quiet mode means quiet, not "log something quietly".
+ *
+ * [ROUND-4-COPILOT-FIX] Midnight recompute: `Date.now() < quietUntilTs`
+ * is computed at render time, but the only thing that triggers a
+ * re-render is store changes — and quietUntilTs doesn't change at
+ * midnight. A user who keeps the app open across midnight would stay
+ * in quiet mode indefinitely. Schedule a re-render at exactly the
+ * threshold via setTimeout so the home view comes back the moment
+ * quiet expires. The local-state tick is the cheapest force-render. */
+function useQuietMode(): boolean {
   const quietUntilTs = useDB((s) => s.db.settings.quietUntilTs ?? 0);
   const [, setNowTick] = useState(0);
   useEffect(() => {
@@ -92,19 +153,15 @@ export default function TodayHome({
     const id = window.setTimeout(() => setNowTick((t) => t + 1), ms);
     return () => window.clearTimeout(id);
   }, [quietUntilTs]);
-  const quiet = Date.now() < quietUntilTs;
+  return Date.now() < quietUntilTs;
+}
 
-  // If the parent flips into edit mode, surface the log form so the
-  // user can see the entry they're editing.
-  React.useEffect(() => {
-    if (editing) setSurface('log');
-  }, [editing]);
-
-  // [ROUND-5-D] Idle-time prefetch of likely-next tabs. After Today
-  // mounts, warm the chunk cache for Track + Insights so the next
-  // tap is instant. Bounded by requestIdleCallback (Chrome / Edge /
-  // Firefox; falls back to a 1.5s setTimeout on Safari) so we never
-  // contend with the user's first interaction.
+// [ROUND-5-D] Idle-time prefetch of likely-next tabs. After Today
+// mounts, warm the chunk cache for Track + Insights so the next
+// tap is instant. Bounded by requestIdleCallback (Chrome / Edge /
+// Firefox; falls back to a 1.5s setTimeout on Safari) so we never
+// contend with the user's first interaction.
+function useIdlePrefetch() {
   React.useEffect(() => {
     const ric = (cb: () => void) => {
       const idle = (window as unknown as { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
@@ -118,6 +175,28 @@ export default function TodayHome({
       void import('../insights/ProgressVisualization');
     });
   }, []);
+}
+
+export default function TodayHome({
+  drinks,
+  goals,
+  presets,
+  editing,
+  onAddDrink,
+  onSaveDrink,
+  onCancelEdit,
+  onOpenInsights,
+  onRoughNight,
+}: Props) {
+  const [surface, setSurface] = useState<Surface>('panel');
+  const quiet = useQuietMode();
+  useIdlePrefetch();
+
+  // If the parent flips into edit mode, surface the log form so the
+  // user can see the entry they're editing.
+  React.useEffect(() => {
+    if (editing) setSurface('log');
+  }, [editing]);
 
   function handleDrinkSubmit(drink: Drink) {
     if (editing) onSaveDrink(drink);
@@ -137,6 +216,11 @@ export default function TodayHome({
       halt: [],
       alt: '',
     });
+  }
+
+  function closeLog() {
+    if (editing) onCancelEdit();
+    setSurface('panel');
   }
 
   return (
@@ -166,70 +250,16 @@ export default function TodayHome({
       ) : null}
 
       {!quiet && surface === 'log' ? (
-        <section
-          aria-labelledby="log-heading"
-          className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
-        >
-          <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
-            <div className="flex items-center justify-between mb-4">
-              <h2 id="log-heading" className="text-h3 text-ink">
-                {editing ? 'Edit drink' : 'Log a drink'}
-              </h2>
-              <button
-                type="button"
-                onClick={() => {
-                  if (editing) onCancelEdit();
-                  setSurface('panel');
-                }}
-                className="text-caption text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
-              >
-                Close
-              </button>
-            </div>
-            <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-              <DrinkForm
-                onSubmit={handleDrinkSubmit}
-                initial={editing || undefined}
-                submitLabel={editing ? 'Save' : 'Add'}
-                onCancel={() => {
-                  if (editing) onCancelEdit();
-                  setSurface('panel');
-                }}
-                presets={presets}
-              />
-            </Suspense>
-          </div>
-        </section>
+        <LogSection
+          editing={editing}
+          presets={presets}
+          onSubmit={handleDrinkSubmit}
+          onClose={closeLog}
+        />
       ) : null}
 
       {!quiet && surface === 'check-in' ? (
-        <section
-          aria-labelledby="checkin-heading"
-          className="mx-auto w-full max-w-2xl px-4 pb-section-y-mobile lg:pb-section-y-desktop"
-        >
-          <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
-            <div className="flex items-center justify-between mb-4">
-              <h2 id="checkin-heading" className="text-h3 text-ink">
-                How are you today?
-              </h2>
-              <button
-                type="button"
-                onClick={() => setSurface('panel')}
-                className="text-caption text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
-              >
-                Close
-              </button>
-            </div>
-            <ErrorBoundary isolate label="Mood check-in">
-              <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-                <EnhancedMoodTracker
-                  onComplete={() => setSurface('panel')}
-                  onPatternUpdate={() => { /* handled in Insights tab */ }}
-                />
-              </Suspense>
-            </ErrorBoundary>
-          </div>
-        </section>
+        <CheckInSection onClose={() => setSurface('panel')} />
       ) : null}
 
       <div className="mx-auto w-full max-w-3xl px-4 pb-section-y-mobile lg:pb-section-y-desktop">

@@ -12,6 +12,8 @@
 import React from 'react';
 import type { Drink } from '../../types/common';
 import { buildTagDetail } from './tagExplorerAnalyzer';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 interface Props {
   drinks: Drink[];
@@ -51,6 +53,7 @@ function MiniBar({ value, max, label }: { value: number; max: number; label: str
 }
 
 export default function TagExplorer({ drinks, tag, onClose }: Props) {
+  const { t, lang } = useLanguage();
   const detail = buildTagDetail(drinks, tag);
   if (!detail) return null;
 
@@ -88,7 +91,7 @@ export default function TagExplorer({ drinks, tag, onClose }: Props) {
       </div>
 
       <p className="text-caption text-ink-soft tabular-nums">
-        {detail.count} {detail.count === 1 ? 'entry' : 'entries'}
+        {detail.count} {pluralNoun(t, lang, 'unit.entry', detail.count, 'entry', 'entries')}
         {' · '}
         avg {detail.avgStd.toFixed(2)} std
         {' · '}

@@ -344,5 +344,18 @@
   "tenure.months.one": "{{count}} mes",
   "tenure.months.other": "{{count}} meses",
   "tenure.years.one": "{{count}} año",
-  "tenure.years.other": "{{count}} años"
+  "tenure.years.other": "{{count}} años",
+
+  "unit.day.one": "día",
+  "unit.day.other": "días",
+  "unit.drink.one": "bebida",
+  "unit.drink.other": "bebidas",
+  "unit.entry.one": "entrada",
+  "unit.entry.other": "entradas",
+  "unit.row.one": "fila",
+  "unit.row.other": "filas",
+  "unit.time.one": "vez",
+  "unit.time.other": "veces",
+  "unit.priorAnswer.one": "{{count}} respuesta anterior",
+  "unit.priorAnswer.other": "{{count}} respuestas anteriores"
 }

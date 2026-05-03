@@ -9,6 +9,8 @@ import {
   type ParseResult,
   type ApplyResult,
 } from './importMapping';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 type Step = 'pick' | 'map' | 'preview' | 'done';
 
@@ -74,13 +76,15 @@ function MapStep({ parsed, mapping, updateMapping, goPreview, reset }: {
 }
 
 function PreviewStep({ result, commit, back }: { result: ApplyResult; commit: () => void; back: () => void }) {
+  const { t, lang } = useLanguage();
   return (
     <div className="space-y-3">
       <p className="text-sm">
-        <strong>{result.entries.length.toLocaleString()}</strong> entr{result.entries.length === 1 ? 'y' : 'ies'} ready to import.
+        <strong>{result.entries.length.toLocaleString()}</strong>{' '}
+        {pluralNoun(t, lang, 'unit.entry', result.entries.length, 'entry', 'entries')} ready to import.
         {result.skippedRows > 0 && (
           <span className="text-amber-700 dark:text-amber-300">
-            {' '}{result.skippedRows} row{result.skippedRows === 1 ? '' : 's'} skipped.
+            {' '}{result.skippedRows} {pluralNoun(t, lang, 'unit.row', result.skippedRows, 'row', 'rows')} skipped.
           </span>
         )}
       </p>

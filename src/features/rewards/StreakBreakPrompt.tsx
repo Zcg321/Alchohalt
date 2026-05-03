@@ -1,5 +1,7 @@
 import React from 'react';
 import type { StreakStatus } from '../../lib/calc';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 /**
  * [R13-3] Reflective prompt on streak break.
@@ -49,6 +51,7 @@ export default function StreakBreakPrompt({
   onKeepGoing,
   className = '',
 }: Props) {
+  const { t, lang } = useLanguage();
   return (
     <section
       role="region"
@@ -63,7 +66,7 @@ export default function StreakBreakPrompt({
         Your streak resets today.
       </h3>
       <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-        The longest one ({longestStreak} day{longestStreak === 1 ? '' : 's'})
+        The longest one ({longestStreak} {pluralNoun(t, lang, 'unit.day', longestStreak, 'day', 'days')})
         is preserved. Want to add a note about today, or just keep going?
       </p>
       <div className="mt-4 flex flex-wrap gap-2">

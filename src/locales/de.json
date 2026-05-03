@@ -169,34 +169,34 @@
   "onboarding": {
     "welcome": {
       "title": "Willkommen bei Alchohalt",
-      "description": "Dein persönlicher, privater Wellness-Begleiter für gesündere Trinkgewohnheiten."
+      "description": "Ein privater Raum, um zu notieren, was du trinkst, und zu beobachten, was sich verändert."
     },
     "privacy": {
-      "title": "Deine Privatsphäre zählt",
+      "title": "Deine Daten, dein Gerät",
       "description": "Deine Daten gehören dir. Wir können sie kryptografisch nicht lesen. Optionale KI-Funktionen (standardmäßig aus) sind das Einzige, was das ändern kann — du steuerst sie unter Einstellungen → KI."
     },
     "tracking": {
-      "title": "Schlaues Tracking",
-      "description": "Erfasse Drinks mit Absicht, HALT-Auslösern und Verlangenswerten, um deine Muster zu verstehen."
+      "title": "Notiere, was du trinkst",
+      "description": "Notiere die Uhrzeit, die Art, das Warum und wie es sich angefühlt hat — nur die Teile, die du willst."
     },
     "insights": {
-      "title": "Persönliche Einblicke",
-      "description": "Standardmäßig Mustererkennung auf dem Gerät. Optionale KI-Einblicke (aus, bis du sie aktivierst) erzeugen geschriebene Reflexionen aus anonymisierten Zusammenfassungen."
+      "title": "Was sich mit der Zeit verändert",
+      "description": "Muster zeigen sich, während du notierst — auf deinem Gerät. Optionale KI-Einblicke (aus, bis du sie aktivierst) können eine Reflexion aus einer anonymisierten Zusammenfassung schreiben."
     },
     "goals": {
-      "title": "Ziele setzen",
-      "description": "Erstelle persönliche Ziele und verfolge Fortschritte mit motivierenden Serienzählern."
+      "title": "Setz dir ein Ziel, wenn du willst",
+      "description": "Wähle ein tägliches Limit oder eine Serienlänge. Du kannst beides jederzeit ändern oder ganz überspringen."
     },
     "ready": {
-      "title": "Alles bereit!",
-      "description": "Bereit, dein Wellness-Vorhaben zu starten? Dein erster Eintrag ist nur ein Tipp entfernt."
+      "title": "Bereit, wenn du es bist",
+      "description": "Füge deinen ersten Eintrag hinzu, wann immer du willst. Oder schau dich einfach um."
     },
     "quickTips": {
-      "title": "Schnelltipps",
-      "tip1": "Beginne mit kleinen, erreichbaren Zielen",
-      "tip2": "Trage ehrlich ein, um bessere Einblicke zu bekommen",
-      "tip3": "Prüfe regelmäßig deinen Fortschritt",
-      "tip4": "Exportiere deine Daten jederzeit als Backup"
+      "title": "Ein paar Notizen",
+      "tip1": "Fang klein an. Das Ziel kannst du später ändern.",
+      "tip2": "Die Muster, die du siehst, sind nur so ehrlich wie die Einträge.",
+      "tip3": "Schau auf die Trends, wenn du dran denkst. Es gibt keine Bestenliste.",
+      "tip4": "Du kannst jederzeit alles exportieren. Es gehört dir."
     },
     "back": "Zurück",
     "skip": "Überspringen",
@@ -327,7 +327,7 @@
   },
   "support": {
     "title": "Support & Feedback",
-    "description": "Wir helfen dir auf deinem Wellness-Weg. Dein Feedback hilft, die App zu verbessern."
+    "description": "Wir lesen dein Feedback selbst. Es prägt, was gebaut wird."
   },
   "subscription": {
     "title": "Abo-Informationen",
@@ -344,5 +344,18 @@
   "tenure.months.one": "{{count}} Monat",
   "tenure.months.other": "{{count}} Monate",
   "tenure.years.one": "{{count}} Jahr",
-  "tenure.years.other": "{{count}} Jahre"
+  "tenure.years.other": "{{count}} Jahre",
+
+  "unit.day.one": "Tag",
+  "unit.day.other": "Tage",
+  "unit.drink.one": "Drink",
+  "unit.drink.other": "Drinks",
+  "unit.entry.one": "Eintrag",
+  "unit.entry.other": "Einträge",
+  "unit.row.one": "Zeile",
+  "unit.row.other": "Zeilen",
+  "unit.time.one": "Mal",
+  "unit.time.other": "Male",
+  "unit.priorAnswer.one": "{{count}} frühere Antwort",
+  "unit.priorAnswer.other": "{{count}} frühere Antworten"
 }

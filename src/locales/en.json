@@ -361,5 +361,18 @@
   "tenure.months.one": "{{count}} month",
   "tenure.months.other": "{{count}} months",
   "tenure.years.one": "{{count}} year",
-  "tenure.years.other": "{{count}} years"
+  "tenure.years.other": "{{count}} years",
+
+  "unit.day.one": "day",
+  "unit.day.other": "days",
+  "unit.drink.one": "drink",
+  "unit.drink.other": "drinks",
+  "unit.entry.one": "entry",
+  "unit.entry.other": "entries",
+  "unit.row.one": "row",
+  "unit.row.other": "rows",
+  "unit.time.one": "time",
+  "unit.time.other": "times",
+  "unit.priorAnswer.one": "{{count}} prior answer",
+  "unit.priorAnswer.other": "{{count}} prior answers"
 }

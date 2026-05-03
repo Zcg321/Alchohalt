@@ -20,6 +20,8 @@ import type { Drink } from '../../types/common';
 import { stdDrinks } from '../../lib/calc';
 import { computeTagPatterns } from './tagPatterns';
 import TagExplorer from './TagExplorer';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 interface Props {
   drinks: Drink[];
@@ -30,6 +32,7 @@ function fmt(n: number): string {
 }
 
 export default function TagPatternsCard({ drinks }: Props) {
+  const { t, lang } = useLanguage();
   const [openTag, setOpenTag] = useState<string | null>(null);
   const patterns = computeTagPatterns(drinks);
   if (patterns.length === 0) return null;
@@ -68,7 +71,7 @@ export default function TagPatternsCard({ drinks }: Props) {
               >
                 <span className="font-medium text-ink">#{p.tag}</span>
                 <span className="text-caption text-ink-soft tabular-nums">
-                  {p.count} {p.count === 1 ? 'entry' : 'entries'}
+                  {p.count} {pluralNoun(t, lang, 'unit.entry', p.count, 'entry', 'entries')}
                   {' · '}
                   avg {fmt(p.avgStd)} std
                   {' · '}

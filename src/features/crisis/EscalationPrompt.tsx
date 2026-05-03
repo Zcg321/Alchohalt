@@ -1,5 +1,7 @@
 import React from 'react';
 import { DEFAULT_PROVIDERS, recentOpenCount, type CounselorProvider } from './escalation';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 /**
  * [R10-4] Soft escalation prompt — only renders when the user has
@@ -15,6 +17,7 @@ interface Props {
 }
 
 export default function EscalationPrompt({ openLog, providers = DEFAULT_PROVIDERS }: Props) {
+  const { t, lang } = useLanguage();
   const count = recentOpenCount(openLog);
 
   return (
@@ -28,7 +31,7 @@ export default function EscalationPrompt({ openLog, providers = DEFAULT_PROVIDER
         Talking to someone might help
       </h2>
       <p className="mt-1 text-sm text-ink-soft">
-        You&rsquo;ve come back here {count} time{count === 1 ? '' : 's'} in the last day.
+        You&rsquo;ve come back here {count} {pluralNoun(t, lang, 'unit.time', count, 'time', 'times')} in the last day.
         That&rsquo;s a lot to carry. If you&rsquo;d like to talk to a counselor — voice, text, or video —
         these are some places to start.
       </p>

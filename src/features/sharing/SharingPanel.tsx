@@ -25,6 +25,106 @@ const DEFAULT_SELECTION: ShareSelection = {
   message: '',
 };
 
+type Stats = NonNullable<ReturnType<typeof deriveStats>>;
+
+interface SelectionFieldsProps {
+  selection: ShareSelection;
+  stats: Stats;
+  onToggle: (key: keyof Omit<ShareSelection, 'message'>) => void;
+}
+
+function SelectionFields({ selection, stats, onToggle }: SelectionFieldsProps) {
+  return (
+    <fieldset className="space-y-2">
+      <legend className="sr-only">Fields to share</legend>
+      <Toggle
+        label={`Current streak (${stats.currentStreak} days)`}
+        checked={selection.currentStreak}
+        onToggle={() => onToggle('currentStreak')}
+        testId="share-currentStreak"
+      />
+      <Toggle
+        label={`Total AF days ever (${stats.totalAfDays})`}
+        checked={selection.totalAfDays}
+        onToggle={() => onToggle('totalAfDays')}
+        testId="share-totalAfDays"
+      />
+      <Toggle
+        label={`Weekly goal (${stats.weeklyGoal} drinks)`}
+        checked={selection.weeklyGoal}
+        onToggle={() => onToggle('weeklyGoal')}
+        testId="share-weeklyGoal"
+      />
+      <Toggle
+        label={`Last 30 days total (${stats.last30dTotal} drinks)`}
+        checked={selection.last30dTotal}
+        onToggle={() => onToggle('last30dTotal')}
+        testId="share-last30dTotal"
+      />
+      {stats.activeGoal && (
+        <Toggle
+          label={`Active goal: ${stats.activeGoal.title} (${stats.activeGoal.current}/${stats.activeGoal.target})`}
+          checked={selection.activeGoalSummary}
+          onToggle={() => onToggle('activeGoalSummary')}
+          testId="share-activeGoalSummary"
+        />
+      )}
+    </fieldset>
+  );
+}
+
+function MessageField({ value, onChange }: { value: string; onChange: (s: string) => void }) {
+  return (
+    <label className="block text-sm">
+      <span className="text-xs uppercase tracking-wider text-ink-soft mb-1 block">
+        Message (optional, {value.length}/{MAX_MESSAGE_LEN})
+      </span>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 rounded-md border border-current/20 bg-surface-elevated text-sm"
+        rows={3}
+        maxLength={MAX_MESSAGE_LEN}
+        data-testid="share-message"
+      />
+    </label>
+  );
+}
+
+interface GeneratedLinkProps {
+  url: string;
+  copyState: 'idle' | 'copied' | 'error';
+  onCopy: () => void;
+  onReset: () => void;
+}
+
+function GeneratedLink({ url, copyState, onCopy, onReset }: GeneratedLinkProps) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs text-ink-soft">
+        Link expires in 24 hours. Send via the channel you trust — text,
+        email, signal. The link contains the data directly (no server).
+      </p>
+      <input
+        readOnly
+        value={url}
+        onFocus={(e) => e.target.select()}
+        className="w-full px-3 py-2 rounded-md border border-current/20 bg-surface-elevated text-xs font-mono"
+        data-testid="share-url"
+        aria-label="Share URL"
+      />
+      <div className="flex gap-2">
+        <button type="button" onClick={onCopy} className="btn btn-secondary" data-testid="share-copy">
+          {copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Copy failed' : 'Copy'}
+        </button>
+        <button type="button" onClick={onReset} className="btn btn-secondary" data-testid="share-reset">
+          Start over
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function SharingPanel() {
   const { db } = useDB();
   const [selection, setSelection] = useState<ShareSelection>(DEFAULT_SELECTION);
@@ -88,60 +188,8 @@ export default function SharingPanel() {
         {!stats && (
           <p className="text-sm text-ink-soft">Log a drink or AF day before sharing.</p>
         )}
-        {stats && (
-          <fieldset className="space-y-2">
-            <legend className="sr-only">Fields to share</legend>
-            <Toggle
-              label={`Current streak (${stats.currentStreak} days)`}
-              checked={selection.currentStreak}
-              onToggle={() => toggle('currentStreak')}
-              testId="share-currentStreak"
-            />
-            <Toggle
-              label={`Total AF days ever (${stats.totalAfDays})`}
-              checked={selection.totalAfDays}
-              onToggle={() => toggle('totalAfDays')}
-              testId="share-totalAfDays"
-            />
-            <Toggle
-              label={`Weekly goal (${stats.weeklyGoal} drinks)`}
-              checked={selection.weeklyGoal}
-              onToggle={() => toggle('weeklyGoal')}
-              testId="share-weeklyGoal"
-            />
-            <Toggle
-              label={`Last 30 days total (${stats.last30dTotal} drinks)`}
-              checked={selection.last30dTotal}
-              onToggle={() => toggle('last30dTotal')}
-              testId="share-last30dTotal"
-            />
-            {stats.activeGoal && (
-              <Toggle
-                label={`Active goal: ${stats.activeGoal.title} (${stats.activeGoal.current}/${stats.activeGoal.target})`}
-                checked={selection.activeGoalSummary}
-                onToggle={() => toggle('activeGoalSummary')}
-                testId="share-activeGoalSummary"
-              />
-            )}
-          </fieldset>
-        )}
-
-        {stats && (
-          <label className="block text-sm">
-            <span className="text-xs uppercase tracking-wider text-ink-soft mb-1 block">
-              Message (optional, {selection.message.length}/{MAX_MESSAGE_LEN})
-            </span>
-            <textarea
-              value={selection.message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full px-3 py-2 rounded-md border border-current/20 bg-surface-elevated text-sm"
-              rows={3}
-              maxLength={MAX_MESSAGE_LEN}
-              data-testid="share-message"
-            />
-          </label>
-        )}
-
+        {stats && <SelectionFields selection={selection} stats={stats} onToggle={toggle} />}
+        {stats && <MessageField value={selection.message} onChange={setMessage} />}
         {!generated && stats && (
           <button
             type="button"
@@ -153,30 +201,8 @@ export default function SharingPanel() {
             Generate link
           </button>
         )}
-
         {generated && (
-          <div className="space-y-2">
-            <p className="text-xs text-ink-soft">
-              Link expires in 24 hours. Send via the channel you trust — text,
-              email, signal. The link contains the data directly (no server).
-            </p>
-            <input
-              readOnly
-              value={generated}
-              onFocus={(e) => e.target.select()}
-              className="w-full px-3 py-2 rounded-md border border-current/20 bg-surface-elevated text-xs font-mono"
-              data-testid="share-url"
-              aria-label="Share URL"
-            />
-            <div className="flex gap-2">
-              <button type="button" onClick={copy} className="btn btn-secondary" data-testid="share-copy">
-                {copyState === 'copied' ? 'Copied' : copyState === 'error' ? 'Copy failed' : 'Copy'}
-              </button>
-              <button type="button" onClick={reset} className="btn btn-secondary" data-testid="share-reset">
-                Start over
-              </button>
-            </div>
-          </div>
+          <GeneratedLink url={generated} copyState={copyState} onCopy={copy} onReset={reset} />
         )}
       </div>
     </section>
