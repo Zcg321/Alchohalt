@@ -13,6 +13,7 @@ import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import ReplayOnboardingButton from './ReplayOnboardingButton';
+import ResetPreferencesPanel from './ResetPreferencesPanel';
 import PrivacyStatus from './PrivacyStatus';
 import { hapticForEvent } from '../../shared/haptics';
 import { useLanguage } from '../../i18n';
@@ -219,6 +220,7 @@ export default function SettingsPanel() {
       <AppearanceSection settings={settings} setTheme={setTheme} setLanguage={setLanguage} setSettings={setSettings} />
       <RemindersSection settings={settings} setRemindersEnabled={setRemindersEnabled} setReminderTimes={setReminderTimes} />
       <PrivacyAndDataSection />
+      <ResetPreferencesPanel />
       <BillingSection />
       <About />
       <LegalLinks />
