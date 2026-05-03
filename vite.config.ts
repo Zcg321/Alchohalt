@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
+// @ts-expect-error — local .mjs plugin, no .d.ts shim needed
+import sri from './vite-plugin-sri.mjs';
 
 let visualizer;
 if (process.env.BUNDLE_REPORT === '1') {
@@ -107,6 +109,9 @@ export default defineConfig(() => {
   if (visualizer) {
     plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }));
   }
+  /* [R20-C] SRI runs as the LAST plugin so it sees the final
+   * emitted bundle (after VitePWA + visualizer). */
+  plugins.push(sri());
 
   return {
     plugins,
