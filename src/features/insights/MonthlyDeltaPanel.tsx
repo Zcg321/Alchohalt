@@ -72,41 +72,85 @@ export default function MonthlyDeltaPanel() {
         </p>
       </div>
       <div className="card-content space-y-3">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <div className="text-xs uppercase tracking-wider text-ink-soft">
-              {t('monthlyDelta.totalDrinks', 'Total drinks')}
-            </div>
-            <div className="text-2xl font-semibold tabular-nums">
-              {delta.current.totalStdDrinks.toFixed(0)}
-            </div>
-            <div className="text-xs text-ink-soft tabular-nums">
-              {t('monthlyDelta.priorTotal', 'Prior: {{n}}').replace(
-                '{{n}}',
-                delta.prior.totalStdDrinks.toFixed(0)
-              )}
-            </div>
-            <div className={`text-sm font-medium ${directionClass(delta.totalChangePct, true)}`}>
-              {fmtPct(delta.totalChangePct)}
-            </div>
-          </div>
-          <div>
-            <div className="text-xs uppercase tracking-wider text-ink-soft">
-              {t('monthlyDelta.afDays', 'AF days')}
-            </div>
-            <div className="text-2xl font-semibold tabular-nums">{delta.current.afDays}</div>
-            <div className="text-xs text-ink-soft tabular-nums">
-              {t('monthlyDelta.priorAf', 'Prior: {{n}}').replace(
-                '{{n}}',
-                String(delta.prior.afDays)
-              )}
-            </div>
-            <div className={`text-sm font-medium ${directionClass(delta.afDaysChangePct, false)}`}>
-              {fmtPct(delta.afDaysChangePct)}
-            </div>
-          </div>
+        <div className="grid grid-cols-2 gap-4" data-testid="monthly-delta-grid">
+          <Metric
+            label={t('monthlyDelta.totalDrinks', 'Total drinks')}
+            value={delta.current.totalStdDrinks.toFixed(0)}
+            priorLabel={t('monthlyDelta.priorTotal', 'Prior: {{n}}').replace(
+              '{{n}}',
+              delta.prior.totalStdDrinks.toFixed(0),
+            )}
+            pct={delta.totalChangePct}
+            lowerIsBetter
+            testid="metric-total"
+            fmtPct={fmtPct}
+            directionClass={directionClass}
+          />
+          <Metric
+            label={t('monthlyDelta.afDays', 'AF days')}
+            value={String(delta.current.afDays)}
+            priorLabel={t('monthlyDelta.priorAf', 'Prior: {{n}}').replace(
+              '{{n}}',
+              String(delta.prior.afDays),
+            )}
+            pct={delta.afDaysChangePct}
+            lowerIsBetter={false}
+            testid="metric-af"
+            fmtPct={fmtPct}
+            directionClass={directionClass}
+          />
+          {/* [R15-1] Drinking-day count + per-drinking-day average. */}
+          <Metric
+            label={t('monthlyDelta.drinkingDays', 'Drinking days')}
+            value={String(delta.current.drinkingDays)}
+            priorLabel={t('monthlyDelta.priorDrinkingDays', 'Prior: {{n}}').replace(
+              '{{n}}',
+              String(delta.prior.drinkingDays),
+            )}
+            pct={delta.drinkingDaysChangePct}
+            lowerIsBetter
+            testid="metric-drinking-days"
+            fmtPct={fmtPct}
+            directionClass={directionClass}
+          />
+          <Metric
+            label={t('monthlyDelta.avgPerDrinkingDay', 'Avg per drinking day')}
+            value={delta.current.avgPerDrinkingDay.toFixed(1)}
+            priorLabel={t('monthlyDelta.priorAvgPerDrinkingDay', 'Prior: {{n}}').replace(
+              '{{n}}',
+              delta.prior.avgPerDrinkingDay.toFixed(1),
+            )}
+            pct={delta.avgPerDrinkingDayChangePct}
+            lowerIsBetter
+            testid="metric-avg-drinking-day"
+            fmtPct={fmtPct}
+            directionClass={directionClass}
+          />
         </div>
       </div>
     </section>
+  );
+}
+
+interface MetricProps {
+  label: string;
+  value: string;
+  priorLabel: string;
+  pct: number | null;
+  lowerIsBetter: boolean;
+  testid: string;
+  fmtPct: (n: number | null) => string;
+  directionClass: (n: number | null, lowerIsBetter: boolean) => string;
+}
+function Metric({ label, value, priorLabel, pct, lowerIsBetter, testid, fmtPct, directionClass }: MetricProps) {
+  return (
+    <div data-testid={testid}>
+      <div className="text-xs uppercase tracking-wider text-ink-soft">{label}</div>
+      <div className="text-2xl font-semibold tabular-nums">{value}</div>
+      <div className="text-xs text-ink-soft tabular-nums">{priorLabel}</div>
+      <div className={`text-sm font-medium ${directionClass(pct, lowerIsBetter)}`}>
+        {fmtPct(pct)}
+      </div>
+    </div>
   );
 }
