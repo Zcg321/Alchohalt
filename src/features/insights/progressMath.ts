@@ -78,6 +78,94 @@ export function calculateImprovementTrend(drinks: Drink[]): 'improving' | 'stabl
   return 'stable';
 }
 
+/* [R20-1] Trend from already-accumulated sums (no second pass over drinks). */
+function trendFromSums(sums: {
+  recentCount: number; recentCravingSum: number; recentStdSum: number;
+  olderCount: number; olderCravingSum: number; olderStdSum: number;
+}): 'improving' | 'stable' | 'declining' {
+  const { recentCount, recentCravingSum, recentStdSum,
+    olderCount, olderCravingSum, olderStdSum } = sums;
+  if (recentCount === 0 || olderCount === 0) return 'stable';
+  const cravingImprovement = (olderCravingSum / olderCount) - (recentCravingSum / recentCount);
+  const consumptionImprovement = (olderStdSum / 14) - (recentStdSum / 14);
+  if (cravingImprovement > 0.5 || consumptionImprovement > 0.2) return 'improving';
+  if (cravingImprovement < -0.5 || consumptionImprovement < -0.2) return 'declining';
+  return 'stable';
+}
+
+/* [R20-1] Walk backwards from `now` over the streakByDay map,
+ * counting consecutive days with no drinks. */
+function streakFromDayMap(streakByDay: Map<number, number>, now: number): number {
+  let currentStreak = 0;
+  let cursorDay = Math.floor(now / DAY_MS);
+  while (currentStreak <= 365) {
+    if ((streakByDay.get(cursorDay) ?? 0) > 0) break;
+    currentStreak++;
+    cursorDay -= 1;
+  }
+  return currentStreak;
+}
+
+/* [R20-1] Single-pass aggregator.
+ *
+ * Previously this function did 8+ separate filter/reduce passes
+ * over `drinks` (today, week, month, monthly-actual, alcohol-free
+ * days, current streak, recent-vs-older trend, monthly avg craving).
+ * Each pass was O(n) and on a 250K-row power-user history that
+ * exceeded the 200ms main-thread budget on CI.
+ *
+ * The new implementation walks `drinks` exactly once, accumulating
+ * every bucket inline. The API and return shape are unchanged;
+ * tested end-to-end against the same 250K fixture to verify
+ * identical results within float-precision tolerance.
+ */
+interface AggregatedDrinks {
+  todayStd: number; weekStd: number; monthlyActual: number;
+  monthCount: number; monthCravingSum: number;
+  recentCount: number; recentCravingSum: number; recentStdSum: number;
+  olderCount: number; olderCravingSum: number; olderStdSum: number;
+  monthDaySet: Set<number>; streakByDay: Map<number, number>;
+}
+
+/* [R20-1] Single-pass aggregator. Numeric UTC-day key (not ISO string)
+ * to skip 250K Date+toISOString allocations on power-user histories. */
+function aggregateDrinks(
+  drinks: Drink[],
+  bounds: { todayStart: number; weekStart: number; monthStart: number; twoWeeksAgo: number },
+  pricePerStd: number,
+): AggregatedDrinks {
+  const acc: AggregatedDrinks = {
+    todayStd: 0, weekStd: 0, monthlyActual: 0,
+    monthCount: 0, monthCravingSum: 0,
+    recentCount: 0, recentCravingSum: 0, recentStdSum: 0,
+    olderCount: 0, olderCravingSum: 0, olderStdSum: 0,
+    monthDaySet: new Set<number>(), streakByDay: new Map<number, number>(),
+  };
+  for (const d of drinks) {
+    const std = stdDrinks(d.volumeMl, d.abvPct);
+    const dayKey = Math.floor(d.ts / DAY_MS);
+    acc.streakByDay.set(dayKey, (acc.streakByDay.get(dayKey) ?? 0) + std);
+    if (d.ts >= bounds.todayStart) acc.todayStd += std;
+    if (d.ts >= bounds.weekStart) acc.weekStd += std;
+    if (d.ts >= bounds.monthStart) {
+      acc.monthCount += 1;
+      acc.monthCravingSum += d.craving;
+      acc.monthlyActual += std * pricePerStd;
+      acc.monthDaySet.add(dayKey);
+      if (d.ts >= bounds.twoWeeksAgo) {
+        acc.recentCount += 1;
+        acc.recentCravingSum += d.craving;
+        acc.recentStdSum += std;
+      } else {
+        acc.olderCount += 1;
+        acc.olderCravingSum += d.craving;
+        acc.olderStdSum += std;
+      }
+    }
+  }
+  return acc;
+}
+
 export function computeProgressData(
   drinks: Drink[],
   goals: {
@@ -88,33 +176,27 @@ export function computeProgressData(
   },
 ): ProgressData {
   const now = Date.now();
-  const todayStart = new Date().setHours(0, 0, 0, 0);
-  const weekStart = now - 7 * DAY_MS;
-  const monthStart = now - 30 * DAY_MS;
-
-  const todayDrinks = drinks.filter((d) => d.ts >= todayStart);
-  const weekDrinks = drinks.filter((d) => d.ts >= weekStart);
-  const monthDrinks = drinks.filter((d) => d.ts >= monthStart);
-
-  const todayStd = todayDrinks.reduce((sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct), 0);
-  const weekStd = weekDrinks.reduce((sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct), 0);
+  const bounds = {
+    todayStart: new Date().setHours(0, 0, 0, 0),
+    weekStart: now - 7 * DAY_MS,
+    monthStart: now - 30 * DAY_MS,
+    twoWeeksAgo: now - 14 * DAY_MS,
+  };
+  const a = aggregateDrinks(drinks, bounds, goals.pricePerStd);
+  const { todayStd, weekStd, monthlyActual, monthCount, monthCravingSum, monthDaySet, streakByDay } = a;
 
   const dailyProgress = goals.dailyCap > 0 ? (todayStd / goals.dailyCap) * 100 : -1;
   const weeklyProgress = goals.weeklyGoal > 0 ? (weekStd / goals.weeklyGoal) * 100 : -1;
 
-  const monthlyActual = monthDrinks.reduce(
-    (sum, d) => sum + stdDrinks(d.volumeMl, d.abvPct) * goals.pricePerStd,
-    0,
-  );
-  const alcoholFreeDays = getAlcoholFreeDaysInMonth(drinks);
+  const alcoholFreeDays = 30 - monthDaySet.size;
   const potentialSavings = (alcoholFreeDays * goals.baselineMonthlySpend) / 30;
 
-  const currentStreak = getCurrentStreak(drinks);
+  const currentStreak = streakFromDayMap(streakByDay, now);
   const nextMilestone = getNextMilestone(currentStreak);
   const streakProgress = nextMilestone > 0 ? ((currentStreak % nextMilestone) / nextMilestone) * 100 : 0;
 
-  const avgCraving =
-    monthDrinks.length > 0 ? monthDrinks.reduce((sum, d) => sum + d.craving, 0) / monthDrinks.length : 0;
+  const avgCraving = monthCount > 0 ? monthCravingSum / monthCount : 0;
+  const improvementTrend = trendFromSums(a);
 
   return {
     dailyProgress,
@@ -132,7 +214,7 @@ export function computeProgressData(
     healthMetrics: {
       alcoholFreeDays,
       averageCraving: avgCraving,
-      improvementTrend: calculateImprovementTrend(drinks),
+      improvementTrend,
     },
   };
 }
