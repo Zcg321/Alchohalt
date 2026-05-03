@@ -34,6 +34,7 @@
     "size:check": "node ./tools/check_bundle_budget.cjs",
     "perf-baseline": "node ./tools/perf_baseline.cjs",
     "perf-baseline:update": "node ./tools/perf_baseline.cjs --update",
+    "test:tools": "node ./tools/__tests__/perf_baseline.test.cjs && node ./tools/__tests__/check_bundle_budget.test.cjs",
     "apk:size": "node ./tools/apk_size_check.cjs",
     "health:scan": "bash ./scripts/health-scan.sh",
     "health:all": "npm run scan:strict && npm run coverage:check && npm run deadcode && npm run deps:check && npm run size:report && npm run apk:size",
@@ -101,7 +102,7 @@
     "jsdom": "^26.1.0",
     "lighthouse": "^12.8.2",
     "playwright": "^1.59.1",
-    "postcss": "8.4.38",
+    "postcss": "^8.5.10",
     "prettier": "3.2.5",
     "rollup-plugin-visualizer": "^7.0.1",
     "size-limit": "^11.2.0",
@@ -118,6 +119,7 @@
   "sideEffects": false,
   "packageManager": "npm@9.8.1",
   "overrides": {
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "tar": "^7.5.11"
   }
 }
