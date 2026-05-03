@@ -85,6 +85,8 @@ export default function DrinkForm({ onSubmit, initial, submitLabel, onCancel, pr
         setHalt={f.setHalt}
         alt={f.alt}
         setAlt={f.setAlt}
+        tags={f.tags}
+        setTags={f.setTags}
       />
 
       <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border-soft">

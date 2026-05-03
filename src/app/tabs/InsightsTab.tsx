@@ -16,6 +16,7 @@ import { stdDrinks } from '../../lib/calc';
 const InsightsPanel = React.lazy(() => import('../../features/insights/InsightsPanel'));
 const ProgressVisualization = React.lazy(() => import('../../features/insights/ProgressVisualization'));
 const SmartRecommendations = React.lazy(() => import('../../features/insights/SmartRecommendations'));
+const TagPatternsCard = React.lazy(() => import('../../features/insights/TagPatternsCard'));
 const MoneySavedWidget = React.lazy(() => import('../../features/money/MoneySavedWidget'));
 const Milestones = React.lazy(() => import('../../features/milestones/Milestones'));
 const PremiumWellnessDashboard = React.lazy(() => import('../../features/wellness/PremiumWellnessDashboard'));
@@ -67,6 +68,12 @@ export default function InsightsTab({ drinks, goals }: Props) {
 
       <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
         <InsightsPanel drinks={drinks} />
+      </Suspense>
+
+      {/* [R14-3] Tag-pattern card. Renders only when the user has
+          at least one tag appearing on 3+ entries; otherwise hidden. */}
+      <Suspense fallback={null}>
+        <TagPatternsCard drinks={drinks} />
       </Suspense>
 
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>

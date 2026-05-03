@@ -28,7 +28,8 @@ describe('[R14-2] DrinkHistorySearch component', () => {
     fireEvent.change(input, { target: { value: 'wine' } });
     // The component emits on every change via useEffect; the latest
     // call has the query field set.
-    const lastCall = onCriteriaChange.mock.calls.at(-1);
+    const calls = onCriteriaChange.mock.calls;
+    const lastCall = calls[calls.length - 1];
     expect(lastCall?.[0]?.query).toBe('wine');
   });
 
@@ -75,7 +76,8 @@ describe('[R14-2] DrinkHistorySearch component', () => {
       target: { value: 'wine' },
     });
     fireEvent.click(screen.getByTestId('drink-search-clear'));
-    const lastCall = onCriteriaChange.mock.calls.at(-1);
+    const calls = onCriteriaChange.mock.calls;
+    const lastCall = calls[calls.length - 1];
     expect(lastCall?.[0]?.query).toBeUndefined();
     expect(lastCall?.[0]?.dateFrom).toBeUndefined();
   });
@@ -86,7 +88,8 @@ describe('[R14-2] DrinkHistorySearch component', () => {
     fireEvent.change(screen.getByTestId('drink-search-date-from'), {
       target: { value: '2026-04-01' },
     });
-    const lastCall = onCriteriaChange.mock.calls.at(-1);
+    const calls = onCriteriaChange.mock.calls;
+    const lastCall = calls[calls.length - 1];
     expect(typeof lastCall?.[0]?.dateFrom).toBe('number');
   });
 
@@ -96,7 +99,8 @@ describe('[R14-2] DrinkHistorySearch component', () => {
     fireEvent.change(screen.getByTestId('drink-search-std-min'), {
       target: { value: '1.5' },
     });
-    const lastCall = onCriteriaChange.mock.calls.at(-1);
+    const calls = onCriteriaChange.mock.calls;
+    const lastCall = calls[calls.length - 1];
     expect(lastCall?.[0]?.stdMin).toBe(1.5);
   });
 
@@ -106,7 +110,8 @@ describe('[R14-2] DrinkHistorySearch component', () => {
     fireEvent.change(screen.getByTestId('drink-search-std-min'), {
       target: { value: '-5' },
     });
-    const lastCall = onCriteriaChange.mock.calls.at(-1);
+    const calls = onCriteriaChange.mock.calls;
+    const lastCall = calls[calls.length - 1];
     expect(lastCall?.[0]?.stdMin).toBeUndefined();
   });
 

@@ -42,6 +42,11 @@ export default function DrinkItem({ drink, onEdit, onDelete }: Props) {
             {formatStdDrinks(stdDrinks(drink.volumeMl, drink.abvPct), lang)} std - craving {drink.craving}
             {drink.halt.length ? ` HALT: ${drink.halt.join(',')}` : ''}
             {drink.alt ? ` alt: ${drink.alt}` : ''}
+            {drink.tags && drink.tags.length > 0 ? (
+              <span className="ms-1 text-caption text-ink-soft" data-testid={`drink-tags-${drink.ts}`}>
+                {drink.tags.map((tag) => `#${tag}`).join(' ')}
+              </span>
+            ) : null}
           </span>
         </label>
       </li>
@@ -55,6 +60,11 @@ export default function DrinkItem({ drink, onEdit, onDelete }: Props) {
         {formatStdDrinks(stdDrinks(drink.volumeMl, drink.abvPct), lang)} std - craving {drink.craving}
         {drink.halt.length ? ` HALT: ${drink.halt.join(',')}` : ''}
         {drink.alt ? ` alt: ${drink.alt}` : ''}
+        {drink.tags && drink.tags.length > 0 ? (
+          <span className="ms-1 text-caption text-ink-soft" data-testid={`drink-tags-${drink.ts}`}>
+            {drink.tags.map((tag) => `#${tag}`).join(' ')}
+          </span>
+        ) : null}
       </span>
       {(onEdit || onDelete) && (
         <div className="ms-auto space-x-1">

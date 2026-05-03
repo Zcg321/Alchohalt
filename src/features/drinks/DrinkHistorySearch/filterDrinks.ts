@@ -38,18 +38,12 @@ export interface DrinkSearchCriteria {
   stdMax?: number | undefined;
 }
 
-interface DrinkWithTags extends Drink {
-  tags?: string[] | undefined;
-}
-
 export function filterDrinks(drinks: Drink[], criteria: DrinkSearchCriteria): Drink[] {
   const q = criteria.query?.trim().toLowerCase() ?? '';
   const hasQuery = q.length > 0;
   const { dateFrom, dateTo, stdMin, stdMax } = criteria;
 
-  return drinks.filter((raw) => {
-    const d = raw as DrinkWithTags;
-
+  return drinks.filter((d) => {
     if (hasQuery) {
       const tags = d.tags ?? [];
       const haystack = [d.intention, d.alt ?? '', ...tags].join(' ').toLowerCase();
