@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Skeleton } from '../../components/ui/Skeleton';
 import DevTools from './DevTools';
 import Diagnostics from './Diagnostics';
+import DiagnosticsAudit from './DiagnosticsAudit';
 import OnboardingFunnelView from './OnboardingFunnelView';
 import ExportImport from '../drinks/ExportImport';
 import BackupVerifier from '../backup/BackupVerifier';
@@ -251,6 +252,7 @@ export default function SettingsPanel() {
         <SharingPanel />
 
         <Diagnostics />
+        <DiagnosticsAudit />
         <OnboardingFunnelView />
       </section>
 
