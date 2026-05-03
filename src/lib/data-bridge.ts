@@ -1,11 +1,23 @@
 // Bridge to unify persistence between legacy AlcoholCoachApp and useDB store
 import type { Drink as LegacyDrink, Goals as LegacyGoals, Halt } from '../types/common';
 import type { Entry, Settings, HALT, Intention as StoreIntention } from '../store/db';
+import { stdDrinks as stdDrinksForActiveSystem } from './calc';
 
-// Convert legacy volumeMl + abvPct to standard drinks (US: 14g ethanol = 1 std drink)
+/**
+ * Convert legacy volumeMl + abvPct to standard drinks for the user's
+ * active jurisdiction. R14-6 made stdDrinks() jurisdiction-aware via
+ * a module-level activeSystem hydrated from settings. This bridge
+ * delegates to it so newly-persisted Entry.stdDrinks values are in
+ * the user's chosen system from the moment of save.
+ *
+ * Limitation (documented in audit-walkthrough/round-14-researcher-judge.md):
+ * pre-R14-6 entries were persisted as US-14g std drinks. Switching
+ * jurisdiction does NOT rescale historical entries today — that would
+ * require either a one-time migration or storing grams-of-ethanol
+ * natively. Both are legitimate followup work.
+ */
 export function calculateStdDrinks(volumeMl: number, abvPct: number): number {
-  const ethanolGrams = (volumeMl * abvPct / 100) * 0.789; // ethanol density
-  return ethanolGrams / 14; // US standard drink = 14g ethanol
+  return stdDrinksForActiveSystem(volumeMl, abvPct);
 }
 
 // Convert legacy halt array to HALT object
