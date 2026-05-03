@@ -29,7 +29,9 @@ describe('CrisisResources — never gated', () => {
 
   it('renders Crisis Text Line', () => {
     render(<CrisisResources />);
-    expect(screen.getByText(/Crisis Text Line/i)).toBeTruthy();
+    /* [R12-6] Two Crisis Text Line entries now exist (HOME + TEEN
+     * keyword variants). Match on the unambiguous link text instead
+     * of the resource name. */
     expect(screen.getByRole('link', { name: /Text HOME to 741741/i })).toBeTruthy();
   });
 
