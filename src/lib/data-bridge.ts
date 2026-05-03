@@ -1,11 +1,23 @@
 // Bridge to unify persistence between legacy AlcoholCoachApp and useDB store
 import type { Drink as LegacyDrink, Goals as LegacyGoals, Halt } from '../types/common';
 import type { Entry, Settings, HALT, Intention as StoreIntention } from '../store/db';
+import { stdDrinks as stdDrinksForActiveSystem } from './calc';
 
-// Convert legacy volumeMl + abvPct to standard drinks (US: 14g ethanol = 1 std drink)
+/**
+ * Convert legacy volumeMl + abvPct to standard drinks for the user's
+ * active jurisdiction. R14-6 made stdDrinks() jurisdiction-aware via
+ * a module-level activeSystem hydrated from settings. This bridge
+ * delegates to it so newly-persisted Entry.stdDrinks values are in
+ * the user's chosen system from the moment of save.
+ *
+ * Limitation (documented in audit-walkthrough/round-14-researcher-judge.md):
+ * pre-R14-6 entries were persisted as US-14g std drinks. Switching
+ * jurisdiction does NOT rescale historical entries today — that would
+ * require either a one-time migration or storing grams-of-ethanol
+ * natively. Both are legitimate followup work.
+ */
 export function calculateStdDrinks(volumeMl: number, abvPct: number): number {
-  const ethanolGrams = (volumeMl * abvPct / 100) * 0.789; // ethanol density
-  return ethanolGrams / 14; // US standard drink = 14g ethanol
+  return stdDrinksForActiveSystem(volumeMl, abvPct);
 }
 
 // Convert legacy halt array to HALT object
@@ -43,7 +55,7 @@ export function mapLegacyIntention(intention: string): StoreIntention {
 
 // Convert legacy drink to store entry
 export function legacyDrinkToEntry(drink: LegacyDrink): Omit<Entry, 'id'> {
-  return {
+  const entry: Omit<Entry, 'id'> = {
     ts: drink.ts,
     kind: 'custom', // Default since legacy doesn't distinguish types
     stdDrinks: calculateStdDrinks(drink.volumeMl, drink.abvPct),
@@ -52,6 +64,11 @@ export function legacyDrinkToEntry(drink: LegacyDrink): Omit<Entry, 'id'> {
     halt: legacyHaltToHALT(drink.halt),
     altAction: drink.alt || undefined,
   };
+  // [R14-3] Persist tags through the save path. Without this, the
+  // form's `drink.tags` would be silently dropped here, breaking the
+  // tag search and tag-pattern surfaces for any newly-logged drink.
+  if (drink.tags && drink.tags.length > 0) entry.tags = drink.tags;
+  return entry;
 }
 
 // Convert store entry back to legacy drink format (for compatibility)
@@ -59,8 +76,8 @@ export function entryToLegacyDrink(entry: Entry): LegacyDrink {
   // Approximate reverse conversion (lossy)
   const volumeMl = Math.round(entry.stdDrinks * 355); // Assume ~beer volume
   const abvPct = Math.round((entry.stdDrinks * 14 * 100) / (volumeMl * 0.789)); // Reverse calc
-  
-  return {
+
+  const drink: LegacyDrink = {
     volumeMl: Math.min(volumeMl, 1000), // Cap at reasonable volume
     abvPct: Math.min(abvPct, 50), // Cap at reasonable ABV
     intention: entry.intention as StoreIntention, // Types are now compatible
@@ -69,6 +86,10 @@ export function entryToLegacyDrink(entry: Entry): LegacyDrink {
     alt: entry.altAction || '',
     ts: entry.ts,
   };
+  // [R14-3] Round-trip tags so persisted entries are searchable and
+  // visible in tag patterns alongside in-flight ones.
+  if (entry.tags && entry.tags.length > 0) drink.tags = entry.tags;
+  return drink;
 }
 
 // Convert legacy goals to store settings (partial)

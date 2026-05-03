@@ -57,9 +57,10 @@ const SyncPanelLazy = React.lazy(async () => {
 });
 
 export default function SettingsPanel() {
-  const { settings, setTheme, setLanguage, setReminderTimes, setRemindersEnabled } = useDB(s => ({
+  const { settings, setTheme, setLanguage, setReminderTimes, setRemindersEnabled, setSettings } = useDB(s => ({
     settings: s.db.settings, setTheme: s.setTheme, setLanguage: s.setLanguage,
-    setReminderTimes: s.setReminderTimes, setRemindersEnabled: s.setRemindersEnabled
+    setReminderTimes: s.setReminderTimes, setRemindersEnabled: s.setRemindersEnabled,
+    setSettings: s.setSettings,
   }));
   const { t } = useLanguage();
   const [time, setTime] = useState('20:00');
@@ -114,6 +115,41 @@ export default function SettingsPanel() {
                 <option value="de">Deutsch</option>
               </select>
             </div>
+          </div>
+
+          {/* [R14-6] Std-drink jurisdiction picker. Health-authority
+              definitions vary substantially: US is 14g, UK is 8g per
+              "unit", AU/EU/IE are 10g, CA is 13.6g. Pre-R14-6 the app
+              was hard-coded to US — a real undercount for non-US users
+              comparing to their local guidelines. */}
+          <div className="space-y-1 mt-4">
+            <label className="label" htmlFor="std-drink-system">
+              Drink units
+            </label>
+            <select
+              id="std-drink-system"
+              aria-label="Drink units"
+              data-testid="std-drink-system-select"
+              value={settings.stdDrinkSystem ?? 'us'}
+              onChange={(e) => {
+                setSettings({
+                  stdDrinkSystem: e.target.value as 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie',
+                });
+                hapticForEvent('settings-toggle');
+              }}
+              className="input cursor-pointer"
+            >
+              <option value="us">United States (NIAAA, 14 g)</option>
+              <option value="uk">United Kingdom (NHS units, 8 g)</option>
+              <option value="au">Australia (NHMRC, 10 g)</option>
+              <option value="eu">Europe (10 g)</option>
+              <option value="ca">Canada (13.6 g)</option>
+              <option value="ie">Ireland (HSE, 10 g)</option>
+            </select>
+            <p className="text-xs text-neutral-600 dark:text-neutral-400">
+              Picks the grams-of-ethanol-per-standard-drink your country uses.
+              Affects every count the app shows.
+            </p>
           </div>
         </div>
       </section>

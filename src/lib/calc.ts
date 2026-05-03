@@ -2,9 +2,90 @@ export function gramsAlcohol(volumeMl: number, abvPct: number): number {
   return (volumeMl * (abvPct / 100) * 0.789).valueOf();
 }
 
-export function stdDrinks(volumeMl: number, abvPct: number): number {
-  return gramsAlcohol(volumeMl, abvPct) / 14;
+/**
+ * [R14-6] Jurisdiction-specific "standard drink" definitions.
+ *
+ * The number printed by `stdDrinks()` depends on which jurisdiction's
+ * health authority defines a "standard drink". Sources:
+ *   us: NIAAA (https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink)
+ *   uk: NHS / Chief Medical Officers (1 unit = 8g) called "units" not "std drinks"
+ *   au: NHMRC (https://www.health.gov.au/topics/alcohol/about-alcohol/standard-drinks)
+ *   eu: most-common-EU consensus (NL/FR/DE/IE — ICAP report)
+ *   ca: Canada's Low-Risk Alcohol Drinking Guidelines (13.6g)
+ *   ie: Irish Health Service Executive
+ *
+ * See audit-walkthrough/round-14-researcher-judge.md for the full
+ * citations + the bug rationale.
+ */
+export type StdDrinkSystem = 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie';
+
+export const STD_DRINK_GRAMS: Record<StdDrinkSystem, number> = {
+  us: 14.0,
+  uk: 8.0,
+  au: 10.0,
+  eu: 10.0,
+  ca: 13.6,
+  ie: 10.0,
+};
+
+/**
+ * Active system. Module-level state, hydrated from user settings on
+ * app boot via setActiveStdDrinkSystem(). Tests reset to 'us' in
+ * beforeEach. Default 'us' preserves backwards-compatibility for
+ * pre-R14-6 installs that don't have the setting set.
+ */
+let activeSystem: StdDrinkSystem = 'us';
+
+export function setActiveStdDrinkSystem(s: StdDrinkSystem): void {
+  activeSystem = s;
 }
+
+export function getActiveStdDrinkSystem(): StdDrinkSystem {
+  return activeSystem;
+}
+
+/**
+ * Compute std drinks (or UK units — same physical concept, different
+ * gram threshold) for a given drink in a given jurisdiction.
+ *
+ * Pre-R14-6 callers passed only volumeMl + abvPct; the returned value
+ * was always US-NIAAA std drinks. R14-6 makes the function honor a
+ * module-level activeSystem (set from user settings) but accepts an
+ * explicit system override for tests and analytics that need a
+ * specific jurisdiction's count.
+ */
+export function stdDrinks(
+  volumeMl: number,
+  abvPct: number,
+  system?: StdDrinkSystem,
+): number {
+  const sys = system ?? activeSystem;
+  return gramsAlcohol(volumeMl, abvPct) / STD_DRINK_GRAMS[sys];
+}
+
+/**
+ * [R14-6] Display label for the system. UK calls a "standard drink"
+ * a "unit"; everyone else calls it a "standard drink" (or "std" in
+ * compact contexts). Returns the singular form; callers handle
+ * pluralization where needed.
+ */
+export function stdDrinkLabel(system?: StdDrinkSystem): string {
+  const sys = system ?? activeSystem;
+  return sys === 'uk' ? 'unit' : 'std';
+}
+
+/**
+ * Human-readable jurisdiction name for the Settings picker. Pure;
+ * does NOT depend on activeSystem.
+ */
+export const STD_DRINK_SYSTEM_LABELS: Record<StdDrinkSystem, string> = {
+  us: 'United States (NIAAA, 14 g)',
+  uk: 'United Kingdom (NHS units, 8 g)',
+  au: 'Australia (NHMRC, 10 g)',
+  eu: 'Europe (10 g)',
+  ca: 'Canada (13.6 g)',
+  ie: 'Ireland (HSE, 10 g)',
+};
 
 interface Drink {
   ts: number;

@@ -8,6 +8,7 @@ import {
   legacyGoalsToSettings,
 } from '../lib/data-bridge';
 import { migrateLegacyData } from '../lib/migrate-legacy';
+import { setActiveStdDrinkSystem } from '../lib/calc';
 import ScrollTopButton from '../components/ScrollTopButton';
 import AppHeader from './AppHeader';
 import TabShell, { type TabId } from './TabShell';
@@ -276,6 +277,16 @@ function AlcoholCoachAppInner() {
       detachDb();
     };
   }, []);
+
+  // [R14-6] Sync the active std-drink jurisdiction from settings.
+  // This watches db.settings.stdDrinkSystem and pushes it into the
+  // module-level state in lib/calc.ts. Runs on every settings change
+  // so the user can switch jurisdiction in Settings and see every
+  // displayed std-count update without a page reload.
+  useEffect(() => {
+    const sys = db.settings.stdDrinkSystem ?? 'us';
+    setActiveStdDrinkSystem(sys);
+  }, [db.settings.stdDrinkSystem]);
 
   /* [HAPTICS-ROUND-4] Milestone-reached watcher. Tracks which milestones
    * are currently "reached" and fires a Medium tap on any false→true

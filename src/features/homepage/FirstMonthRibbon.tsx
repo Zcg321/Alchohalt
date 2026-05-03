@@ -3,15 +3,28 @@ import React from 'react';
 import type { Drink } from '../../types/common';
 
 /**
- * First-month-user activity ribbon — countdown to the next milestone.
+ * First-month-user activity ribbon — phase-aware orientation line.
  *
- * Round-12 R12-1. Companion to LongTermActivityRibbon. The 30+ day
- * ribbon answers "did this week go the way I meant it to?" — but a
- * user in week 2 doesn't have a meaningful weekly shape yet, and
- * surfacing one risks reading as judgement of an unfinished month.
+ * Round-12 R12-1. Round-14 R14-1 split the under-30-day window into
+ * two phases:
  *
- * The first-month variant instead surfaces a quiet, factual line:
- *   "5 days of logging — first milestone in 2 days."
+ *   week-one (days 1-7):
+ *     "5 days of logging — next milestone in 2 days."
+ *     The week-1 milestones (1, 7, 30) are visible, useful, and
+ *     close enough that the countdown doesn't feel grindy.
+ *
+ *   building-pattern (days 8-29):
+ *     "12 days of logging — building a pattern."
+ *     Past the day-7 milestone, the next stop is day 30 — a 22-day
+ *     gap that shouldn't be a grind. The phase line names the work
+ *     instead of counting toward another goalpost. Voice:
+ *     matter-of-fact, no second-person commands, no exclamation.
+ *
+ * Round-12+R14-1 reasoning: the 30+ day ribbon answers "did this
+ * week go the way I meant it to?" — but a user in week 2 doesn't
+ * have a meaningful weekly shape yet, and a user in week 3 doesn't
+ * need a milestone countdown to feel productive. They need a calm
+ * acknowledgement that pattern-building is the work.
  *
  * What it does NOT do (intentionally):
  *   - No streak emoji. Recovery isn't a video game.
@@ -35,6 +48,7 @@ import type { Drink } from '../../types/common';
 
 const DAY_MS = 86_400_000;
 const FIRST_MONTH_THRESHOLD_DAYS = 30;
+const BUILDING_PATTERN_THRESHOLD_DAYS = 8;
 const MIN_DAYS = 1;
 
 /**
@@ -45,6 +59,8 @@ const MIN_DAYS = 1;
  */
 const FIRST_MONTH_MILESTONES = [1, 7, 30] as const;
 
+export type FirstMonthPhase = 'week-one' | 'building-pattern';
+
 export interface FirstMonthState {
   daysOfLogging: number;
   /** Current consecutive AF days right now (today inclusive). */
@@ -53,6 +69,12 @@ export interface FirstMonthState {
   nextMilestone: number | null;
   /** Days until the next milestone. >= 0; 0 means today reaches it. */
   daysUntilNext: number | null;
+  /**
+   * R14-1: which sub-phase of the first-month window the user is in.
+   * Drives whether the ribbon shows a milestone countdown (week-one)
+   * or a "building a pattern" line (days 8-29).
+   */
+  phase: FirstMonthPhase;
 }
 
 function dayKey(ms: number): string {
@@ -100,12 +122,15 @@ export function computeFirstMonthState(
     }
   }
   const daysUntilNext = nextMilestone === null ? null : nextMilestone - currentAfStreak;
+  const phase: FirstMonthPhase =
+    daysOfLogging >= BUILDING_PATTERN_THRESHOLD_DAYS ? 'building-pattern' : 'week-one';
 
   return {
     daysOfLogging,
     currentAfStreak,
     nextMilestone,
     daysUntilNext,
+    phase,
   };
 }
 
@@ -118,24 +143,36 @@ export default function FirstMonthRibbon({ drinks, className = '' }: Props) {
   const state = computeFirstMonthState(drinks);
   if (!state) return null;
 
-  // Compose the line. Two halves:
-  //   "N days of logging" (always)
-  //   "— first milestone in K days." (when within reach)
-  // If nextMilestone is null, the user is already past all the
-  // first-month tiers; we don't show a confusing "you're done"
-  // string — the long-term ribbon will take over the next day.
+  // Compose the line based on phase.
+  //   week-one (days 1-7):   "N days of logging — next milestone in K days."
+  //   building-pattern (8-29): "N days of logging — building a pattern."
+  //
+  // Building-pattern intentionally drops the milestone countdown:
+  // the next stop after day 7 is day 30, a 22-day gap that reads as
+  // grindy when surfaced as a countdown. Naming the phase honors the
+  // work without inventing a goalpost.
   const loggingFragment = `${state.daysOfLogging} day${state.daysOfLogging === 1 ? '' : 's'} of logging`;
-  const milestoneFragment =
-    state.nextMilestone === null || state.daysUntilNext === null
-      ? null
-      : state.daysUntilNext === 0
-      ? `you reach a ${state.nextMilestone}-day milestone today`
-      : `next milestone in ${state.daysUntilNext} day${state.daysUntilNext === 1 ? '' : 's'}`;
+  let secondHalf: string;
+  if (state.phase === 'building-pattern') {
+    secondHalf = ' — building a pattern.';
+  } else if (state.nextMilestone !== null && state.daysUntilNext !== null) {
+    const milestoneFragment =
+      state.daysUntilNext === 0
+        ? `you reach a ${state.nextMilestone}-day milestone today`
+        : `next milestone in ${state.daysUntilNext} day${state.daysUntilNext === 1 ? '' : 's'}`;
+    secondHalf = ` — ${milestoneFragment}.`;
+  } else {
+    // No milestone in reach AND not yet in building-pattern phase.
+    // Defensive — current logic always picks one of the two above for
+    // daysOfLogging in 1..29, but keep a graceful fallback.
+    secondHalf = '.';
+  }
 
   return (
     <section
       aria-labelledby="first-month-ribbon-heading"
       data-testid="first-month-ribbon"
+      data-phase={state.phase}
       className={`mx-auto w-full max-w-2xl px-4 ${className}`}
     >
       <div className="rounded-2xl border-s-4 border-neutral-300 dark:border-neutral-700 bg-surface-elevated px-4 py-3 text-sm text-ink-soft">
@@ -145,7 +182,7 @@ export default function FirstMonthRibbon({ drinks, className = '' }: Props) {
         <span className="font-medium text-ink dark:text-neutral-200 tabular-nums">
           {loggingFragment}
         </span>
-        {milestoneFragment ? <span> — {milestoneFragment}.</span> : <span>.</span>}
+        <span>{secondHalf}</span>
       </div>
     </section>
   );

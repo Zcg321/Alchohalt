@@ -7,6 +7,8 @@ import {
   DEFAULT_CALM_CONFIG,
   type NotificationType,
 } from '../../lib/notifications/calmConfig';
+import { REGISTRY } from '../experiments/registry';
+import { readExposures } from '../experiments/bucket';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -166,6 +168,55 @@ function BackupFieldset() {
   );
 }
 
+function ExperimentsFieldset() {
+  /* [R14-4] Surfaces the experiments-scaffold state on-device.
+   * When the registry is empty (R14-4 ships dormant), this reads
+   * "no experiments registered" and the audit row stays a single line.
+   * Once the owner activates an experiment, this section starts
+   * showing recent exposures so they can verify on-device that the
+   * scaffold is working without any network telemetry. */
+  const active = REGISTRY.filter((e) => e.status === 'active');
+  const exposures = readExposures();
+  const recentExposures = exposures.slice(-5).reverse();
+
+  return (
+    <fieldset className={FIELDSET_CLASS}>
+      <legend className={LEGEND_CLASS}>Experiments</legend>
+      <dl className={GRID_CLASS}>
+        <AuditRow
+          label="Registered"
+          value={String(REGISTRY.length)}
+          testid="audit-exp-registered"
+        />
+        <AuditRow
+          label="Active"
+          value={active.length === 0 ? 'none' : active.map((e) => e.key).join(', ')}
+          testid="audit-exp-active"
+        />
+        <AuditRow
+          label="Exposures recorded"
+          value={String(exposures.length)}
+          testid="audit-exp-exposures"
+        />
+      </dl>
+      {recentExposures.length > 0 && (
+        <ul className="mt-2 space-y-1 text-xs text-ink-subtle" data-testid="audit-exp-recent">
+          {recentExposures.map((e, i) => (
+            <li key={i}>
+              {new Date(e.ts).toISOString().slice(0, 19).replace('T', ' ')} ·{' '}
+              {e.key} → {e.variant}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="text-xs text-ink-subtle">
+        Variant assignment is deterministic and stays on this device. No
+        exposure data is ever sent off-device.
+      </p>
+    </fieldset>
+  );
+}
+
 export default function DiagnosticsAudit() {
   return (
     <section
@@ -190,6 +241,7 @@ export default function DiagnosticsAudit() {
         <AccessibilityFieldset />
         <LocaleFieldset />
         <BackupFieldset />
+        <ExperimentsFieldset />
       </div>
     </section>
   );

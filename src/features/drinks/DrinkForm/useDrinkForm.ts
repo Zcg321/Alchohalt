@@ -44,12 +44,14 @@ export function useDrinkForm(initial: Drink | undefined, onSubmit: (d: Drink) =>
   const [craving, setCraving] = useState(initial?.craving ?? 0);
   const [halt, setHalt] = useState<Halt[]>(initial?.halt ?? []);
   const [alt, setAlt] = useState(initial?.alt ?? '');
+  const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
 
   const editingHasDetail = !!initial && (
     initial.intention !== 'social' ||
     initial.craving > 0 ||
     initial.halt.length > 0 ||
-    !!initial.alt
+    !!initial.alt ||
+    (initial.tags?.length ?? 0) > 0
   );
   const editingNonStandard = !!initial && chipForEntry(initial) === 'custom';
   const [showDetail, setShowDetail] = useState<boolean>(editingNonStandard || editingHasDetail);
@@ -85,7 +87,19 @@ export function useDrinkForm(initial: Drink | undefined, onSubmit: (d: Drink) =>
     const v = parseFloat(volume);
     const a = parseFloat(abv);
     if (!Number.isFinite(v) || !Number.isFinite(a)) return;
-    onSubmit({ volumeMl: v, abvPct: a, intention, craving, halt, alt, ts: fromLocalInput(time) });
+    const drink: Drink = {
+      volumeMl: v,
+      abvPct: a,
+      intention,
+      craving,
+      halt,
+      alt,
+      ts: fromLocalInput(time),
+    };
+    // Only attach `tags` when there are any — keeps older Drink shapes
+    // unchanged and avoids storing empty arrays.
+    if (tags.length > 0) drink.tags = tags;
+    onSubmit(drink);
     if (!initial) {
       setChip('beer');
       setTime(toLocalInput(Date.now()));
@@ -95,6 +109,7 @@ export function useDrinkForm(initial: Drink | undefined, onSubmit: (d: Drink) =>
       setCraving(0);
       setHalt([]);
       setAlt('');
+      setTags([]);
       setShowDetail(false);
       setShowMore(false);
     }
@@ -109,6 +124,7 @@ export function useDrinkForm(initial: Drink | undefined, onSubmit: (d: Drink) =>
     craving, setCraving,
     halt, setHalt,
     alt, setAlt,
+    tags, setTags,
     showDetail, setShowDetail,
     showMore, setShowMore,
     submit,

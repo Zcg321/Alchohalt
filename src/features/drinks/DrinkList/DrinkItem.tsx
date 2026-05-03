@@ -1,7 +1,7 @@
 // @no-smoke
 import React from 'react';
 import { Button } from '../../../components/ui/Button';
-import { stdDrinks } from '../../../lib/calc';
+import { stdDrinks, stdDrinkLabel } from '../../../lib/calc';
 import type { Drink } from '../DrinkForm';
 import { useLanguage } from '../../../i18n';
 import { formatTime, formatStdDrinks } from '../../../lib/format';
@@ -39,9 +39,14 @@ export default function DrinkItem({ drink, onEdit, onDelete }: Props) {
           />
           <span className="flex-1 text-body">
             {formatTime(drink.ts, lang, { hour: '2-digit', minute: '2-digit' })}{' '} - {drink.intention} -
-            {formatStdDrinks(stdDrinks(drink.volumeMl, drink.abvPct), lang)} std - craving {drink.craving}
+            {formatStdDrinks(stdDrinks(drink.volumeMl, drink.abvPct), lang)} {stdDrinkLabel()} - craving {drink.craving}
             {drink.halt.length ? ` HALT: ${drink.halt.join(',')}` : ''}
             {drink.alt ? ` alt: ${drink.alt}` : ''}
+            {drink.tags && drink.tags.length > 0 ? (
+              <span className="ms-1 text-caption text-ink-soft" data-testid={`drink-tags-${drink.ts}`}>
+                {drink.tags.map((tag) => `#${tag}`).join(' ')}
+              </span>
+            ) : null}
           </span>
         </label>
       </li>
@@ -52,9 +57,14 @@ export default function DrinkItem({ drink, onEdit, onDelete }: Props) {
     <li className="flex items-center gap-2">
       <span>
         {formatTime(drink.ts, lang, { hour: '2-digit', minute: '2-digit' })}{' '} - {drink.intention} -
-        {formatStdDrinks(stdDrinks(drink.volumeMl, drink.abvPct), lang)} std - craving {drink.craving}
+        {formatStdDrinks(stdDrinks(drink.volumeMl, drink.abvPct), lang)} {stdDrinkLabel()} - craving {drink.craving}
         {drink.halt.length ? ` HALT: ${drink.halt.join(',')}` : ''}
         {drink.alt ? ` alt: ${drink.alt}` : ''}
+        {drink.tags && drink.tags.length > 0 ? (
+          <span className="ms-1 text-caption text-ink-soft" data-testid={`drink-tags-${drink.ts}`}>
+            {drink.tags.map((tag) => `#${tag}`).join(' ')}
+          </span>
+        ) : null}
       </span>
       {(onEdit || onDelete) && (
         <div className="ms-auto space-x-1">

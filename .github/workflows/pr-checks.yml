@@ -56,6 +56,15 @@ jobs:
       - name: Perf baseline check (R13 — fails on >5% regression)
         run: npm run perf-baseline
 
+      # [R14-A/B] Meta-guard: test the guards themselves. If
+      # check_bundle_budget.cjs or perf_baseline.cjs ever stops
+      # exiting non-zero on a regression, those tools become silent
+      # passes — a worse failure mode than not having them at all.
+      # These tests synthesize over-budget / regressed dist/ folders
+      # and assert the scripts fail loudly.
+      - name: Tool tests (R14 — verifies guards actually trigger)
+        run: npm run test:tools
+
       - name: Coverage check (enforced)
         run: |
           npm run test:ci

@@ -3,6 +3,7 @@ import { Input } from '../../../components/ui/Input';
 import { Label } from '../../../components/ui/Label';
 import { useLanguage } from '../../../i18n';
 import HaltChecks from './HaltChecks';
+import TagsInput from './TagsInput';
 import { intentions, type Halt, type Intention } from './lib';
 
 interface Props {
@@ -16,6 +17,8 @@ interface Props {
   setHalt: (h: Halt[]) => void;
   alt: string;
   setAlt: (a: string) => void;
+  tags: string[];
+  setTags: (t: string[]) => void;
 }
 
 function IntentionRadioGroup({
@@ -110,6 +113,7 @@ export function DrinkMorePanel(props: Props) {
             placeholder={t('alternativePlaceholder')}
           />
         </div>
+        <TagsInput value={props.tags} onChange={props.setTags} />
       </div>
     </div>
   );

@@ -58,6 +58,18 @@ export interface Settings {
   monthlyBudget: number;
   reminders: { enabled: boolean; times: string[] };
   showBAC: boolean;
+  /**
+   * [R14-6] Jurisdiction for std-drink calculations.
+   *   us — NIAAA 14g per std drink (default; pre-R14-6 behavior)
+   *   uk — NHS 8g per unit (called "units" in display)
+   *   au — NHMRC 10g per std drink
+   *   eu — Common-EU 10g per std drink
+   *   ca — Canada Low-Risk 13.6g per std drink
+   *   ie — Ireland HSE 10g per std drink
+   * See audit-walkthrough/round-14-researcher-judge.md for sources.
+   * Optional for back-compat; missing → 'us'.
+   */
+  stdDrinkSystem?: import('../lib/calc').StdDrinkSystem;
   profile?: { weightKg?: number | undefined; sex?: 'm'|'f'|'other' | undefined } | undefined;
   notificationFallbackMessage?: string | undefined;
   hasCompletedOnboarding?: boolean | undefined;
@@ -149,6 +161,13 @@ export interface Entry {
   journal?: string | undefined;
   mood?: 'happy' | 'sad' | 'anxious' | 'stressed' | 'calm' | 'excited' | 'neutral' | undefined;
   voiceTranscript?: string | undefined;
+  /**
+   * [R14-3] Free-form tags. Persisted alongside the entry so search
+   * and tag-pattern insights work across reloads. Optional and may
+   * be missing from older entries; consumers must treat absent and
+   * `[]` identically.
+   */
+  tags?: string[] | undefined;
 }
 
 export interface HealthMetric {
