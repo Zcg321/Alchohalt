@@ -9,6 +9,7 @@ import {
 } from '../lib/data-bridge';
 import { migrateLegacyData } from '../lib/migrate-legacy';
 import { setActiveStdDrinkSystem } from '../lib/calc';
+import { detectStdDrinkSystemFromNavigator } from '../lib/detectStdDrinkSystem';
 import ScrollTopButton from '../components/ScrollTopButton';
 import AppHeader from './AppHeader';
 import TabShell, { type TabId } from './TabShell';
@@ -279,12 +280,14 @@ function AlcoholCoachAppInner() {
   }, []);
 
   // [R14-6] Sync the active std-drink jurisdiction from settings.
-  // This watches db.settings.stdDrinkSystem and pushes it into the
-  // module-level state in lib/calc.ts. Runs on every settings change
-  // so the user can switch jurisdiction in Settings and see every
-  // displayed std-count update without a page reload.
+  // [R15-C] When the user has never picked a jurisdiction explicitly,
+  // fall back to the locale-derived default instead of always 'us'.
+  // The detected default does NOT get persisted into settings — that
+  // would silently override a future explicit choice. We only push it
+  // into the calc module so displayed std counts honor it.
   useEffect(() => {
-    const sys = db.settings.stdDrinkSystem ?? 'us';
+    const sys =
+      db.settings.stdDrinkSystem ?? detectStdDrinkSystemFromNavigator();
     setActiveStdDrinkSystem(sys);
   }, [db.settings.stdDrinkSystem]);
 

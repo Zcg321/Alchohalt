@@ -122,7 +122,12 @@ export default function SettingsPanel() {
               "unit", AU/EU/IE are 10g, CA is 13.6g. Pre-R14-6 the app
               was hard-coded to US — a real undercount for non-US users
               comparing to their local guidelines. */}
-          <div className="space-y-1 mt-4">
+          {/* [R15-C] id="stddrink-system" anchor target for the
+              Diagnostics deep-link. Note the hyphen in the URL fragment
+              vs the input id "std-drink-system" below — keeping the
+              anchor wrapper distinct lets us scroll to the section
+              header without overloading the form-control id. */}
+          <div className="space-y-1 mt-4" id="stddrink-system">
             <label className="label" htmlFor="std-drink-system">
               Drink units
             </label>

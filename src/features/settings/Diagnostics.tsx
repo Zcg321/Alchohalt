@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import IntentRevisionModal from '../onboarding/IntentRevisionModal';
+import { STD_DRINK_SYSTEM_LABELS } from '../../lib/calc';
+import { detectStdDrinkSystemFromNavigator } from '../../lib/detectStdDrinkSystem';
 
 /**
  * [R9-2] Diagnostics card — surfaces local-only state that helps the
@@ -21,7 +23,16 @@ export default function Diagnostics() {
   const { t } = useLanguage();
   const diag = useDB((s) => s.db.settings.onboardingDiagnostics);
   const history = useDB((s) => s.db.settings.onboardingDiagnosticsHistory) ?? [];
+  const stdDrinkSystem = useDB((s) => s.db.settings.stdDrinkSystem);
   const [editing, setEditing] = useState(false);
+
+  /* [R15-C] When the user hasn't explicitly picked a jurisdiction, we
+   * fall back to a locale-derived default. The callout below makes
+   * that detection visible and offers a deep-link to the picker. */
+  const detected = detectStdDrinkSystemFromNavigator();
+  const activeSystem = stdDrinkSystem ?? detected;
+  const isAutoDetected = stdDrinkSystem === undefined;
+  const systemLabel = STD_DRINK_SYSTEM_LABELS[activeSystem];
 
   const status = diag?.status ?? 'not-started';
   const statusLabel =
@@ -135,6 +146,38 @@ export default function Diagnostics() {
             </ul>
           </details>
         )}
+
+        {/* [R15-C] Std-drink jurisdiction callout. Names the active
+            system and (when auto-detected from locale) flags that
+            it's a default the user can override. The link scrolls to
+            the SettingsPanel picker via the existing #stddrink-system
+            anchor so the deep-link works without router knowledge. */}
+        <div
+          className="mt-4 rounded-xl border border-border-soft bg-surface px-4 py-3 text-sm"
+          data-testid="diagnostics-jurisdiction"
+        >
+          <p className="text-ink">
+            {t(
+              'diagnostics.jurisdictionPrefix',
+              "You're using the {{label}} std-drink definition.",
+            ).replace('{{label}}', systemLabel)}
+          </p>
+          {isAutoDetected && (
+            <p className="mt-1 text-xs text-ink-soft" data-testid="diagnostics-jurisdiction-auto">
+              {t(
+                'diagnostics.jurisdictionAuto',
+                'Detected from your locale. Pick a different one if it doesn\'t match.',
+              )}
+            </p>
+          )}
+          <a
+            href="#stddrink-system"
+            className="mt-2 inline-block text-sm font-medium text-primary-700 dark:text-primary-300 underline-offset-2 hover:underline"
+            data-testid="diagnostics-jurisdiction-link"
+          >
+            {t('diagnostics.jurisdictionChange', 'Change jurisdiction')}
+          </a>
+        </div>
 
         <IntentRevisionModal open={editing} onClose={() => setEditing(false)} />
       </div>
