@@ -41,10 +41,10 @@ interface BeatOneProps {
   /** [R15-B] Variant from the onboarding-chip-copy-2026Q2 experiment. */
   chipVariant: string | null;
 }
-/* [R15-B] Two label sets driven by the active experiment variant.
- * The intent IDs ('cut-back', 'quit', 'curious') are stable so the
- * downstream OnboardingDiagnostics record stays consistent across
- * variants — only the human-facing label changes. */
+/* [R15-B / R16-A] Three label sets driven by the active experiment
+ * variant. The intent IDs ('cut-back', 'quit', 'curious') are stable
+ * so the downstream OnboardingDiagnostics record stays consistent
+ * across variants — only the human-facing label changes. */
 const CHIP_LABELS_CONTROL: Readonly<Record<Intent, string>> = {
   'cut-back': 'Trying to drink less',
   quit: 'Trying to stop',
@@ -55,8 +55,18 @@ const CHIP_LABELS_FIRST_PERSON: Readonly<Record<Intent, string>> = {
   quit: "I'm stopping for now",
   curious: "I'm here to learn",
 };
+/* [R16-A] Gentler middle ground: keeps the first-person voice but
+ * restores the hedge of "trying" / "pausing" / "looking" so the chips
+ * read as observation of a current attempt rather than a declaration
+ * of intent. */
+const CHIP_LABELS_FIRST_PERSON_TRYING: Readonly<Record<Intent, string>> = {
+  'cut-back': "I'm trying to drink less",
+  quit: "I'm pausing alcohol for now",
+  curious: "I'm just looking around",
+};
 function chipLabelFor(variant: string | null, intent: Intent): string {
   if (variant === 'first-person') return CHIP_LABELS_FIRST_PERSON[intent];
+  if (variant === 'first-person-trying') return CHIP_LABELS_FIRST_PERSON_TRYING[intent];
   return CHIP_LABELS_CONTROL[intent];
 }
 function BeatOne({ onChoose, onJustLooking, justLookingLabel, chipVariant }: BeatOneProps) {

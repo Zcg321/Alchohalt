@@ -290,3 +290,24 @@ For every key changed in en.json, update es.json with a faithful translation. Th
 | subscription.coreFeatures | The core — logging, history, streaks, money saved, crisis resources — is free forever. Premium adds longer-view analytics, custom presets, and more. | Lo esencial — registros, historial, rachas, ahorros, recursos de crisis — es gratis para siempre. Premium añade análisis a largo plazo, presets personalizados y más. |
 | subscription.cancellation | You can cancel anytime from your device's subscription settings. Nothing's lost when you downgrade. | Puedes cancelar cuando quieras desde la configuración de suscripciones de tu dispositivo. No se pierde nada al cambiar a un plan menor. |
 | medicalDisclaimer.emergency | If you're in a medical emergency or need urgent help with substance use, contact emergency services or a healthcare professional right now. The Crisis tab has direct numbers. | Si tienes una emergencia médica o necesitas ayuda urgente con el uso de sustancias, contacta con servicios de emergencia o un profesional de la salud ahora mismo. La pestaña de Crisis tiene números directos. |
+
+
+## L. R16-A — third arm on the chip-copy A/B (2026-05-03)
+
+The 15-judge designer-judge in `round-15-fifteen-judges-2026-05-03.md` flagged the R15-B `first-person` variant ("I want to drink less") as more declarative than the control's hedged "Trying to drink less." Both shipped; both gather exposures locally. Round 16 widens the test to three arms so the data shows whether a gentler first-person form lands closer to control or to first-person.
+
+| Arm | cut-back | quit | curious |
+|---|---|---|---|
+| `control` (since R15-B) | Trying to drink less | Trying to stop | Not sure yet |
+| `first-person` (since R15-B) | I want to drink less | I'm stopping for now | I'm here to learn |
+| `first-person-trying` (R16-A) | I'm trying to drink less | I'm pausing alcohol for now | I'm just looking around |
+
+Why this third arm and not just two: the existing two arms test third-person-vs-first-person AND hedged-vs-declarative as a single change. `first-person-trying` decouples them. If first-person-trying outperforms first-person, the lift is from voice (first-person feels owned). If first-person beats first-person-trying, the lift is from declaration (commitment language matters more than hedging). Without this arm, R15-B's data conflated the two.
+
+Voice gates checked:
+- No marketing voice. ✓
+- "Pausing alcohol for now" instead of "stopping" — alcohol-specific, present-continuous, defuses finality. ✓
+- "Just looking around" instead of "here to learn" — drops any teacher/student framing; matches the bottom skip-explore link voice. ✓
+
+Variant assignment is uniform 1/3 (no weights). Existing buckets keep their R15-B assignment when possible; users newly hashing into the third arm see the new copy. Determinism: stable per device, per the R14-4 contract.
+
