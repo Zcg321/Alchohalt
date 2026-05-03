@@ -63,7 +63,7 @@ export default function TagPatternsCard({ drinks }: Props) {
                 onClick={() => setOpenTag(isOpen ? null : p.tag)}
                 aria-expanded={isOpen}
                 aria-controls={isOpen ? `tag-explorer-${p.tag}-heading` : undefined}
-                className="flex w-full flex-wrap items-baseline justify-between gap-2 rounded-xl bg-surface px-3 py-2 text-left hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="flex w-full flex-wrap items-baseline justify-between gap-2 rounded-xl bg-surface px-3 py-2 text-start hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary-500"
                 data-testid={`tag-pattern-button-${p.tag}`}
               >
                 <span className="font-medium text-ink">#{p.tag}</span>
