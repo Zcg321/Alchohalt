@@ -96,6 +96,16 @@ function InsightsSection({ insights }: { insights: HealthInsight[] }) {
       <div className="space-y-4">
         {insights.map((insight, index) => (<InsightCard key={index} insight={insight} />))}
       </div>
+      {/* [R17-6] Clinician-judge clarifier. The "Worth trying"
+          recommendations include coping-skill suggestions (urge
+          surfing, alternative-action substitution) that have a
+          clinical literature behind them. Naming that these are
+          general-purpose, not clinical, prevents a reader from
+          interpreting the surface as personalized care. */}
+      <p className="mt-4 text-xs text-ink-subtle" data-testid="wellness-insights-disclaimer">
+        General suggestions, not personalized clinical guidance. For anything
+        intervention-shaped, work with a clinician.
+      </p>
     </div>
   );
 }
