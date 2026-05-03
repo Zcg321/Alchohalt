@@ -58,6 +58,18 @@ export interface Settings {
   monthlyBudget: number;
   reminders: { enabled: boolean; times: string[] };
   showBAC: boolean;
+  /**
+   * [R14-6] Jurisdiction for std-drink calculations.
+   *   us — NIAAA 14g per std drink (default; pre-R14-6 behavior)
+   *   uk — NHS 8g per unit (called "units" in display)
+   *   au — NHMRC 10g per std drink
+   *   eu — Common-EU 10g per std drink
+   *   ca — Canada Low-Risk 13.6g per std drink
+   *   ie — Ireland HSE 10g per std drink
+   * See audit-walkthrough/round-14-researcher-judge.md for sources.
+   * Optional for back-compat; missing → 'us'.
+   */
+  stdDrinkSystem?: import('../lib/calc').StdDrinkSystem;
   profile?: { weightKg?: number | undefined; sex?: 'm'|'f'|'other' | undefined } | undefined;
   notificationFallbackMessage?: string | undefined;
   hasCompletedOnboarding?: boolean | undefined;
