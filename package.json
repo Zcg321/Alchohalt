@@ -32,6 +32,8 @@
     "size:debug": "node ./tools/size_debug.js",
     "size:report": "npm run size:prep && npx size-limit && npx size-limit --why || true",
     "size:check": "node ./tools/check_bundle_budget.cjs",
+    "perf-baseline": "node ./tools/perf_baseline.cjs",
+    "perf-baseline:update": "node ./tools/perf_baseline.cjs --update",
     "apk:size": "node ./tools/apk_size_check.cjs",
     "health:scan": "bash ./scripts/health-scan.sh",
     "health:all": "npm run scan:strict && npm run coverage:check && npm run deadcode && npm run deps:check && npm run size:report && npm run apk:size",

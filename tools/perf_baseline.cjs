@@ -1,0 +1,206 @@
+#!/usr/bin/env node
+/**
+ * [R13-5] Performance regression guard.
+ *
+ * Compares the current build's bundle metrics against a committed
+ * baseline (perf-baseline.json) and fails if any metric regresses
+ * more than the allowed threshold (default 5%). The baseline lives
+ * in the repo so PRs see "this is what main looks like right now"
+ * and any addition past +5% needs explicit owner sign-off.
+ *
+ * Three metrics tracked (gzipped bytes):
+ *   - eagerJsGz     — index-*.js
+ *   - totalInitGz   — eager JS + react + vendor + index CSS + index.html
+ *   - largestAsyncGz — biggest single async chunk
+ *
+ * Modes:
+ *   node tools/perf_baseline.cjs            (or `--check`)
+ *     Read baseline + measure current + diff. Exit 0 if all metrics
+ *     within +5% of baseline; exit 1 with a clear diff if any regress.
+ *
+ *   node tools/perf_baseline.cjs --update
+ *     Measure current + write to perf-baseline.json. Run this on
+ *     every merge to main to keep the baseline rolling.
+ *
+ *   node tools/perf_baseline.cjs --json
+ *     Print the current measurements as JSON; no baseline comparison.
+ *
+ * Round-13 reasoning: lighthouse-ci already runs perf budgets on PRs
+ * but lighthouse only catches runtime perf, not bundle bloat. Bundle
+ * regressions show up in users' first-paint times before lighthouse
+ * sees them in synthetic-CI. This guard catches the bundle layer.
+ */
+
+const fs = require('node:fs');
+const path = require('node:path');
+const zlib = require('node:zlib');
+
+const REGRESSION_THRESHOLD_PCT = parseFloat(
+  process.env.PERF_REGRESSION_PCT || '5',
+);
+
+const BASELINE_PATH = 'perf-baseline.json';
+const DIST = 'dist';
+const ASSETS = path.join(DIST, 'assets');
+
+function gzipSize(filePath) {
+  const buf = fs.readFileSync(filePath);
+  return zlib.gzipSync(buf, { level: 9 }).length;
+}
+
+function listAssetsByPrefix(prefix, ext) {
+  if (!fs.existsSync(ASSETS)) return [];
+  return fs
+    .readdirSync(ASSETS)
+    .filter((f) => f.startsWith(prefix) && f.endsWith(ext))
+    .map((f) => path.join(ASSETS, f));
+}
+
+function measureCurrent() {
+  if (!fs.existsSync(ASSETS)) {
+    console.error(
+      `[perf-baseline] dist/assets not found — run "npm run build" first`,
+    );
+    process.exit(2);
+  }
+
+  const eagerJsFiles = listAssetsByPrefix('index-', '.js');
+  const reactFiles = listAssetsByPrefix('react-', '.js');
+  const vendorFiles = listAssetsByPrefix('vendor-', '.js');
+  const cssFiles = listAssetsByPrefix('index-', '.css');
+  const htmlFile = path.join(DIST, 'index.html');
+
+  const eagerSet = new Set([
+    ...eagerJsFiles,
+    ...reactFiles,
+    ...vendorFiles,
+    ...cssFiles,
+    ...(fs.existsSync(htmlFile) ? [htmlFile] : []),
+  ]);
+
+  const allJs = fs
+    .readdirSync(ASSETS)
+    .filter((f) => f.endsWith('.js'))
+    .map((f) => path.join(ASSETS, f));
+  const asyncJs = allJs.filter((p) => !eagerSet.has(p));
+
+  const eagerJsGz = eagerJsFiles.reduce((s, p) => s + gzipSize(p), 0);
+  const totalInitGz = [...eagerSet].reduce((s, p) => s + gzipSize(p), 0);
+  let largestAsyncGz = 0;
+  for (const p of asyncJs) {
+    const sz = gzipSize(p);
+    if (sz > largestAsyncGz) largestAsyncGz = sz;
+  }
+
+  return {
+    eagerJsGz,
+    totalInitGz,
+    largestAsyncGz,
+    measuredAt: new Date().toISOString(),
+  };
+}
+
+function fmtKB(bytes) {
+  return `${(bytes / 1024).toFixed(2)} KB`;
+}
+
+function fmtPct(pct) {
+  const sign = pct >= 0 ? '+' : '';
+  return `${sign}${pct.toFixed(2)}%`;
+}
+
+function compareBaseline(baseline, current) {
+  const metrics = ['eagerJsGz', 'totalInitGz', 'largestAsyncGz'];
+  const results = [];
+  for (const m of metrics) {
+    const before = baseline[m] ?? 0;
+    const after = current[m] ?? 0;
+    const diff = after - before;
+    const pct = before > 0 ? (diff / before) * 100 : 0;
+    const regressed = pct > REGRESSION_THRESHOLD_PCT;
+    results.push({ name: m, before, after, diff, pct, regressed });
+  }
+  return results;
+}
+
+function printResults(results) {
+  console.log('');
+  console.log(
+    `Perf baseline check (regression threshold: ${REGRESSION_THRESHOLD_PCT}%)`,
+  );
+  console.log('---------------------------------------------------------');
+  for (const r of results) {
+    const status = r.regressed ? 'REGRESSED' : 'OK';
+    console.log(
+      `  [${status.padEnd(9)}]  ${r.name.padEnd(16)} ${fmtKB(r.before).padStart(10)} → ${fmtKB(
+        r.after,
+      ).padStart(10)}   ${fmtPct(r.pct)}`,
+    );
+  }
+  console.log('');
+}
+
+function readBaseline() {
+  if (!fs.existsSync(BASELINE_PATH)) return null;
+  try {
+    const txt = fs.readFileSync(BASELINE_PATH, 'utf8');
+    return JSON.parse(txt);
+  } catch (err) {
+    console.error(
+      `[perf-baseline] Could not parse ${BASELINE_PATH}: ${err.message}`,
+    );
+    process.exit(2);
+  }
+}
+
+function writeBaseline(measurement) {
+  const blob = {
+    ...measurement,
+    notes:
+      'Auto-generated by tools/perf_baseline.cjs --update. Regenerate on every merge to main.',
+  };
+  fs.writeFileSync(BASELINE_PATH, JSON.stringify(blob, null, 2) + '\n', 'utf8');
+  console.log(`[perf-baseline] Wrote ${BASELINE_PATH}`);
+  console.log(`  eagerJsGz       ${fmtKB(measurement.eagerJsGz)}`);
+  console.log(`  totalInitGz     ${fmtKB(measurement.totalInitGz)}`);
+  console.log(`  largestAsyncGz  ${fmtKB(measurement.largestAsyncGz)}`);
+}
+
+const arg = process.argv[2];
+const current = measureCurrent();
+
+if (arg === '--update') {
+  writeBaseline(current);
+  process.exit(0);
+}
+
+if (arg === '--json') {
+  process.stdout.write(JSON.stringify(current, null, 2) + '\n');
+  process.exit(0);
+}
+
+const baseline = readBaseline();
+if (!baseline) {
+  console.warn(
+    `[perf-baseline] No ${BASELINE_PATH} found. Run with --update on main to seed it.`,
+  );
+  console.warn(`  Skipping regression check.`);
+  console.log(JSON.stringify(current, null, 2));
+  process.exit(0);
+}
+
+const results = compareBaseline(baseline, current);
+printResults(results);
+
+const anyRegressed = results.some((r) => r.regressed);
+if (anyRegressed) {
+  console.error(
+    `[perf-baseline] One or more metrics regressed > ${REGRESSION_THRESHOLD_PCT}%. ` +
+      `Either lazy-load to bring the bundle back, or get explicit owner sign-off ` +
+      `and re-run \`node tools/perf_baseline.cjs --update\` on main.`,
+  );
+  process.exit(1);
+}
+
+console.log('[perf-baseline] No regression beyond threshold. PASS.');
+process.exit(0);

@@ -49,6 +49,13 @@ jobs:
       - name: Bundle size check (R13 budgets — fails on regression)
         run: npm run size:check
 
+      # [R13-5] Perf-baseline regression guard. Compares the current
+      # build's bundle metrics against the committed perf-baseline.json
+      # and fails if any regress > 5%. Re-baseline on every merge to
+      # main via `npm run perf-baseline:update`.
+      - name: Perf baseline check (R13 — fails on >5% regression)
+        run: npm run perf-baseline
+
       - name: Coverage check (enforced)
         run: |
           npm run test:ci
