@@ -78,6 +78,7 @@ function SemanticRow({ label, vars }: { label: string; vars: { name: string; var
   );
 }
 
+// eslint-disable-next-line max-lines-per-function -- [R19-B] dev-only route; declarative JSX preview of every design token. Splitting hurts the "one-page reference" purpose.
 export default function DevTokensPreview() {
   const [theme, setTheme] = useTheme();
 

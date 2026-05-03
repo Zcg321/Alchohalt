@@ -109,6 +109,38 @@ interface Props {
   region?: RegionCode;
 }
 
+function getEmergencyNumber(code: RegionCode): string {
+  if (code === 'UK' || code === 'IE') return '999';
+  if (code === 'AU') return '000';
+  return '911';
+}
+
+function EmergencyBanner({ code }: { code: RegionCode }) {
+  const emergencyNumber = getEmergencyNumber(code);
+  return (
+    <section
+      role="alert"
+      className="rounded-2xl border border-crisis-100 bg-crisis-50 p-5 text-crisis-900 dark:border-crisis-900/60 dark:bg-crisis-900/40 dark:text-crisis-50"
+    >
+      <h2 className="text-lg font-semibold tracking-tight">In immediate danger?</h2>
+      <p className="mt-1.5 text-sm leading-relaxed text-crisis-900/90 dark:text-crisis-100/90">
+        If you or someone near you is in immediate physical danger, call your
+        local emergency number right now (US/CA <strong>911</strong>, UK/IE{' '}
+        <strong>999</strong>, AU <strong>000</strong>).
+      </p>
+      <a
+        href={`tel:${emergencyNumber}`}
+        className="mt-4 inline-flex items-center gap-2 rounded-full bg-crisis-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm hover:bg-crisis-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crisis-700 min-h-[44px]"
+      >
+        <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+        Call {emergencyNumber}
+      </a>
+    </section>
+  );
+}
+
 export default function CrisisResources({ className = '', region }: Props) {
   const detected = region ?? detectRegionFromBrowser();
   const primary = getPack(detected);
@@ -121,38 +153,7 @@ export default function CrisisResources({ className = '', region }: Props) {
 
   return (
     <main className={`mx-auto max-w-2xl space-y-7 px-5 py-6 sm:px-6 ${className}`}>
-      {/* 911 banner — first thing on the page. Cannot be missed. Sized
-          for thumb reach; the call button is the primary action. */}
-      <section
-        role="alert"
-        className="rounded-2xl border border-crisis-100 bg-crisis-50 p-5 text-crisis-900 dark:border-crisis-900/60 dark:bg-crisis-900/40 dark:text-crisis-50"
-      >
-        <h2 className="text-lg font-semibold tracking-tight">In immediate danger?</h2>
-        <p className="mt-1.5 text-sm leading-relaxed text-crisis-900/90 dark:text-crisis-100/90">
-          If you or someone near you is in immediate physical danger, call your
-          local emergency number right now (US/CA <strong>911</strong>, UK/IE{' '}
-          <strong>999</strong>, AU <strong>000</strong>).
-        </p>
-        {(() => {
-          const emergencyNumber =
-            primary.code === 'UK' || primary.code === 'IE'
-              ? '999'
-              : primary.code === 'AU'
-                ? '000'
-                : '911';
-          return (
-            <a
-              href={`tel:${emergencyNumber}`}
-              className="mt-4 inline-flex items-center gap-2 rounded-full bg-crisis-600 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm hover:bg-crisis-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crisis-700 min-h-[44px]"
-            >
-              <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              Call {emergencyNumber}
-            </a>
-          );
-        })()}
-      </section>
+      <EmergencyBanner code={primary.code} />
 
       <header>
         <h1 className="text-2xl font-semibold tracking-tight text-ink">Crisis &amp; Support Resources</h1>
@@ -211,44 +212,54 @@ export default function CrisisResources({ className = '', region }: Props) {
         </ul>
       </section>
 
-      {showUSFallback && (
-        <>
-          <section aria-labelledby="other-immediate-heading">
-            <h2 id="other-immediate-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
-              Other regions — Immediate help (United States)
-            </h2>
-            <ul className="mt-3 space-y-3" role="list">
-              {US_PACK.immediate.map((r) => <ImmediateCard key={r.id} r={r} />)}
-            </ul>
-          </section>
-
-          <section aria-labelledby="other-ongoing-heading">
-            <h2 id="other-ongoing-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
-              Other regions — Ongoing support (United States)
-            </h2>
-            <ul className="mt-3 space-y-3" role="list">
-              {US_PACK.ongoing.map((r) => <OngoingCard key={r.id} r={r} />)}
-            </ul>
-          </section>
-        </>
-      )}
+      {showUSFallback && <USFallbackSections />}
 
       <UserCrisisLineEditor />
 
-      <footer className="border-t border-border-soft pt-6 text-xs leading-relaxed text-ink-subtle space-y-2">
-        <p>
-          Alchohalt is not a substitute for professional medical, mental
-          health, or addiction treatment. We don&apos;t see who you call or
-          text from this page — these are direct device links to public
-          hotlines.
-        </p>
-        <p>
-          If you&apos;re in a region we don&apos;t have a pack for, find your
-          local crisis hotline by searching &ldquo;crisis hotline {`<your country>`}&rdquo;.
-          The US numbers above accept calls from outside the US but local
-          numbers will reach you faster.
-        </p>
-      </footer>
+      <CrisisFooter />
     </main>
+  );
+}
+
+function USFallbackSections() {
+  return (
+    <>
+      <section aria-labelledby="other-immediate-heading">
+        <h2 id="other-immediate-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
+          Other regions — Immediate help (United States)
+        </h2>
+        <ul className="mt-3 space-y-3" role="list">
+          {US_PACK.immediate.map((r) => <ImmediateCard key={r.id} r={r} />)}
+        </ul>
+      </section>
+
+      <section aria-labelledby="other-ongoing-heading">
+        <h2 id="other-ongoing-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
+          Other regions — Ongoing support (United States)
+        </h2>
+        <ul className="mt-3 space-y-3" role="list">
+          {US_PACK.ongoing.map((r) => <OngoingCard key={r.id} r={r} />)}
+        </ul>
+      </section>
+    </>
+  );
+}
+
+function CrisisFooter() {
+  return (
+    <footer className="border-t border-border-soft pt-6 text-xs leading-relaxed text-ink-subtle space-y-2">
+      <p>
+        Alchohalt is not a substitute for professional medical, mental
+        health, or addiction treatment. We don&apos;t see who you call or
+        text from this page — these are direct device links to public
+        hotlines.
+      </p>
+      <p>
+        If you&apos;re in a region we don&apos;t have a pack for, find your
+        local crisis hotline by searching &ldquo;crisis hotline {`<your country>`}&rdquo;.
+        The US numbers above accept calls from outside the US but local
+        numbers will reach you faster.
+      </p>
+    </footer>
   );
 }
