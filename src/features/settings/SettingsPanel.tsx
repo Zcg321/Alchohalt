@@ -7,18 +7,35 @@ import DevTools from './DevTools';
 import Diagnostics from './Diagnostics';
 import DiagnosticsAudit from './DiagnosticsAudit';
 import OnboardingFunnelView from './OnboardingFunnelView';
-import ExportImport from '../drinks/ExportImport';
 import BackupVerifier from '../backup/BackupVerifier';
 import NotificationsSettings from './NotificationsSettings';
 import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
 import ReplayOnboardingButton from './ReplayOnboardingButton';
-import AISettingsPanel from '../ai/AISettingsPanel';
 import PrivacyStatus from './PrivacyStatus';
-import TrustReceipt from './TrustReceipt';
 import { hapticForEvent } from '../../shared/haptics';
 import { useLanguage } from '../../i18n';
+
+/**
+ * [R16-5] Bundle-trim lazy loads. The R12-15 polish rounds added
+ * meaningful surface area to Settings (R15-4 Trust Receipt, R15-3
+ * backup verification, AI settings, R16-3 date-range export, ...).
+ * These three pulls now lazy-load:
+ *
+ *   - ExportImport pulls jspdf, sha256, schema, csv-export and now
+ *     the R16-3 date-range helpers. Most users never tap "Export."
+ *   - TrustReceipt (R15-4) pulls a printable-HTML builder + per-event
+ *     redaction rules. Used by the security-minded subset.
+ *   - AISettingsPanel pulls the AI consent + provider config surface.
+ *     AI insights default off; most users will never open this row.
+ *
+ * The fallback Skeleton matches the surrounding card height so the
+ * page doesn't shift when the chunk lands.
+ */
+const ExportImportLazy = React.lazy(() => import('../drinks/ExportImport'));
+const TrustReceiptLazy = React.lazy(() => import('./TrustReceipt'));
+const AISettingsPanelLazy = React.lazy(() => import('../ai/AISettingsPanel'));
 
 /* [BUG-PAYWALL-MOUNT] SubscriptionManager was built but never imported
  * outside of `PremiumFeatureGate` (a named export from the same file).
@@ -276,20 +293,26 @@ export default function SettingsPanel() {
             </p>
           </div>
           <div className="card-content">
-            <ExportImport />
+            <Suspense fallback={<Skeleton className="h-40 w-full rounded-xl" />}>
+              <ExportImportLazy />
+            </Suspense>
           </div>
         </section>
 
         <BackupVerifier />
 
-        <AISettingsPanel />
+        <Suspense fallback={<Skeleton className="h-48 w-full rounded-2xl" />}>
+          <AISettingsPanelLazy />
+        </Suspense>
 
         <Suspense fallback={<Skeleton className="h-48 w-full rounded-2xl" />}>
           <SyncPanelLazy />
         </Suspense>
 
         <PrivacyStatus />
-        <TrustReceipt />
+        <Suspense fallback={<Skeleton className="h-32 w-full rounded-2xl" />}>
+          <TrustReceiptLazy />
+        </Suspense>
 
         <SharingPanel />
 
