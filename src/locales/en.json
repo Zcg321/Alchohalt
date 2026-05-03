@@ -4,6 +4,11 @@
   "language": "Language",
   "clearAllData": "Clear all data",
   "eraseConfirm": "Erase all saved data? This cannot be undone.",
+  "eraseConfirm.subtitle": "Every entry, goal, preset, and setting will be removed. This cannot be undone.",
+  "eraseConfirm.typePrompt": "Type ERASE to confirm",
+  "eraseConfirm.typeWord": "ERASE",
+  "eraseConfirm.confirmButton": "Erase everything",
+  "eraseConfirm.cancelButton": "Keep my data",
   "dataCleared": "Data cleared",
   "totalStdDrinks": "Total standard drinks",
   "skipToContent": "Skip to content",
@@ -141,7 +146,30 @@
   "toast.undo": "Undo",
   "reminder.prompt": "Reminder: log your day?",
   "reminder.log": "Log now",
-  
+
+  "bulk.actionsLabel": "Bulk edit actions",
+  "bulk.selectionCount.one": "{{n}} drink selected",
+  "bulk.selectionCount.many": "{{n}} drinks selected",
+  "bulk.done": "Done",
+  "bulk.selectLabel": "Select:",
+  "bulk.scope.today": "Today",
+  "bulk.scope.week": "This week",
+  "bulk.scope.clear": "Clear",
+  "bulk.deleteSelected": "Delete selected",
+  "bulk.shiftTime": "Shift time…",
+  "bulk.scaleStd": "Scale std…",
+  "bulk.deleteConfirm.one": "Delete this drink? This can’t be undone.",
+  "bulk.deleteConfirm.many": "Delete {{n}} drinks? This can’t be undone.",
+
+  "ribbon.heading": "Your last seven days at a glance",
+  "ribbon.label": "Last 7 days:",
+  "ribbon.afDays.one": "{{n}} AF day",
+  "ribbon.afDays.many": "{{n}} AF days",
+  "ribbon.loggedDay.one": "{{n}} logged drink day",
+  "ribbon.loggedDay.many": "{{n}} logged drink days",
+  "ribbon.overCap": "{{n}} over your daily cap",
+
+
   "onboarding": {
     "welcome": {
       "title": "Welcome to Alchohalt",

@@ -28,7 +28,12 @@ export type NotificationType =
   | 'dailyCheckin'
   | 'goalMilestone'
   | 'retrospective'
-  | 'backupVerification';
+  | 'backupVerification'
+  /* [R13-2] Weekly recap. Opt-in. Same calm rules apply (quiet
+   * hours, daily cap). Body is generated locally from the user's
+   * own drink log — never transmitted, never stored anywhere
+   * outside the device. */
+  | 'weeklyRecap';
 
 export interface QuietHours {
   /** First hour (0-23) when notifications are suppressed. e.g. 23 = 11pm */
@@ -56,6 +61,8 @@ export const DEFAULT_CALM_CONFIG: CalmConfig = {
     goalMilestone: false,
     retrospective: false,
     backupVerification: false,
+    /* [R13-2] Weekly recap defaults to OFF. Opt-in only. */
+    weeklyRecap: false,
   },
 };
 

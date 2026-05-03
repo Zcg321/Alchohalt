@@ -109,6 +109,26 @@ Spanish has been through native review. If you're unsure how a phrase should sou
 
 ---
 
+## Round-12 surfaces — flagged for native review (R13-B baseline)
+
+Round 12 added three significant user-facing surfaces. All three got an es/fr/de baseline pass in round 13 [R13-B] using the same trusted-friend voice. **Native reviewer please double-check the rows below.** Keys live in `src/locales/{lang}.json`.
+
+### 1. Bulk drink-edit (`bulk.*`)
+**Where it appears:** History tab → tap "Edit" on any drink, the bar appears at the bottom and stays until "Done". A user with weeks of entries will sit in this UI for several minutes at a time.
+- `bulk.selectionCount.one` / `bulk.selectionCount.many` — pluralization is locale-specific. French agrees with the noun ("sélectionnée"/"sélectionnées"); German uses neutral singular/plural ("Getränk"/"Getränke"). Spanish has feminine agreement ("seleccionada"/"seleccionadas") because "bebida" is feminine.
+- `bulk.deleteConfirm.one` / `bulk.deleteConfirm.many` — destructive action, voice should be neutral and definitive (NOT scary). "Cette action est définitive" / "Lässt sich nicht rückgängig machen" / "No se puede deshacer" all match the calm-direct register.
+- `bulk.shiftTime` / `bulk.scaleStd` — keep the trailing ellipsis; it signals "opens a sub-menu" in the UI.
+
+### 2. Last-7-days ribbon (`ribbon.*`)
+**Where it appears:** Home screen, only for users 30+ days in. Calm one-liner factual summary. Voice MUST stay neutral — no exclamation, no "great job".
+- `ribbon.afDays.one` / `ribbon.afDays.many` — "AF" is the English-language brand abbreviation. We chose to expand it in the other languages: "sans alcool" / "alkoholfrei" / "sin alcohol". A native reviewer might still prefer keeping "AF" in fr/de — flag if so.
+- `ribbon.overCap` — "your daily cap" is the user's voluntarily-set limit, not a clinical medical limit. Tone is "you set this, here's where you landed", not "you went over a rule".
+
+### 3. Settings → Notifications + Backup verifier
+**Status:** **NOT YET LOCALIZED** — strings still hard-coded in `NotificationsSettings.tsx` and `BackupVerifier.tsx`. Round 13 deferred these because they need careful clinical-tone review (notification toggles touch quiet-hours / "permanent until you toggle back" language; backup verifier touches encryption). They'll come in a focused round-14 surface review with the native translator. Source strings in those two components are the canonical English versions — please don't re-localize ad-hoc.
+
+---
+
 ## Questions or ambiguity
 
 If you find a string where the English itself is ambiguous, leave a note in the row and flag it at the top of your returned file. The owner can fix the source rather than asking you to guess.

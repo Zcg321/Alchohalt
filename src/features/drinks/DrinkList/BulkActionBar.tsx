@@ -1,6 +1,7 @@
 // @no-smoke
 import React from 'react';
 import type { Drink } from '../DrinkForm';
+import { useLanguage } from '../../../i18n';
 
 interface Props {
   drinks: Drink[];
@@ -56,12 +57,18 @@ export default function BulkActionBar({
   onExit,
 }: Props) {
   const hasSelection = selectedCount > 0;
+  const { t } = useLanguage();
+  const countLabel = (
+    selectedCount === 1
+      ? t('bulk.selectionCount.one', '{{n}} drink selected')
+      : t('bulk.selectionCount.many', '{{n}} drinks selected')
+  ).replace('{{n}}', String(selectedCount));
 
   return (
     <div
       data-testid="bulk-action-bar"
       className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card space-y-4"
-      aria-label="Bulk edit actions"
+      aria-label={t('bulk.actionsLabel', 'Bulk edit actions')}
       role="region"
     >
       {/* Header: selection count + done */}
@@ -70,7 +77,7 @@ export default function BulkActionBar({
           className="text-body text-ink stat-num"
           data-testid="bulk-selection-count"
         >
-          {`${selectedCount} ${selectedCount === 1 ? 'drink' : 'drinks'} selected`}
+          {countLabel}
         </p>
         <button
           type="button"
@@ -78,27 +85,27 @@ export default function BulkActionBar({
           data-testid="bulk-exit"
           className="text-caption text-ink-soft hover:text-ink underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
         >
-          Done
+          {t('bulk.done', 'Done')}
         </button>
       </div>
 
       {/* Quick-select scopes */}
       <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-caption text-ink-subtle me-1">Select:</span>
+        <span className="text-caption text-ink-subtle me-1">{t('bulk.selectLabel', 'Select:')}</span>
         <ScopeButton
-          label="Today"
+          label={t('bulk.scope.today', 'Today')}
           testid="bulk-select-today"
           onClick={onSelectToday}
           disabled={drinks.length === 0}
         />
         <ScopeButton
-          label="This week"
+          label={t('bulk.scope.week', 'This week')}
           testid="bulk-select-week"
           onClick={onSelectThisWeek}
           disabled={drinks.length === 0}
         />
         <ScopeButton
-          label="Clear"
+          label={t('bulk.scope.clear', 'Clear')}
           testid="bulk-clear"
           onClick={onClear}
           disabled={!hasSelection}
@@ -114,7 +121,7 @@ export default function BulkActionBar({
           data-testid="bulk-delete"
           className="rounded-pill bg-red-50 px-3 py-1.5 text-caption text-red-700 hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
-          Delete selected
+          {t('bulk.deleteSelected', 'Delete selected')}
         </button>
         <details className="inline-flex">
           <summary
@@ -123,7 +130,7 @@ export default function BulkActionBar({
             }`}
             aria-disabled={!hasSelection}
           >
-            Shift time…
+            {t('bulk.shiftTime', 'Shift time…')}
           </summary>
           <div className="mt-2 flex flex-wrap gap-1">
             {TIME_PRESETS.map((preset) => (
@@ -147,7 +154,7 @@ export default function BulkActionBar({
             }`}
             aria-disabled={!hasSelection}
           >
-            Scale std…
+            {t('bulk.scaleStd', 'Scale std…')}
           </summary>
           <div className="mt-2 flex flex-wrap gap-1">
             {STD_PRESETS.map((preset) => (

@@ -1,5 +1,5 @@
 // @no-smoke
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Input } from '../../../components/ui/Input';
 import { Label } from '../../../components/ui/Label';
 import { Button } from '../../../components/ui/Button';
@@ -12,11 +12,45 @@ interface Props {
   onChange(next: DrinkPreset[]): void;
 }
 
+const CONFIRM_WINDOW_MS = 3000;
+
 export default function PresetItem({ preset, presets, onChange }: Props) {
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(preset.name);
   const [editVolume, setEditVolume] = useState(String(preset.volumeMl));
   const [editAbv, setEditAbv] = useState(String(preset.abvPct));
+  /* [R13-C] Tap-to-confirm delete. The original handler deleted the
+   * preset on a single tap — too easy to nuke "my usual IPA" by
+   * mistake. Now the first tap arms a 3-second confirm window; the
+   * second tap commits. After 3s the button reverts. No window.confirm
+   * dialog (out of place inside a settings list). */
+  const [pendingDelete, setPendingDelete] = useState(false);
+  const pendingTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (pendingTimer.current !== undefined) {
+        window.clearTimeout(pendingTimer.current);
+      }
+    };
+  }, []);
+
+  function handleDeleteClick() {
+    if (!pendingDelete) {
+      setPendingDelete(true);
+      pendingTimer.current = window.setTimeout(() => {
+        setPendingDelete(false);
+        pendingTimer.current = undefined;
+      }, CONFIRM_WINDOW_MS);
+      return;
+    }
+    if (pendingTimer.current !== undefined) {
+      window.clearTimeout(pendingTimer.current);
+      pendingTimer.current = undefined;
+    }
+    setPendingDelete(false);
+    onChange(presets.filter((p) => p.name !== preset.name));
+  }
 
   function save(e: React.FormEvent) {
     e.preventDefault();
@@ -78,9 +112,11 @@ export default function PresetItem({ preset, presets, onChange }: Props) {
             <Button
               type="button"
               variant="danger"
-              onClick={() => onChange(presets.filter((p) => p.name !== preset.name))}
+              onClick={handleDeleteClick}
+              data-testid={`preset-delete-${preset.name}`}
+              aria-label={pendingDelete ? `Confirm delete ${preset.name}` : `Delete ${preset.name}`}
             >
-              Delete
+              {pendingDelete ? 'Tap again to delete' : 'Delete'}
             </Button>
           </div>
         </div>

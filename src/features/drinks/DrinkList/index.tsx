@@ -117,17 +117,19 @@ export default function DrinkList({
   const handleBulkDelete = useCallback(() => {
     const tsList = Array.from(selected);
     if (tsList.length === 0) return;
-    if (
-      !window.confirm(
-        `Delete ${tsList.length} ${tsList.length === 1 ? 'drink' : 'drinks'}? This can't be undone.`,
-      )
-    ) {
-      return;
-    }
+    /* [R13-C] Localized + count-aware confirm. Bulk delete cannot be
+     * undone (the per-row UndoToast is single-entry only) — the prompt
+     * must surface the count + finality without scaring the user. */
+    const message = (
+      tsList.length === 1
+        ? t('bulk.deleteConfirm.one', "Delete this drink? This can't be undone.")
+        : t('bulk.deleteConfirm.many', "Delete {{n}} drinks? This can't be undone.")
+    ).replace('{{n}}', String(tsList.length));
+    if (!window.confirm(message)) return;
     if (onBulkDelete) onBulkDelete(tsList);
     else if (onDelete) for (const ts of tsList) onDelete(ts);
     exitBulk();
-  }, [selected, onBulkDelete, onDelete, exitBulk]);
+  }, [selected, onBulkDelete, onDelete, exitBulk, t]);
 
   const handleBulkShiftTime = useCallback(
     (deltaMinutes: number) => {
