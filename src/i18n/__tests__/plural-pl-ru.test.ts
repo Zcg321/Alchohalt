@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { pluralCount, pluralNoun } from '../plural';
 import pl from '../../locales/pl.json';
+import ru from '../../locales/ru.json';
 
 /**
  * [R18-1 / R18-2] Polish + Russian plural correctness.
@@ -94,11 +95,9 @@ describe('[R18-1] Polish plural correctness', () => {
 });
 
 describe('[R18-2] Russian plural correctness', () => {
-  /* Russian is added in R18-2 — these tests use Intl.PluralRules
-   * directly to verify the BUCKET selection without depending on the
-   * ru.json content. The locale tests above do that for Polish. */
+  const t = makeT(flat(ru as unknown as Record<string, unknown>));
 
-  it('Intl.PluralRules selects .one for count=1', () => {
+  it('Intl.PluralRules selects .one for count=1, 21, 101', () => {
     const r = new Intl.PluralRules('ru');
     expect(r.select(1)).toBe('one');
     expect(r.select(21)).toBe('one');
@@ -125,11 +124,50 @@ describe('[R18-2] Russian plural correctness', () => {
     expect(r.select(15)).toBe('many');
   });
 
+  it('selects .one for count=1, 21 (день/год)', () => {
+    expect(pluralCount(t, 'ru', 'tenure.days', 1, '')).toBe('1 день');
+    expect(pluralCount(t, 'ru', 'tenure.days', 21, '')).toBe('21 день');
+    expect(pluralCount(t, 'ru', 'tenure.years', 1, '')).toBe('1 год');
+    expect(pluralCount(t, 'ru', 'tenure.years', 21, '')).toBe('21 год');
+  });
+
+  it('selects .few for counts ending in 2-4 (дня/года)', () => {
+    expect(pluralCount(t, 'ru', 'tenure.days', 2, '')).toBe('2 дня');
+    expect(pluralCount(t, 'ru', 'tenure.days', 3, '')).toBe('3 дня');
+    expect(pluralCount(t, 'ru', 'tenure.years', 22, '')).toBe('22 года');
+  });
+
+  it('selects .many for 0, 5+, irregular 12-14 (дней/лет)', () => {
+    expect(pluralCount(t, 'ru', 'tenure.days', 0, '')).toBe('0 дней');
+    expect(pluralCount(t, 'ru', 'tenure.days', 5, '')).toBe('5 дней');
+    expect(pluralCount(t, 'ru', 'tenure.days', 12, '')).toBe('12 дней');
+    expect(pluralCount(t, 'ru', 'tenure.years', 5, '')).toBe('5 лет');
+    expect(pluralCount(t, 'ru', 'tenure.years', 13, '')).toBe('13 лет');
+  });
+
+  it('months use distinct forms: 1 месяц / 2 месяца / 5 месяцев', () => {
+    expect(pluralCount(t, 'ru', 'tenure.months', 1, '')).toBe('1 месяц');
+    expect(pluralCount(t, 'ru', 'tenure.months', 2, '')).toBe('2 месяца');
+    expect(pluralCount(t, 'ru', 'tenure.months', 5, '')).toBe('5 месяцев');
+  });
+
+  it('pluralNoun returns the right unit form for день', () => {
+    expect(pluralNoun(t, 'ru', 'unit.day', 1, 'day', 'days')).toBe('день');
+    expect(pluralNoun(t, 'ru', 'unit.day', 2, 'day', 'days')).toBe('дня');
+    expect(pluralNoun(t, 'ru', 'unit.day', 5, 'day', 'days')).toBe('дней');
+  });
+
+  it('drinks: напиток / напитка / напитков', () => {
+    expect(pluralNoun(t, 'ru', 'unit.drink', 1, 'drink', 'drinks')).toBe('напиток');
+    expect(pluralNoun(t, 'ru', 'unit.drink', 3, 'drink', 'drinks')).toBe('напитка');
+    expect(pluralNoun(t, 'ru', 'unit.drink', 7, 'drink', 'drinks')).toBe('напитков');
+  });
+
   it('Polish vs Russian: both 3-bucket but different counts', () => {
-    const pl = new Intl.PluralRules('pl');
-    const ru = new Intl.PluralRules('ru');
-    /* PL: 21 → many ("dwadzieścia jeden DNI"), RU: 21 → one. */
-    expect(pl.select(21)).toBe('many');
-    expect(ru.select(21)).toBe('one');
+    const polish = new Intl.PluralRules('pl');
+    const russian = new Intl.PluralRules('ru');
+    /* PL: 21 → many ("dwadzieścia jeden DNI"), RU: 21 → one ("двадцать один день"). */
+    expect(polish.select(21)).toBe('many');
+    expect(russian.select(21)).toBe('one');
   });
 });

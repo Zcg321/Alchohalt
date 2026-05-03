@@ -1,0 +1,391 @@
+{
+  "appName": "alchohalt",
+  "settings": "Настройки",
+  "language": "Язык",
+  "clearAllData": "Очистить все данные",
+  "eraseConfirm": "Удалить все сохранённые данные? Это нельзя отменить.",
+  "eraseConfirm.subtitle": "Все записи, цели, шаблоны и настройки будут удалены. Это нельзя отменить.",
+  "eraseConfirm.typePrompt": "Введите УДАЛИТЬ для подтверждения",
+  "eraseConfirm.typeWord": "УДАЛИТЬ",
+  "eraseConfirm.confirmButton": "Удалить всё",
+  "eraseConfirm.cancelButton": "Сохранить мои данные",
+  "dataCleared": "Данные очищены",
+  "totalStdDrinks": "Всего стандартных напитков",
+  "skipToContent": "Перейти к содержимому",
+  "stats.mostFrequentHalt": "Самый частый триггер HALT",
+  "stats.vsPrev30d": "vs предыдущие 30 дней",
+  "stats.daysSinceLast": "Дней с последнего напитка",
+  "stats.shareProgress": "Поделиться прогрессом",
+  "stats.afStreak": "Серия AF",
+  "stats.best": "Лучший",
+  "stats.totalAFDays": "Всего дней без алкоголя",
+  "stats.softRestart.starting": "Сегодня — свежий старт.",
+  "stats.softRestart.restart": "Вы вернулись. {{total}} дней без алкоголя.",
+  "stats.softRestart.building": "{{count}} дней без алкоголя. Так держать.",
+  "money.savedThisMonth": "Сэкономлено в этом месяце",
+  "money.spentLast30": "Потрачено (последние 30 дней)",
+  "money.spentVsBudget": "{{spent}} из бюджета {{budget}}",
+  "money.setBudgetHint": "Установите месячный бюджет в Настройках, чтобы отслеживать экономию.",
+  "paywall.unlock": "Часть Premium.",
+  "paywall.cta": "Посмотреть планы",
+  "analytics.moodCorrelation.title": "Настроение ↔ паттерны напитков",
+  "analytics.moodCorrelation.window": "Последние {{days}} дней",
+  "analytics.moodCorrelation.empty": "Пока нет напитков в этом окне.",
+  "analytics.moodCorrelation.topMood": "Самое частое настроение",
+  "analytics.moodCorrelation.topHalt": "Самый частый триггер HALT",
+  "analytics.moodCorrelation.showBreakdown": "Показать детали",
+  "analytics.moodCorrelation.colMood": "Настроение",
+  "analytics.moodCorrelation.colHalt": "Триггер",
+  "analytics.moodCorrelation.colCount": "Напитки",
+  "analytics.moodCorrelation.colMean": "Ср. std",
+  "iconThemes.title": "Иконка приложения",
+  "iconThemes.subtitle": "Выберите, как Alchohalt отображается на главном экране.",
+  "iconThemes.platformNote": "Веб-пользователи увидят изменения после переустановки PWA. Изменения для iOS / Android применятся, когда выйдут нативные бинарные ассеты.",
+  "stats.points": "Оценка постоянства",
+  "stats.weekTotal": "Итог за неделю",
+  "stats.weeklyGoalProgress": "Прогресс недельной цели",
+  "stats.ofGoal": "от недельной цели",
+  "stats.vsLastWeek": "vs прошлая неделя",
+  "stats.increase": "рост",
+  "stats.decrease": "снижение",
+  "stats.noChange": "без изменений",
+  "stats.avgCraving30d": "Ср. тяга (30д)",
+  "stats.avgPerDay30d": "Ср. в день (30д)",
+  "stats.avgPerDrinkDay30d": "Ср. в день с напитком (30д)",
+  "stats.coping30d": "Действия совладания (30д)",
+  "stats.copingRatio": "Доля действий совладания",
+  "stats.afDays30d": "Дни AF (30д)",
+  "stats.afDaysLabel": "Дни без алкоголя",
+  "stats.streakTo30d": "Серия до 30д",
+  "stats.streakProgressLabel": "Прогресс 30-дневной серии",
+  "stats.longestTo100d": "Самая длинная серия до 100д",
+  "stats.longestStreakProgressLabel": "Прогресс самой длинной серии",
+  "stats.of100days": "из 100 дней",
+  "stats.haltCounts": "Счётчики HALT",
+  "stats.monthlySpend": "Месячные расходы",
+  "stats.monthlySpendVsBaseline": "Месячные расходы vs базовый уровень",
+  "stats.savings": "Экономия",
+  "stats.saved": "Сэкономлено",
+  "stats.showCharts": "Показать графики",
+  "stats.overBaseline": "Сверх базового на",
+  "stats.vsBaseline": "vs базовый",
+  "stats.share.afStreak": "Серия AF",
+  "stats.share.week": "Неделя",
+  "stats.share.avgPerDay": "Ср./день (30д)",
+  "stats.daysShort": "дн.",
+  "stats.std": "std",
+  "stats.progressCopied": "Прогресс скопирован в буфер обмена",
+  "stats.shareProgressDesc": "Поделиться сводкой прогресса",
+  "stats.exportStats": "Экспортировать статистику",
+  "stats.exportReady": "Загрузка статистики готова",
+  "disclaimer": "Ваши записи остаются на устройстве. Мы не можем их прочитать. Это не медицинский совет.",
+  "export": "Экспорт",
+  "import": "Импорт",
+  "add": "Добавить",
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "noDrinks": "Напитки ещё не добавлены.",
+  "edit": "Изменить",
+  "delete": "Удалить",
+  "deleteConfirm": "Удалить эту запись?",
+  "drinkDeleted": "Напиток удалён",
+  "undo": "Отменить",
+  "volume": "Объём мл",
+  "volume.placeholder": "напр. 355",
+  "abv": "ABV %",
+  "abv.placeholder": "напр. 5.0",
+  "intentionLabel": "Намерение",
+  "cravingLabel": "Тяга",
+  "craving.low": "Низкая",
+  "craving.high": "Высокая",
+  "haltLabel": "HALT",
+  "alternative": "Альтернативное действие",
+  "alternativePlaceholder": "напр. пойти на прогулку",
+  "intention_celebrate": "праздник",
+  "intention_social": "общение",
+  "intention_taste": "вкус",
+  "intention_bored": "от скуки",
+  "intention_cope": "расслабиться",
+  "intention_other": "другое",
+  "halt_hungry": "голодный",
+  "halt_angry": "сердитый",
+  "halt_lonely": "одинокий",
+  "halt_tired": "уставший",
+  "toggleDark": "Переключить тёмный режим",
+  "lightMode": "Светлый режим",
+  "darkMode": "Тёмный режим",
+  "enableReminders": "Включить напоминания",
+  "disableReminders": "Отключить напоминания",
+  "goals.title": "Цели",
+  "goals.daily": "Дневная цель",
+  "goals.weekly": "Недельная цель",
+  "goals.progress.today": "Прогресс сегодня",
+  "goals.progress.week": "Прогресс недели",
+  "goals.points": "Оценка постоянства",
+  "goals.afStreak": "Серия AF",
+  "goals.longestStreak": "Самая длинная серия AF",
+  "history.title": "История",
+  "noDrinksTitle": "Напитки не добавлены",
+  "drinkHistory": "История напитков",
+  "entry": "запись",
+  "entries": "записи",
+  "history.date": "Дата",
+  "history.kind": "Тип",
+  "history.intention": "Намерение",
+  "history.craving": "Тяга",
+  "history.halt": "HALT",
+  "history.stdDrinks": "Std напитки",
+  "history.cost": "Стоимость",
+  "history.actions": "Действия",
+  "history.edit": "Изменить",
+  "history.delete": "Удалить",
+  "history.undo": "Отменить",
+  "status.online": "Онлайн",
+  "status.offline": "Офлайн",
+  "history.deleted": "Запись удалена",
+  "toast.undo": "Отменить",
+  "reminder.prompt": "Напоминание: записать день?",
+  "reminder.log": "Записать сейчас",
+
+  "bulk.actionsLabel": "Действия группового редактирования",
+  "bulk.selectionCount.one": "{{n}} напиток выбран",
+  "bulk.selectionCount.few": "{{n}} напитка выбрано",
+  "bulk.selectionCount.many": "{{n}} напитков выбрано",
+  "bulk.done": "Готово",
+  "bulk.selectLabel": "Выбрать:",
+  "bulk.scope.today": "Сегодня",
+  "bulk.scope.week": "Эта неделя",
+  "bulk.scope.clear": "Очистить",
+  "bulk.deleteSelected": "Удалить выбранное",
+  "bulk.shiftTime": "Сдвинуть время…",
+  "bulk.scaleStd": "Масштабировать std…",
+  "bulk.deleteConfirm.one": "Удалить этот напиток? Это нельзя отменить.",
+  "bulk.deleteConfirm.few": "Удалить {{n}} напитка? Это нельзя отменить.",
+  "bulk.deleteConfirm.many": "Удалить {{n}} напитков? Это нельзя отменить.",
+
+  "ribbon.heading": "Ваши последние семь дней одним взглядом",
+  "ribbon.label": "Последние 7 дней:",
+  "ribbon.afDays.one": "{{n}} день AF",
+  "ribbon.afDays.few": "{{n}} дня AF",
+  "ribbon.afDays.many": "{{n}} дней AF",
+  "ribbon.loggedDay.one": "{{n}} день с напитком",
+  "ribbon.loggedDay.few": "{{n}} дня с напитком",
+  "ribbon.loggedDay.many": "{{n}} дней с напитком",
+  "ribbon.overCap": "{{n}} сверх дневного лимита",
+
+
+  "onboarding": {
+    "welcome": {
+      "title": "Добро пожаловать в Alchohalt",
+      "description": "Личное пространство для записи того, что вы пьёте, и наблюдения за изменениями."
+    },
+    "privacy": {
+      "title": "Ваши данные, ваше устройство",
+      "description": "Никто, включая нас, не видит ваши записи. Опциональные функции AI (выключены по умолчанию) — единственное, что может это изменить — управление в Настройки → AI."
+    },
+    "tracking": {
+      "title": "Записывайте, что пьёте",
+      "description": "Отметьте время, тип, причину и ощущения — только то, что хотите."
+    },
+    "insights": {
+      "title": "Что меняется со временем",
+      "description": "Паттерны проявляются по мере записей — на вашем устройстве. Опциональный AI Insights (выключен, пока не включите) может написать рефлексию по анонимизированной сводке."
+    },
+    "goals": {
+      "title": "Поставьте цель, если хотите",
+      "description": "Выберите дневной лимит или длину серии. Можно изменить в любой момент или полностью пропустить."
+    },
+    "ready": {
+      "title": "Готовы, когда вы готовы",
+      "description": "Добавьте свою первую запись, когда захотите. Или просто осмотритесь."
+    },
+    "quickTips": {
+      "title": "Несколько заметок",
+      "tip1": "Начните с малого. Цель можно изменить позже.",
+      "tip2": "Паттерны, которые вы видите, честны настолько, насколько честны записи.",
+      "tip3": "Поглядывайте на тренды, когда вспомните. Здесь нет таблицы лидеров.",
+      "tip4": "Можно экспортировать всё в любой момент. Это ваши данные."
+    },
+    "back": "Назад",
+    "skip": "Пропустить",
+    "skipExplore": "Пропустить и осмотреться",
+    "justLooking": "Просто покажите приложение",
+    "close": "Закрыть",
+    "next": "Далее",
+    "getStarted": "Начать"
+  },
+
+  "marketing": {
+    "tagline": "Без рекламы. Без аналитики. С квитанцией доверия.",
+    "shortTagline": "Без рекламы. Без аналитики. Ваше.",
+    "moatLine": "Криптографически мы не можем прочитать то, что вы записываете."
+  },
+
+  "diagnostics": {
+    "title": "Диагностика",
+    "description": "Вид для самонаблюдения. Ничего из этого не покидает ваш телефон.",
+    "onboarding": "Введение",
+    "onboardingCompleted": "Завершено",
+    "onboardingSkipped": "Пропущено",
+    "onboardingNotStarted": "Не начато",
+    "intentChosen": "Выбранное намерение",
+    "trackStyleChosen": "Выбранный стиль отслеживания",
+    "completedAt": "Завершено в",
+    "noChoice": "—",
+    "updateIntent": "Обновить моё намерение",
+    "historyTitle": "Предыдущие ответы",
+    "historyCount": "{{n}} предыдущих ответов"
+  },
+
+  "settings": {
+    "privacy": {
+      "heading": "Приватность и данные",
+      "tagline": "Без рекламы. Без аналитики. С квитанцией доверия.",
+      "subtitle": "Три места, где это контролируется. Сгруппированы здесь, чтобы это было одно решение вместо трёх."
+    }
+  },
+
+  "goalTemplates": {
+    "heading": "Шаблоны",
+    "subtitle": "Начните с типичной формы. Всё можно настроить.",
+    "monthOff": {
+      "title": "30 чистых дней",
+      "description": "Полный месяц без алкоголя."
+    },
+    "cutToSeven": {
+      "title": "Сократить до 7 напитков в неделю",
+      "description": "Уменьшить недельный итог до семи стандартных напитков."
+    },
+    "dryWeekdays": {
+      "title": "Сухие будни",
+      "description": "Без алкоголя с понедельника по четверг."
+    },
+    "dryTilThursday": {
+      "title": "Сухо до четверга",
+      "description": "Сдвиньте первый напиток позже в неделе."
+    },
+    "halfMyUsual": {
+      "title": "Половина обычного",
+      "description": "Сократите недельное потребление до половины среднего за прошлый месяц."
+    },
+    "ninetyDayReset": {
+      "title": "90-дневный сброс",
+      "description": "Долгий период без алкоголя для настоящего сброса."
+    },
+    "useTemplate": "Использовать шаблон",
+    "buildMyOwn": "Создать свой"
+  },
+
+  "retrospective": {
+    "promptTitle": "Прошёл месяц",
+    "promptBody": "Хотите увидеть, что изменилось в последнем окне {{label}}?",
+    "open": "Показать",
+    "dismiss": "Не сейчас",
+    "viewTitle": "Ретроспектива {{label}}",
+    "viewSubtitle": "Последние {{n}} дней vs предыдущие {{n}}.",
+    "totalDrinks": "Всего напитков",
+    "afDays": "Дни AF",
+    "avgCraving": "Ср. тяга",
+    "placeholderTitle": "Ваша ретроспектива на подходе",
+    "placeholderTomorrow": "Ваша первая ретроспектива откроется завтра — сравнение 30-дней-vs-предыдущих-30, когда накопится достаточно истории.",
+    "placeholderInDays": "Ваша первая ретроспектива откроется примерно через {{n}} дней — сравнение 30-дней-vs-предыдущих-30, когда накопится достаточно истории."
+  },
+
+  "funnel": {
+    "title": "Воронка введения",
+    "empty": "Попыток ещё не записано. Очистите данные и пройдите введение, чтобы заполнить.",
+    "subtitleOne": "Локальные счётчики по {{n}} попытке. Никогда не передаются.",
+    "subtitleMany": "Локальные счётчики по {{n}} попыткам. Никогда не передаются.",
+    "attempts": "Попытки",
+    "completed": "Завершено",
+    "completion": "Завершение",
+    "reached": "{{n}} достигло ({{pct}}%)",
+    "droppedHere": "Прервано здесь:"
+  },
+
+  "monthlyDelta": {
+    "title": "Месяц к месяцу",
+    "subtitle": "Как этот месяц сравнивается с предыдущим.",
+    "versus": "vs",
+    "totalDrinks": "Всего напитков",
+    "afDays": "Дни AF",
+    "priorTotal": "Ранее: {{n}}",
+    "priorAf": "Ранее: {{n}}",
+    "empty": "Пока недостаточно истории. Вернитесь в следующем месяце."
+  },
+
+  "goalEvolution": {
+    "title": "Вы переросли эту цель",
+    "subtitle": "День {{n}} без алкоголя. Что дальше?",
+    "dismiss": "Не сейчас",
+    "extend": {
+      "title": "Так держать",
+      "detail": "Новая цель: {{n}} дней"
+    },
+    "maintenance": {
+      "title": "Поддержание: еженедельная сверка",
+      "detail": "Перейдите на еженедельный пульс вместо серии."
+    },
+    "budget": {
+      "title": "Бюджет поддержания",
+      "detail": "Разрешить до 4 стандартных напитков в неделю."
+    }
+  },
+
+  "medicalDisclaimer": {
+    "title": "Важное медицинское уведомление",
+    "content": "Alchohalt — личный инструмент отслеживания и не предоставляет медицинских советов, диагнозов или лечения. Это приложение не заменяет профессиональную медицинскую помощь.",
+    "emergency": "Если вы в неотложной медицинской ситуации или нуждаетесь в срочной помощи с употреблением веществ — немедленно свяжитесь со скорой помощью или медицинским специалистом. На вкладке Crisis есть прямые номера."
+  },
+
+  "privacy": {
+    "title": "Ваша приватность защищена",
+    "onDevice": "Записи живут в локальной памяти телефона. Ничто не покидает устройство само. Если включите облачное резервное копирование, файл шифруется сквозным ключом, известным только вашему устройству — мы держим зашифрованный blob, а не содержимое. Опциональные функции AI (выключены по умолчанию) — единственный путь, который может это изменить; см. Настройки → AI для полного потока данных.",
+    "dataControl": "Вы полностью контролируете свои данные. Можно экспортировать, импортировать или удалить всю информацию в любое время в панели Настроек."
+  },
+
+  "support": {
+    "title": "Поддержка и отзывы",
+    "description": "Мы сами читаем ваши отзывы. Они формируют то, что создаётся."
+  },
+
+  "subscription": {
+    "title": "Подписка",
+    "coreFeatures": "Ядро — журналирование, история, серии, экономия, ресурсы кризиса — бесплатно навсегда. Premium добавляет более длинную аналитику, пользовательские шаблоны и больше.",
+    "cancellation": "Отменить можно в любой момент в настройках подписки устройства. Ничего не теряется при понижении тарифа."
+  },
+
+  "openSource": {
+    "title": "Открытый код",
+    "description": "Alchohalt — open source. Можно прочитать код, предложить изменения или собрать свою версию."
+  },
+
+  "tenure.days.one": "{{count}} день",
+  "tenure.days.few": "{{count}} дня",
+  "tenure.days.many": "{{count}} дней",
+  "tenure.months.one": "{{count}} месяц",
+  "tenure.months.few": "{{count}} месяца",
+  "tenure.months.many": "{{count}} месяцев",
+  "tenure.years.one": "{{count}} год",
+  "tenure.years.few": "{{count}} года",
+  "tenure.years.many": "{{count}} лет",
+
+  "unit.day.one": "день",
+  "unit.day.few": "дня",
+  "unit.day.many": "дней",
+  "unit.drink.one": "напиток",
+  "unit.drink.few": "напитка",
+  "unit.drink.many": "напитков",
+  "unit.entry.one": "запись",
+  "unit.entry.few": "записи",
+  "unit.entry.many": "записей",
+  "unit.row.one": "строка",
+  "unit.row.few": "строки",
+  "unit.row.many": "строк",
+  "unit.time.one": "раз",
+  "unit.time.few": "раза",
+  "unit.time.many": "раз",
+  "unit.priorAnswer.one": "{{count}} предыдущий ответ",
+  "unit.priorAnswer.few": "{{count}} предыдущих ответа",
+  "unit.priorAnswer.many": "{{count}} предыдущих ответов"
+}
