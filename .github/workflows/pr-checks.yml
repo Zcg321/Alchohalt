@@ -40,7 +40,15 @@ jobs:
       
       - name: Build
         run: npm run build
-      
+
+      # [R13-D] Bundle-size guard. Fails the PR on any bundle
+      # regression past the round-13 re-baseline (250 / 335 KB gz).
+      # Previously this lived only in repo-health-strict (post-merge),
+      # which let bundle bloat through silently. See
+      # tools/check_bundle_budget.cjs for the budget rationale.
+      - name: Bundle size check (R13 budgets — fails on regression)
+        run: npm run size:check
+
       - name: Coverage check (enforced)
         run: |
           npm run test:ci
