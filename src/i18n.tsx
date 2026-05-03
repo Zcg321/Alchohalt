@@ -3,9 +3,9 @@ import type { ReactNode } from 'react';
 import { getJSON, setJSON } from './lib/storage';
 import en from './locales/en.json';
 
-export type Lang = 'en' | 'es' | 'fr' | 'de';
+export type Lang = 'en' | 'es' | 'fr' | 'de' | 'pl' | 'ru';
 
-const SUPPORTED_LANGS: ReadonlyArray<Lang> = ['en', 'es', 'fr', 'de'];
+const SUPPORTED_LANGS: ReadonlyArray<Lang> = ['en', 'es', 'fr', 'de', 'pl', 'ru'];
 function isSupportedLang(value: string): value is Lang {
   return (SUPPORTED_LANGS as ReadonlyArray<string>).includes(value);
 }

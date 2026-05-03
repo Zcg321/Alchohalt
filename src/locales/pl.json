@@ -1,0 +1,391 @@
+{
+  "appName": "alchohalt",
+  "settings": "Ustawienia",
+  "language": "Język",
+  "clearAllData": "Wyczyść wszystkie dane",
+  "eraseConfirm": "Usunąć wszystkie zapisane dane? Tego nie można cofnąć.",
+  "eraseConfirm.subtitle": "Każdy wpis, cel, ustawienie wstępne i ustawienie zostaną usunięte. Nie można tego cofnąć.",
+  "eraseConfirm.typePrompt": "Wpisz USUŃ, aby potwierdzić",
+  "eraseConfirm.typeWord": "USUŃ",
+  "eraseConfirm.confirmButton": "Usuń wszystko",
+  "eraseConfirm.cancelButton": "Zachowaj moje dane",
+  "dataCleared": "Dane usunięte",
+  "totalStdDrinks": "Łącznie standardowych drinków",
+  "skipToContent": "Przejdź do treści",
+  "stats.mostFrequentHalt": "Najczęstszy wyzwalacz HALT",
+  "stats.vsPrev30d": "vs poprzednie 30 dni",
+  "stats.daysSinceLast": "Dni od ostatniego drinka",
+  "stats.shareProgress": "Udostępnij postęp",
+  "stats.afStreak": "Seria AF",
+  "stats.best": "Najlepsza",
+  "stats.totalAFDays": "Łączna liczba dni bez alkoholu",
+  "stats.softRestart.starting": "Dziś jest świeży start.",
+  "stats.softRestart.restart": "Wracasz. {{total}} dni bez alkoholu jak dotąd.",
+  "stats.softRestart.building": "{{count}} dni bez alkoholu. Tak trzymaj.",
+  "money.savedThisMonth": "Zaoszczędzone w tym miesiącu",
+  "money.spentLast30": "Wydane (ostatnie 30 dni)",
+  "money.spentVsBudget": "{{spent}} z budżetu {{budget}}",
+  "money.setBudgetHint": "Ustaw miesięczny budżet w Ustawieniach, aby śledzić oszczędności.",
+  "paywall.unlock": "Część Premium.",
+  "paywall.cta": "Zobacz plany",
+  "analytics.moodCorrelation.title": "Wzorce nastrój ↔ drinki",
+  "analytics.moodCorrelation.window": "Ostatnie {{days}} dni",
+  "analytics.moodCorrelation.empty": "Brak zalogowanych drinków w tym okresie.",
+  "analytics.moodCorrelation.topMood": "Najczęstszy nastrój",
+  "analytics.moodCorrelation.topHalt": "Najczęstszy wyzwalacz HALT",
+  "analytics.moodCorrelation.showBreakdown": "Pokaż szczegóły",
+  "analytics.moodCorrelation.colMood": "Nastrój",
+  "analytics.moodCorrelation.colHalt": "Wyzwalacz",
+  "analytics.moodCorrelation.colCount": "Drinki",
+  "analytics.moodCorrelation.colMean": "Śr. std",
+  "iconThemes.title": "Ikona aplikacji",
+  "iconThemes.subtitle": "Wybierz, jak Alchohalt ma wyglądać na ekranie głównym.",
+  "iconThemes.platformNote": "Użytkownicy sieci zobaczą zmianę po ponownej instalacji PWA. Zmiany na iOS / Android zostaną zastosowane, gdy w przyszłej wersji pojawią się natywne zasoby binarne.",
+  "stats.points": "Wynik konsekwencji",
+  "stats.weekTotal": "Suma tygodniowa",
+  "stats.weeklyGoalProgress": "Postęp celu tygodniowego",
+  "stats.ofGoal": "celu tygodniowego",
+  "stats.vsLastWeek": "vs zeszły tydzień",
+  "stats.increase": "wzrost",
+  "stats.decrease": "spadek",
+  "stats.noChange": "bez zmian",
+  "stats.avgCraving30d": "Śr. głód (30d)",
+  "stats.avgPerDay30d": "Śr. na dzień (30d)",
+  "stats.avgPerDrinkDay30d": "Śr. na dzień z drinkiem (30d)",
+  "stats.coping30d": "Działania radzenia sobie (30d)",
+  "stats.copingRatio": "Współczynnik radzenia sobie",
+  "stats.afDays30d": "Dni AF (30d)",
+  "stats.afDaysLabel": "Dni bez alkoholu",
+  "stats.streakTo30d": "Seria do 30d",
+  "stats.streakProgressLabel": "Postęp serii 30 dni",
+  "stats.longestTo100d": "Najdłuższa seria do 100d",
+  "stats.longestStreakProgressLabel": "Postęp najdłuższej serii",
+  "stats.of100days": "ze 100 dni",
+  "stats.haltCounts": "Liczniki HALT",
+  "stats.monthlySpend": "Miesięczne wydatki",
+  "stats.monthlySpendVsBaseline": "Miesięczne wydatki vs punkt odniesienia",
+  "stats.savings": "Oszczędności",
+  "stats.saved": "Zaoszczędzone",
+  "stats.showCharts": "Pokaż wykresy",
+  "stats.overBaseline": "Powyżej punktu odniesienia o",
+  "stats.vsBaseline": "vs punkt odniesienia",
+  "stats.share.afStreak": "Seria AF",
+  "stats.share.week": "Tydzień",
+  "stats.share.avgPerDay": "Śr./dzień (30d)",
+  "stats.daysShort": "dni",
+  "stats.std": "std",
+  "stats.progressCopied": "Postęp skopiowany do schowka",
+  "stats.shareProgressDesc": "Udostępnij podsumowanie postępu",
+  "stats.exportStats": "Eksportuj statystyki",
+  "stats.exportReady": "Pobieranie statystyk gotowe",
+  "disclaimer": "Twoje wpisy pozostają na Twoim urządzeniu. Nie możemy ich odczytać. Nie jest to porada medyczna.",
+  "export": "Eksportuj",
+  "import": "Importuj",
+  "add": "Dodaj",
+  "save": "Zapisz",
+  "cancel": "Anuluj",
+  "noDrinks": "Brak zapisanych drinków.",
+  "edit": "Edytuj",
+  "delete": "Usuń",
+  "deleteConfirm": "Usunąć ten wpis?",
+  "drinkDeleted": "Drink usunięty",
+  "undo": "Cofnij",
+  "volume": "Objętość ml",
+  "volume.placeholder": "np. 355",
+  "abv": "ABV %",
+  "abv.placeholder": "np. 5.0",
+  "intentionLabel": "Intencja",
+  "cravingLabel": "Głód",
+  "craving.low": "Niski",
+  "craving.high": "Wysoki",
+  "haltLabel": "HALT",
+  "alternative": "Alternatywne działanie",
+  "alternativePlaceholder": "np. iść na spacer",
+  "intention_celebrate": "świętowanie",
+  "intention_social": "towarzyski",
+  "intention_taste": "smak",
+  "intention_bored": "z nudów",
+  "intention_cope": "odprężenie",
+  "intention_other": "inne",
+  "halt_hungry": "głodny",
+  "halt_angry": "zły",
+  "halt_lonely": "samotny",
+  "halt_tired": "zmęczony",
+  "toggleDark": "Przełącz tryb ciemny",
+  "lightMode": "Tryb jasny",
+  "darkMode": "Tryb ciemny",
+  "enableReminders": "Włącz przypomnienia",
+  "disableReminders": "Wyłącz przypomnienia",
+  "goals.title": "Cele",
+  "goals.daily": "Cel dzienny",
+  "goals.weekly": "Cel tygodniowy",
+  "goals.progress.today": "Postęp dzisiaj",
+  "goals.progress.week": "Postęp tygodnia",
+  "goals.points": "Wynik konsekwencji",
+  "goals.afStreak": "Seria AF",
+  "goals.longestStreak": "Najdłuższa seria AF",
+  "history.title": "Historia",
+  "noDrinksTitle": "Brak zapisanych drinków",
+  "drinkHistory": "Historia drinków",
+  "entry": "wpis",
+  "entries": "wpisy",
+  "history.date": "Data",
+  "history.kind": "Typ",
+  "history.intention": "Intencja",
+  "history.craving": "Głód",
+  "history.halt": "HALT",
+  "history.stdDrinks": "Std drinki",
+  "history.cost": "Koszt",
+  "history.actions": "Akcje",
+  "history.edit": "Edytuj",
+  "history.delete": "Usuń",
+  "history.undo": "Cofnij",
+  "status.online": "Online",
+  "status.offline": "Offline",
+  "history.deleted": "Wpis usunięty",
+  "toast.undo": "Cofnij",
+  "reminder.prompt": "Przypomnienie: zaloguj swój dzień?",
+  "reminder.log": "Zaloguj teraz",
+
+  "bulk.actionsLabel": "Akcje edycji zbiorczej",
+  "bulk.selectionCount.one": "{{n}} drink wybrany",
+  "bulk.selectionCount.few": "{{n}} drinki wybrane",
+  "bulk.selectionCount.many": "{{n}} drinków wybranych",
+  "bulk.done": "Gotowe",
+  "bulk.selectLabel": "Wybierz:",
+  "bulk.scope.today": "Dzisiaj",
+  "bulk.scope.week": "Ten tydzień",
+  "bulk.scope.clear": "Wyczyść",
+  "bulk.deleteSelected": "Usuń wybrane",
+  "bulk.shiftTime": "Przesuń czas…",
+  "bulk.scaleStd": "Skaluj std…",
+  "bulk.deleteConfirm.one": "Usunąć ten drink? Nie można cofnąć.",
+  "bulk.deleteConfirm.few": "Usunąć {{n}} drinki? Nie można cofnąć.",
+  "bulk.deleteConfirm.many": "Usunąć {{n}} drinków? Nie można cofnąć.",
+
+  "ribbon.heading": "Twoje ostatnie siedem dni w skrócie",
+  "ribbon.label": "Ostatnie 7 dni:",
+  "ribbon.afDays.one": "{{n}} dzień AF",
+  "ribbon.afDays.few": "{{n}} dni AF",
+  "ribbon.afDays.many": "{{n}} dni AF",
+  "ribbon.loggedDay.one": "{{n}} dzień z drinkiem",
+  "ribbon.loggedDay.few": "{{n}} dni z drinkiem",
+  "ribbon.loggedDay.many": "{{n}} dni z drinkiem",
+  "ribbon.overCap": "{{n}} ponad dzienny limit",
+
+
+  "onboarding": {
+    "welcome": {
+      "title": "Witaj w Alchohalt",
+      "description": "Prywatna przestrzeń do zapisywania tego, co pijesz, i obserwowania zmian."
+    },
+    "privacy": {
+      "title": "Twoje dane, Twoje urządzenie",
+      "description": "Nikt inny, w tym my, nie widzi tego, co zapisujesz. Opcjonalne funkcje AI (domyślnie wyłączone) to jedyne, co może to zmienić — kontrolujesz je w Ustawienia → AI."
+    },
+    "tracking": {
+      "title": "Zapisuj to, co pijesz",
+      "description": "Zanotuj czas, rodzaj, dlaczego i jakie to było uczucie — tylko te części, które chcesz."
+    },
+    "insights": {
+      "title": "Co zmienia się z czasem",
+      "description": "Wzorce pojawiają się, gdy zapisujesz — na Twoim urządzeniu. Opcjonalne AI Insights (domyślnie wyłączone, dopóki nie włączysz) potrafi napisać refleksję na podstawie zanonimizowanego podsumowania."
+    },
+    "goals": {
+      "title": "Ustaw cel, jeśli chcesz",
+      "description": "Wybierz dzienny limit lub długość serii. Możesz zmienić w każdej chwili lub całkowicie pominąć."
+    },
+    "ready": {
+      "title": "Gotowe, kiedy będziesz",
+      "description": "Dodaj swój pierwszy wpis, kiedy chcesz. Albo po prostu rozejrzyj się."
+    },
+    "quickTips": {
+      "title": "Kilka uwag",
+      "tip1": "Zacznij od małych rzeczy. Cel można zmienić później.",
+      "tip2": "Wzorce, które widzisz, są tak uczciwe, jak Twoje wpisy.",
+      "tip3": "Zerkaj na trendy, gdy pamiętasz. Nie ma tablicy wyników.",
+      "tip4": "Możesz wszystko wyeksportować w każdej chwili. To Twoje."
+    },
+    "back": "Wstecz",
+    "skip": "Pomiń",
+    "skipExplore": "Pomiń i odkrywaj",
+    "justLooking": "Po prostu pokaż mi aplikację",
+    "close": "Zamknij",
+    "next": "Dalej",
+    "getStarted": "Zaczynamy"
+  },
+
+  "marketing": {
+    "tagline": "Bez reklam. Bez analityki. Z dołączonym pokwitowaniem zaufania.",
+    "shortTagline": "Bez reklam. Bez analityki. Twoje.",
+    "moatLine": "Kryptograficznie nie jesteśmy w stanie odczytać tego, co zapisujesz."
+  },
+
+  "diagnostics": {
+    "title": "Diagnostyka",
+    "description": "Widok dla samodzielnego eksperymentowania. Nic z tego nie opuszcza Twojego telefonu.",
+    "onboarding": "Wprowadzenie",
+    "onboardingCompleted": "Ukończone",
+    "onboardingSkipped": "Pominięte",
+    "onboardingNotStarted": "Nie rozpoczęte",
+    "intentChosen": "Wybrana intencja",
+    "trackStyleChosen": "Wybrany styl śledzenia",
+    "completedAt": "Ukończone o",
+    "noChoice": "—",
+    "updateIntent": "Zaktualizuj moją intencję",
+    "historyTitle": "Wcześniejsze odpowiedzi",
+    "historyCount": "{{n}} wcześniejszych odpowiedzi"
+  },
+
+  "settings": {
+    "privacy": {
+      "heading": "Prywatność i dane",
+      "tagline": "Bez reklam. Bez analityki. Z dołączonym pokwitowaniem zaufania.",
+      "subtitle": "Trzy miejsca, w których jest to kontrolowane. Zgrupowane tutaj, więc to jedna decyzja zamiast trzech."
+    }
+  },
+
+  "goalTemplates": {
+    "heading": "Szablony",
+    "subtitle": "Zacznij od typowego kształtu. Wszystko możesz dostosować.",
+    "monthOff": {
+      "title": "30 dni czysto",
+      "description": "Pełny miesiąc bez alkoholu."
+    },
+    "cutToSeven": {
+      "title": "Ogranicz do 7 drinków na tydzień",
+      "description": "Zmniejsz tygodniową sumę do siedmiu standardowych drinków."
+    },
+    "dryWeekdays": {
+      "title": "Suche dni powszednie",
+      "description": "Bez alkoholu od poniedziałku do czwartku."
+    },
+    "dryTilThursday": {
+      "title": "Sucho do czwartku",
+      "description": "Przesuń pierwszego drinka na późniejszy dzień tygodnia."
+    },
+    "halfMyUsual": {
+      "title": "Połowa mojej zwykłej ilości",
+      "description": "Zmniejsz tygodniowe spożycie do połowy średniej z poprzedniego miesiąca."
+    },
+    "ninetyDayReset": {
+      "title": "90-dniowy reset",
+      "description": "Długi okres bez alkoholu dla prawdziwego resetu."
+    },
+    "useTemplate": "Użyj szablonu",
+    "buildMyOwn": "Stwórz własny"
+  },
+
+  "retrospective": {
+    "promptTitle": "Minął miesiąc",
+    "promptBody": "Chcesz zobaczyć, co zmieniło się w ostatnim oknie {{label}}?",
+    "open": "Pokaż",
+    "dismiss": "Nie teraz",
+    "viewTitle": "Retrospektywa {{label}}",
+    "viewSubtitle": "Ostatnie {{n}} dni vs poprzednie {{n}}.",
+    "totalDrinks": "Łącznie drinków",
+    "afDays": "Dni AF",
+    "avgCraving": "Śr. głód",
+    "placeholderTitle": "Twoja retrospektywa nadchodzi",
+    "placeholderTomorrow": "Twoja pierwsza retrospektywa odblokuje się jutro — porównanie 30-dni-vs-poprzednie-30-dni, gdy będzie dość historii, by było uczciwe.",
+    "placeholderInDays": "Twoja pierwsza retrospektywa odblokuje się za około {{n}} dni — porównanie 30-dni-vs-poprzednie-30-dni, gdy będzie dość historii, by było uczciwe."
+  },
+
+  "funnel": {
+    "title": "Lejek wprowadzający",
+    "empty": "Nie zarejestrowano jeszcze prób. Wyczyść dane i ponów wprowadzenie, aby je wypełnić.",
+    "subtitleOne": "Liczniki na urządzeniu z {{n}} próby. Nigdy nie przesyłane.",
+    "subtitleMany": "Liczniki na urządzeniu z {{n}} prób. Nigdy nie przesyłane.",
+    "attempts": "Próby",
+    "completed": "Ukończone",
+    "completion": "Ukończenie",
+    "reached": "{{n}} osiągnęło ({{pct}}%)",
+    "droppedHere": "Porzucono tutaj:"
+  },
+
+  "monthlyDelta": {
+    "title": "Miesiąc do miesiąca",
+    "subtitle": "Jak ten miesiąc wygląda na tle poprzedniego.",
+    "versus": "vs",
+    "totalDrinks": "Łącznie drinków",
+    "afDays": "Dni AF",
+    "priorTotal": "Poprzednio: {{n}}",
+    "priorAf": "Poprzednio: {{n}}",
+    "empty": "Za mało historii. Wróć w przyszłym miesiącu."
+  },
+
+  "goalEvolution": {
+    "title": "Wyrosłeś z tego celu",
+    "subtitle": "Dzień {{n}} bez alkoholu. Co dalej?",
+    "dismiss": "Nie teraz",
+    "extend": {
+      "title": "Tak trzymaj",
+      "detail": "Nowy cel: {{n}} dni"
+    },
+    "maintenance": {
+      "title": "Utrzymanie: cotygodniowy check-in",
+      "detail": "Przejdź na cotygodniowy puls zamiast serii."
+    },
+    "budget": {
+      "title": "Budżet utrzymaniowy",
+      "detail": "Zezwól na do 4 standardowych drinków tygodniowo."
+    }
+  },
+
+  "medicalDisclaimer": {
+    "title": "Ważne zastrzeżenie medyczne",
+    "content": "Alchohalt to osobiste narzędzie do śledzenia i nie zapewnia porady medycznej, diagnozy ani leczenia. Ta aplikacja nie zastępuje profesjonalnej opieki medycznej.",
+    "emergency": "Jeśli jesteś w sytuacji medycznej lub potrzebujesz pilnej pomocy w związku z używaniem substancji, skontaktuj się natychmiast ze służbami ratunkowymi lub pracownikiem opieki zdrowotnej. Karta Crisis ma bezpośrednie numery."
+  },
+
+  "privacy": {
+    "title": "Twoja prywatność jest chroniona",
+    "onDevice": "Wpisy żyją w lokalnej pamięci telefonu. Nic nie opuszcza urządzenia samoistnie. Jeśli włączysz kopię w chmurze, plik jest szyfrowany od końca do końca kluczem znanym tylko Twojemu urządzeniu — przechowujemy zaszyfrowany blob, a nie zawartość. Opcjonalne funkcje AI (domyślnie wyłączone) to jedyna ścieżka, która może to zmienić; zobacz Ustawienia → AI dla pełnego przepływu danych.",
+    "dataControl": "Masz pełną kontrolę nad swoimi danymi. Możesz w każdej chwili wyeksportować, zaimportować lub usunąć wszystkie informacje z panelu Ustawień."
+  },
+
+  "support": {
+    "title": "Wsparcie i opinie",
+    "description": "Sami czytamy Twoje opinie. Kształtują to, co powstaje."
+  },
+
+  "subscription": {
+    "title": "Subskrypcja",
+    "coreFeatures": "Rdzeń — logowanie, historia, serie, oszczędności, zasoby kryzysowe — jest darmowy na zawsze. Premium dodaje analitykę z dłuższego horyzontu, niestandardowe ustawienia wstępne i więcej.",
+    "cancellation": "Możesz anulować w każdej chwili z poziomu ustawień subskrypcji urządzenia. Nic się nie traci po obniżeniu planu."
+  },
+
+  "openSource": {
+    "title": "Open source",
+    "description": "Alchohalt jest open source. Możesz przeczytać kod, zaproponować zmiany lub zbudować własną wersję."
+  },
+
+  "tenure.days.one": "{{count}} dzień",
+  "tenure.days.few": "{{count}} dni",
+  "tenure.days.many": "{{count}} dni",
+  "tenure.months.one": "{{count}} miesiąc",
+  "tenure.months.few": "{{count}} miesiące",
+  "tenure.months.many": "{{count}} miesięcy",
+  "tenure.years.one": "{{count}} rok",
+  "tenure.years.few": "{{count}} lata",
+  "tenure.years.many": "{{count}} lat",
+
+  "unit.day.one": "dzień",
+  "unit.day.few": "dni",
+  "unit.day.many": "dni",
+  "unit.drink.one": "drink",
+  "unit.drink.few": "drinki",
+  "unit.drink.many": "drinków",
+  "unit.entry.one": "wpis",
+  "unit.entry.few": "wpisy",
+  "unit.entry.many": "wpisów",
+  "unit.row.one": "wiersz",
+  "unit.row.few": "wiersze",
+  "unit.row.many": "wierszy",
+  "unit.time.one": "raz",
+  "unit.time.few": "razy",
+  "unit.time.many": "razy",
+  "unit.priorAnswer.one": "{{count}} wcześniejsza odpowiedź",
+  "unit.priorAnswer.few": "{{count}} wcześniejsze odpowiedzi",
+  "unit.priorAnswer.many": "{{count}} wcześniejszych odpowiedzi"
+}
