@@ -22,6 +22,7 @@ import React from 'react';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import type { Goals } from '../../types/common';
+import { useDB } from '../../store/db';
 
 interface Props {
   goals: Goals;
@@ -29,6 +30,9 @@ interface Props {
 }
 
 export default function GoalSettings({ goals, onChange }: Props) {
+  const goalNudgesEnabled = useDB((s) => s.db.settings.goalNudgesEnabled === true);
+  const setSettings = useDB((s) => s.setSettings);
+
   function handleDailyCap(e: React.ChangeEvent<HTMLInputElement>) {
     onChange({ ...goals, dailyCap: Number(e.target.value) });
   }
@@ -40,6 +44,12 @@ export default function GoalSettings({ goals, onChange }: Props) {
   }
   function handleBaselineMonthly(e: React.ChangeEvent<HTMLInputElement>) {
     onChange({ ...goals, baselineMonthlySpend: Number(e.target.value) });
+  }
+  function handleNudgesToggle(e: React.ChangeEvent<HTMLInputElement>) {
+    setSettings({
+      goalNudgesEnabled: e.target.checked,
+      goalNudgeDismissedAt: undefined,
+    });
   }
 
   return (
@@ -85,6 +95,27 @@ export default function GoalSettings({ goals, onChange }: Props) {
           min={0}
           step="0.01"
         />
+      </div>
+      {/* [R15-2] Goal-nudge opt-in. Off by default; renders an in-app
+          banner on Insights when trailing-7-day avg exceeds dailyCap.
+          One-tap dismiss suppresses for 7 days. No system notification. */}
+      <div className="pt-2">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={goalNudgesEnabled}
+            onChange={handleNudgesToggle}
+            data-testid="goal-nudges-toggle"
+            className="mt-0.5 w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500 focus:ring-2"
+            aria-label="Show goal nudges"
+          />
+          <span className="space-y-0.5">
+            <span className="block text-sm font-medium text-ink">Show goal nudges</span>
+            <span className="block text-xs text-ink-soft">
+              When your trailing-week average is above your daily cap, show a quiet banner on Insights asking if you want to revisit the goal. Once a week, dismissable.
+            </span>
+          </span>
+        </label>
       </div>
     </div>
   );

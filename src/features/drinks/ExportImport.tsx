@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
 import { useDB } from '../../store/db';
-import { createExport, validateImport, processImport, downloadData } from '../../lib/data-export';
+import { validateImport, processImport, downloadData } from '../../lib/data-export';
 import type { ExportData } from '../../lib/data-export';
 import { exportDatabaseToCSV } from '../../lib/csv-export';
+import { createExportWithAutoVerify } from '../../lib/backup-auto-verify';
 import DataImport from './DataImport';
 
 export default function ExportImport() {
   const [importing, setImporting] = useState(false);
-  const { db, wipeAll } = useDB(s => ({ db: s.db, wipeAll: s.wipeAll }));
+  const { db, wipeAll, setSettings } = useDB(s => ({
+    db: s.db,
+    wipeAll: s.wipeAll,
+    setSettings: s.setSettings,
+  }));
 
   async function doExport() {
     try {
-      const exportData = await createExport(db);
-      downloadData(exportData);
+      /* [R15-3] Round-trip the just-created export through
+       * validateImport and persist the result. The download still
+       * happens — verification is non-blocking. If it fails, the
+       * BackupAutoVerifyRibbon surfaces it next render. */
+      const { payload, verification } = await createExportWithAutoVerify(db);
+      downloadData(payload);
+      setSettings({
+        lastBackupAutoVerification: verification,
+        lastBackupRibbonDismissedTs: undefined,
+      });
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'try again';
       alert(`Couldn't save your export — ${msg}. If it keeps happening, report this at https://github.com/Zcg321/Alchohalt/issues`);

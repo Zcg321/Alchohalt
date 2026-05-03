@@ -24,6 +24,8 @@ export interface MonthSummary {
   afDays: number;
   /** Total days in the month, capped at "now" for current month */
   daysCounted: number;
+  /** [R15-1] Avg std-drinks per drinking day. 0 if no drinking days. */
+  avgPerDrinkingDay: number;
 }
 
 export interface MonthlyDelta {
@@ -36,6 +38,10 @@ export interface MonthlyDelta {
   totalChangePct: number | null;
   /** Same shape for AF days. */
   afDaysChangePct: number | null;
+  /** [R15-1] Same shape for drinking days. */
+  drinkingDaysChangePct: number | null;
+  /** [R15-1] Same shape for avg per drinking day. */
+  avgPerDrinkingDayChangePct: number | null;
 }
 
 function startOfMonth(ts: number): number {
@@ -72,13 +78,16 @@ function summarize(entries: Entry[], monthStartTs: number, monthEndTs: number, c
     1,
     Math.round((startOfDayLocal(cappedEnd) - monthStartTs) / 86400000) + 1
   );
+  const drinkingDays = dayBuckets.size;
+  const avgPerDrinkingDay = drinkingDays > 0 ? totalStdDrinks / drinkingDays : 0;
   return {
     monthStartTs,
     drinkCount: inMonth.length,
     totalStdDrinks: Number(totalStdDrinks.toFixed(2)),
-    drinkingDays: dayBuckets.size,
-    afDays: Math.max(0, daysCounted - dayBuckets.size),
+    drinkingDays,
+    afDays: Math.max(0, daysCounted - drinkingDays),
     daysCounted,
+    avgPerDrinkingDay: Number(avgPerDrinkingDay.toFixed(2)),
   };
 }
 
@@ -99,7 +108,14 @@ export function computeMonthlyDelta(entries: Entry[], now: number = Date.now()):
   const hasPriorData = entries.some((e) => e.ts >= priorStart && e.ts <= priorEnd);
 
   if (!hasPriorData) {
-    return { current, prior: null, totalChangePct: null, afDaysChangePct: null };
+    return {
+      current,
+      prior: null,
+      totalChangePct: null,
+      afDaysChangePct: null,
+      drinkingDaysChangePct: null,
+      avgPerDrinkingDayChangePct: null,
+    };
   }
 
   const prior = summarize(entries, priorStart, priorEnd, priorEnd);
@@ -109,6 +125,8 @@ export function computeMonthlyDelta(entries: Entry[], now: number = Date.now()):
     prior,
     totalChangePct: pct(current.totalStdDrinks, prior.totalStdDrinks),
     afDaysChangePct: pct(current.afDays, prior.afDays),
+    drinkingDaysChangePct: pct(current.drinkingDays, prior.drinkingDays),
+    avgPerDrinkingDayChangePct: pct(current.avgPerDrinkingDay, prior.avgPerDrinkingDay),
   };
 }
 

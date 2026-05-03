@@ -8,6 +8,8 @@ import { usePremiumFeatures } from '../subscription/subscriptionStore';
 import { useDB } from '../../store/db';
 import MonthlyDeltaPanel from './MonthlyDeltaPanel';
 import RetrospectivePanel from './RetrospectivePanel';
+import { computeGoalNudge } from '../goals/goalNudge';
+import GoalNudgeBanner from '../goals/GoalNudgeBanner';
 
 interface Props {
   drinks: Drink[];
@@ -16,6 +18,26 @@ interface Props {
 export default function InsightsPanel({ drinks }: Props) {
   const { canAccessAIInsights } = usePremiumFeatures();
   const { db } = useDB();
+
+  /* [R15-2] Goal-nudge banner. Opt-in (off by default), suppresses
+   * for 7 days after dismissal, only fires when avg-per-day exceeds
+   * the user's dailyGoalDrinks. The analyzer is pure; cheap to
+   * recompute. Goals live in settings.dailyGoalDrinks (the canonical
+   * store shape); the legacy Goals type is a UI-side projection. */
+  const dailyCap = db.settings?.dailyGoalDrinks ?? 0;
+  const goalNudgesEnabled = db.settings?.goalNudgesEnabled === true;
+  const goalNudgeDismissedAt = db.settings?.goalNudgeDismissedAt;
+  const goalNudge = useMemo(
+    () =>
+      computeGoalNudge({
+        entries: db.entries,
+        dailyCap,
+        enabled: goalNudgesEnabled,
+        dismissedAt: goalNudgeDismissedAt,
+        now: Date.now(),
+      }),
+    [db.entries, dailyCap, goalNudgesEnabled, goalNudgeDismissedAt],
+  );
 
   const insights = useMemo(() => {
     if (drinks.length === 0) return [];
@@ -79,6 +101,7 @@ export default function InsightsPanel({ drinks }: Props) {
 
   return (
     <div className="space-y-6">
+    {goalNudge && <GoalNudgeBanner nudge={goalNudge} />}
     <div className="card">
       <div className="card-header">
         <h2 className="text-xl font-semibold tracking-tight">

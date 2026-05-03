@@ -98,9 +98,11 @@ describe('[R13-4] DiagnosticsAudit panel', () => {
     expect(screen.getByTestId('audit-locale-stored')).toBeInTheDocument();
   });
 
-  it('honestly reports "not tracked" for last-backup since the verifier does not persist a ts', () => {
+  it('reports "never" for last-backup when no auto-verification has run', () => {
+    // [R15-3] R15 replaces the R13-4 "not tracked" placeholder with
+    // a real lastValue derived from settings.lastBackupAutoVerification.
     render(<DiagnosticsAudit />);
-    expect(screen.getByTestId('audit-backup-last').textContent).toMatch(/not tracked/i);
+    expect(screen.getByTestId('audit-backup-last').textContent).toMatch(/never/i);
   });
 
   it('survives missing window.matchMedia (SSR / older test envs)', () => {
