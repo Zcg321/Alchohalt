@@ -161,6 +161,13 @@ export interface Entry {
   journal?: string | undefined;
   mood?: 'happy' | 'sad' | 'anxious' | 'stressed' | 'calm' | 'excited' | 'neutral' | undefined;
   voiceTranscript?: string | undefined;
+  /**
+   * [R14-3] Free-form tags. Persisted alongside the entry so search
+   * and tag-pattern insights work across reloads. Optional and may
+   * be missing from older entries; consumers must treat absent and
+   * `[]` identically.
+   */
+  tags?: string[] | undefined;
 }
 
 export interface HealthMetric {

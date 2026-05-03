@@ -15,6 +15,7 @@
  */
 import React from 'react';
 import type { Drink } from '../../types/common';
+import { stdDrinks } from '../../lib/calc';
 import { computeTagPatterns } from './tagPatterns';
 
 interface Props {
@@ -31,12 +32,14 @@ export default function TagPatternsCard({ drinks }: Props) {
   const patterns = computeTagPatterns(drinks);
   if (patterns.length === 0) return null;
 
-  // Overall avg is needed for the comparison line. Recompute (cheap)
-  // rather than threading it from the analyzer; keeps the API narrow.
-  const totalStd = drinks.reduce(
-    (s, d) => s + (d.volumeMl * (d.abvPct / 100) * 0.789) / 14,
-    0,
-  );
+  // Overall avg is needed for the comparison line. R14-6 makes
+  // stdDrinks() jurisdiction-aware via a module-level activeSystem.
+  // Re-using stdDrinks() here keeps the displayed "vs overall"
+  // baseline numerically consistent with computeTagPatterns' own
+  // per-tag averages (which also call stdDrinks). Without this, UK
+  // users (8 g per unit) would see a US-14g overall baseline next to
+  // UK-8g per-tag rows — the deltas would render incoherent.
+  const totalStd = drinks.reduce((s, d) => s + stdDrinks(d.volumeMl, d.abvPct), 0);
   const overallAvg = drinks.length > 0 ? totalStd / drinks.length : 0;
 
   return (

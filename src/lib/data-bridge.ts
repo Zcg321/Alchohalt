@@ -43,7 +43,7 @@ export function mapLegacyIntention(intention: string): StoreIntention {
 
 // Convert legacy drink to store entry
 export function legacyDrinkToEntry(drink: LegacyDrink): Omit<Entry, 'id'> {
-  return {
+  const entry: Omit<Entry, 'id'> = {
     ts: drink.ts,
     kind: 'custom', // Default since legacy doesn't distinguish types
     stdDrinks: calculateStdDrinks(drink.volumeMl, drink.abvPct),
@@ -52,6 +52,11 @@ export function legacyDrinkToEntry(drink: LegacyDrink): Omit<Entry, 'id'> {
     halt: legacyHaltToHALT(drink.halt),
     altAction: drink.alt || undefined,
   };
+  // [R14-3] Persist tags through the save path. Without this, the
+  // form's `drink.tags` would be silently dropped here, breaking the
+  // tag search and tag-pattern surfaces for any newly-logged drink.
+  if (drink.tags && drink.tags.length > 0) entry.tags = drink.tags;
+  return entry;
 }
 
 // Convert store entry back to legacy drink format (for compatibility)
@@ -59,8 +64,8 @@ export function entryToLegacyDrink(entry: Entry): LegacyDrink {
   // Approximate reverse conversion (lossy)
   const volumeMl = Math.round(entry.stdDrinks * 355); // Assume ~beer volume
   const abvPct = Math.round((entry.stdDrinks * 14 * 100) / (volumeMl * 0.789)); // Reverse calc
-  
-  return {
+
+  const drink: LegacyDrink = {
     volumeMl: Math.min(volumeMl, 1000), // Cap at reasonable volume
     abvPct: Math.min(abvPct, 50), // Cap at reasonable ABV
     intention: entry.intention as StoreIntention, // Types are now compatible
@@ -69,6 +74,10 @@ export function entryToLegacyDrink(entry: Entry): LegacyDrink {
     alt: entry.altAction || '',
     ts: entry.ts,
   };
+  // [R14-3] Round-trip tags so persisted entries are searchable and
+  // visible in tag patterns alongside in-flight ones.
+  if (entry.tags && entry.tags.length > 0) drink.tags = entry.tags;
+  return drink;
 }
 
 // Convert legacy goals to store settings (partial)
