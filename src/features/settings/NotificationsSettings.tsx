@@ -40,6 +40,14 @@ const TYPE_LABELS: Record<NotificationType, { title: string; description: string
     description:
       'Periodic nudge to verify your last encrypted backup still unlocks.',
   },
+  /* [R13-2] Weekly recap. Off by default. Body is generated locally
+   * from your own drink log — never transmitted. Same calm rules
+   * apply (quiet hours, daily cap). */
+  weeklyRecap: {
+    title: 'Weekly recap',
+    description:
+      'Once a week: AF days, logged drinks, over-cap days, and how this week compared to the prior one. Off by default.',
+  },
 };
 
 export default function NotificationsSettings() {
