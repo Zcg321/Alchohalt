@@ -143,6 +143,19 @@ export interface Settings {
    * transmitted.
    */
   streakBreakAcknowledgedAt?: number | undefined;
+  /**
+   * [R15-2] Goal-nudge opt-in. Default off (undefined === off). When
+   * true, the in-app banner surfaces ONLY when the user is exceeding
+   * their daily-cap goal across the trailing 7 days, and only once
+   * per week (gated by goalNudgeDismissedAt). Calm-config compliant
+   * — no system notifications, banner only.
+   */
+  goalNudgesEnabled?: boolean | undefined;
+  /**
+   * [R15-2] Last time the user dismissed the goal-nudge banner.
+   * Suppresses re-showing for 7 days from this timestamp. Local-only.
+   */
+  goalNudgeDismissedAt?: number | undefined;
 }
 
 export interface Entry {
