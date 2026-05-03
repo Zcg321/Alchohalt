@@ -50,6 +50,9 @@ describe('CrisisResources (international)', () => {
     // "Other regions" block.
     expect(screen.getByText(/988 Suicide & Crisis Lifeline/i)).toBeInTheDocument();
     expect(screen.getByText(/1-800-662-4357/)).toBeInTheDocument();
-    expect(screen.getByText(/741741/)).toBeInTheDocument();
+    /* [R12-6] HOME + TEEN keyword variants of Crisis Text Line both
+     * use 741741 (same number, different routing). Match on the link
+     * text to disambiguate. */
+    expect(screen.getByRole('link', { name: /Text HOME to 741741/i })).toBeInTheDocument();
   });
 });

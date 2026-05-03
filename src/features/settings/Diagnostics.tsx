@@ -64,7 +64,7 @@ export default function Diagnostics() {
             <dd className="font-medium" data-testid="diagnostics-status">
               {statusLabel}
               {diag?.skipPath && (
-                <span className="ml-2 text-xs text-ink-soft">({diag.skipPath})</span>
+                <span className="ms-2 text-xs text-ink-soft">({diag.skipPath})</span>
               )}
             </dd>
           </div>
@@ -127,7 +127,7 @@ export default function Diagnostics() {
                 .map((row) => (
                   <li key={row.revisedAt} className="text-ink-soft">
                     <span className="font-medium text-ink">{row.intent ?? '—'}</span>
-                    <span className="ml-2">
+                    <span className="ms-2">
                       {new Date(row.revisedAt).toLocaleString()}
                     </span>
                   </li>

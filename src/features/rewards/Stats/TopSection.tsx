@@ -74,7 +74,7 @@ export default function TopSection({ data, goals, nf1, t }: Props) {
       <StatRow label={t('stats.avgCraving30d')}>{nf1.format(data.avgCraving30)}</StatRow>
       <StatRow label={t('stats.avgPerDay30d')}>
         {nf1.format(avgStd30)}
-        <span className={`ml-2 text-sm ${avgChangeColor}`}>
+        <span className={`ms-2 text-sm ${avgChangeColor}`}>
           <span aria-hidden>{avgChangeArrow}</span>
           <span className="sr-only">
             {avgChange > 0

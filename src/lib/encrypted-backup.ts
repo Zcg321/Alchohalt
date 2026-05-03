@@ -205,3 +205,118 @@ export async function downloadBackup(
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+export type VerifyBackupReport =
+  | {
+      ok: true;
+      verifiedAt: number;
+      entriesCount: number;
+      goalsCount: number;
+      presetsCount: number;
+      schemaVersion: number;
+      sizeBytes: number;
+    }
+  | {
+      ok: false;
+      error: string;
+      hint?: string;
+    };
+
+/**
+ * [R12-3] Verify a .alch-backup file is restorable WITHOUT importing it.
+ *
+ * Three-stage gate, in order:
+ *   1. Format — magic header + 4 lines + KDF params parse.
+ *   2. Crypto — Argon2id derives a key, AEAD decrypt succeeds (proves
+ *      passphrase is correct AND ciphertext hasn't been tampered with).
+ *   3. Structural — plaintext is JSON, has the shape of a DB
+ *      (entries[], settings, etc.). Counts entries.
+ *
+ * Returns a report instead of throwing so the UI can render a clear
+ * action-state ("Backup verified at 14:23. 247 entries readable.") on
+ * success or a friendly hint on failure ("That passphrase didn't unlock
+ * the file. Check capitalization."). Caller decides what to show.
+ *
+ * Voice-of-result, by failure mode:
+ *   - wrong format     → "This isn't an Alchohalt backup file."
+ *   - malformed lines  → "The backup file is incomplete or got truncated."
+ *   - bad passphrase   → "That passphrase didn't unlock the file. Check capitalization."
+ *   - corrupted DB     → "The file unlocked but the contents are damaged."
+ */
+export async function verifyBackup(
+  fileBody: string,
+  passphrase: string,
+): Promise<VerifyBackupReport> {
+  if (!passphrase) {
+    return {
+      ok: false,
+      error: 'Passphrase required to verify the backup.',
+      hint: 'Enter the passphrase you used when you exported the backup.',
+    };
+  }
+  const sizeBytes = new Blob([fileBody]).size;
+
+  let restored: DB;
+  try {
+    restored = await decryptBackup(fileBody, passphrase);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (/Unsupported backup format/i.test(message)) {
+      return {
+        ok: false,
+        error: "This isn't an Alchohalt backup file.",
+        hint: 'Make sure you picked a .alch-backup file (not a .json export).',
+      };
+    }
+    if (/malformed|KDF params|salt is the wrong length/i.test(message)) {
+      return {
+        ok: false,
+        error: 'The backup file is incomplete or got truncated.',
+        hint: 'Try downloading the file again from where you stored it.',
+      };
+    }
+    if (/Wrong passphrase|tampered/i.test(message)) {
+      return {
+        ok: false,
+        error: "That passphrase didn't unlock the file.",
+        hint: "Check capitalization. The passphrase is case-sensitive.",
+      };
+    }
+    if (/not valid JSON/i.test(message)) {
+      return {
+        ok: false,
+        error: 'The file unlocked but the contents are damaged.',
+        hint: 'This backup may be corrupted. Try a previous backup if you have one.',
+      };
+    }
+    return {
+      ok: false,
+      error: 'Could not verify the backup.',
+      hint: message,
+    };
+  }
+
+  const entries = Array.isArray(restored.entries) ? restored.entries : null;
+  const goals = Array.isArray(restored.advancedGoals) ? restored.advancedGoals : null;
+  const presets = Array.isArray(restored.presets) ? restored.presets : null;
+  const settings = restored.settings;
+  const version = typeof restored.version === 'number' ? restored.version : null;
+
+  if (!entries || !settings || version === null) {
+    return {
+      ok: false,
+      error: 'The file unlocked but the contents are damaged.',
+      hint: 'Missing core fields (entries / settings / version). Try a previous backup.',
+    };
+  }
+
+  return {
+    ok: true,
+    verifiedAt: Date.now(),
+    entriesCount: entries.length,
+    goalsCount: goals ? goals.length : 0,
+    presetsCount: presets ? presets.length : 0,
+    schemaVersion: version,
+    sizeBytes,
+  };
+}

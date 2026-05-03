@@ -7,6 +7,8 @@ import DevTools from './DevTools';
 import Diagnostics from './Diagnostics';
 import OnboardingFunnelView from './OnboardingFunnelView';
 import ExportImport from '../drinks/ExportImport';
+import BackupVerifier from '../backup/BackupVerifier';
+import NotificationsSettings from './NotificationsSettings';
 import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
@@ -155,6 +157,8 @@ export default function SettingsPanel() {
             </Button>
           </div>
           
+          <NotificationsSettings />
+
           {(settings.reminders.times||[]).length > 0 && (
             <div className="space-y-2">
               <label className="label">Active reminder times</label>
@@ -164,7 +168,7 @@ export default function SettingsPanel() {
                     {t}
                     <button 
                       aria-label={`Remove ${t}`} 
-                      className="ml-1 text-primary-500 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-200 transition-colors" 
+                      className="ms-1 text-primary-500 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-200 transition-colors" 
                       onClick={()=>remove(t)}
                     >
                       ×
@@ -232,6 +236,8 @@ export default function SettingsPanel() {
             <ExportImport />
           </div>
         </section>
+
+        <BackupVerifier />
 
         <AISettingsPanel />
 

@@ -105,6 +105,22 @@ export interface Settings {
    * undefined = feature on per build default; true = opted out.
    */
   aiRecommendationsOptOut?: boolean | undefined;
+  /**
+   * [R12-4] Calm-defaults config for local notifications. Optional /
+   * back-compat: undefined → use DEFAULT_CALM_CONFIG (max 2/day,
+   * quiet 23:00-07:00, only dailyCheckin on). See
+   * lib/notifications/calmConfig.ts for the full shape and rules.
+   */
+  calmNotifications?: {
+    quietHours?: { startHour: number; endHour: number };
+    dailyCap?: number;
+    types?: {
+      dailyCheckin?: boolean;
+      goalMilestone?: boolean;
+      retrospective?: boolean;
+      backupVerification?: boolean;
+    };
+  } | undefined;
 }
 
 export interface Entry {

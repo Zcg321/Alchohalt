@@ -331,7 +331,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
             directly above a "no medical advice" disclaimer. Replaced
             with honest non-clinical framing. Stress / sleep bullets
             also softened from clinical "analysis" to "patterns". */}
-        <ul className="text-sm opacity-90 mb-6 text-left max-w-md mx-auto space-y-1">
+        <ul className="text-sm opacity-90 mb-6 text-start max-w-md mx-auto space-y-1">
           <li>• Trends across months, not just the last week</li>
           <li>• Sleep patterns inferred from your evening logs</li>
           <li>• Which HALT states show up most often</li>
@@ -391,7 +391,7 @@ export default function PremiumWellnessDashboard({ drinks = [], className = '' }
             {healthInsights.map((insight, index) => (
               <div
                 key={index}
-                className="p-4 rounded-lg border-l-4 border-sage-500 bg-sage-50 dark:bg-sage-900/20"
+                className="p-4 rounded-lg border-s-4 border-sage-500 bg-sage-50 dark:bg-sage-900/20"
               >
                 <h4 className="font-semibold text-sm text-ink mb-2">{insight.title}</h4>
                 <p className="text-sm text-ink mb-3">

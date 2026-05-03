@@ -61,7 +61,7 @@ export function Toggle({
           'focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
         )}>
           <div className={cn(
-            'absolute left-1 inline-block rounded-full bg-white shadow-lg transform transition-transform duration-200 ease-in-out',
+            'absolute start-1 inline-block rounded-full bg-white shadow-lg transform transition-transform duration-200 ease-in-out',
             thumbSizes[size],
             checked ? translateX[size] : 'translate-x-0'
           )} />

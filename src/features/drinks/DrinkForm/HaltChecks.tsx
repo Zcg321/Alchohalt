@@ -15,7 +15,7 @@ export default function HaltChecks({ selected, onChange }: Props) {
     <fieldset>
       <legend className="block font-medium">{t('haltLabel')}</legend>
       {haltOptions.map((h) => (
-        <label key={h} className="mr-2">
+        <label key={h} className="me-2">
           <input
             type="checkbox"
             checked={selected.includes(h)}

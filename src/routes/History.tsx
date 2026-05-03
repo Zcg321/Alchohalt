@@ -55,14 +55,14 @@ export default function History() {
         <table className="min-w-full text-sm">
           <thead className="bg-neutral-100 dark:bg-neutral-900">
             <tr>
-              <th className="p-2 text-left">{t('history.date')}</th>
-              <th className="p-2 text-left">{t('history.kind')}</th>
-              <th className="p-2 text-left">{t('history.intention')}</th>
-              <th className="p-2 text-left">{t('history.craving')}</th>
-              <th className="p-2 text-left">{t('history.halt')}</th>
-              <th className="p-2 text-left">{t('history.stdDrinks')}</th>
-              <th className="p-2 text-left">{t('history.cost')}</th>
-              <th className="p-2 text-left">{t('history.actions')}</th>
+              <th className="p-2 text-start">{t('history.date')}</th>
+              <th className="p-2 text-start">{t('history.kind')}</th>
+              <th className="p-2 text-start">{t('history.intention')}</th>
+              <th className="p-2 text-start">{t('history.craving')}</th>
+              <th className="p-2 text-start">{t('history.halt')}</th>
+              <th className="p-2 text-start">{t('history.stdDrinks')}</th>
+              <th className="p-2 text-start">{t('history.cost')}</th>
+              <th className="p-2 text-start">{t('history.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -117,7 +117,7 @@ export default function History() {
                     </div>
                   ) : (
                     <div className="flex gap-1">
-                      <button className="px-2 py-1 rounded border mr-2" onClick={() => startEdit(e)}>{t('history.edit')}</button>
+                      <button className="px-2 py-1 rounded border me-2" onClick={() => startEdit(e)}>{t('history.edit')}</button>
                       <button className="px-2 py-1 rounded border" onClick={() => onDelete(e.id)}>{t('history.delete')}</button>
                     </div>
                   )}

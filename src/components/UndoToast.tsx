@@ -9,7 +9,7 @@ export function UndoToast({ show, onClose }: Props) {
   const { t } = useLanguage();
   if (!show) return null;
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-neutral-800 text-white px-4 py-3 rounded-xl shadow-lg flex gap-4 items-center z-50">
+    <div className="fixed bottom-4 start-1/2 -translate-x-1/2 bg-neutral-800 text-white px-4 py-3 rounded-xl shadow-lg flex gap-4 items-center z-50">
       <span>{t('history.deleted')}</span>
       <button
         aria-label={t('toast.undo')}

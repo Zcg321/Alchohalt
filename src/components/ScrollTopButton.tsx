@@ -17,7 +17,7 @@ export default function ScrollTopButton() {
   return (
     <button
       aria-label="Back to top"
-      className="fixed bottom-4 right-4 p-2 rounded-full bg-blue-600 text-white shadow-lg"
+      className="fixed bottom-4 end-4 p-2 rounded-full bg-blue-600 text-white shadow-lg"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
     >
       <span aria-hidden="true">↑</span>

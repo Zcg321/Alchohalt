@@ -295,7 +295,7 @@ export function CompletionStep({
       <h3 className="text-lg font-semibold mb-2">Logged.</h3>
       <p className="text-ink-soft mb-4">Thanks for taking a minute with this.</p>
       {showInsights && pattern && isPremium && (
-        <div className="mt-6 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-left">
+        <div className="mt-6 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg text-start">
           <h4 className="font-semibold mb-3 text-primary-800 dark:text-primary-300">What stands out</h4>
           {pattern.commonTriggers.length > 0 && (
             <div className="mb-3">

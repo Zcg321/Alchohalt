@@ -178,7 +178,7 @@ function DesktopTablist({ tab, onSelect }: TablistProps) {
               onClick={() => onSelect(t.id)}
               className={`px-4 py-2 rounded-md text-caption transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 ${
                 active
-                  ? 'text-ink font-medium border-l-2 border-sage-700 bg-sage-50/40'
+                  ? 'text-ink font-medium border-s-2 border-sage-700 bg-sage-50/40'
                   : 'text-ink-soft hover:text-ink hover:bg-cream-50'
               }`}
             >

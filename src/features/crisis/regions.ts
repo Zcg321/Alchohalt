@@ -55,6 +55,28 @@ export const US_PACK: RegionPack = {
       smsHint: { keyword: 'HOME', number: '741741' },
       available: '24/7',
     },
+    /* [R12-6] Teen-specific resources. Added per the round-12
+     * parent-of-teen judge walkthrough (see
+     * audit-walkthrough/round-12-judge-teen-parent.md). Visible to
+     * everyone — no classifier, no age gate. A teen recognizes
+     * themselves in the description; an adult skips past. Same
+     * posture as 988: always-on, never gated. */
+    {
+      id: 'us-teen-line',
+      name: 'Teen Line',
+      description:
+        'For callers under 18. Calls answered by trained teens, supervised by counselors. Lower friction than calling an adult-staffed hotline.',
+      phone: '1-800-852-8336',
+      available: '6pm–10pm PT, daily',
+    },
+    {
+      id: 'us-crisis-text-teen',
+      name: 'Crisis Text Line — Teen',
+      description:
+        'For callers under 18. Same number as Crisis Text Line above; texting TEEN routes you to a teen-trained counselor.',
+      smsHint: { keyword: 'TEEN', number: '741741' },
+      available: '24/7',
+    },
   ],
   ongoing: [
     {

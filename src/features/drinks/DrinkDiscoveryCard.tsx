@@ -20,7 +20,7 @@ function CardHeader({ drink }: { drink: DrinkInfo }) {
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{drink.description}</p>
         </div>
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ml-2 flex-shrink-0"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ms-2 flex-shrink-0"
           style={{ backgroundColor: drink.color + '20', color: drink.color }}
           aria-hidden="true"
         >

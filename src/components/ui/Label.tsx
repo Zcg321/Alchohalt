@@ -9,7 +9,7 @@ export function Label({ className = '', required, children, ...props }: LabelPro
   return (
     <label className={cn('label', className)} {...props}>
       {children}
-      {required && <span className="text-danger-500 ml-1">*</span>}
+      {required && <span className="text-danger-500 ms-1">*</span>}
     </label>
   );
 }

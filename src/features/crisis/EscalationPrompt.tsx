@@ -44,7 +44,7 @@ export default function EscalationPrompt({ openLog, providers = DEFAULT_PROVIDER
             >
               {p.label}
               {p.free && (
-                <span className="ml-2 px-2 py-0.5 text-xs font-normal rounded-full bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100">
+                <span className="ms-2 px-2 py-0.5 text-xs font-normal rounded-full bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100">
                   free
                 </span>
               )}

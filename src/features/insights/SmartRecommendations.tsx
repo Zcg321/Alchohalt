@@ -143,7 +143,7 @@ export default function SmartRecommendations({ drinks, goals }: Props) {
     <div className="card">
       <div className="card-header">
         <h2 className="text-xl font-semibold flex items-center">
-          <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+          <span className="w-2 h-2 bg-blue-500 rounded-full me-3"></span>
           What stands out
         </h2>
         <p className="text-sm text-ink-soft mt-1">

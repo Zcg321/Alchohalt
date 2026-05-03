@@ -432,7 +432,7 @@ export default function SyncPanel({ transport }: Props) {
                 and we cannot recover them for you.
               </p>
             </div>
-            <ol className="grid grid-cols-2 sm:grid-cols-3 gap-2 list-decimal pl-6 text-body text-ink tabular-nums" data-testid="sync-mnemonic-words">
+            <ol className="grid grid-cols-2 sm:grid-cols-3 gap-2 list-decimal ps-6 text-body text-ink tabular-nums" data-testid="sync-mnemonic-words">
               {pendingMnemonic.map((w) => (
                 <li key={w} className="font-mono">{w}</li>
               ))}

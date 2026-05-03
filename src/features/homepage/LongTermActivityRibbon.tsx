@@ -122,7 +122,7 @@ export default function LongTermActivityRibbon({ drinks, goals, className = '' }
       data-testid="long-term-activity-ribbon"
       className={`mx-auto w-full max-w-2xl px-4 ${className}`}
     >
-      <div className="rounded-2xl border-l-4 border-neutral-300 dark:border-neutral-700 bg-surface-elevated px-4 py-3 text-sm text-ink-soft">
+      <div className="rounded-2xl border-s-4 border-neutral-300 dark:border-neutral-700 bg-surface-elevated px-4 py-3 text-sm text-ink-soft">
         <h2 id="long-term-ribbon-heading" className="sr-only">
           Your last seven days at a glance
         </h2>

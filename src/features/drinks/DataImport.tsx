@@ -131,7 +131,7 @@ export default function DataImport() {
                 <label key={field} className="flex flex-col text-sm">
                   <span className="text-xs uppercase tracking-wider text-ink-soft mb-1">
                     {fieldLabel(field)}
-                    {field === 'date' && <span className="text-rose-700 ml-1">*</span>}
+                    {field === 'date' && <span className="text-rose-700 ms-1">*</span>}
                   </span>
                   <select
                     value={mapping[field] ?? ''}
@@ -186,10 +186,10 @@ export default function DataImport() {
                 <table className="w-full text-xs">
                   <thead className="bg-current/5">
                     <tr>
-                      <th className="text-left p-2">Date</th>
-                      <th className="text-left p-2">Type</th>
-                      <th className="text-right p-2">Std drinks</th>
-                      <th className="text-left p-2">Notes</th>
+                      <th className="text-start p-2">Date</th>
+                      <th className="text-start p-2">Type</th>
+                      <th className="text-end p-2">Std drinks</th>
+                      <th className="text-start p-2">Notes</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -197,7 +197,7 @@ export default function DataImport() {
                       <tr key={i} className="border-t border-current/10">
                         <td className="p-2 font-mono">{new Date(e.ts).toISOString().slice(0, 10)}</td>
                         <td className="p-2">{e.kind}</td>
-                        <td className="p-2 text-right tabular-nums">{e.stdDrinks}</td>
+                        <td className="p-2 text-end tabular-nums">{e.stdDrinks}</td>
                         <td className="p-2 truncate max-w-[16ch]">{e.notes ?? '—'}</td>
                       </tr>
                     ))}

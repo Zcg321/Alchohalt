@@ -13,7 +13,7 @@ interface Props {
 
 const CHECK_ICON = (
   <svg
-    className="mr-2 mt-0.5 h-4 w-4 shrink-0 text-green-500"
+    className="me-2 mt-0.5 h-4 w-4 shrink-0 text-green-500"
     fill="currentColor"
     viewBox="0 0 20 20"
     aria-hidden
@@ -70,14 +70,14 @@ export function PlanCard({ planId, isCurrent, isWorking, onSubscribe }: Props) {
       } ${isCurrent ? 'ring-2 ring-green-500' : 'hover:-translate-y-0.5 hover:shadow-md'} bg-white dark:bg-gray-900`}
     >
       {highlight && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+        <div className="absolute -top-3 start-1/2 -translate-x-1/2">
           <Badge variant={highlight.tone} size="sm">
             {highlight.label}
           </Badge>
         </div>
       )}
       {isCurrent && (
-        <div className="absolute -top-3 right-3">
+        <div className="absolute -top-3 end-3">
           <Badge variant="success" size="sm">
             Current
           </Badge>
