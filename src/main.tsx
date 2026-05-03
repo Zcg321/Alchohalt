@@ -9,6 +9,7 @@ import { registerSW } from './features/pwa/registerSW';
 import { bootstrapIAPOnStartup } from './features/iap/restoreEntitlement';
 import { installReminderSync } from './lib/notify';
 import { installGlobalErrorReporter } from './lib/errorReporter';
+import { configureCrashReporter } from './lib/crashReporter';
 import { installFetchWrap } from './lib/trust/receipt';
 import { LanguageProvider } from './i18n';
 import { useDB } from './store/db';
@@ -25,6 +26,43 @@ installFetchWrap();
 // can flip on a real reporter via setReporter() AFTER explicit
 // user consent — never silently.
 installGlobalErrorReporter();
+
+/* [R19-4] Wire the Sentry-compatible crash reporter. Three gates
+ * must all be true for any crash to leave the device:
+ *   1. VITE_SENTRY_DSN is set at build time
+ *   2. Once the DB hydrates, settings.crashReportsEnabled === true
+ *   3. The error survives ErrorBoundary (i.e. lands on
+ *      window.onerror or unhandledrejection)
+ * Default for #2 is undefined === off. The user opts in via
+ * Settings → Privacy → "Send crash reports to help fix bugs".
+ *
+ * The reporter is configured here at boot with the build DSN; the
+ * `enabled` flag is then synced from settings as soon as the store
+ * finishes hydrating. We deliberately do NOT subscribe to the store
+ * over the lifetime of the app — the user's choice from one session
+ * to the next is what we care about, and re-reading on next boot
+ * keeps the wiring simple.
+ */
+const CRASH_DSN =
+  typeof import.meta !== 'undefined' && import.meta.env
+    ? (import.meta.env.VITE_SENTRY_DSN as string | undefined)
+    : undefined;
+const APP_VERSION =
+  typeof import.meta !== 'undefined' && import.meta.env
+    ? (import.meta.env.VITE_APP_VERSION as string | undefined) ?? 'dev'
+    : 'dev';
+configureCrashReporter({ dsn: CRASH_DSN, release: APP_VERSION, enabled: false });
+function syncCrashOptIn(): void {
+  const s = useDB.getState().db.settings;
+  configureCrashReporter({ enabled: s.crashReportsEnabled === true });
+}
+syncCrashOptIn();
+const persistMaybe = (useDB as unknown as {
+  persist?: { hasHydrated: () => boolean; onFinishHydration: (cb: () => void) => () => void };
+}).persist;
+if (persistMaybe && !persistMaybe.hasHydrated()) {
+  persistMaybe.onFinishHydration(syncCrashOptIn);
+}
 
 registerSW();
 void bootstrapIAPOnStartup();
@@ -56,6 +94,18 @@ function announceAppReady() {
   if ((window as unknown as { __APP_READY__?: boolean }).__APP_READY__) return;
   (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ = true;
   window.dispatchEvent(new Event('alch:app-ready'));
+  /* [R19-5] Remove the cold-load splash that index.html renders.
+   * Previously done by an inline <script> in index.html; moved here
+   * so CSP can be 'script-src self' with no inline-script allowance. */
+  removeInitialLoader();
+}
+
+function removeInitialLoader() {
+  if (typeof document === 'undefined') return;
+  const loader = document.getElementById('initial-loader');
+  if (!loader) return;
+  loader.setAttribute('data-fade', 'true');
+  setTimeout(() => loader.remove(), 320);
 }
 
 if (typeof window !== 'undefined') {

@@ -27,7 +27,7 @@ beforeEach(() => {
 });
 
 describe('[R13-4] DiagnosticsAudit panel', () => {
-  it('renders the four audit fieldsets: Notifications / Accessibility / Locale / Backup', () => {
+  it('renders the audit fieldsets: Notifications / Accessibility / Locale / Storage / Backup', () => {
     render(<DiagnosticsAudit />);
     /* The legend text appears once per fieldset; getAllByText handles
      * cases where "Notifications" might match both the legend and a
@@ -35,7 +35,28 @@ describe('[R13-4] DiagnosticsAudit panel', () => {
     expect(screen.getAllByText(/Notifications/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/^Accessibility$/i)).toBeInTheDocument();
     expect(screen.getByText(/^Locale$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Storage$/i)).toBeInTheDocument();
     expect(screen.getByText(/^Backup$/i)).toBeInTheDocument();
+  });
+
+  it('[R19-3] StorageFieldset shows app-data and entry-count rows', async () => {
+    render(<DiagnosticsAudit />);
+    const appUsed = await screen.findByTestId('audit-storage-app-used');
+    expect(appUsed).toBeInTheDocument();
+    expect(appUsed.textContent).toMatch(/soft cap/);
+
+    const entryCount = await screen.findByTestId('audit-storage-entry-count');
+    expect(entryCount).toBeInTheDocument();
+    /* Default test DB has zero entries, so entry-count value renders "0". */
+    expect(entryCount.textContent).toMatch(/0/);
+  });
+
+  it('[R19-3] StorageFieldset hides warning when below 80% threshold', async () => {
+    render(<DiagnosticsAudit />);
+    /* Wait for usage to compute */
+    await screen.findByTestId('audit-storage-app-used');
+    /* Default DB is small — no warning element should render. */
+    expect(screen.queryByTestId('audit-storage-warning')).toBeNull();
   });
 
   it('shows the calm-config defaults when calmNotifications is undefined', () => {

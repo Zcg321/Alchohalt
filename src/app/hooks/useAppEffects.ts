@@ -15,7 +15,7 @@ import { useEffect, useRef } from 'react';
 import { migrateLegacyData } from '../../lib/migrate-legacy';
 import { setActiveStdDrinkSystem } from '../../lib/calc';
 import { detectStdDrinkSystemFromNavigator } from '../../lib/detectStdDrinkSystem';
-import { attachForegroundSync } from '../../lib/sync/scheduler';
+import { attachForegroundSync, attachOnlineSync } from '../../lib/sync/scheduler';
 import { attachDbBridge } from '../../lib/sync/dbBridge';
 import { entryToLegacyDrink } from '../../lib/data-bridge';
 import { hapticForEvent } from '../../shared/haptics';
@@ -32,8 +32,9 @@ export function useMigrateLegacyOnce() {
 export function useSyncBridges() {
   useEffect(() => {
     const detachForeground = attachForegroundSync();
+    const detachOnline = attachOnlineSync();
     const detachDb = attachDbBridge();
-    return () => { detachForeground(); detachDb(); };
+    return () => { detachForeground(); detachOnline(); detachDb(); };
   }, []);
 }
 

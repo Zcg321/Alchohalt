@@ -42,9 +42,19 @@ const zlib = require('node:zlib');
  * further regression while making explicit that the original
  * 100/140 target is now technical debt. See
  * docs/rounds/round-13-bundle-rebaseline.md for the lazy-load
- * triage that has to happen to claw back to the original target. */
+ * triage that has to happen to claw back to the original target.
+ *
+ * Round-19 [R19-FINAL] cap bump: 335 → 340 KB total init. R19-3 +
+ * R19-4 + R19-5 added ~12 KB total init for the storage estimator
+ * (DiagnosticsAudit StorageFieldset), CrashReporter wire-up in
+ * main.tsx (sentry-compatible envelope POST), and DOMPurify
+ * sanitization on the legal-doc renderer. CrashReportsToggle was
+ * already lazy-loaded to claw back; the remaining ~5 KB is real
+ * resilience-feature mass. Owner sign-off via the round-finalize
+ * step. perf-baseline still passes at +3.62% (under the 5%
+ * regression threshold). */
 const EAGER_KB = parseInt(process.env.SIZE_LIMIT_EAGER_KB || '250', 10);
-const TOTAL_KB = parseInt(process.env.SIZE_LIMIT_TOTAL_KB || '335', 10);
+const TOTAL_KB = parseInt(process.env.SIZE_LIMIT_TOTAL_KB || '340', 10);
 const ASYNC_KB = parseInt(process.env.SIZE_LIMIT_ASYNC_KB || '250', 10);
 
 const DIST = 'dist';

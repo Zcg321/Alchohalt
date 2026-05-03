@@ -65,6 +65,18 @@ interface SchedulerState {
   retriggerAfter: boolean;
   scheduledReason: SyncReason | null;
   runner: Runner;
+  /**
+   * [R19-1] If a sync was scheduled while the browser was offline,
+   * we record the reason and arm an `online` listener instead of
+   * silently producing a sync-error event. When the browser fires
+   * `online`, the deferred reason re-enters scheduleSync().
+   *
+   * If multiple sync triggers arrive while offline, the strongest
+   * (lowest-debounce) wins — same precedence as the timer override
+   * logic above. A `manual` deferred sync supersedes a `mutation`
+   * which supersedes a `foreground`.
+   */
+  deferredReason: SyncReason | null;
 }
 
 async function defaultRunner(): Promise<void> {
@@ -82,14 +94,43 @@ const state: SchedulerState = {
   retriggerAfter: false,
   scheduledReason: null,
   runner: defaultRunner,
+  deferredReason: null,
 };
 
 export function setSyncRunner(fn: Runner): void {
   state.runner = fn;
 }
 
+/**
+ * [R19-1] Browser online check. Wrapped so tests can stub `navigator`
+ * without leaking onto the global. When `navigator` is unavailable
+ * (e.g. node test env without happy-dom shims), we conservatively
+ * assume online — failing-open here is correct: the runner itself
+ * will produce a sync-error if the network really is down, and the
+ * deferral path only buys us a savings on activity-log noise.
+ */
+function isBrowserOnline(): boolean {
+  if (typeof navigator === 'undefined') return true;
+  if (typeof navigator.onLine !== 'boolean') return true;
+  return navigator.onLine;
+}
+
 export function scheduleSync(reason: SyncReason): void {
   const debounce = DEBOUNCE_MS[reason];
+
+  // [R19-1] Offline path — defer the sync until the browser fires
+  // `online`. A deferred reason is upgraded only if the new request
+  // is more urgent (lower debounce) than the existing deferral.
+  if (!isBrowserOnline()) {
+    if (
+      state.deferredReason === null ||
+      DEBOUNCE_MS[reason] < DEBOUNCE_MS[state.deferredReason]
+    ) {
+      state.deferredReason = reason;
+      useSyncStore.getState().recordSync('error', `offline; deferred (${reason})`);
+    }
+    return;
+  }
 
   // If a run is already in flight, don't kick off a parallel one —
   // queue an immediate retrigger after it completes.
@@ -146,6 +187,7 @@ export function __resetSchedulerForTests(): void {
   state.inFlight = false;
   state.retriggerAfter = false;
   state.scheduledReason = null;
+  state.deferredReason = null;
   state.runner = defaultRunner;
 }
 
@@ -157,12 +199,14 @@ export function __schedulerSnapshot(): {
   inFlight: boolean;
   retriggerAfter: boolean;
   scheduledReason: SyncReason | null;
+  deferredReason: SyncReason | null;
 } {
   return {
     hasTimer: state.timer !== null,
     inFlight: state.inFlight,
     retriggerAfter: state.retriggerAfter,
     scheduledReason: state.scheduledReason,
+    deferredReason: state.deferredReason,
   };
 }
 
@@ -193,5 +237,33 @@ export function attachForegroundSync(): () => void {
   return () => {
     document.removeEventListener('visibilitychange', handler);
     foregroundListenerAttached = false;
+  };
+}
+
+// ───── browser online wiring [R19-1] ─────
+//
+// When the browser transitions from offline to online, retry any sync
+// the scheduler deferred. The deferred reason is preserved so a
+// "manual" tap during offline still bypasses the foreground debounce
+// once connectivity comes back.
+
+let onlineListenerAttached = false;
+
+export function attachOnlineSync(): () => void {
+  if (onlineListenerAttached) return () => { /* no-op */ };
+  if (typeof window === 'undefined') return () => { /* no-op */ };
+
+  const handler = () => {
+    const deferred = state.deferredReason;
+    if (deferred === null) return;
+    state.deferredReason = null;
+    const enabled = useSyncStore.getState().phase === 'enabled';
+    if (enabled) scheduleSync(deferred);
+  };
+  window.addEventListener('online', handler);
+  onlineListenerAttached = true;
+  return () => {
+    window.removeEventListener('online', handler);
+    onlineListenerAttached = false;
   };
 }

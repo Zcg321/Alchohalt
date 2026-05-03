@@ -17,6 +17,7 @@
 
 import React from 'react';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { type LegalSlug } from './slugs';
 
 // Vite's `?raw` suffix imports the file content as a string at build
@@ -46,7 +47,14 @@ export default function LegalDocPage({ slug }: Props) {
   const { title, body } = DOCS[slug];
   // marked is configured for GFM by default; we render synchronously
   // since the markdown is bundled, not fetched.
-  const html = marked.parse(body, { async: false }) as string;
+  const rawHtml = marked.parse(body, { async: false }) as string;
+  /* [R19-5] Defense-in-depth: even though the markdown source is
+   * bundled at build time (not user input), running DOMPurify is
+   * cheap and pins us against any future supply-chain compromise of
+   * marked or accidental inclusion of an executable string in a legal
+   * doc. The cost is one tree walk over a few KB of HTML; runs once
+   * per legal page view. */
+  const html = DOMPurify.sanitize(rawHtml);
   return (
     <main
       id="main"

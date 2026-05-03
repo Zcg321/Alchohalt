@@ -70,9 +70,23 @@ function BreathingTimer() {
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
   const [elapsed, setElapsed] = useState(0);
+  /* [R19-2] Pause when the tab is hidden so a 5-minute background
+   * doesn't resume from "55 seconds elapsed". Mobile browsers throttle
+   * background setInterval to 1Hz already, so the CPU win is small —
+   * the UX win is real: the breath cycle should align with the user's
+   * attention. */
+  const [pageHidden, setPageHidden] = useState<boolean>(
+    typeof document !== 'undefined' && document.hidden,
+  );
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const onVisibility = () => setPageHidden(document.hidden);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, []);
 
   useEffect(() => {
-    if (!running) return;
+    if (!running || pageHidden) return;
     const id = window.setInterval(() => {
       setElapsed((s) => {
         if (s + 1 >= BREATH_TOTAL) {
@@ -84,7 +98,7 @@ function BreathingTimer() {
       });
     }, 1000);
     return () => window.clearInterval(id);
-  }, [running]);
+  }, [running, pageHidden]);
 
   function start() { setElapsed(0); setDone(false); setRunning(true); }
   function stop() { setRunning(false); setDone(false); setElapsed(0); }

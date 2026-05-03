@@ -50,9 +50,31 @@ describe('[BUG-FOUC-SPLASH] cold-load chrome', () => {
     expect(HTML).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   });
 
-  it('fade-out script removes the loader from the DOM', () => {
-    expect(HTML).toMatch(/loader\.remove/);
-    expect(HTML).toMatch(/data-fade/);
+  it('[R19-5] loader removal handled by main.tsx (no inline script in HTML)', () => {
+    /* The inline loader-removal script was extracted to src/main.tsx
+     * in R19-5 so the CSP can declare script-src 'self' with no
+     * inline-script allowance. Verify HTML contains no inline
+     * <script> bodies (a script tag with src= is fine). */
+    const inlineScript = HTML.match(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/);
+    if (inlineScript) {
+      const body = inlineScript[1]?.trim() ?? '';
+      expect(body, `unexpected inline script body: ${body.slice(0, 80)}`).toBe('');
+    }
+  });
+});
+
+describe('[R19-5] CSP meta-tag fallback', () => {
+  it('ships a Content-Security-Policy meta-tag for non-Vercel hosts', () => {
+    expect(HTML).toMatch(/<meta[^>]+http-equiv="Content-Security-Policy"/);
+  });
+
+  it('CSP forbids object-src and frame-ancestors', () => {
+    const m = HTML.match(/<meta[^>]+http-equiv="Content-Security-Policy"[^>]+content="([^"]+)"/);
+    expect(m).not.toBeNull();
+    const csp = m![1] ?? '';
+    expect(csp).toMatch(/object-src 'none'/);
+    expect(csp).toMatch(/frame-ancestors 'none'/);
+    expect(csp).toMatch(/script-src 'self'/);
   });
 });
 

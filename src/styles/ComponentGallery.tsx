@@ -85,6 +85,7 @@ function GalleryControlled() {
   );
 }
 
+// eslint-disable-next-line max-lines-per-function -- [R19-B] dev-only visual-regression baseline; sections are snapshotted by e2e/component-gallery.spec.ts. Splitting decouples the snapshot anchors from the gallery shape.
 export default function ComponentGallery({ theme }: { theme: 'light' | 'dark' }) {
   return (
     <div
