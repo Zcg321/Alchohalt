@@ -10,13 +10,16 @@ import { __resetPreferencesCacheForTests } from '../../../shared/capacitor';
 beforeEach(() => {
   __resetPreferencesCacheForTests();
   if (typeof window !== 'undefined') window.localStorage.clear();
+  // exactOptionalPropertyTypes: stdDrinkSystem is optional without
+  // | undefined, so we delete the key rather than assign undefined.
+  const current = useDB.getState().db;
+  const { stdDrinkSystem: _drop, ...settingsWithoutSys } = current.settings;
   useDB.setState({
     db: {
-      ...useDB.getState().db,
+      ...current,
       settings: {
-        ...useDB.getState().db.settings,
+        ...settingsWithoutSys,
         onboardingDiagnostics: undefined,
-        stdDrinkSystem: undefined,
       },
     },
   });

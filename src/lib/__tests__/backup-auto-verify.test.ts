@@ -4,8 +4,18 @@ import type { DB } from '../../store/db';
 
 const baseDB: DB = {
   entries: [],
-  goals: { dailyCap: 0, weeklyGoal: 0, pricePerStd: 0, baselineMonthlySpend: 0 },
-  settings: { showBAC: false, language: 'en' as 'en' | 'es' | 'de' },
+  trash: [],
+  meta: {},
+  settings: {
+    version: 1,
+    language: 'en',
+    theme: 'system',
+    dailyGoalDrinks: 0,
+    weeklyGoalDrinks: 0,
+    monthlyBudget: 0,
+    reminders: { enabled: false, times: [] },
+    showBAC: false,
+  },
   presets: [],
   advancedGoals: [],
   version: 1,
@@ -39,7 +49,7 @@ describe('[R15-3] createExportWithAutoVerify', () => {
     const result = await createExportWithAutoVerify(db);
     expect(result.verification.ok).toBe(true);
     expect(result.payload.data.entries).toHaveLength(1);
-    expect(result.payload.data.entries[0].id).toBe('e1');
+    expect(result.payload.data.entries[0]?.id).toBe('e1');
   });
 
   it('records a numeric timestamp', async () => {

@@ -21,25 +21,22 @@ export default function InsightsPanel({ drinks }: Props) {
 
   /* [R15-2] Goal-nudge banner. Opt-in (off by default), suppresses
    * for 7 days after dismissal, only fires when avg-per-day exceeds
-   * the user's dailyCap. The analyzer is pure; cheap to recompute.
-   * Defensive optional-chains here let test harnesses that build a
-   * partial DB shape (no goals object) still mount the panel — the
-   * analyzer treats undefined dailyCap as "unset" and returns null. */
+   * the user's dailyGoalDrinks. The analyzer is pure; cheap to
+   * recompute. Goals live in settings.dailyGoalDrinks (the canonical
+   * store shape); the legacy Goals type is a UI-side projection. */
+  const dailyCap = db.settings?.dailyGoalDrinks ?? 0;
+  const goalNudgesEnabled = db.settings?.goalNudgesEnabled === true;
+  const goalNudgeDismissedAt = db.settings?.goalNudgeDismissedAt;
   const goalNudge = useMemo(
     () =>
       computeGoalNudge({
         entries: db.entries,
-        dailyCap: db.goals?.dailyCap ?? 0,
-        enabled: db.settings?.goalNudgesEnabled === true,
-        dismissedAt: db.settings?.goalNudgeDismissedAt,
+        dailyCap,
+        enabled: goalNudgesEnabled,
+        dismissedAt: goalNudgeDismissedAt,
         now: Date.now(),
       }),
-    [
-      db.entries,
-      db.goals?.dailyCap,
-      db.settings?.goalNudgesEnabled,
-      db.settings?.goalNudgeDismissedAt,
-    ],
+    [db.entries, dailyCap, goalNudgesEnabled, goalNudgeDismissedAt],
   );
 
   const insights = useMemo(() => {

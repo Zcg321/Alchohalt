@@ -108,7 +108,7 @@ export default function TagExplorer({ drinks, tag, onClose }: Props) {
               key={idx}
               value={count}
               max={maxWeekday}
-              label={WEEKDAY_LABELS[idx]}
+              label={WEEKDAY_LABELS[idx] ?? ''}
             />
           ))}
         </div>

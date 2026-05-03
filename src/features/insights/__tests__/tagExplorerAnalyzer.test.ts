@@ -97,8 +97,8 @@ describe('[R15-A] tagExplorer', () => {
     }
     const detail = buildTagDetail(drinks, 'x')!;
     expect(detail.recent).toHaveLength(10);
-    expect(detail.recent[0].ts).toBe(14000);
-    expect(detail.recent[9].ts).toBe(5000);
+    expect(detail.recent[0]?.ts).toBe(14000);
+    expect(detail.recent[9]?.ts).toBe(5000);
   });
 
   it('treats undefined tags as empty list', () => {

@@ -40,13 +40,14 @@ export function buildTagDetail(
   tag: string,
 ): TagDetail | null {
   const matches = drinks.filter((d) => (d.tags ?? []).includes(tag));
-  if (matches.length === 0) return null;
+  const first = matches[0];
+  if (!first) return null;
 
   const hourBuckets = new Array<number>(24).fill(0);
   const weekdayBuckets = new Array<number>(7).fill(0);
   let totalStd = 0;
-  let earliestTs = matches[0].ts;
-  let latestTs = matches[0].ts;
+  let earliestTs = first.ts;
+  let latestTs = first.ts;
 
   for (const d of matches) {
     const std = stdDrinks(d.volumeMl, d.abvPct);
