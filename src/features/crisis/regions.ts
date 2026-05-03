@@ -131,6 +131,17 @@ export const UK_PACK: RegionPack = {
       phone: '111',
       available: '24/7',
     },
+    /* [R13-A] Youth-specific line. Same posture as US Teen Line:
+     * always-on, never gated, visible to everyone. Childline is
+     * NSPCC-run, free, and aimed at callers under 19. */
+    {
+      id: 'uk-childline',
+      name: 'Childline',
+      description:
+        'For callers under 19. Free, confidential support from trained NSPCC counsellors. Calls don’t appear on the phone bill.',
+      phone: '0800 1111',
+      available: '24/7',
+    },
   ],
   ongoing: [
     {
@@ -167,6 +178,17 @@ export const AU_PACK: RegionPack = {
       description:
         'Free, anonymous, 24/7 alcohol and other drug counselling and referral.',
       phone: '1800 250 015',
+      available: '24/7',
+    },
+    /* [R13-A] Youth-specific line. Kids Helpline is Australia’s only
+     * free, confidential 24/7 phone and online counselling for ages
+     * 5–25. Same posture as US Teen Line. */
+    {
+      id: 'au-kids-helpline',
+      name: 'Kids Helpline',
+      description:
+        'For callers ages 5–25. Free, confidential phone and online counselling. Anonymous if you want it that way.',
+      phone: '1800 55 1800',
       available: '24/7',
     },
   ],
@@ -208,6 +230,17 @@ export const CA_PACK: RegionPack = {
       phone: '1-800-565-8603',
       available: '24/7',
     },
+    /* [R13-A] Youth-specific line. Kids Help Phone is Canada’s only
+     * 24/7 e-mental-health service for young people, free and
+     * bilingual. Same posture as US Teen Line. */
+    {
+      id: 'ca-kids-help-phone',
+      name: 'Kids Help Phone',
+      description:
+        'For callers under 20. Free, confidential, bilingual (English / French) counselling. Available across Canada.',
+      phone: '1-800-668-6868',
+      available: '24/7',
+    },
   ],
   ongoing: [
     {
@@ -244,6 +277,17 @@ export const IE_PACK: RegionPack = {
       description: 'Free, confidential information and support.',
       phone: '1800 459 459',
       available: 'Mon–Fri 9:30am–5:30pm',
+    },
+    /* [R13-A] Youth-specific line. ISPCC Childline is the country’s
+     * dedicated free, confidential line for under-18s. Same posture
+     * as US Teen Line. */
+    {
+      id: 'ie-childline',
+      name: 'Childline (ISPCC)',
+      description:
+        'For callers under 18. Free, confidential listening and support from trained ISPCC volunteers.',
+      phone: '1800 66 66 66',
+      available: '24/7',
     },
   ],
   ongoing: [
