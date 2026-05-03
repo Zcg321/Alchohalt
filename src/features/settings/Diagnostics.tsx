@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
+import { pluralCount } from '../../i18n/plural';
 import IntentRevisionModal from '../onboarding/IntentRevisionModal';
 import { STD_DRINK_SYSTEM_LABELS } from '../../lib/calc';
 import { detectStdDrinkSystemFromNavigator } from '../../lib/detectStdDrinkSystem';
@@ -132,7 +133,7 @@ function JurisdictionCallout({ t }: { t: T }) {
 }
 
 export default function Diagnostics() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const diag = useDB((s) => s.db.settings.onboardingDiagnostics);
   const history = useDB((s) => s.db.settings.onboardingDiagnosticsHistory) ?? [];
   const [editing, setEditing] = useState(false);
@@ -160,9 +161,7 @@ export default function Diagnostics() {
           </button>
           {history.length > 0 && (
             <span className="text-xs text-ink-soft">
-              {t('diagnostics.historyCount', '{{n}} prior answer{{s}}')
-                .replace('{{n}}', String(history.length))
-                .replace('{{s}}', history.length === 1 ? '' : 's')}
+              {pluralCount(t, lang, 'unit.priorAnswer', history.length, `${history.length} prior answer${history.length === 1 ? '' : 's'}`)}
             </span>
           )}
         </div>

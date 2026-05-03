@@ -21,6 +21,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { DrinkSearchCriteria } from './filterDrinks';
 import { isCriteriaEmpty } from './filterDrinks';
+import { useLanguage } from '../../../i18n';
+import { pluralNoun } from '../../../i18n/plural';
 
 interface Props {
   onCriteriaChange: (criteria: DrinkSearchCriteria) => void;
@@ -152,6 +154,7 @@ export default function DrinkHistorySearch({
   totalCount,
   matchedCount,
 }: Props) {
+  const { t: translate, lang } = useLanguage();
   const [query, setQuery] = useState('');
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [dateFrom, setDateFrom] = useState('');
@@ -248,7 +251,7 @@ export default function DrinkHistorySearch({
           className="flex items-center justify-between text-caption text-ink-soft"
         >
           <span aria-live="polite">
-            {matchedCount} of {totalCount} {totalCount === 1 ? 'entry' : 'entries'} match
+            {matchedCount} of {totalCount} {pluralNoun(translate, lang, 'unit.entry', totalCount, 'entry', 'entries')} match
           </span>
           <button
             type="button"

@@ -22,6 +22,8 @@
 import React from 'react';
 import type { Drink, Goals } from '../../types/common';
 import { stdDrinks, daysSinceLastDrink, getStreakStatus, computeTotalAFDays } from '../../lib/calc';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 interface Props {
   drinks: Drink[];
@@ -103,6 +105,7 @@ export default function TodayPanel({
   onRoughNight,
   quiet = false,
 }: Props) {
+  const { t, lang } = useLanguage();
   const drinksByDay = buildDrinksByDay(drinks);
   const totalAF = computeTotalAFDays(drinksByDay);
   // Brand-new user (no entries ever) starts at Day 0.
@@ -168,7 +171,7 @@ export default function TodayPanel({
       : status.kind === 'restart'
       ? `${totalAF} alcohol-free days in your record so far`
       : milestone
-      ? `${milestone - dayCount} day${milestone - dayCount === 1 ? '' : 's'} to ${milestone}`
+      ? `${milestone - dayCount} ${pluralNoun(t, lang, 'unit.day', milestone - dayCount, 'day', 'days')} to ${milestone}`
       : null;
 
   /* [HARD-TIME-ROUND-4] In quiet mode, the hero subcopy reads as a

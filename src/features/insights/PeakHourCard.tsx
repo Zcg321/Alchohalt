@@ -14,20 +14,23 @@
 import React from 'react';
 import type { Drink } from '../../types/common';
 import { computePeakHour, formatHour12 } from './peakHour';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 interface Props {
   drinks: Drink[];
 }
 
 export default function PeakHourCard({ drinks }: Props) {
+  const { t, lang } = useLanguage();
   const stats = computePeakHour(drinks);
   if (!stats) return null;
 
   const startLabel = formatHour12(stats.peakHour);
   const endLabel = formatHour12((stats.peakHour + 1) % 24);
   const avgLabel = stats.avgDrinksOnThoseDays.toFixed(1);
-  const dayLabel = stats.daysWithPeakHour === 1 ? 'day' : 'days';
-  const drinkLabel = stats.avgDrinksOnThoseDays === 1 ? 'drink' : 'drinks';
+  const dayLabel = pluralNoun(t, lang, 'unit.day', stats.daysWithPeakHour, 'day', 'days');
+  const drinkLabel = pluralNoun(t, lang, 'unit.drink', stats.avgDrinksOnThoseDays, 'drink', 'drinks');
 
   return (
     <section

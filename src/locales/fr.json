@@ -344,5 +344,18 @@
   "tenure.months.one": "{{count}} mois",
   "tenure.months.other": "{{count}} mois",
   "tenure.years.one": "{{count}} an",
-  "tenure.years.other": "{{count}} ans"
+  "tenure.years.other": "{{count}} ans",
+
+  "unit.day.one": "jour",
+  "unit.day.other": "jours",
+  "unit.drink.one": "verre",
+  "unit.drink.other": "verres",
+  "unit.entry.one": "entrée",
+  "unit.entry.other": "entrées",
+  "unit.row.one": "ligne",
+  "unit.row.other": "lignes",
+  "unit.time.one": "fois",
+  "unit.time.other": "fois",
+  "unit.priorAnswer.one": "{{count}} réponse précédente",
+  "unit.priorAnswer.other": "{{count}} réponses précédentes"
 }

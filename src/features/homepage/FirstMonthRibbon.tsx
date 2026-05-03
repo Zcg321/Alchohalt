@@ -1,6 +1,8 @@
 // @no-smoke
 import React from 'react';
 import type { Drink } from '../../types/common';
+import { useLanguage } from '../../i18n';
+import { pluralNoun } from '../../i18n/plural';
 
 /**
  * First-month-user activity ribbon — phase-aware orientation line.
@@ -140,6 +142,7 @@ interface Props {
 }
 
 export default function FirstMonthRibbon({ drinks, className = '' }: Props) {
+  const { t, lang } = useLanguage();
   const state = computeFirstMonthState(drinks);
   if (!state) return null;
 
@@ -151,15 +154,17 @@ export default function FirstMonthRibbon({ drinks, className = '' }: Props) {
   // the next stop after day 7 is day 30, a 22-day gap that reads as
   // grindy when surfaced as a countdown. Naming the phase honors the
   // work without inventing a goalpost.
-  const loggingFragment = `${state.daysOfLogging} day${state.daysOfLogging === 1 ? '' : 's'} of logging`;
+  const dayWordLogging = pluralNoun(t, lang, 'unit.day', state.daysOfLogging, 'day', 'days');
+  const loggingFragment = `${state.daysOfLogging} ${dayWordLogging} of logging`;
   let secondHalf: string;
   if (state.phase === 'building-pattern') {
     secondHalf = ' — building a pattern.';
   } else if (state.nextMilestone !== null && state.daysUntilNext !== null) {
+    const dayWordNext = pluralNoun(t, lang, 'unit.day', state.daysUntilNext, 'day', 'days');
     const milestoneFragment =
       state.daysUntilNext === 0
         ? `you reach a ${state.nextMilestone}-day milestone today`
-        : `next milestone in ${state.daysUntilNext} day${state.daysUntilNext === 1 ? '' : 's'}`;
+        : `next milestone in ${state.daysUntilNext} ${dayWordNext}`;
     secondHalf = ` — ${milestoneFragment}.`;
   } else {
     // No milestone in reach AND not yet in building-pattern phase.
