@@ -57,190 +57,154 @@ const TYPE_LABELS: Record<NotificationType, { title: string; description: string
   },
 };
 
-/* [R13-FIXUP] UI-hidden = scheduling-not-yet-wired. Single source of
- * truth lives in calmConfig.ts so the runtime filter
- * (applyCalmRules → dropUnwiredTypes) and the UI filter agree. */
 const RENDER_HIDDEN_TYPES = SCHEDULING_NOT_YET_WIRED;
 
-export default function NotificationsSettings() {
-  const { settings, setSettings } = useDB((s) => ({
-    settings: s.db.settings,
-    setSettings: s.setSettings,
-  }));
+interface CalmSettings {
+  types: Record<NotificationType, boolean>;
+  quietHours: { startHour: number; endHour: number };
+  dailyCap: number;
+}
 
+function useCalmConfig() {
+  const { settings, setSettings } = useDB((s) => ({
+    settings: s.db.settings, setSettings: s.setSettings,
+  }));
   const stored = settings.calmNotifications ?? {};
-  const types = { ...DEFAULT_CALM_CONFIG.types, ...(stored.types ?? {}) };
+  const types = { ...DEFAULT_CALM_CONFIG.types, ...(stored.types ?? {}) } as CalmSettings['types'];
   const quietHours = stored.quietHours ?? DEFAULT_CALM_CONFIG.quietHours;
   const dailyCap = stored.dailyCap ?? DEFAULT_CALM_CONFIG.dailyCap;
 
-  /* [R13-FIXUP-2-COPILOT] One-shot migration: a stale install that
-   * toggled a now-hidden type (e.g. weeklyRecap=true from PR #46
-   * before this fixup) would have no UI to turn it back off, but
-   * the stored state would still surface in DiagnosticsAudit and
-   * (once R14 lands scheduling) start firing automatically. Force
-   * those types back to false on mount. The runtime
-   * dropUnwiredTypes() in applyCalmRules is the safety floor; this
-   * just keeps storage + UI in sync. */
   const migratedRef = useRef(false);
   useEffect(() => {
     if (migratedRef.current) return;
     const hiddenButOn = (Array.from(RENDER_HIDDEN_TYPES) as NotificationType[]).filter(
       (t) => types[t] === true,
     );
-    if (hiddenButOn.length === 0) {
-      migratedRef.current = true;
-      return;
-    }
+    if (hiddenButOn.length === 0) { migratedRef.current = true; return; }
     const cleared = { ...types };
     for (const t of hiddenButOn) cleared[t] = false;
-    setSettings?.({
-      calmNotifications: { ...stored, types: cleared },
-    });
+    setSettings?.({ calmNotifications: { ...stored, types: cleared } });
     migratedRef.current = true;
     /* eslint-disable-next-line react-hooks/exhaustive-deps -- one-shot migration */
   }, []);
 
   function setType(type: NotificationType, on: boolean) {
     hapticForEvent('settings-toggle');
-    setSettings?.({
-      calmNotifications: {
-        ...stored,
-        types: { ...types, [type]: on },
-      },
-    });
+    setSettings?.({ calmNotifications: { ...stored, types: { ...types, [type]: on } } });
   }
-
   function setQuiet(field: 'startHour' | 'endHour', hour: number) {
-    setSettings?.({
-      calmNotifications: {
-        ...stored,
-        quietHours: { ...quietHours, [field]: hour },
-      },
-    });
+    setSettings?.({ calmNotifications: { ...stored, quietHours: { ...quietHours, [field]: hour } } });
   }
-
   function setCap(cap: number) {
-    setSettings?.({
-      calmNotifications: {
-        ...stored,
-        dailyCap: cap,
-      },
-    });
+    setSettings?.({ calmNotifications: { ...stored, dailyCap: cap } });
   }
+  return { types, quietHours, dailyCap, setType, setQuiet, setCap };
+}
 
+function TypeRow({ type, meta, checked, onToggle }: {
+  type: NotificationType;
+  meta: { title: string; description: string };
+  checked: boolean;
+  onToggle: (v: boolean) => void;
+}) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer rounded-lg p-2 hover:bg-neutral-50 dark:hover:bg-neutral-900/50">
+      <input
+        type="checkbox" checked={checked}
+        onChange={(e) => onToggle(e.target.checked)}
+        className="mt-0.5 w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500 focus:ring-2"
+        data-testid={`notif-type-${type}`} aria-label={meta.title}
+      />
+      <span className="space-y-0.5">
+        <span className="block text-sm font-medium">{meta.title}</span>
+        <span className="block text-xs text-neutral-600 dark:text-neutral-400">{meta.description}</span>
+      </span>
+    </label>
+  );
+}
+
+function HourSelect({ value, onChange, testId, label }: {
+  value: number; onChange: (h: number) => void; testId: string; label: string;
+}) {
+  return (
+    <select
+      value={value} onChange={(e) => onChange(Number(e.target.value))}
+      className="input cursor-pointer" data-testid={testId} aria-label={label}
+    >
+      {Array.from({ length: 24 }, (_, h) => (
+        <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
+      ))}
+    </select>
+  );
+}
+
+function QuietHoursFieldset({ quietHours, setQuiet }: {
+  quietHours: { startHour: number; endHour: number };
+  setQuiet: (f: 'startHour' | 'endHour', h: number) => void;
+}) {
+  return (
+    <fieldset className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 space-y-3">
+      <legend className="px-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">Quiet hours</legend>
+      <p className="text-xs text-neutral-600 dark:text-neutral-400">
+        No notifications during this window. App enforces a floor of {APP_QUIET_HOURS.startHour}:00–{APP_QUIET_HOURS.endHour}:00 local — you can extend but not narrow past it.
+      </p>
+      <div className="grid grid-cols-2 gap-3">
+        <label className="space-y-1">
+          <span className="label">Quiet from</span>
+          <HourSelect value={quietHours.startHour} onChange={(h) => setQuiet('startHour', h)} testId="quiet-start" label="Quiet hours start" />
+        </label>
+        <label className="space-y-1">
+          <span className="label">Resume at</span>
+          <HourSelect value={quietHours.endHour} onChange={(h) => setQuiet('endHour', h)} testId="quiet-end" label="Quiet hours end" />
+        </label>
+      </div>
+    </fieldset>
+  );
+}
+
+function DailyCapFieldset({ dailyCap, setCap }: { dailyCap: number; setCap: (n: number) => void }) {
+  return (
+    <fieldset className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 space-y-2">
+      <legend className="px-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">Daily cap</legend>
+      <p className="text-xs text-neutral-600 dark:text-neutral-400">
+        At most this many notifications per calendar day. Default 2 &mdash; even if you set six reminder times, you&rsquo;ll see two.
+      </p>
+      <label className="flex items-center gap-3">
+        <span className="text-sm">Max per day</span>
+        <input
+          type="number" min={0} max={6} value={dailyCap}
+          onChange={(e) => setCap(Math.min(6, Math.max(0, Number(e.target.value) || 0)))}
+          className="input w-20" data-testid="daily-cap" aria-label="Daily notification cap"
+        />
+      </label>
+    </fieldset>
+  );
+}
+
+export default function NotificationsSettings() {
+  const cfg = useCalmConfig();
+  const visibleTypes = (Object.keys(TYPE_LABELS) as NotificationType[])
+    .filter((type) => !RENDER_HIDDEN_TYPES.has(type));
   return (
     <section className="card" data-testid="notifications-settings">
       <div className="card-header">
-        <h3 className="text-base font-semibold tracking-tight">
-          Notification types
-        </h3>
+        <h3 className="text-base font-semibold tracking-tight">Notification types</h3>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-          Off by default except daily check-in. Each type is permanent
-          until you toggle it back — no snooze, no nudges to re-enable.
+          Off by default except daily check-in. Each type is permanent until you toggle it back — no snooze, no nudges to re-enable.
         </p>
       </div>
       <div className="card-content space-y-4">
         <div className="space-y-2">
-          {(Object.keys(TYPE_LABELS) as NotificationType[])
-            .filter((type) => !RENDER_HIDDEN_TYPES.has(type))
-            .map((type) => {
-            const meta = TYPE_LABELS[type];
-            const checked = types[type] === true;
-            return (
-              <label
-                key={type}
-                className="flex items-start gap-3 cursor-pointer rounded-lg p-2 hover:bg-neutral-50 dark:hover:bg-neutral-900/50"
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={(e) => setType(type, e.target.checked)}
-                  className="mt-0.5 w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500 focus:ring-2"
-                  data-testid={`notif-type-${type}`}
-                  aria-label={meta.title}
-                />
-                <span className="space-y-0.5">
-                  <span className="block text-sm font-medium">
-                    {meta.title}
-                  </span>
-                  <span className="block text-xs text-neutral-600 dark:text-neutral-400">
-                    {meta.description}
-                  </span>
-                </span>
-              </label>
-            );
-          })}
-        </div>
-
-        <fieldset className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 space-y-3">
-          <legend className="px-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">
-            Quiet hours
-          </legend>
-          <p className="text-xs text-neutral-600 dark:text-neutral-400">
-            No notifications during this window. App enforces a floor
-            of {APP_QUIET_HOURS.startHour}:00–{APP_QUIET_HOURS.endHour}:00
-            local — you can extend but not narrow past it.
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            <label className="space-y-1">
-              <span className="label">Quiet from</span>
-              <select
-                value={quietHours.startHour}
-                onChange={(e) => setQuiet('startHour', Number(e.target.value))}
-                className="input cursor-pointer"
-                data-testid="quiet-start"
-                aria-label="Quiet hours start"
-              >
-                {Array.from({ length: 24 }, (_, h) => (
-                  <option key={h} value={h}>
-                    {String(h).padStart(2, '0')}:00
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-1">
-              <span className="label">Resume at</span>
-              <select
-                value={quietHours.endHour}
-                onChange={(e) => setQuiet('endHour', Number(e.target.value))}
-                className="input cursor-pointer"
-                data-testid="quiet-end"
-                aria-label="Quiet hours end"
-              >
-                {Array.from({ length: 24 }, (_, h) => (
-                  <option key={h} value={h}>
-                    {String(h).padStart(2, '0')}:00
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        </fieldset>
-
-        <fieldset className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 space-y-2">
-          <legend className="px-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">
-            Daily cap
-          </legend>
-          <p className="text-xs text-neutral-600 dark:text-neutral-400">
-            At most this many notifications per calendar day. Default
-            2 &mdash; even if you set six reminder times, you&rsquo;ll see two.
-          </p>
-          <label className="flex items-center gap-3">
-            <span className="text-sm">Max per day</span>
-            <input
-              type="number"
-              min={0}
-              max={6}
-              value={dailyCap}
-              onChange={(e) =>
-                setCap(Math.min(6, Math.max(0, Number(e.target.value) || 0)))
-              }
-              className="input w-20"
-              data-testid="daily-cap"
-              aria-label="Daily notification cap"
+          {visibleTypes.map((type) => (
+            <TypeRow
+              key={type} type={type} meta={TYPE_LABELS[type]}
+              checked={cfg.types[type] === true}
+              onToggle={(on) => cfg.setType(type, on)}
             />
-          </label>
-        </fieldset>
+          ))}
+        </div>
+        <QuietHoursFieldset quietHours={cfg.quietHours} setQuiet={cfg.setQuiet} />
+        <DailyCapFieldset dailyCap={cfg.dailyCap} setCap={cfg.setCap} />
       </div>
     </section>
   );
