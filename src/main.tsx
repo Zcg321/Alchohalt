@@ -94,6 +94,18 @@ function announceAppReady() {
   if ((window as unknown as { __APP_READY__?: boolean }).__APP_READY__) return;
   (window as unknown as { __APP_READY__?: boolean }).__APP_READY__ = true;
   window.dispatchEvent(new Event('alch:app-ready'));
+  /* [R19-5] Remove the cold-load splash that index.html renders.
+   * Previously done by an inline <script> in index.html; moved here
+   * so CSP can be 'script-src self' with no inline-script allowance. */
+  removeInitialLoader();
+}
+
+function removeInitialLoader() {
+  if (typeof document === 'undefined') return;
+  const loader = document.getElementById('initial-loader');
+  if (!loader) return;
+  loader.setAttribute('data-fade', 'true');
+  setTimeout(() => loader.remove(), 320);
 }
 
 if (typeof window !== 'undefined') {

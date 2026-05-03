@@ -12,6 +12,21 @@
       preferences independently of this meta.
     -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <!--
+      [R19-5] Content-Security-Policy fallback for hosts that don't
+      apply the vercel.json header (Capacitor WebView, file://, local
+      static-server smoke). The Vercel header is the authoritative one
+      and overrides this for the production web origin. Keep the two
+      in sync.
+
+      style-src needs 'unsafe-inline' for the splash <style> in this
+      file + Tailwind's runtime style injection. script-src is 'self'
+      only — the inline loader-removal script was moved to main.tsx
+      in this round so no inline-script allowance is needed.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.ingest.sentry.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; worker-src 'self'" />
+
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -154,15 +169,12 @@
     <!-- App root -->
     <div id="root"></div>
 
-    <!-- Remove loader when app loads -->
-    <script>
-      window.addEventListener('load', function () {
-        var loader = document.getElementById('initial-loader');
-        if (!loader) return;
-        loader.setAttribute('data-fade', 'true');
-        setTimeout(function () { loader.remove(); }, 320);
-      });
-    </script>
+    <!--
+      [R19-5] Loader removal moved into main.tsx to keep this file
+      script-tag-clean (script-src 'self', no inline scripts). The
+      bundle removes #initial-loader after first React paint via the
+      same announceAppReady() handshake.
+    -->
 
     <script type="module" src="/src/main.tsx"></script>
   </body>
