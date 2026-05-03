@@ -39,6 +39,7 @@ import {
   subscribe,
   type TrustEvent,
 } from '../../lib/trust/receipt';
+import { buildPrintableReceipt } from '../../lib/trust/printableReceipt';
 import { getJSON, setJSON } from '../../lib/storage';
 
 const STORAGE_KEY = 'trust-receipt-enabled';
@@ -172,6 +173,30 @@ export default function TrustReceipt() {
     void setJSON(STORAGE_KEY, next);
   };
 
+  /* [R15-4] Open the printable receipt in a new window via blob URL.
+   * The user invokes the platform print dialog (Ctrl+P / Cmd+P) and
+   * picks "Save as PDF" if they want an archival copy. We open it in
+   * a new tab rather than try to auto-print — auto-print is brittle
+   * cross-browser, and the user often wants to scroll through first. */
+  const handlePrint = () => {
+    const html = buildPrintableReceipt({
+      events,
+      generatedAt: Date.now(),
+    });
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, '_blank');
+    if (!win) {
+      // Popup blocked; fall back to navigating current tab. Last
+      // resort — usually the user's popup-blocker prompts and lets
+      // them through on retry.
+      window.location.href = url;
+    }
+    /* Don't revoke immediately — give the new window a few seconds
+     * to fully load + render before we tear down the blob URL. */
+    setTimeout(() => URL.revokeObjectURL(url), 30_000);
+  };
+
   const reversed = enabled ? [...events].reverse() : [];
 
   return (
@@ -200,9 +225,19 @@ export default function TrustReceipt() {
             Show trust receipt
           </Toggle>
           {enabled ? (
-            <Button variant="ghost" size="sm" onClick={clearTrustEvents}>
-              Clear log
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePrint}
+                data-testid="trust-receipt-print"
+              >
+                Save / print
+              </Button>
+              <Button variant="ghost" size="sm" onClick={clearTrustEvents}>
+                Clear log
+              </Button>
+            </div>
           ) : null}
         </div>
 
