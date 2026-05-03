@@ -8,9 +8,15 @@
  *
  * Empty state: "No drinks logged yet. Today's a fresh start."
  */
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo, useState } from 'react';
 import type { Drink, DrinkPreset, Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
+import DrinkHistorySearch from '../../features/drinks/DrinkHistorySearch';
+import {
+  filterDrinks,
+  isCriteriaEmpty,
+  type DrinkSearchCriteria,
+} from '../../features/drinks/DrinkHistorySearch/filterDrinks';
 
 const DrinkForm = React.lazy(() => import('../../features/drinks/DrinkForm'));
 const DrinkList = React.lazy(() => import('../../features/drinks/DrinkList'));
@@ -47,6 +53,17 @@ export default function TrackTab({
 }: Props) {
   const empty = drinks.length === 0;
 
+  // [R14-2] History search/filter. State lives here so the search bar
+  // and DrinkList stay decoupled — the bar only emits criteria; the
+  // list never knows about search.
+  const [criteria, setCriteria] = useState<DrinkSearchCriteria>({});
+  const filteredDrinks = useMemo(
+    () => filterDrinks(drinks, criteria),
+    [drinks, criteria],
+  );
+  const filterActive = !isCriteriaEmpty(criteria);
+  const noMatches = filterActive && filteredDrinks.length === 0;
+
   return (
     <main id="main" className="mx-auto w-full max-w-2xl px-4 py-section-y-mobile lg:py-section-y-desktop space-y-8">
       <header className="text-center">
@@ -75,19 +92,38 @@ export default function TrackTab({
             <p className="mt-1 text-caption text-ink-soft">Today&rsquo;s a fresh start. Add an entry above when you&rsquo;d like.</p>
           </div>
         ) : (
-          <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-            <DrinkList
-              drinks={drinks}
-              onEdit={onStartEdit}
-              onDelete={(ts: number) => {
-                const drink = drinks.find((d) => d.ts === ts);
-                if (drink) onDeleteDrink(drink);
-              }}
-              onBulkDelete={onBulkDelete}
-              onBulkShiftTime={onBulkShiftTime}
-              onBulkScaleStd={onBulkScaleStd}
+          <>
+            <DrinkHistorySearch
+              onCriteriaChange={setCriteria}
+              totalCount={drinks.length}
+              matchedCount={filteredDrinks.length}
             />
-          </Suspense>
+            {noMatches ? (
+              <div
+                data-testid="track-history-no-matches"
+                className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center"
+              >
+                <p className="text-body text-ink">No drinks match your search.</p>
+                <p className="mt-1 text-caption text-ink-soft">
+                  Adjust the filters above to widen the range.
+                </p>
+              </div>
+            ) : (
+              <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+                <DrinkList
+                  drinks={filteredDrinks}
+                  onEdit={onStartEdit}
+                  onDelete={(ts: number) => {
+                    const drink = drinks.find((d) => d.ts === ts);
+                    if (drink) onDeleteDrink(drink);
+                  }}
+                  onBulkDelete={onBulkDelete}
+                  onBulkShiftTime={onBulkShiftTime}
+                  onBulkScaleStd={onBulkScaleStd}
+                />
+              </Suspense>
+            )}
+          </>
         )}
       </section>
 
