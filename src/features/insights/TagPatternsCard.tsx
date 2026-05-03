@@ -15,10 +15,11 @@
  *   - If no patterns surface, the card renders nothing (no "no
  *     patterns yet" placeholder — the absence speaks for itself).
  */
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import type { Drink } from '../../types/common';
 import { stdDrinks } from '../../lib/calc';
-import { computeTagPatterns } from './tagPatterns';
+import { runTagPatterns } from '../../workers/insightsWorkerClient';
+import { useInsightWorker } from './useInsightWorker';
 import TagExplorer from './TagExplorer';
 import { useLanguage } from '../../i18n';
 import { pluralNoun } from '../../i18n/plural';
@@ -31,11 +32,18 @@ function fmt(n: number): string {
   return n.toFixed(2);
 }
 
+/* [R21-1] computeTagPatterns runs off-thread via the insights worker.
+ * In jsdom (tests) the client falls back to sync; the brief loading
+ * window collapses to one microtask. We don't render a placeholder —
+ * the card's existing "no patterns surface, render nothing" rule
+ * already handles the empty state, and a flash of skeleton would be
+ * worse than the silent gap. */
 export default function TagPatternsCard({ drinks }: Props) {
   const { t, lang } = useLanguage();
   const [openTag, setOpenTag] = useState<string | null>(null);
-  const patterns = computeTagPatterns(drinks);
-  if (patterns.length === 0) return null;
+  const fn = useCallback(() => runTagPatterns(drinks), [drinks]);
+  const { data: patterns } = useInsightWorker(fn, [fn]);
+  if (!patterns || patterns.length === 0) return null;
 
   // R14-6 makes stdDrinks() jurisdiction-aware via a module-level
   // activeSystem; re-using it here keeps the displayed "vs overall"
