@@ -17,10 +17,20 @@
  *   node tools/perf_baseline.cjs            (or `--check`)
  *     Read baseline + measure current + diff. Exit 0 if all metrics
  *     within +5% of baseline; exit 1 with a clear diff if any regress.
+ *     Exit 1 if perf-baseline.json is missing (R13-FIXUP — silent
+ *     bypass would defeat the regression guard).
  *
  *   node tools/perf_baseline.cjs --update
  *     Measure current + write to perf-baseline.json. Run this on
- *     every merge to main to keep the baseline rolling.
+ *     every merge to main to keep the baseline rolling. Notes field
+ *     records that the baseline was produced via --update.
+ *
+ *   node tools/perf_baseline.cjs --bootstrap-or-update   (R13-FIXUP)
+ *     If perf-baseline.json is missing, seed it with the current
+ *     measurement and exit 0; otherwise behaves like --update. Use
+ *     when first wiring this gate into a repo. Notes field records
+ *     that the baseline was bootstrapped (not regenerated) so a
+ *     reader knows the provenance.
  *
  *   node tools/perf_baseline.cjs --json
  *     Print the current measurements as JSON; no baseline comparison.
