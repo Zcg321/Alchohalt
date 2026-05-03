@@ -354,5 +354,12 @@
   "openSource": {
     "title": "Open source",
     "description": "Alchohalt is open source. You can read the code, suggest changes, or build your own version."
-  }
+  },
+
+  "tenure.days.one": "{{count}} day",
+  "tenure.days.other": "{{count}} days",
+  "tenure.months.one": "{{count}} month",
+  "tenure.months.other": "{{count}} months",
+  "tenure.years.one": "{{count}} year",
+  "tenure.years.other": "{{count}} years"
 }

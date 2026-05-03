@@ -19,13 +19,15 @@ function makeDrink(ts: number): Drink {
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
 describe('Milestones — quiet dated entries (replaces Levels/Points)', () => {
-  it('lists all five canonical milestones', () => {
+  it('lists all canonical milestones, including the [R17-1] 2yr/5yr tiers', () => {
     render(<Milestones drinks={[]} />);
     expect(screen.getByText(/First alcohol-free day/i)).toBeInTheDocument();
     expect(screen.getByText(/1 week alcohol-free/i)).toBeInTheDocument();
     expect(screen.getByText(/30 days alcohol-free/i)).toBeInTheDocument();
     expect(screen.getByText(/90 days alcohol-free/i)).toBeInTheDocument();
     expect(screen.getByText(/1 year alcohol-free/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 years alcohol-free/i)).toBeInTheDocument();
+    expect(screen.getByText(/5 years alcohol-free/i)).toBeInTheDocument();
   });
 
   it('all unreached when no drinks history', () => {

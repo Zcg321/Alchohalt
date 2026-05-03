@@ -8,7 +8,7 @@ import {
   type NotificationType,
 } from '../../lib/notifications/calmConfig';
 import { REGISTRY } from '../experiments/registry';
-import { readExposures } from '../experiments/bucket';
+import { readExposures, getDeviceBucket, assignVariant } from '../experiments/bucket';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -185,13 +185,61 @@ function BackupFieldset() {
   );
 }
 
+function ActiveExperimentsTable({ exposures }: { exposures: ReturnType<typeof readExposures> }) {
+  /* [R17-B] Per-experiment row: key + current arm assignment + how
+   * many times exposure has been recorded for that experiment. The
+   * arm is computed deterministically from the device bucket so it
+   * matches what useExperiment() returned at the live call sites
+   * (no risk of the audit panel disagreeing with the running app). */
+  const active = REGISTRY.filter((e) => e.status === 'active');
+  if (active.length === 0) return null;
+
+  let bucket = '';
+  try { bucket = getDeviceBucket(); } catch { /* localStorage disabled */ }
+
+  return (
+    <div className="mt-3 space-y-2" data-testid="audit-exp-active-table">
+      <p className={LEGEND_CLASS}>Active experiments</p>
+      <ul className="space-y-1.5">
+        {active.map((exp) => {
+          let arm = '—';
+          try {
+            if (bucket) arm = assignVariant(exp, bucket);
+          } catch {
+            arm = '— (misconfigured)';
+          }
+          const count = exposures.filter((e) => e.key === exp.key).length;
+          return (
+            <li
+              key={exp.key}
+              className="flex items-baseline justify-between gap-3 text-xs"
+              data-testid={`audit-exp-row-${exp.key}`}
+            >
+              <span className="font-mono text-ink-soft truncate">{exp.key}</span>
+              <span className="flex-shrink-0 tabular-nums text-ink">
+                arm: <strong className="font-semibold">{arm}</strong>
+                {' · '}
+                <span data-testid={`audit-exp-count-${exp.key}`}>
+                  {count} exposure{count === 1 ? '' : 's'}
+                </span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 function ExperimentsFieldset() {
   /* [R14-4] Surfaces the experiments-scaffold state on-device.
-   * When the registry is empty (R14-4 ships dormant), this reads
-   * "no experiments registered" and the audit row stays a single line.
-   * Once the owner activates an experiment, this section starts
-   * showing recent exposures so they can verify on-device that the
-   * scaffold is working without any network telemetry. */
+   * When the registry is empty, this reads "no experiments registered"
+   * and the audit row stays a single line. Once the owner activates
+   * an experiment, this section shows arm assignments + exposures.
+   *
+   * [R17-B] Per-experiment arm + exposure count surfaced via the
+   * ActiveExperimentsTable so the owner can verify on-device which
+   * arm this build is showing them and how often exposures fire. */
   const active = REGISTRY.filter((e) => e.status === 'active');
   const exposures = readExposures();
   const recentExposures = exposures.slice(-5).reverse();
@@ -207,7 +255,7 @@ function ExperimentsFieldset() {
         />
         <AuditRow
           label="Active"
-          value={active.length === 0 ? 'none' : active.map((e) => e.key).join(', ')}
+          value={active.length === 0 ? 'none' : String(active.length)}
           testid="audit-exp-active"
         />
         <AuditRow
@@ -216,15 +264,21 @@ function ExperimentsFieldset() {
           testid="audit-exp-exposures"
         />
       </dl>
+      <ActiveExperimentsTable exposures={exposures} />
       {recentExposures.length > 0 && (
-        <ul className="mt-2 space-y-1 text-xs text-ink-subtle" data-testid="audit-exp-recent">
-          {recentExposures.map((e, i) => (
-            <li key={i}>
-              {new Date(e.ts).toISOString().slice(0, 19).replace('T', ' ')} ·{' '}
-              {e.key} → {e.variant}
-            </li>
-          ))}
-        </ul>
+        <details className="mt-2">
+          <summary className="text-xs text-ink-subtle cursor-pointer">
+            Recent exposures (last 5)
+          </summary>
+          <ul className="mt-2 space-y-1 text-xs text-ink-subtle" data-testid="audit-exp-recent">
+            {recentExposures.map((e, i) => (
+              <li key={i}>
+                {new Date(e.ts).toISOString().slice(0, 19).replace('T', ' ')} ·{' '}
+                {e.key} → {e.variant}
+              </li>
+            ))}
+          </ul>
+        </details>
       )}
       <p className="text-xs text-ink-subtle">
         Variant assignment is deterministic and stays on this device. No

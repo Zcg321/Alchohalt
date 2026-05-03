@@ -36,6 +36,12 @@ interface Milestone {
   reachedSubtitle?: string | undefined;
 }
 
+/* [R17-1] Two-year + five-year milestones. The original ladder
+ * topped out at 365, which was right for the first year of the app's
+ * audience but falls short for users with multi-year recovery arcs
+ * who keep the app installed as a continuity surface. The added tiers
+ * follow the same voice-guideline pattern: each subtitle earns its
+ * own moment, no exclamation marks, observation-over-celebration. */
 const MILESTONES: Milestone[] = [
   { id: 'first-day',  label: 'First alcohol-free day', days: 1,
     reachedSubtitle: 'You did the hardest part — starting.' },
@@ -47,6 +53,10 @@ const MILESTONES: Milestone[] = [
     reachedSubtitle: '90 days. Your body has noticed.' },
   { id: 'one-year',   label: '1 year alcohol-free',    days: 365,
     reachedSubtitle: 'A year. Pause and let that land.' },
+  { id: 'two-year',   label: '2 years alcohol-free',   days: 365 * 2,
+    reachedSubtitle: 'Two years. This is who you are now, not what you’re trying to be.' },
+  { id: 'five-year',  label: '5 years alcohol-free',   days: 365 * 5,
+    reachedSubtitle: 'Five years. The version of you that started this would barely recognize today.' },
 ];
 
 interface Props {

@@ -20,6 +20,7 @@ const TagPatternsCard = React.lazy(() => import('../../features/insights/TagPatt
 const PeakHourCard = React.lazy(() => import('../../features/insights/PeakHourCard'));
 const MoneySavedWidget = React.lazy(() => import('../../features/money/MoneySavedWidget'));
 const Milestones = React.lazy(() => import('../../features/milestones/Milestones'));
+const LoggingTenure = React.lazy(() => import('../../features/milestones/LoggingTenure'));
 const PremiumWellnessDashboard = React.lazy(() => import('../../features/wellness/PremiumWellnessDashboard'));
 const AIInsightsTile = React.lazy(() => import('../../features/ai/AIInsightsTile'));
 const EnhancedMoodTracker = React.lazy(() => import('../../features/mood/EnhancedMoodTracker'));
@@ -92,6 +93,14 @@ export default function InsightsTab({ drinks, goals }: Props) {
           now goes to a quiet dated-milestone list. No XP, no "next level". */}
       <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
         <Milestones drinks={drinks} />
+      </Suspense>
+
+      {/* [R17-1] Tenure surface for long-term users whose pattern is
+          irregular — separate from streaks so the through-line of
+          "you've been showing up" doesn't reset on a single drink.
+          Self-hides under 90 days. */}
+      <Suspense fallback={null}>
+        <LoggingTenure drinks={drinks} />
       </Suspense>
 
       {/* Mood IQ moved off home -> Insights sub-flow. */}

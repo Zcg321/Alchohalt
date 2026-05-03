@@ -46,6 +46,14 @@ export default function About() {
           <p>
             {t('medicalDisclaimer.content', 'Alchohalt is a personal tracking tool and does not provide medical advice, diagnosis, or treatment. This app is not a substitute for professional medical care.')}
           </p>
+          {/* [R17-6] Clinician-judge addition. Self-monitoring,
+              goal-setting, and pattern feedback ARE legitimate
+              clinical-intervention components. Naming the gap
+              explicitly closes the most likely "is this app
+              practicing medicine without a license" critique. */}
+          <p>
+            {t('medicalDisclaimer.notIntervention', 'Some features here (self-monitoring, goal-setting, pattern insights) resemble components of clinical interventions but are not delivery of clinical care. They\'re personal-use tools — work with a clinician for anything intervention-shaped.')}
+          </p>
           <p>
             {t('medicalDisclaimer.emergency', 'If you\'re in a medical emergency or need urgent help with substance use, contact emergency services or a healthcare professional right now. The Crisis tab has direct numbers.')}
           </p>

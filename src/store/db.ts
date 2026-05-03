@@ -276,7 +276,7 @@ function defaults(): DB {
   };
 }
 
-type Store = {
+export type Store = {
   db: DB;
   todayTotal: number;
   weekTotal: number;

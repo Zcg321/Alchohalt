@@ -3,6 +3,8 @@ import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import DiagnosticsAudit from '../DiagnosticsAudit';
 import { useDB } from '../../../store/db';
+import { REGISTRY } from '../../experiments/registry';
+import { recordExposure, clearExposures } from '../../experiments/bucket';
 
 /* [R13-4] Read-only audit panel — surfaces what the app is doing
  * right now (notifications, accessibility, locale, backup). Tests
@@ -110,6 +112,46 @@ describe('[R13-4] DiagnosticsAudit panel', () => {
     Object.defineProperty(window, 'matchMedia', { value: undefined, writable: true });
     expect(() => render(<DiagnosticsAudit />)).not.toThrow();
     Object.defineProperty(window, 'matchMedia', { value: orig, writable: true });
+  });
+
+  describe('[R17-B] active-experiment arm + exposure surfacing', () => {
+    beforeEach(() => clearExposures());
+
+    it('renders one row per active experiment with arm + exposure count', () => {
+      render(<DiagnosticsAudit />);
+      const activeExperiments = REGISTRY.filter((e) => e.status === 'active');
+      // R16 ships at least the onboarding-chip + goal-nudge experiments active.
+      expect(activeExperiments.length).toBeGreaterThan(0);
+      for (const exp of activeExperiments) {
+        const row = screen.getByTestId(`audit-exp-row-${exp.key}`);
+        expect(row).toBeInTheDocument();
+        // Arm label format: "arm: <variant> · N exposure[s]"
+        expect(row.textContent).toMatch(/arm:/);
+        expect(row.textContent).toMatch(/exposure/);
+      }
+    });
+
+    it('counts recorded exposures per experiment key', () => {
+      const active = REGISTRY.filter((e) => e.status === 'active');
+      if (active.length === 0) return;
+      const first = active[0]!;
+      recordExposure(first.key, first.variants[0]!);
+      recordExposure(first.key, first.variants[0]!);
+      recordExposure(first.key, first.variants[0]!);
+      render(<DiagnosticsAudit />);
+      const cell = screen.getByTestId(`audit-exp-count-${first.key}`);
+      expect(cell.textContent).toMatch(/3 exposures/);
+    });
+
+    it('reads the singular form when exactly one exposure has fired', () => {
+      const active = REGISTRY.filter((e) => e.status === 'active');
+      if (active.length === 0) return;
+      const first = active[0]!;
+      recordExposure(first.key, first.variants[0]!);
+      render(<DiagnosticsAudit />);
+      const cell = screen.getByTestId(`audit-exp-count-${first.key}`);
+      expect(cell.textContent?.trim()).toBe('1 exposure');
+    });
   });
 
   it('matchMedia returning a matching reduced-motion query reflects in the audit row', () => {
