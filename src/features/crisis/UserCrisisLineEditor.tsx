@@ -30,6 +30,83 @@ interface Props {
 const INPUT_CLASSES =
   'w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-sage-500';
 
+interface FieldProps {
+  label: string;
+  inputType: 'text' | 'tel';
+  value: string;
+  onChange: (next: string) => void;
+  placeholder: string;
+  testId: string;
+  maxLength: number;
+}
+function Field({ label, inputType, value, onChange, placeholder, testId, maxLength }: FieldProps) {
+  return (
+    <label className="block">
+      <span className="block text-caption text-ink-soft mb-1">{label}</span>
+      <input
+        type={inputType}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        data-testid={testId}
+        className={INPUT_CLASSES}
+        maxLength={maxLength}
+      />
+    </label>
+  );
+}
+
+interface ActionsProps {
+  canSave: boolean;
+  hasSaved: boolean;
+  isSaved: boolean;
+  onClear: () => void;
+}
+function Actions({ canSave, hasSaved, isSaved, onClear }: ActionsProps) {
+  return (
+    <div className="flex flex-wrap items-center gap-3 pt-1">
+      <button
+        type="submit"
+        disabled={!canSave}
+        data-testid="user-crisis-line-save"
+        className="rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {hasSaved ? 'Update' : 'Save'}
+      </button>
+      {hasSaved ? (
+        <button
+          type="button"
+          onClick={onClear}
+          data-testid="user-crisis-line-clear"
+          className="text-sm text-ink-soft underline underline-offset-2 hover:text-ink"
+        >
+          Remove
+        </button>
+      ) : null}
+      {isSaved ? (
+        <span className="text-caption text-ink-subtle" data-testid="user-crisis-line-saved-marker">
+          Saved.
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function Heading() {
+  return (
+    <header>
+      <h3 id="user-crisis-line-heading" className="text-h4 text-ink">
+        Add your own crisis line
+      </h3>
+      <p className="mt-1 text-caption text-ink-soft">
+        If you have a local crisis line you trust, add it here. It will
+        show first in the Crisis tab, above the regional list. Stays on
+        your device.
+      </p>
+    </header>
+  );
+}
+
 export default function UserCrisisLineEditor({ className = '' }: Props) {
   const userCrisisLine = useDB((s) => s.db.settings.userCrisisLine);
   const setSettings = useDB((s) => s.setSettings);
@@ -74,80 +151,18 @@ export default function UserCrisisLineEditor({ className = '' }: Props) {
       className={`rounded-2xl border border-border-soft bg-surface-elevated p-card space-y-3 ${className}`}
       aria-labelledby="user-crisis-line-heading"
     >
-      <header>
-        <h3 id="user-crisis-line-heading" className="text-h4 text-ink">
-          Add your own crisis line
-        </h3>
-        <p className="mt-1 text-caption text-ink-soft">
-          If you have a local crisis line you trust, add it here. It will
-          show first in the Crisis tab, above the regional list. Stays on
-          your device.
-        </p>
-      </header>
+      <Heading />
       <form onSubmit={handleSave} className="space-y-3">
-        <label className="block">
-          <span className="block text-caption text-ink-soft mb-1">Name</span>
-          <input
-            type="text"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="e.g. Lifeline (Australia)"
-            data-testid="user-crisis-line-label"
-            className={INPUT_CLASSES}
-            maxLength={80}
-          />
-        </label>
-        <label className="block">
-          <span className="block text-caption text-ink-soft mb-1">Phone number</span>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="e.g. 13 11 14"
-            data-testid="user-crisis-line-phone"
-            className={INPUT_CLASSES}
-            maxLength={40}
-          />
-        </label>
-        <label className="block">
-          <span className="block text-caption text-ink-soft mb-1">
-            Description (optional)
-          </span>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="What this line is for"
-            data-testid="user-crisis-line-description"
-            className={INPUT_CLASSES}
-            maxLength={140}
-          />
-        </label>
-        <div className="flex flex-wrap items-center gap-3 pt-1">
-          <button
-            type="submit"
-            disabled={!canSave}
-            data-testid="user-crisis-line-save"
-            className="rounded-full bg-sage-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sage-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {userCrisisLine ? 'Update' : 'Save'}
-          </button>
-          {userCrisisLine ? (
-            <button
-              type="button"
-              onClick={handleClear}
-              data-testid="user-crisis-line-clear"
-              className="text-sm text-ink-soft underline underline-offset-2 hover:text-ink"
-            >
-              Remove
-            </button>
-          ) : null}
-          {isSaved ? (
-            <span className="text-caption text-ink-subtle" data-testid="user-crisis-line-saved-marker">
-              Saved.
-            </span>
-          ) : null}
-        </div>
+        <Field label="Name" inputType="text" value={label} onChange={setLabel}
+          placeholder="e.g. Lifeline (Australia)"
+          testId="user-crisis-line-label" maxLength={80} />
+        <Field label="Phone number" inputType="tel" value={phone} onChange={setPhone}
+          placeholder="e.g. 13 11 14"
+          testId="user-crisis-line-phone" maxLength={40} />
+        <Field label="Description (optional)" inputType="text" value={description} onChange={setDescription}
+          placeholder="What this line is for"
+          testId="user-crisis-line-description" maxLength={140} />
+        <Actions canSave={canSave} hasSaved={!!userCrisisLine} isSaved={isSaved} onClear={handleClear} />
       </form>
     </section>
   );
