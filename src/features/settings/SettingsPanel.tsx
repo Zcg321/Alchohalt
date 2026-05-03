@@ -13,6 +13,7 @@ import NotificationsSettings from './NotificationsSettings';
 import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
+import ReplayOnboardingButton from './ReplayOnboardingButton';
 import AISettingsPanel from '../ai/AISettingsPanel';
 import PrivacyStatus from './PrivacyStatus';
 import TrustReceipt from './TrustReceipt';
@@ -295,6 +296,7 @@ export default function SettingsPanel() {
         <Diagnostics />
         <DiagnosticsAudit />
         <OnboardingFunnelView />
+        <ReplayOnboardingButton />
       </section>
 
       <section
