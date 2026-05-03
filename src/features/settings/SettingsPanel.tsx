@@ -7,6 +7,7 @@ import DevTools from './DevTools';
 import Diagnostics from './Diagnostics';
 import OnboardingFunnelView from './OnboardingFunnelView';
 import ExportImport from '../drinks/ExportImport';
+import BackupVerifier from '../backup/BackupVerifier';
 import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
@@ -232,6 +233,8 @@ export default function SettingsPanel() {
             <ExportImport />
           </div>
         </section>
+
+        <BackupVerifier />
 
         <AISettingsPanel />
 
