@@ -22,6 +22,8 @@
 
 import React from 'react';
 import type { Drink } from '../../types/common';
+import { useLanguage } from '../../i18n';
+import { pluralCount } from '../../i18n/plural';
 
 interface Props {
   drinks: Drink[];
@@ -37,25 +39,37 @@ export function computeTenureDays(drinks: Drink[], now: number = Date.now()): nu
   return Math.max(0, Math.floor((now - earliest) / DAY_MS));
 }
 
-function formatTenure(days: number): string {
+/* [R17-5] Locale-aware plural formatting. Uses pluralCount with
+ * tenure.* keys; falls back to English-shaped strings for any
+ * locale not yet localized. */
+export function formatTenure(
+  days: number,
+  t: (k: string, fb?: string) => string,
+  lang: string,
+): string {
   if (days < 365) {
     const months = Math.floor(days / 30);
-    if (months >= 6) return `${months} months`;
-    return `${days} days`;
+    if (months >= 6) {
+      return pluralCount(t, lang, 'tenure.months', months, `${months} months`);
+    }
+    return pluralCount(t, lang, 'tenure.days', days, `${days} days`);
   }
   const years = Math.floor(days / 365);
   const remainderMonths = Math.floor((days - years * 365) / 30);
   if (years >= 2 && remainderMonths >= 1) {
-    return `${years} years, ${remainderMonths} month${remainderMonths === 1 ? '' : 's'}`;
+    const yearsPart = pluralCount(t, lang, 'tenure.years', years, `${years} years`);
+    const monthsPart = pluralCount(t, lang, 'tenure.months', remainderMonths, `${remainderMonths} month${remainderMonths === 1 ? '' : 's'}`);
+    return `${yearsPart}, ${monthsPart}`;
   }
-  return `${years} year${years === 1 ? '' : 's'}`;
+  return pluralCount(t, lang, 'tenure.years', years, `${years} year${years === 1 ? '' : 's'}`);
 }
 
 export default function LoggingTenure({ drinks, className = '' }: Props) {
+  const { t, lang } = useLanguage();
   const tenure = computeTenureDays(drinks);
   if (tenure < MIN_TENURE_DAYS) return null;
 
-  const tenureLabel = formatTenure(tenure);
+  const tenureLabel = formatTenure(tenure, t, lang);
   return (
     <section
       className={`card ${className}`}

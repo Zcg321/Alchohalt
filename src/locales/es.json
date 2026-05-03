@@ -337,5 +337,12 @@
   "support": {
     "title": "Soporte y comentarios",
     "description": "Leemos tus comentarios nosotros mismos. Dan forma a lo que se construye."
-  }
+  },
+
+  "tenure.days.one": "{{count}} día",
+  "tenure.days.other": "{{count}} días",
+  "tenure.months.one": "{{count}} mes",
+  "tenure.months.other": "{{count}} meses",
+  "tenure.years.one": "{{count}} año",
+  "tenure.years.other": "{{count}} años"
 }

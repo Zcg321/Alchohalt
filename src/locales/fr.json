@@ -337,5 +337,12 @@
   "openSource": {
     "title": "Open source",
     "description": "Alchohalt est un logiciel open source. Vous pouvez consulter notre code, contribuer ou créer votre propre version."
-  }
+  },
+
+  "tenure.days.one": "{{count}} jour",
+  "tenure.days.other": "{{count}} jours",
+  "tenure.months.one": "{{count}} mois",
+  "tenure.months.other": "{{count}} mois",
+  "tenure.years.one": "{{count}} an",
+  "tenure.years.other": "{{count}} ans"
 }

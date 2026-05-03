@@ -337,5 +337,12 @@
   "openSource": {
     "title": "Open Source",
     "description": "Alchohalt ist Open-Source-Software. Du kannst den Code einsehen, Verbesserungen beitragen oder deine eigene Version bauen."
-  }
+  },
+
+  "tenure.days.one": "{{count}} Tag",
+  "tenure.days.other": "{{count}} Tage",
+  "tenure.months.one": "{{count}} Monat",
+  "tenure.months.other": "{{count}} Monate",
+  "tenure.years.one": "{{count}} Jahr",
+  "tenure.years.other": "{{count}} Jahre"
 }
