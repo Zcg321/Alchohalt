@@ -48,6 +48,7 @@
  */
 
 import { useSyncStore } from './syncStore';
+import { registerCloudSyncRetry } from './backgroundSync';
 
 export type SyncReason = 'foreground' | 'mutation' | 'manual';
 
@@ -129,6 +130,12 @@ export function scheduleSync(reason: SyncReason): void {
       state.deferredReason = reason;
       useSyncStore.getState().recordSync('error', `offline; deferred (${reason})`);
     }
+    /* [R20-2] Register a Background Sync tag with the SW so the
+     * retry fires when network returns even if the user closed
+     * every tab. No-op on Safari/Firefox (no Background Sync API)
+     * — those browsers fall back to the main-thread `online`
+     * listener that only fires while the app is open. */
+    void registerCloudSyncRetry();
     return;
   }
 

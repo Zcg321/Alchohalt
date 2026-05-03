@@ -23,9 +23,11 @@ describe('[R20-1] yieldToIdle', () => {
     vi.stubGlobal('window', { requestIdleCallback: undefined });
     const start = Date.now();
     await yieldToIdle();
-    /* setTimeout(1) — should resolve quickly but at minimum
-     * have yielded the microtask queue. */
-    expect(Date.now() - start).toBeLessThan(50);
+    /* setTimeout(1) — should resolve quickly. CI variance: a busy
+     * runner can take ≥50ms to schedule the timer callback (saw 57ms
+     * once on shared CI), so the budget is 200ms — still proves the
+     * fallback didn't hang. */
+    expect(Date.now() - start).toBeLessThan(200);
   });
 });
 

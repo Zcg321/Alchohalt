@@ -82,6 +82,10 @@ export default defineConfig(() => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+          /* [R20-2] sw-custom.js carries the Background Sync event
+           * handler; Workbox imports it at SW init so 'sync' events
+           * fire even when the app is closed. */
+          importScripts: ['sw-custom.js'],
           navigateFallback: '/index.html',
           runtimeCaching: [
             {
