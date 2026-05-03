@@ -2,6 +2,7 @@
 import React from 'react';
 import type { Drink, Goals } from '../../types/common';
 import { stdDrinks } from '../../lib/calc';
+import { useLanguage } from '../../i18n';
 
 /**
  * Long-term-user activity ribbon — last-7-days snapshot.
@@ -101,18 +102,26 @@ interface Props {
   className?: string | undefined;
 }
 
+function pluralKey(count: number, base: string): string {
+  return count === 1 ? `${base}.one` : `${base}.many`;
+}
+
 export default function LongTermActivityRibbon({ drinks, goals, className = '' }: Props) {
   const gate = checkRibbonGate(drinks);
+  const { t } = useLanguage();
   if (!gate.pass) return null;
   const summary = compute7DaySummary(drinks, goals.dailyCap);
 
   const fragments: string[] = [
-    `${summary.afDays} AF day${summary.afDays === 1 ? '' : 's'}`,
-    `${summary.loggedDrinkDays} logged drink day${summary.loggedDrinkDays === 1 ? '' : 's'}`,
+    t(pluralKey(summary.afDays, 'ribbon.afDays'), `${summary.afDays} AF day${summary.afDays === 1 ? '' : 's'}`)
+      .replace('{{n}}', String(summary.afDays)),
+    t(pluralKey(summary.loggedDrinkDays, 'ribbon.loggedDay'), `${summary.loggedDrinkDays} logged drink day${summary.loggedDrinkDays === 1 ? '' : 's'}`)
+      .replace('{{n}}', String(summary.loggedDrinkDays)),
   ];
   if (summary.capTracked && summary.daysOverCap > 0) {
     fragments.push(
-      `${summary.daysOverCap} over your daily cap`,
+      t('ribbon.overCap', `${summary.daysOverCap} over your daily cap`)
+        .replace('{{n}}', String(summary.daysOverCap)),
     );
   }
 
@@ -124,10 +133,10 @@ export default function LongTermActivityRibbon({ drinks, goals, className = '' }
     >
       <div className="rounded-2xl border-s-4 border-neutral-300 dark:border-neutral-700 bg-surface-elevated px-4 py-3 text-sm text-ink-soft">
         <h2 id="long-term-ribbon-heading" className="sr-only">
-          Your last seven days at a glance
+          {t('ribbon.heading', 'Your last seven days at a glance')}
         </h2>
         <span className="font-medium text-ink dark:text-neutral-200">
-          Last 7 days:
+          {t('ribbon.label', 'Last 7 days:')}
         </span>{' '}
         <span className="tabular-nums">{fragments.join(', ')}.</span>
       </div>
