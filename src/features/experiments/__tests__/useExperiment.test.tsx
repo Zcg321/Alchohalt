@@ -102,11 +102,20 @@ describe('[R14-4] useExperiment hook', () => {
   });
 });
 
-describe('[R15-B] live registry contains the onboarding chip-copy test', () => {
-  it('exposes onboarding-chip-copy-2026Q2 as an active experiment', () => {
+describe('[R15-B / R16-A] live registry contains the onboarding chip-copy test', () => {
+  it('exposes onboarding-chip-copy-2026Q2 as an active 3-way experiment', () => {
     const exp = registryModule.findExperiment('onboarding-chip-copy-2026Q2');
     expect(exp).toBeDefined();
     expect(exp?.status).toBe('active');
-    expect(exp?.variants).toEqual(['control', 'first-person']);
+    expect(exp?.variants).toEqual(['control', 'first-person', 'first-person-trying']);
+  });
+});
+
+describe('[R16-B] live registry contains the goal-nudge copy test', () => {
+  it('exposes goal-nudge-copy-2026Q2 as an active 2-way experiment', () => {
+    const exp = registryModule.findExperiment('goal-nudge-copy-2026Q2');
+    expect(exp).toBeDefined();
+    expect(exp?.status).toBe('active');
+    expect(exp?.variants).toEqual(['control', 'softer']);
   });
 });

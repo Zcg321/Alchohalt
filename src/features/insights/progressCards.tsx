@@ -77,12 +77,35 @@ export function GoalProgressCard({ data, goals }: { data: ProgressData; goals: G
   );
 }
 
+/* [R16-1] Voice gates: this card sits next to budget + health cards
+ * on the Insights tab and was the only milestone surface still using
+ * gamification voice. Heading was "Streak Milestone" (countdown framing
+ * — implies the user is racing to a goalpost), the gap line was
+ * "{n} days to go!" (exclamation mark + "to go" = video-game language
+ * banned by voice-guidelines.md). Both rewritten to observation:
+ *
+ *   "Streak Milestone" → "Current alcohol-free streak"
+ *     States what the number is. No countdown framing.
+ *
+ *   "Next milestone: {n} days" → "Next milestone at {n} days"
+ *     Subtle: "at" reads as a marker on a calendar; ": {n}" reads as
+ *     a label on a target. Same number, no scoreboard verb.
+ *
+ *   "{n} days to go!" → "{n} days from there"
+ *     Drops the exclamation and the urgency. Reads as a fact about
+ *     the calendar, not a coach yelling distance-to-finish.
+ *
+ * The milestone date entries in features/milestones/Milestones.tsx
+ * already pass the observation test (subtitles like "A year. Pause
+ * and let that land." — observation, not earned-badge).
+ */
 export function StreakMilestoneCard({ data }: { data: ProgressData }) {
   const { current, next, progress } = data.streakMilestones;
+  const gap = Math.max(0, next - current);
   return (
     <div className="card">
       <div className="card-header">
-        <h2 className="text-xl font-semibold">Streak Milestone</h2>
+        <h2 className="text-xl font-semibold">Current alcohol-free streak</h2>
       </div>
       <div className="card-content">
         <div className="text-center mb-4">
@@ -91,7 +114,7 @@ export function StreakMilestoneCard({ data }: { data: ProgressData }) {
         </div>
         <div className="mb-2">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm">Next milestone: {next} days</span>
+            <span className="text-sm">Next milestone at {next} days</span>
             <span className="text-sm text-ink-soft">{Math.round(progress)}%</span>
           </div>
           <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-2">
@@ -101,7 +124,7 @@ export function StreakMilestoneCard({ data }: { data: ProgressData }) {
             />
           </div>
         </div>
-        <div className="text-xs text-center text-ink-subtle">{next - current} days to go!</div>
+        <div className="text-xs text-center text-ink-subtle">{gap} days from there</div>
       </div>
     </div>
   );

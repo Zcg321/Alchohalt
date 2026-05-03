@@ -38,14 +38,14 @@ afterEach(() => {
 });
 
 /** Find a bucket id that maps to the requested variant. */
-function findBucketFor(variant: 'control' | 'first-person'): string {
+function findBucketFor(variant: 'control' | 'first-person' | 'first-person-trying'): string {
   const exp = findExperiment('onboarding-chip-copy-2026Q2');
   if (!exp) throw new Error('experiment not found in registry');
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 5000; i++) {
     const bucket = `bucket-${i}`;
     if (assignVariant(exp, bucket) === variant) return bucket;
   }
-  throw new Error(`No bucket found for variant=${variant} within 1000 tries`);
+  throw new Error(`No bucket found for variant=${variant} within 5000 tries`);
 }
 
 describe('[R15-B] onboarding chip-copy A/B', () => {
@@ -88,6 +88,31 @@ describe('[R15-B] onboarding chip-copy A/B', () => {
     );
     expect(screen.getByTestId('onboarding-chip-curious')).toHaveTextContent(
       "I'm here to learn"
+    );
+  });
+
+  /* [R16-A] Third variant: gentler first-person hedged with "trying"
+   * / "pausing" / "looking around". Keeps the first-person voice the
+   * R15-B test introduced but restores the trying-not-declaring tone
+   * the designer-judge flagged in the 15-judge gate. */
+  it('first-person-trying bucket renders gentler first-person chip labels', () => {
+    const tryingBucket = findBucketFor('first-person-trying');
+    window.localStorage.setItem('exp.device-bucket', tryingBucket);
+
+    render(<OnboardingFlow />);
+    flushChipDelay();
+
+    const row = screen.getByTestId('onboarding-chip-row');
+    expect(row).toHaveAttribute('data-variant', 'first-person-trying');
+
+    expect(screen.getByTestId('onboarding-chip-cut-back')).toHaveTextContent(
+      "I'm trying to drink less"
+    );
+    expect(screen.getByTestId('onboarding-chip-quit')).toHaveTextContent(
+      "I'm pausing alcohol for now"
+    );
+    expect(screen.getByTestId('onboarding-chip-curious')).toHaveTextContent(
+      "I'm just looking around"
     );
   });
 

@@ -108,3 +108,25 @@ Chips are how we ask "what brings you here." They must:
 4. **Is there an exclamation point?** Justify it. If you can't, drop it.
 5. **Is there an emoji?** Same.
 6. **Does it presume the user's goal or future?** Pull back.
+
+## Milestones — observation vs gamification (R16-1)
+
+The line between "we're noting that this happened" (observation) and "you earned this badge" (gamification) is easy to slip across. Test every milestone copy against:
+
+- **Subject of the sentence.** Observation says "this is the streak" or "this is the next marker." Gamification says "you reached!" or "you unlocked!"
+- **Punctuation.** No exclamation marks on milestone surfaces. If a fact is genuinely worth a moment ("A year. Pause and let that land.") let the period carry it.
+- **Verbs.** Replace "earn / unlock / win / score / level up / complete / claim" with "reach / pass / mark / log."
+- **Countdown framing.** "X to go!" reads as a finish line. "X days from there" reads as a calendar fact. Default to the latter.
+- **Comparative bragging.** Avoid superlatives ("longest ever", "best streak"). State the number.
+
+Surfaces audited 2026-05-03:
+
+| Surface | Status | Notes |
+|---|---|---|
+| `features/milestones/Milestones.tsx` | ✓ observation | Subtitles like "A year. Pause and let that land." pass. |
+| `features/homepage/FirstMonthRibbon.tsx` | ✓ observation | "next milestone in 2 days" — calendar fact, no exclamation. |
+| `features/homepage/LongTermActivityRibbon.tsx` | ✓ observation | Round-12 R12-1 already shipped this with weekly-shape orientation, no badge framing. |
+| `features/insights/progressCards.tsx` `StreakMilestoneCard` | **fixed R16-1** | Was "Streak Milestone" / "{n} days to go!". Now "Current alcohol-free streak" / "{n} days from there". |
+| `features/backup/BackupAutoVerifyRibbon.tsx` | ✓ observation | Backup status, not milestone — N/A. |
+
+If a future milestone surface is added, run the five-question test above before merging.
