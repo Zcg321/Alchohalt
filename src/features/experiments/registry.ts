@@ -75,6 +75,18 @@ export interface Experiment {
  *     "trying"; this third arm preserves the first-person voice while
  *     restoring the trying / pausing / looking hedge.
  *
+ * `goal-nudge-copy-2026Q2`
+ *   - control: comparison-then-question ("You've been at X std/day
+ *     this week. Your goal is Y/day. Want to revisit it?"). The R15-2
+ *     nudge that shipped after recovery-counselor + designer judges
+ *     both flagged shame-framing risk and approved ship-with-mitigation.
+ *   - softer: goal-first reframe ("Your goal is Y/day. This week's
+ *     been around X/day. Some weeks land different — adjust if it's
+ *     helpful."). [R16-B] Removes the comparative opener; surfaces the
+ *     goal as the anchor and treats the actual as observation. "Some
+ *     weeks land different" defuses the should-have-done implication
+ *     of a 7-day rolling read.
+ *
  * Exposure data is local-only (per R14-4 contract). The owner reads
  * exposures via Settings → Diagnostics → A/B audit; no telemetry
  * leaves the device.
@@ -86,6 +98,13 @@ export const REGISTRY: readonly Experiment[] = [
     status: 'active',
     description:
       'Onboarding intent chips: third-person ("Trying to drink less") vs declarative first-person ("I want to drink less") vs gentler first-person ("I\'m trying to drink less").',
+  },
+  {
+    key: 'goal-nudge-copy-2026Q2',
+    variants: ['control', 'softer'] as const,
+    status: 'active',
+    description:
+      'Goal-nudge banner copy: comparison-then-question (control) vs goal-first observation (softer).',
   },
 ];
 

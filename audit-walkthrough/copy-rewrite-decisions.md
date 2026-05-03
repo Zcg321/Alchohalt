@@ -311,3 +311,20 @@ Voice gates checked:
 
 Variant assignment is uniform 1/3 (no weights). Existing buckets keep their R15-B assignment when possible; users newly hashing into the third arm see the new copy. Determinism: stable per device, per the R14-4 contract.
 
+
+## M. R16-B — A/B on the goal-nudge banner copy (2026-05-03)
+
+R15-2 shipped a goal-nudge banner with control copy:
+
+> You've been at 2.0 std/day this week. Your goal is 1.5/day. Want to revisit it?
+
+The 15-judge recovery-counselor + designer both flagged shame-framing risk and approved ship-with-mitigation; banner is opt-in default-off, dismissible for the week, and recovery-tab safe (does not render when sober mode is on). Round 16 adds a second variant for owner comparison on-device:
+
+| Arm | Copy |
+|---|---|
+| `control` (since R15-2) | "You've been at 2.0 std/day this week. Your goal is 1.5/day. Want to revisit it?" |
+| `softer` (R16-B) | "Your goal is 1.5/day. This week's been around 2.0/day. Some weeks land different — adjust if it's helpful." |
+
+Why this candidate: the control opens with a comparative read ("you've been at X"). The softer arm opens with the goal — anchoring to what the user wanted, not to where they fell short. "Some weeks land different" is hedge language that the in-app copy already uses for trend deltas (see "drinking days about the same" precedent in R15-1 monthly delta). "Adjust if it's helpful" replaces the question ("Want to revisit it?") with a soft suggestion that doesn't require a yes/no answer in the user's head.
+
+Both arms preserve R15-2's mitigations: opt-in, dismissible, suppressed for sober-mode, suppressed for 7 days after dismiss, never rendered when goal is null. The only thing the variant changes is the sentence rendered in the banner body. Buttons (Revisit goal / Not this week) stay identical so behavioral signal stays clean. Both arms keep `goal-nudge-avg` and `goal-nudge-goal` testids stable for downstream consumers.
