@@ -119,8 +119,18 @@ export interface Settings {
       goalMilestone?: boolean;
       retrospective?: boolean;
       backupVerification?: boolean;
+      /** [R13-2] Weekly recap, opt-in. */
+      weeklyRecap?: boolean;
     };
   } | undefined;
+  /**
+   * [R13-3] Timestamp when the user dismissed the streak-break
+   * reflective prompt for the current break. Cleared back to
+   * undefined when the active streak goes from 0 → ≥1 (i.e. the
+   * user logs an AF day after the break). Local-only; never
+   * transmitted.
+   */
+  streakBreakAcknowledgedAt?: number | undefined;
 }
 
 export interface Entry {
