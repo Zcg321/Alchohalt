@@ -14,18 +14,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
     <!--
-      [R19-5] Content-Security-Policy fallback for hosts that don't
-      apply the vercel.json header (Capacitor WebView, file://, local
-      static-server smoke). The Vercel header is the authoritative one
-      and overrides this for the production web origin. Keep the two
+      [R19-5 / R20-A] Content-Security-Policy fallback for hosts that
+      don't apply the vercel.json header (Capacitor WebView, file://,
+      local static-server smoke). The Vercel header is the authoritative
+      one and overrides this for the production web origin. Keep the two
       in sync.
 
-      style-src needs 'unsafe-inline' for the splash <style> in this
-      file + Tailwind's runtime style injection. script-src is 'self'
-      only — the inline loader-removal script was moved to main.tsx
-      in this round so no inline-script allowance is needed.
+      style-src 'unsafe-inline' is still required because data-driven
+      progress bars (style attributes with computed width percentages)
+      emit inline-style attributes whose values are unbounded — they
+      cannot be hashed ahead of time. CSS attr() typed reads (Chrome
+      133+) are the eventual path to dropping it; until then
+      'unsafe-inline' stays. R20-A added a sha256 hash for the inline
+      splash CSS below as defense-in-depth so a hash-only browser
+      still loads the splash.
+
+      script-src is 'self' only — the inline loader-removal script
+      was moved to main.tsx in R19-5 so no inline-script allowance is
+      needed.
     -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.ingest.sentry.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; worker-src 'self'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 'sha256-TTRsBuJTnOt9ZjeMvTwC72vISJMYqLy+lmchqarbe1I='; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.ingest.sentry.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; worker-src 'self'" />
 
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />

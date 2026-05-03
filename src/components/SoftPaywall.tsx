@@ -62,9 +62,8 @@ export default function SoftPaywall({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-accent-200/70 bg-gradient-to-br from-accent-50/80 via-white to-white dark:border-accent-900/50 dark:from-accent-950/40 dark:via-neutral-900 dark:to-neutral-900 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-accent-200/70 bg-gradient-to-br from-accent-50/80 via-white to-white shadow-[0_0_0_1px_rgb(204_135_68_/_0.06),0_1px_2px_0_rgb(15_23_42_/_0.04)] dark:border-accent-900/50 dark:from-accent-950/40 dark:via-neutral-900 dark:to-neutral-900 ${className}`}
       data-soft-paywall={feature}
-      style={{ boxShadow: '0 0 0 1px rgb(204 135 68 / 0.06), 0 1px 2px 0 rgb(15 23 42 / 0.04)' }}
     >
       {/* Dimmed, non-interactive preview — user sees the shape of the
           feature so they understand what they'd unlock. Slight blur
