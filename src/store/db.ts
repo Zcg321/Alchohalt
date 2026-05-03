@@ -194,6 +194,24 @@ export interface Settings {
     phone: string;
     description?: string;
   } | undefined;
+  /**
+   * [R19-4] Crash-report opt-in. Default off (undefined === off).
+   *
+   * When true, the global error reporter forwards anonymized stack
+   * traces to a Sentry-compatible endpoint so the maintainers can
+   * fix bugs the user encountered. Body sent: error message, file
+   * + line, stack trace. EXCLUDED: user data, breadcrumbs, request
+   * bodies, console history, IP address (Sentry strips per config),
+   * cookies, localStorage, environment fingerprints beyond UA + OS.
+   *
+   * When false (default), the reporter logs to console only — no
+   * network call. Same shim posture as pre-R19.
+   *
+   * Settings → Privacy → "Send crash reports to help fix bugs"
+   * toggles this. The toggle copy is explicit about what's sent
+   * and what's not.
+   */
+  crashReportsEnabled?: boolean | undefined;
 }
 
 export interface Entry {
