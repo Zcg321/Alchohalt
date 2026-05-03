@@ -8,6 +8,7 @@ import Diagnostics from './Diagnostics';
 import OnboardingFunnelView from './OnboardingFunnelView';
 import ExportImport from '../drinks/ExportImport';
 import BackupVerifier from '../backup/BackupVerifier';
+import NotificationsSettings from './NotificationsSettings';
 import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
@@ -156,6 +157,8 @@ export default function SettingsPanel() {
             </Button>
           </div>
           
+          <NotificationsSettings />
+
           {(settings.reminders.times||[]).length > 0 && (
             <div className="space-y-2">
               <label className="label">Active reminder times</label>

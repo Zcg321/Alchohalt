@@ -7,6 +7,13 @@
  */
 import { useDB } from '../store/db';
 import { notificationService } from '../services/platform';
+import {
+  applyCalmRules,
+  DEFAULT_CALM_CONFIG,
+  type CalmConfig,
+  type NotificationType,
+  type ScheduledNotification,
+} from './notifications/calmConfig';
 
 type AnyLN = {
   requestPermissions: () => Promise<{ display?: 'granted'|'denied' }>;
@@ -124,12 +131,55 @@ const NOTIFICATION_MESSAGES = [
   "Log when you're ready — no rush."
 ];
 
-function buildNotifications(times: string[]) {
-  return times.map((time, idx) => ({
+/**
+ * [R12-4] Read the user's calm-config from settings, or fall back to
+ * DEFAULT_CALM_CONFIG. Tolerates partial / missing fields — anything
+ * the user hasn't explicitly set inherits the default.
+ */
+export function readCalmConfig(): CalmConfig {
+  const stored = useDB.getState().db.settings.calmNotifications;
+  if (!stored) return DEFAULT_CALM_CONFIG;
+  return {
+    quietHours: stored.quietHours ?? DEFAULT_CALM_CONFIG.quietHours,
+    dailyCap: stored.dailyCap ?? DEFAULT_CALM_CONFIG.dailyCap,
+    types: { ...DEFAULT_CALM_CONFIG.types, ...(stored.types ?? {}) },
+  };
+}
+
+/**
+ * [R12-4] Convert reminder times into ScheduledNotification objects
+ * tagged as 'dailyCheckin'. Each time becomes ONE notification at the
+ * next occurrence of that hh:mm. Calm-rules layer runs on the result
+ * to drop quiet-hours fires and enforce the daily cap.
+ *
+ * id-range note: dailyCheckin uses 1000-1099. Other types live in
+ * disjoint ranges so we can cancel one type without touching others:
+ *   1000-1099 dailyCheckin
+ *   1100-1199 goalMilestone
+ *   1200-1299 retrospective
+ *   1300-1399 backupVerification
+ */
+export function buildDailyCheckinSchedule(times: string[]): ScheduledNotification[] {
+  return times.slice(0, 100).map((time, idx) => ({
     id: idx + 1000,
-    title: "Alchohalt",
-    body: NOTIFICATION_MESSAGES[idx % NOTIFICATION_MESSAGES.length] ?? "Log your day if you'd like.",
-    schedule: { at: hhmmToNextDate(time) }
+    type: 'dailyCheckin' as NotificationType,
+    title: 'Alchohalt',
+    body:
+      NOTIFICATION_MESSAGES[idx % NOTIFICATION_MESSAGES.length] ??
+      "Log your day if you'd like.",
+    fireAt: hhmmToNextDate(time).getTime(),
+  }));
+}
+
+function buildNotifications(times: string[]) {
+  const calm = readCalmConfig();
+  const candidates = buildDailyCheckinSchedule(times);
+  const filtered = applyCalmRules(candidates, calm);
+  return filtered.map((n) => ({
+    id: n.id,
+    title: n.title,
+    body: n.body,
+    schedule: { at: new Date(n.fireAt) },
   }));
 }
 
