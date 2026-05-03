@@ -1,5 +1,5 @@
 // @no-smoke
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import {
@@ -9,6 +9,7 @@ import {
 } from '../../lib/notifications/calmConfig';
 import { REGISTRY } from '../experiments/registry';
 import { readExposures, getDeviceBucket, assignVariant } from '../experiments/bucket';
+import { computeStorageUsage, formatBytes, type StorageUsage } from '../../lib/storage/usage';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -185,6 +186,82 @@ function BackupFieldset() {
   );
 }
 
+function StorageFieldset() {
+  /* [R19-3] On-device storage usage. Shows browser quota + app-side
+   * size with a soft warning at 80%. Read on mount; not polling.
+   * Both reads are best-effort — Safari and some Capacitor envs
+   * return nulls for navigator.storage.estimate, so the panel falls
+   * back to "—" for those rows rather than going blank. */
+  const db = useDB((s) => s.db);
+  const [usage, setUsage] = useState<StorageUsage | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    computeStorageUsage(db).then((u) => {
+      if (!cancelled) setUsage(u);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [db]);
+
+  if (!usage) {
+    return (
+      <fieldset className={FIELDSET_CLASS}>
+        <legend className={LEGEND_CLASS}>Storage</legend>
+        <p className="text-xs text-ink-subtle">Computing…</p>
+      </fieldset>
+    );
+  }
+
+  const browserUsed = usage.browserUsedBytes;
+  const browserQuota = usage.browserQuotaBytes;
+  const browserPercent = usage.browserPercentUsed;
+
+  return (
+    <fieldset className={FIELDSET_CLASS}>
+      <legend className={LEGEND_CLASS}>Storage</legend>
+      <dl className={GRID_CLASS}>
+        <AuditRow
+          label="App data on device"
+          value={`${formatBytes(usage.appUsedBytes)} (${usage.appPercentUsed.toFixed(1)}% of ${formatBytes(usage.appSoftCapBytes)} soft cap)`}
+          testid="audit-storage-app-used"
+        />
+        <AuditRow
+          label="Entries"
+          value={`${usage.entryCount.toLocaleString()}`}
+          testid="audit-storage-entry-count"
+        />
+        <AuditRow
+          label="Browser quota"
+          value={
+            browserQuota !== null
+              ? `${formatBytes(browserUsed ?? 0)} of ${formatBytes(browserQuota)} (${(browserPercent ?? 0).toFixed(1)}%)`
+              : '— (browser does not report)'
+          }
+          testid="audit-storage-browser-quota"
+        />
+      </dl>
+      {usage.warn ? (
+        <p
+          className="text-xs text-amber-700 dark:text-amber-400"
+          data-testid="audit-storage-warning"
+        >
+          You&apos;re using {usage.effectivePercentUsed.toFixed(0)}% of your
+          storage. Export your data and clear old entries from Settings →
+          Data Management when you have a moment. Nothing breaks at 100%
+          — the OS will just stop accepting new writes.
+        </p>
+      ) : (
+        <p className="text-xs text-ink-subtle">
+          Plenty of headroom. Export-your-data and clear-old-entries live
+          in Settings → Data Management whenever you need them.
+        </p>
+      )}
+    </fieldset>
+  );
+}
+
 function ActiveExperimentsTable({ exposures }: { exposures: ReturnType<typeof readExposures> }) {
   /* [R17-B] Per-experiment row: key + current arm assignment + how
    * many times exposure has been recorded for that experiment. The
@@ -311,6 +388,7 @@ export default function DiagnosticsAudit() {
         <NotificationsFieldset />
         <AccessibilityFieldset />
         <LocaleFieldset />
+        <StorageFieldset />
         <BackupFieldset />
         <ExperimentsFieldset />
       </div>
