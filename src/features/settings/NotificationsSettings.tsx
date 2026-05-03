@@ -40,15 +40,28 @@ const TYPE_LABELS: Record<NotificationType, { title: string; description: string
     description:
       'Periodic nudge to verify your last encrypted backup still unlocks.',
   },
-  /* [R13-2] Weekly recap. Off by default. Body is generated locally
-   * from your own drink log — never transmitted. Same calm rules
-   * apply (quiet hours, daily cap). */
+  /* [R13-2] Weekly recap. Type + composer landed in R13-2; the
+   * actual native scheduling cron is R14 work. We keep the entry in
+   * TYPE_LABELS so the body composer + DiagnosticsAudit can still
+   * reference it, but suppress the user-facing toggle until
+   * scheduling is wired (Codex review on PR #46 flagged the gap:
+   * a user opting in to a feature that never fires is broken UX).
+   *
+   * Round 14 lands buildWeeklyRecap into scheduleNative + removes
+   * weeklyRecap from RENDER_HIDDEN_TYPES. */
   weeklyRecap: {
     title: 'Weekly recap',
     description:
       'Once a week: AF days, logged drinks, over-cap days, and how this week compared to the prior one. Off by default.',
   },
 };
+
+/* [R13-FIXUP] Types whose UI toggles are hidden until their
+ * scheduling pipeline lands. The type stays in the NotificationType
+ * union so the composer + DiagnosticsAudit can still reference it. */
+const RENDER_HIDDEN_TYPES: ReadonlySet<NotificationType> = new Set<NotificationType>([
+  'weeklyRecap',
+]);
 
 export default function NotificationsSettings() {
   const { settings, setSettings } = useDB((s) => ({
@@ -102,7 +115,9 @@ export default function NotificationsSettings() {
       </div>
       <div className="card-content space-y-4">
         <div className="space-y-2">
-          {(Object.keys(TYPE_LABELS) as NotificationType[]).map((type) => {
+          {(Object.keys(TYPE_LABELS) as NotificationType[])
+            .filter((type) => !RENDER_HIDDEN_TYPES.has(type))
+            .map((type) => {
             const meta = TYPE_LABELS[type];
             const checked = types[type] === true;
             return (

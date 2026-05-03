@@ -181,12 +181,29 @@ if (arg === '--json') {
 
 const baseline = readBaseline();
 if (!baseline) {
-  console.warn(
-    `[perf-baseline] No ${BASELINE_PATH} found. Run with --update on main to seed it.`,
+  /* [R13-FIXUP] Codex review on PR #46 correctly flagged: missing
+   * baseline used to exit 0 (warn + skip), which let a bad actor or
+   * accidental delete bypass the regression guard since pr-checks.yml
+   * relies on this script as an enforced gate. Now we fail with a
+   * clear remediation hint. The bootstrap case (truly first-time
+   * setup) uses --bootstrap-or-update, which writes the baseline if
+   * missing instead of failing. */
+  if (arg === '--bootstrap-or-update') {
+    console.warn(
+      `[perf-baseline] No ${BASELINE_PATH} found — bootstrapping with current measurement.`,
+    );
+    writeBaseline(current);
+    process.exit(0);
+  }
+  console.error(
+    `[perf-baseline] FAIL: ${BASELINE_PATH} is missing.\n` +
+      `  This file is the regression-guard reference for pr-checks.yml.\n` +
+      `  If you intentionally removed it, restore from git or run with explicit\n` +
+      `  --bootstrap-or-update on main to seed a new baseline.\n` +
+      `  Otherwise this is a check failure (silent removal would let bundle\n` +
+      `  regressions merge unnoticed).`,
   );
-  console.warn(`  Skipping regression check.`);
-  console.log(JSON.stringify(current, null, 2));
-  process.exit(0);
+  process.exit(1);
 }
 
 const results = compareBaseline(baseline, current);
