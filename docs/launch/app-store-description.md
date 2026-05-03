@@ -44,9 +44,11 @@ multi-reminders, PDF reports, end-to-end encrypted backup.
 
 Your data stays on your phone. We cryptographically cannot read what
 you log. The trust receipt logs every storage write and every network
-call (when sync is on) so you can audit it yourself. End-to-end
-encrypted backup is opt-in. AI Insights is opt-in. Crisis resources
-work offline.
+call (when sync is on) so you can audit it yourself. The diagnostics
+audit panel shows you what the app is doing right now — which
+notifications are on, your accessibility settings, your active locale
+— in one read-only view. End-to-end encrypted backup is opt-in. AI
+Insights is opt-in. Crisis resources work offline.
 
 No ads. No analytics. Not now, not when we're profitable, not ever.
 
