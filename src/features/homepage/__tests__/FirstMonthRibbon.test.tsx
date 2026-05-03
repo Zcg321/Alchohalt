@@ -153,3 +153,60 @@ describe('[R12-1] FirstMonthRibbon component', () => {
     expect(screen.queryByText(/in 0 days/)).not.toBeInTheDocument();
   });
 });
+
+describe('[R14-1] Building-a-pattern phase (days 8-29)', () => {
+  it('reports phase week-one for daysOfLogging 1..7', () => {
+    expect(computeFirstMonthState([drink(1)])?.phase).toBe('week-one');
+    expect(computeFirstMonthState([drink(7)])?.phase).toBe('week-one');
+  });
+
+  it('reports phase building-pattern for daysOfLogging 8..29', () => {
+    expect(computeFirstMonthState([drink(8)])?.phase).toBe('building-pattern');
+    expect(computeFirstMonthState([drink(15)])?.phase).toBe('building-pattern');
+    expect(computeFirstMonthState([drink(29)])?.phase).toBe('building-pattern');
+  });
+
+  it('does not produce a state for day 30+ regardless of phase', () => {
+    expect(computeFirstMonthState([drink(30)])).toBeNull();
+  });
+
+  it('renders "building a pattern" copy for days 8-29 instead of milestone countdown', () => {
+    render(<FirstMonthRibbon drinks={[drink(12)]} />);
+    expect(screen.getByText(/12 days of logging/)).toBeInTheDocument();
+    expect(screen.getByText(/building a pattern/)).toBeInTheDocument();
+    // The grindy 22-day countdown to day-30 is intentionally hidden
+    // in this phase; ensure no milestone-countdown copy leaks through.
+    expect(screen.queryByText(/next milestone in/)).not.toBeInTheDocument();
+  });
+
+  it('preserves milestone countdown for day 1-7 (week-one phase unchanged)', () => {
+    render(<FirstMonthRibbon drinks={[drink(5)]} />);
+    expect(screen.getByText(/next milestone in 2 days/)).toBeInTheDocument();
+    expect(screen.queryByText(/building a pattern/)).not.toBeInTheDocument();
+  });
+
+  it('exposes the phase as a data attribute for downstream styling', () => {
+    const { rerender } = render(<FirstMonthRibbon drinks={[drink(3)]} />);
+    expect(screen.getByTestId('first-month-ribbon')).toHaveAttribute(
+      'data-phase',
+      'week-one',
+    );
+    rerender(<FirstMonthRibbon drinks={[drink(15)]} />);
+    expect(screen.getByTestId('first-month-ribbon')).toHaveAttribute(
+      'data-phase',
+      'building-pattern',
+    );
+  });
+
+  it('voice check: building-pattern copy contains no exclamation, no second-person command', () => {
+    render(<FirstMonthRibbon drinks={[drink(15)]} />);
+    const ribbon = screen.getByTestId('first-month-ribbon');
+    const text = ribbon.textContent ?? '';
+    expect(text).not.toContain('!');
+    // Second-person commands are imperative — "go", "keep", "do",
+    // "you should", etc. The matter-of-fact framing avoids them.
+    expect(text).not.toMatch(/\bkeep going\b/i);
+    expect(text).not.toMatch(/\byou should\b/i);
+    expect(text).not.toMatch(/\bgreat job\b/i);
+  });
+});
