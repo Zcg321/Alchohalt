@@ -40,7 +40,7 @@ export default function AdvancedGoalSetting({ goals, onChange }: Props) {
     <div className="card">
       <div className="card-header">
         <h3 className="text-lg font-semibold flex items-center">
-          <span className="w-2 h-2 bg-indigo-500 rounded-full mr-3"></span>
+          <span className="w-2 h-2 bg-indigo-500 rounded-full me-3"></span>
           Advanced Goals
         </h3>
         <p className="text-sm text-ink-soft mt-1">

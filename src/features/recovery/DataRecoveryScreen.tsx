@@ -122,7 +122,7 @@ export default function DataRecoveryScreen() {
             type="button"
             onClick={handleTryAgain}
             data-testid="recovery-try-again"
-            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
           >
             <div>Try again</div>
             <div className="text-xs font-normal text-neutral-500 dark:text-neutral-400 mt-0.5">
@@ -133,7 +133,7 @@ export default function DataRecoveryScreen() {
             type="button"
             onClick={handleSalvage}
             data-testid="recovery-salvage"
-            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-left text-sm font-medium text-neutral-800 hover:bg-neutral-50 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
+            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
           >
             <div>Save what we can</div>
             <div className="text-xs font-normal text-neutral-500 dark:text-neutral-400 mt-0.5">
@@ -145,7 +145,7 @@ export default function DataRecoveryScreen() {
               type="button"
               onClick={() => setConfirmingFresh(true)}
               data-testid="recovery-start-fresh"
-              className="w-full rounded-2xl border border-rose-200 bg-white px-5 py-3.5 text-left text-sm font-medium text-rose-700 hover:bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300 dark:hover:bg-rose-950/50 transition-colors min-h-[48px]"
+              className="w-full rounded-2xl border border-rose-200 bg-white px-5 py-3.5 text-start text-sm font-medium text-rose-700 hover:bg-rose-50 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300 dark:hover:bg-rose-950/50 transition-colors min-h-[48px]"
             >
               <div>Start fresh</div>
               <div className="text-xs font-normal text-rose-600/80 dark:text-rose-400/70 mt-0.5">

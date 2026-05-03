@@ -192,7 +192,7 @@ export default function DrinkList({
         <div className="card-header flex items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold flex items-center">
-              <span className="w-2 h-2 bg-primary-500 rounded-full mr-3"></span>
+              <span className="w-2 h-2 bg-primary-500 rounded-full me-3"></span>
               {t('drinkHistory')}
             </h2>
             <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">

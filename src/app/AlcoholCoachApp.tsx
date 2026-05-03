@@ -531,7 +531,7 @@ function AlcoholCoachAppInner() {
 
       {!isOnline && (
         <div
-          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-pill bg-charcoal-900/90 px-3.5 py-2 text-caption font-medium text-white shadow-medium backdrop-blur-sm"
+          className="fixed bottom-20 start-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-pill bg-charcoal-900/90 px-3.5 py-2 text-caption font-medium text-white shadow-medium backdrop-blur-sm"
           role="status"
           aria-live="polite"
         >
@@ -572,7 +572,7 @@ function AlcoholCoachAppInner() {
       )}
 
       {lastDeleted && (
-        <div className="fixed bottom-24 lg:bottom-4 left-1/2 transform -translate-x-1/2 bg-charcoal-900 text-white px-6 py-3 rounded-pill shadow-strong flex items-center gap-3 z-50 animate-slide-up">
+        <div className="fixed bottom-24 lg:bottom-4 start-1/2 transform -translate-x-1/2 bg-charcoal-900 text-white px-6 py-3 rounded-pill shadow-strong flex items-center gap-3 z-50 animate-slide-up">
           <span className="text-caption">{t('drinkDeleted')}</span>
           <button
             type="button"

@@ -74,7 +74,7 @@ export function Toast({
   return (
     <div
       className={cn(
-        'fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-sm w-full mx-auto',
+        'fixed bottom-4 start-1/2 transform -translate-x-1/2 z-50 max-w-sm w-full mx-auto',
         'transition-all duration-300 ease-in-out',
         isVisible 
           ? 'translate-y-0 opacity-100 scale-100' 
@@ -90,10 +90,10 @@ export function Toast({
         <div className="flex-shrink-0">
           {icons[type]}
         </div>
-        <div className="ml-3 flex-1">
+        <div className="ms-3 flex-1">
           <p className="text-sm font-medium">{message}</p>
         </div>
-        <div className="flex items-center ml-3 space-x-2">
+        <div className="flex items-center ms-3 space-x-2">
           {action && (
             <button
               type="button"

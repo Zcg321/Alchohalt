@@ -168,7 +168,7 @@ export default function SettingsPanel() {
                     {t}
                     <button 
                       aria-label={`Remove ${t}`} 
-                      className="ml-1 text-primary-500 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-200 transition-colors" 
+                      className="ms-1 text-primary-500 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-200 transition-colors" 
                       onClick={()=>remove(t)}
                     >
                       ×

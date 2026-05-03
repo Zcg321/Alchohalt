@@ -37,7 +37,7 @@ export function Badge({
       <span className={cn('flex items-center', className)} {...props}>
         <span 
           className={cn(
-            'inline-block w-2 h-2 rounded-full mr-2',
+            'inline-block w-2 h-2 rounded-full me-2',
             variants[variant].split(' ')[0] // Get just the background color
           )} 
         />

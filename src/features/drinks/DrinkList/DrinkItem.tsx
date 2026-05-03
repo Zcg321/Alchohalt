@@ -57,7 +57,7 @@ export default function DrinkItem({ drink, onEdit, onDelete }: Props) {
         {drink.alt ? ` alt: ${drink.alt}` : ''}
       </span>
       {(onEdit || onDelete) && (
-        <div className="ml-auto space-x-1">
+        <div className="ms-auto space-x-1">
           {onEdit && (
             <Button
               variant="secondary"

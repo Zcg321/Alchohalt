@@ -94,10 +94,10 @@ function MoodCorrelationContent({
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
           <table className="w-full text-xs tabular-nums">
             <thead>
-              <tr className="text-left text-gray-500">
+              <tr className="text-start text-gray-500">
                 <th>{t('analytics.moodCorrelation.colMood')}</th>
-                <th className="text-right">{t('analytics.moodCorrelation.colCount')}</th>
-                <th className="text-right">{t('analytics.moodCorrelation.colMean')}</th>
+                <th className="text-end">{t('analytics.moodCorrelation.colCount')}</th>
+                <th className="text-end">{t('analytics.moodCorrelation.colMean')}</th>
               </tr>
             </thead>
             <tbody>
@@ -108,18 +108,18 @@ function MoodCorrelationContent({
                     <td>
                       {MOOD_EMOJI[r.mood]} <span className="capitalize">{r.mood}</span>
                     </td>
-                    <td className="text-right">{r.count}</td>
-                    <td className="text-right">{r.meanStdDrinks.toFixed(1)}</td>
+                    <td className="text-end">{r.count}</td>
+                    <td className="text-end">{r.meanStdDrinks.toFixed(1)}</td>
                   </tr>
                 ))}
             </tbody>
           </table>
           <table className="w-full text-xs tabular-nums">
             <thead>
-              <tr className="text-left text-gray-500">
+              <tr className="text-start text-gray-500">
                 <th>{t('analytics.moodCorrelation.colHalt')}</th>
-                <th className="text-right">{t('analytics.moodCorrelation.colCount')}</th>
-                <th className="text-right">{t('analytics.moodCorrelation.colMean')}</th>
+                <th className="text-end">{t('analytics.moodCorrelation.colCount')}</th>
+                <th className="text-end">{t('analytics.moodCorrelation.colMean')}</th>
               </tr>
             </thead>
             <tbody>
@@ -128,8 +128,8 @@ function MoodCorrelationContent({
                 .map((r) => (
                   <tr key={r.halt}>
                     <td>{HALT_LABELS[r.halt]}</td>
-                    <td className="text-right">{r.count}</td>
-                    <td className="text-right">{r.meanStdDrinks.toFixed(1)}</td>
+                    <td className="text-end">{r.count}</td>
+                    <td className="text-end">{r.meanStdDrinks.toFixed(1)}</td>
                   </tr>
                 ))}
             </tbody>

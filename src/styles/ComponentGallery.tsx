@@ -103,7 +103,7 @@ export default function ComponentGallery({ theme }: { theme: 'light' | 'dark' })
           </h1>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
             Visual-regression baseline. Sections snapshotted by
-            <code className="ml-1 font-mono text-xs">e2e/component-gallery.spec.ts</code>.
+            <code className="ms-1 font-mono text-xs">e2e/component-gallery.spec.ts</code>.
           </p>
         </header>
 

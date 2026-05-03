@@ -71,7 +71,7 @@ export default function GoalCard({ goal, onToggle, onDelete, onEdit }: Props) {
           )}
         </div>
 
-        <div className="flex items-center space-x-2 ml-4">
+        <div className="flex items-center space-x-2 ms-4">
           <button
             type="button"
             onClick={onToggle}

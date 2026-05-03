@@ -60,7 +60,7 @@ export default function JournalEntry({
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
             >
-              <span className="mr-1">{option.emoji}</span>
+              <span className="me-1">{option.emoji}</span>
               {option.label}
             </button>
           ))}

@@ -97,7 +97,7 @@ export default function GoalEvolution({ goal, onEvolve, onDismiss }: Props) {
           type="button"
           onClick={() => apply('extend')}
           disabled={busy !== null}
-          className="text-left px-3 py-2 rounded-md border border-current/20 hover:bg-current/10 disabled:opacity-50 transition-colors"
+          className="text-start px-3 py-2 rounded-md border border-current/20 hover:bg-current/10 disabled:opacity-50 transition-colors"
         >
           <div className="font-medium text-sm">
             {t('goalEvolution.extend.title', 'Keep going')}
@@ -113,7 +113,7 @@ export default function GoalEvolution({ goal, onEvolve, onDismiss }: Props) {
           type="button"
           onClick={() => apply('maintenance')}
           disabled={busy !== null}
-          className="text-left px-3 py-2 rounded-md border border-current/20 hover:bg-current/10 disabled:opacity-50 transition-colors"
+          className="text-start px-3 py-2 rounded-md border border-current/20 hover:bg-current/10 disabled:opacity-50 transition-colors"
         >
           <div className="font-medium text-sm">
             {t('goalEvolution.maintenance.title', 'Maintenance: weekly check-in')}
@@ -129,7 +129,7 @@ export default function GoalEvolution({ goal, onEvolve, onDismiss }: Props) {
           type="button"
           onClick={() => apply('budget')}
           disabled={busy !== null}
-          className="text-left px-3 py-2 rounded-md border border-current/20 hover:bg-current/10 disabled:opacity-50 transition-colors"
+          className="text-start px-3 py-2 rounded-md border border-current/20 hover:bg-current/10 disabled:opacity-50 transition-colors"
         >
           <div className="font-medium text-sm">
             {t('goalEvolution.budget.title', 'Maintenance budget')}

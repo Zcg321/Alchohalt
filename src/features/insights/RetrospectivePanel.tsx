@@ -37,7 +37,7 @@ export default function RetrospectivePanel() {
     return (
       <section
         aria-labelledby="retro-placeholder-heading"
-        className="card border-l-4 border-neutral-300 dark:border-neutral-700"
+        className="card border-s-4 border-neutral-300 dark:border-neutral-700"
         data-testid="retro-placeholder"
       >
         <div className="card-content">
@@ -81,7 +81,7 @@ export default function RetrospectivePanel() {
   return (
     <section
       aria-labelledby="retro-prompt-heading"
-      className="card border-l-4 border-emerald-400 dark:border-emerald-600"
+      className="card border-s-4 border-emerald-400 dark:border-emerald-600"
       data-testid="retro-prompt"
     >
       <div className="card-content flex items-start justify-between gap-3">
@@ -185,7 +185,7 @@ function Row({ label, recent, prior, delta, deltaClass }: RowProps) {
       <div className="text-xs uppercase tracking-wider text-ink-soft col-span-1">{label}</div>
       <div className="tabular-nums">{recent}</div>
       <div className="tabular-nums text-ink-soft">{prior}</div>
-      <div className={`tabular-nums font-medium text-right ${deltaClass}`}>{delta}</div>
+      <div className={`tabular-nums font-medium text-end ${deltaClass}`}>{delta}</div>
     </div>
   );
 }

@@ -32,7 +32,7 @@ export default function InsightCard({ insight }: Props) {
         </div>
         {badges[insight.type]}
       </div>
-      <p className="text-sm opacity-90 ml-9">{insight.description}</p>
+      <p className="text-sm opacity-90 ms-9">{insight.description}</p>
     </div>
   );
 }

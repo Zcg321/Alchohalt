@@ -54,9 +54,9 @@ export function Button({
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-      {leftIcon && !loading && <span className="mr-2">{leftIcon}</span>}
+      {leftIcon && !loading && <span className="me-2">{leftIcon}</span>}
       {children}
-      {rightIcon && !loading && <span className="ml-2">{rightIcon}</span>}
+      {rightIcon && !loading && <span className="ms-2">{rightIcon}</span>}
     </button>
   );
 }

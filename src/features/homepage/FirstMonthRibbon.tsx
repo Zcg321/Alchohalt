@@ -138,7 +138,7 @@ export default function FirstMonthRibbon({ drinks, className = '' }: Props) {
       data-testid="first-month-ribbon"
       className={`mx-auto w-full max-w-2xl px-4 ${className}`}
     >
-      <div className="rounded-2xl border-l-4 border-neutral-300 dark:border-neutral-700 bg-surface-elevated px-4 py-3 text-sm text-ink-soft">
+      <div className="rounded-2xl border-s-4 border-neutral-300 dark:border-neutral-700 bg-surface-elevated px-4 py-3 text-sm text-ink-soft">
         <h2 id="first-month-ribbon-heading" className="sr-only">
           Your first month at a glance
         </h2>

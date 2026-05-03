@@ -114,7 +114,7 @@ function EventRow({ event }: { event: TrustEvent }) {
   const Header = hasDetail ? (
     <button
       type="button"
-      className="flex w-full items-start gap-3 text-left"
+      className="flex w-full items-start gap-3 text-start"
       onClick={() => setOpen((o) => !o)}
       aria-expanded={open}
     >
@@ -127,7 +127,7 @@ function EventRow({ event }: { event: TrustEvent }) {
       </span>
     </button>
   ) : (
-    <div className="flex w-full items-start gap-3 text-left">
+    <div className="flex w-full items-start gap-3 text-start">
       <span className="font-mono text-[11px] text-neutral-500 dark:text-neutral-500">
         {formatTime(event.ts)}
       </span>
@@ -141,7 +141,7 @@ function EventRow({ event }: { event: TrustEvent }) {
     <li className="border-b border-neutral-200/60 py-2 last:border-b-0 dark:border-neutral-700/60">
       {Header}
       {hasDetail && open ? (
-        <pre className="ml-12 mt-1 overflow-x-auto rounded bg-neutral-50 p-2 text-[11px] text-neutral-700 dark:bg-neutral-900/60 dark:text-neutral-300">
+        <pre className="ms-12 mt-1 overflow-x-auto rounded bg-neutral-50 p-2 text-[11px] text-neutral-700 dark:bg-neutral-900/60 dark:text-neutral-300">
 {safeStringify(event.detail)}
         </pre>
       ) : null}

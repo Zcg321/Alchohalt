@@ -24,7 +24,7 @@ export default function SettingsTab({ onOpenCrisis }: Props) {
       <button
         type="button"
         onClick={onOpenCrisis}
-        className="w-full text-left rounded-2xl border border-indigo-100 bg-indigo-50 px-card py-card hover:bg-indigo-100 hover:border-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors"
+        className="w-full text-start rounded-2xl border border-indigo-100 bg-indigo-50 px-card py-card hover:bg-indigo-100 hover:border-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors"
       >
         <div className="flex items-center justify-between gap-3">
           <div>

@@ -127,7 +127,7 @@ export default class ErrorBoundary extends Component<Props, State> {
           details so we can fix it.
         </p>
         {this.state.error?.message ? (
-          <details className="mt-3 text-left text-xs text-ink-subtle">
+          <details className="mt-3 text-start text-xs text-ink-subtle">
             <summary className="cursor-pointer hover:text-ink">
               Technical details
             </summary>

@@ -77,7 +77,7 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 -mt-1 -mr-1 p-2 text-ink-subtle hover:text-ink min-h-[44px] min-w-[44px] flex items-center justify-center rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500"
+            className="shrink-0 -mt-1 -me-1 p-2 text-ink-subtle hover:text-ink min-h-[44px] min-w-[44px] flex items-center justify-center rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500"
             aria-label="Close"
           >
             <CloseIcon />
@@ -102,7 +102,7 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
                   type="button"
                   onClick={() => applyTemplate(tpl)}
                   data-testid={`goal-template-${tpl.id}`}
-                  className="w-full rounded-2xl border border-border-soft bg-white px-4 py-3 text-left hover:bg-neutral-50 hover:border-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-neutral-800/60 dark:hover:bg-neutral-800 transition-colors"
+                  className="w-full rounded-2xl border border-border-soft bg-white px-4 py-3 text-start hover:bg-neutral-50 hover:border-border focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-neutral-800/60 dark:hover:bg-neutral-800 transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-base">{tpl.icon}</span>
@@ -136,7 +136,7 @@ export default function AddGoalModal({ goalTypes, onAdd, onClose }: Props) {
                   key={type.value}
                   type="button"
                   onClick={() => setSelectedType(type.value)}
-                  className={`p-3 text-left rounded-lg border transition-colors ${
+                  className={`p-3 text-start rounded-lg border transition-colors ${
                     selectedType === type.value
                       ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                       : 'border-border-soft hover:border-border'
