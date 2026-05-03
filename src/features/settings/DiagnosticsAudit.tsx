@@ -145,24 +145,41 @@ function LocaleFieldset() {
 }
 
 function BackupFieldset() {
-  /* Round-12 BackupVerifier does NOT persist the verifiedAt timestamp
-   * to settings — it stays in component state and is lost on reload.
-   * Honestly report "not tracked" rather than silently lying with a
-   * stale value. Persisting verifier-ts is R14 work. */
+  /* [R15-3] The auto-verifier persists its result on every export,
+   * so we now have a real timestamp + ok/fail status to show here.
+   * The manual BackupVerifier (R12-3) still doesn't write to
+   * settings — its result lives in component state. */
+  const autoVerification = useDB((s) => s.db.settings.lastBackupAutoVerification);
+
+  let lastValue: string;
+  if (!autoVerification) {
+    lastValue = 'never';
+  } else {
+    const stamp = new Date(autoVerification.ts).toLocaleString();
+    lastValue = autoVerification.ok ? `${stamp} (ok)` : `${stamp} (failed)`;
+  }
+
   return (
     <fieldset className={FIELDSET_CLASS}>
       <legend className={LEGEND_CLASS}>Backup</legend>
       <dl className={GRID_CLASS}>
         <AuditRow
-          label="Last verified backup"
-          value="not tracked"
+          label="Last auto-verified"
+          value={lastValue}
           testid="audit-backup-last"
         />
+        {autoVerification && !autoVerification.ok && (
+          <AuditRow
+            label="Last error"
+            value={autoVerification.error ?? 'unspecified failure'}
+            testid="audit-backup-last-error"
+          />
+        )}
       </dl>
       <p className="text-xs text-ink-subtle">
-        Verify a backup any time from Settings → Privacy &amp; data → Verify a
-        backup file. Round-12 added the verifier; it doesn’t change anything on
-        this device.
+        Auto-verification round-trips every export through the same checksum +
+        schema check the import path uses. Failures raise a small ribbon at the
+        top of the app.
       </p>
     </fieldset>
   );

@@ -156,6 +156,24 @@ export interface Settings {
    * Suppresses re-showing for 7 days from this timestamp. Local-only.
    */
   goalNudgeDismissedAt?: number | undefined;
+  /**
+   * [R15-3] Result of the most-recent automatic backup verification
+   * (run immediately after the user creates a backup). Surfaces in
+   * DiagnosticsAudit and, when ok===false, raises a small ribbon at
+   * the top of the app. Local-only.
+   */
+  lastBackupAutoVerification?: {
+    ts: number;
+    ok: boolean;
+    error?: string;
+    type: 'json' | 'encrypted';
+  } | undefined;
+  /**
+   * [R15-3] When the user dismisses the failed-verification ribbon
+   * we suppress re-showing it for the same verification run. Cleared
+   * on the next auto-verification.
+   */
+  lastBackupRibbonDismissedTs?: number | undefined;
 }
 
 export interface Entry {

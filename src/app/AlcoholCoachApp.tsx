@@ -20,6 +20,7 @@ import InsightsTab from './tabs/InsightsTab';
 import SettingsTab from './tabs/SettingsTab';
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
+import BackupAutoVerifyRibbon from '../features/backup/BackupAutoVerifyRibbon';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
 import DataRecoveryScreen from '../features/recovery/DataRecoveryScreen';
 import CrisisResources from '../features/crisis/CrisisResources';
@@ -542,6 +543,11 @@ function AlcoholCoachAppInner() {
         updateApp={updateApp}
         onDismiss={() => setShowUpdateBanner(false)}
       />
+
+      {/* [R15-3] Renders only when the most-recent automatic backup
+          verification failed and hasn't been dismissed. Self-hides
+          when the next successful backup overwrites the result. */}
+      <BackupAutoVerifyRibbon />
 
       {!isOnline && (
         <div
