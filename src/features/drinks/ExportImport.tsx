@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import { useDB } from '../../store/db';
 import { validateImport, processImport, downloadData } from '../../lib/data-export';
 import type { ExportData } from '../../lib/data-export';
-import { exportDatabaseToCSV } from '../../lib/csv-export';
+import { exportDatabaseToCSV, databaseToCSV, downloadCSV } from '../../lib/csv-export';
 import { createExportWithAutoVerify } from '../../lib/backup-auto-verify';
+import {
+  dbForExportRange,
+  defaultLast30DaysRange,
+  dateInputValue,
+  parseDateInputValue,
+  validateRange,
+} from '../../lib/export-range';
 import DataImport from './DataImport';
 
 export default function ExportImport() {
@@ -14,18 +21,36 @@ export default function ExportImport() {
     setSettings: s.setSettings,
   }));
 
+  /* [R16-3] Date-range export. Default = last 30 days. Toggle hides
+   * the from/to fields by default — full-DB export stays one-tap. */
+  const [rangeOpen, setRangeOpen] = useState(false);
+  const [range, setRange] = useState(() => defaultLast30DaysRange());
+  const rangeError = validateRange(range);
+
   async function doExport() {
     try {
       /* [R15-3] Round-trip the just-created export through
        * validateImport and persist the result. The download still
        * happens — verification is non-blocking. If it fails, the
-       * BackupAutoVerifyRibbon surfaces it next render. */
-      const { payload, verification } = await createExportWithAutoVerify(db);
+       * BackupAutoVerifyRibbon surfaces it next render.
+       *
+       * [R16-3] If a range is open, build a filtered DB clone first.
+       * The filtered payload still self-verifies because checksum is
+       * computed over the SAME DB snapshot we just exported — round-
+       * trip identity holds against the partial DB. */
+      const dbToExport = rangeOpen ? dbForExportRange(db, range) : db;
+      const { payload, verification } = await createExportWithAutoVerify(dbToExport);
       downloadData(payload);
-      setSettings({
-        lastBackupAutoVerification: verification,
-        lastBackupRibbonDismissedTs: undefined,
-      });
+      /* Skip overwriting backup-verification settings on a partial
+       * export — those track full-DB backup health. The R15-3 ribbon
+       * shouldn't change just because the user pulled a 90-day slice
+       * for their therapist. */
+      if (!rangeOpen) {
+        setSettings({
+          lastBackupAutoVerification: verification,
+          lastBackupRibbonDismissedTs: undefined,
+        });
+      }
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'try again';
       alert(`Couldn't save your export — ${msg}. If it keeps happening, report this at https://github.com/Zcg321/Alchohalt/issues`);
@@ -34,7 +59,13 @@ export default function ExportImport() {
 
   function doExportCSV() {
     try {
-      exportDatabaseToCSV(db);
+      if (rangeOpen) {
+        const filteredDb = dbForExportRange(db, range);
+        const csv = databaseToCSV(filteredDb);
+        downloadCSV(csv);
+      } else {
+        exportDatabaseToCSV(db);
+      }
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'try again';
       alert(`Couldn't save your CSV export — ${msg}. If it keeps happening, report this at https://github.com/Zcg321/Alchohalt/issues`);
@@ -119,16 +150,89 @@ export default function ExportImport() {
           <button
             onClick={doExport}
             className="btn btn-primary"
+            disabled={rangeOpen && !!rangeError}
+            data-testid="export-json-button"
           >
             Export to JSON
           </button>
           <button
             onClick={doExportCSV}
             className="btn btn-secondary"
+            disabled={rangeOpen && !!rangeError}
             data-testid="export-csv-button"
           >
             Export to CSV
           </button>
+        </div>
+        {/* [R16-3] Date-range picker. Hidden by default; toggle reveals
+            from/to fields. Defaults to the last 30 days so a tap-tap
+            therapist export needs zero typing. */}
+        <div className="mt-3">
+          <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={rangeOpen}
+              onChange={(e) => setRangeOpen(e.target.checked)}
+              data-testid="export-range-toggle"
+              className="h-4 w-4"
+            />
+            <span>Limit to a date range</span>
+          </label>
+          {rangeOpen ? (
+            <div
+              className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3"
+              data-testid="export-range-fields"
+            >
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  From
+                </span>
+                <input
+                  type="date"
+                  value={dateInputValue(range.fromMs)}
+                  onChange={(e) =>
+                    setRange((r) => ({
+                      ...r,
+                      fromMs: parseDateInputValue(e.target.value, 'start'),
+                    }))
+                  }
+                  data-testid="export-range-from"
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1.5"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="block text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  To
+                </span>
+                <input
+                  type="date"
+                  value={dateInputValue(range.toMs)}
+                  onChange={(e) =>
+                    setRange((r) => ({
+                      ...r,
+                      toMs: parseDateInputValue(e.target.value, 'end'),
+                    }))
+                  }
+                  data-testid="export-range-to"
+                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1.5"
+                />
+              </label>
+              {rangeError ? (
+                <p
+                  role="alert"
+                  data-testid="export-range-error"
+                  className="sm:col-span-2 text-xs text-red-600 dark:text-red-400"
+                >
+                  {rangeError}
+                </p>
+              ) : (
+                <p className="sm:col-span-2 text-xs text-gray-500 dark:text-gray-400">
+                  Inclusive on both ends. Range exports skip the
+                  full-backup verification — they&apos;re a slice, not a backup.
+                </p>
+              )}
+            </div>
+          ) : null}
         </div>
       </div>
 
