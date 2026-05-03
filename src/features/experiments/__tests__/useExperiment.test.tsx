@@ -102,8 +102,11 @@ describe('[R14-4] useExperiment hook', () => {
   });
 });
 
-describe('[R14-4] live registry is empty by default', () => {
-  it('REGISTRY ships empty in R14-4 (no active experiments yet)', () => {
-    expect(registryModule.REGISTRY).toEqual([]);
+describe('[R15-B] live registry contains the onboarding chip-copy test', () => {
+  it('exposes onboarding-chip-copy-2026Q2 as an active experiment', () => {
+    const exp = registryModule.findExperiment('onboarding-chip-copy-2026Q2');
+    expect(exp).toBeDefined();
+    expect(exp?.status).toBe('active');
+    expect(exp?.variants).toEqual(['control', 'first-person']);
   });
 });

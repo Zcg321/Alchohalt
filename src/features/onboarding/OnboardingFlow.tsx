@@ -4,6 +4,7 @@ import type { OnboardingDiagnostics } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { analytics } from '../analytics/analytics';
+import { useExperiment } from '../experiments/useExperiment';
 
 /**
  * [ONBOARD-1] Three-beat conversational onboarding.
@@ -37,8 +38,28 @@ interface BeatOneProps {
   onChoose: (intent: Intent) => void;
   onJustLooking: () => void;
   justLookingLabel: string;
+  /** [R15-B] Variant from the onboarding-chip-copy-2026Q2 experiment. */
+  chipVariant: string | null;
 }
-function BeatOne({ onChoose, onJustLooking, justLookingLabel }: BeatOneProps) {
+/* [R15-B] Two label sets driven by the active experiment variant.
+ * The intent IDs ('cut-back', 'quit', 'curious') are stable so the
+ * downstream OnboardingDiagnostics record stays consistent across
+ * variants — only the human-facing label changes. */
+const CHIP_LABELS_CONTROL: Readonly<Record<Intent, string>> = {
+  'cut-back': 'Trying to drink less',
+  quit: 'Trying to stop',
+  curious: 'Not sure yet',
+};
+const CHIP_LABELS_FIRST_PERSON: Readonly<Record<Intent, string>> = {
+  'cut-back': 'I want to drink less',
+  quit: "I'm stopping for now",
+  curious: "I'm here to learn",
+};
+function chipLabelFor(variant: string | null, intent: Intent): string {
+  if (variant === 'first-person') return CHIP_LABELS_FIRST_PERSON[intent];
+  return CHIP_LABELS_CONTROL[intent];
+}
+function BeatOne({ onChoose, onJustLooking, justLookingLabel, chipVariant }: BeatOneProps) {
   /* [ONBOARDING-ROUND-4] Half-second pause before chips appear. The
    * user just opened the app on Day 0 — let the question land before
    * the answer prompts crowd in. The chips fade in via the existing
@@ -60,19 +81,20 @@ function BeatOne({ onChoose, onJustLooking, justLookingLabel }: BeatOneProps) {
       </p>
       {showChips ? (
         <>
-          <div className="mt-5 grid gap-2.5 motion-safe:animate-fade-in">
-            {([
-              ['cut-back', 'Trying to drink less'],
-              ['quit', 'Trying to stop'],
-              ['curious', 'Not sure yet'],
-            ] as const).map(([id, label]) => (
+          <div
+            className="mt-5 grid gap-2.5 motion-safe:animate-fade-in"
+            data-testid="onboarding-chip-row"
+            data-variant={chipVariant ?? 'control'}
+          >
+            {(['cut-back', 'quit', 'curious'] as const).map((id) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => onChoose(id)}
+                data-testid={`onboarding-chip-${id}`}
                 className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
               >
-                {label}
+                {chipLabelFor(chipVariant, id)}
               </button>
             ))}
           </div>
@@ -186,6 +208,11 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [isVisible, setIsVisible] = useState(false);
   const dialogRef = useRef<HTMLDivElement | null>(null);
+  /* [R15-B] First active A/B test. Variant is stable per device,
+   * deterministic from the install bucket. The hook returns null
+   * when the experiment is dormant or the env can't read storage,
+   * which falls through to the control labels in chipLabelFor. */
+  const chipVariant = useExperiment('onboarding-chip-copy-2026Q2');
   // [R9-2] Local-only diagnostics buffer. Persisted on `complete()` /
   // `skip()` so we don't write on every chip tap.
   const [intent, setIntent] = useState<Intent | undefined>();
@@ -315,6 +342,7 @@ export default function OnboardingFlow() {
               onChoose={(i) => { setIntent(i); setStep(1); }}
               onJustLooking={() => skip('just-looking')}
               justLookingLabel={t('onboarding.justLooking', "I'm just looking")}
+              chipVariant={chipVariant}
             />
           )}
           {step === 1 && (

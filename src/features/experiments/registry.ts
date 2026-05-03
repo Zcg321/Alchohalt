@@ -55,18 +55,31 @@ export interface Experiment {
 }
 
 /**
- * The registry. R14-4 ships empty (no active or draft experiments).
+ * The registry. R14-4 shipped this empty. R15-B activates the first
+ * variant: an onboarding chip-copy test.
  *
- * To add a draft experiment for later activation, add it here:
+ * `onboarding-chip-copy-2026Q2`
+ *   - control: third-person framing ("Trying to drink less", "Trying
+ *     to stop", "Not sure yet"). The copy that's been in the build
+ *     since the conversational-onboarding rewrite.
+ *   - first-person: declarative framing ("I want to drink less",
+ *     "I'm stopping for now", "I'm here to learn"). Hypothesis is
+ *     that first-person framing reads as commitment rather than
+ *     description.
  *
- *   {
- *     key: 'onboarding-tone-2026Q3',
- *     variants: ['warm', 'crisp'] as const,
- *     status: 'draft',
- *     description: 'Tone test on the day-1 onboarding hero copy.',
- *   },
+ * Exposure data is local-only (per R14-4 contract). The owner reads
+ * exposures via Settings → Diagnostics → A/B audit; no telemetry
+ * leaves the device.
  */
-export const REGISTRY: readonly Experiment[] = [];
+export const REGISTRY: readonly Experiment[] = [
+  {
+    key: 'onboarding-chip-copy-2026Q2',
+    variants: ['control', 'first-person'] as const,
+    status: 'active',
+    description:
+      'Onboarding intent chips: third-person ("Trying to drink less") vs first-person ("I want to drink less").',
+  },
+];
 
 export function findExperiment(key: string): Experiment | undefined {
   return REGISTRY.find((e) => e.key === key);

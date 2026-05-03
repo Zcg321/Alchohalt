@@ -116,9 +116,9 @@ describe('OnboardingFlow — diagnostics [R9-2]', () => {
   it('records status="completed" with intent + trackStyle when full flow finishes', () => {
     render(<OnboardingFlow />);
     flushChipDelay();
-    // [R9-REBASE] R8 voice: "Trying to drink less" / "A month off" /
-    // "Get started" — these are the chip labels we kept after merge.
-    fireEvent.click(screen.getByText('Trying to drink less'));
+    // [R15-B] Chip labels are now experiment-driven; click by testid
+    // so the test passes for both control + first-person variants.
+    fireEvent.click(screen.getByTestId('onboarding-chip-cut-back'));
     fireEvent.click(screen.getByText('A month off'));
     fireEvent.click(screen.getByText(/Get started/i));
     const diag = useDB.getState().db.settings.onboardingDiagnostics;
