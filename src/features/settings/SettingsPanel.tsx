@@ -15,7 +15,8 @@ import About from './About';
 import ReplayOnboardingButton from './ReplayOnboardingButton';
 import ResetPreferencesPanel from './ResetPreferencesPanel';
 import PrivacyStatus from './PrivacyStatus';
-import CrashReportsToggle from './CrashReportsToggle';
+
+const CrashReportsToggleLazy = React.lazy(() => import('./CrashReportsToggle'));
 import { hapticForEvent } from '../../shared/haptics';
 import { useLanguage } from '../../i18n';
 
@@ -187,7 +188,7 @@ function PrivacyAndDataSection() {
       <Suspense fallback={<Skeleton className="h-48 w-full rounded-2xl" />}><AISettingsPanelLazy /></Suspense>
       <Suspense fallback={<Skeleton className="h-48 w-full rounded-2xl" />}><SyncPanelLazy /></Suspense>
       <PrivacyStatus />
-      <CrashReportsToggle />
+      <Suspense fallback={<Skeleton className="h-24 w-full rounded-2xl" />}><CrashReportsToggleLazy /></Suspense>
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-2xl" />}><TrustReceiptLazy /></Suspense>
       <SharingPanel />
       <Diagnostics />
