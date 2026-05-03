@@ -1,0 +1,19 @@
+# Alchohalt — security contact (RFC 9116)
+#
+# This file is the canonical machine-readable place to report a
+# vulnerability in the Alchohalt PWA, native iOS/Android Capacitor
+# wrappers, or the encrypted-backup transport.
+#
+# Out of scope:
+#   - Crisis hotline numbers / external links rendered in the app —
+#     report those upstream to the listed providers (988, Samhsa, etc.).
+#   - Reports from automated scanners with no proof-of-concept.
+#   - Self-XSS / clickjacking on a target the user already controls.
+
+Contact: mailto:security@placeholder.local
+Expires: 2027-05-03T21:57:52Z
+Encryption: https://alchohalt.example/.well-known/pgp-key.txt
+Acknowledgments: https://alchohalt.example/legal/security-acknowledgments
+Preferred-Languages: en
+Canonical: https://alchohalt.example/.well-known/security.txt
+Policy: https://alchohalt.example/legal/security

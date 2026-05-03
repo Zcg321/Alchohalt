@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
+// @ts-expect-error — local .mjs plugin, no .d.ts shim needed
+import sri from './vite-plugin-sri.mjs';
 
 let visualizer;
 if (process.env.BUNDLE_REPORT === '1') {
@@ -80,6 +82,10 @@ export default defineConfig(() => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+          /* [R20-2] sw-custom.js carries the Background Sync event
+           * handler; Workbox imports it at SW init so 'sync' events
+           * fire even when the app is closed. */
+          importScripts: ['sw-custom.js'],
           navigateFallback: '/index.html',
           runtimeCaching: [
             {
@@ -107,6 +113,9 @@ export default defineConfig(() => {
   if (visualizer) {
     plugins.push(visualizer({ filename: 'stats.html', gzipSize: true }));
   }
+  /* [R20-C] SRI runs as the LAST plugin so it sees the final
+   * emitted bundle (after VitePWA + visualizer). */
+  plugins.push(sri());
 
   return {
     plugins,

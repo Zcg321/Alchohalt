@@ -5,7 +5,7 @@
   "clearAllData": "Effacer toutes les données",
   "eraseConfirm": "Effacer toutes les données enregistrées ? Cette action est irréversible.",
   "eraseConfirm.subtitle": "Toutes les entrées, objectifs, presets et réglages seront supprimés. Cette action est irréversible.",
-  "eraseConfirm.typePrompt": "Tape EFFACER pour confirmer",
+  "eraseConfirm.typePrompt": "Tapez EFFACER pour confirmer",
   "eraseConfirm.typeWord": "EFFACER",
   "eraseConfirm.confirmButton": "Tout effacer",
   "eraseConfirm.cancelButton": "Garder mes données",
@@ -144,7 +144,7 @@
   "status.offline": "Hors ligne",
   "history.deleted": "Entrée supprimée",
   "toast.undo": "Annuler",
-  "reminder.prompt": "Rappel : enregistrer ta journée ?",
+  "reminder.prompt": "Rappel : enregistrer votre journée ?",
   "reminder.log": "Enregistrer maintenant",
   "bulk.actionsLabel": "Actions d’édition groupée",
   "bulk.selectionCount.one": "{{n}} boisson sélectionnée",
@@ -159,16 +159,16 @@
   "bulk.scaleStd": "Ajuster std…",
   "bulk.deleteConfirm.one": "Supprimer cette boisson ? Cette action est définitive.",
   "bulk.deleteConfirm.many": "Supprimer {{n}} boissons ? Cette action est définitive.",
-  "ribbon.heading": "Tes sept derniers jours en un coup d’œil",
+  "ribbon.heading": "Vos sept derniers jours en un coup d’œil",
   "ribbon.label": "7 derniers jours :",
   "ribbon.afDays.one": "{{n}} jour sans alcool",
   "ribbon.afDays.many": "{{n}} jours sans alcool",
   "ribbon.loggedDay.one": "{{n}} jour avec consommations notées",
   "ribbon.loggedDay.many": "{{n}} jours avec consommations notées",
-  "ribbon.overCap": "{{n}} au-dessus de ta limite quotidienne",
+  "ribbon.overCap": "{{n}} au-dessus de votre limite quotidienne",
   "onboarding": {
     "welcome": {
-      "title": "Bienvenue dans Alchohalt",
+      "title": "Bienvenue sur Alchohalt",
       "description": "Un espace privé pour noter ce que vous buvez et observer ce qui change."
     },
     "privacy": {
@@ -207,7 +207,7 @@
     "getStarted": "Commencer"
   },
   "marketing": {
-    "tagline": "Aucune publicité. Aucune analyse. Reçu de confiance inclus.",
+    "tagline": "Aucune publicité. Aucune analyse. Attestation de confiance incluse.",
     "shortTagline": "Aucune publicité. Aucune analyse. À vous.",
     "moatLine": "Nous ne pouvons cryptographiquement pas lire ce que vous enregistrez."
   },
@@ -229,7 +229,7 @@
   "settings": {
     "privacy": {
       "heading": "Confidentialité et données",
-      "tagline": "Aucune publicité. Aucune analyse. Reçu de confiance inclus.",
+      "tagline": "Aucune publicité. Aucune analyse. Attestation de confiance incluse.",
       "subtitle": "Trois réglages contrôlés ici. Regroupés pour ne plus être qu'une décision au lieu de trois."
     }
   },
@@ -257,15 +257,15 @@
       "description": "Réduire la consommation hebdomadaire à la moitié de la moyenne du mois dernier."
     },
     "ninetyDayReset": {
-      "title": "Reset de 90 jours",
-      "description": "Une longue période sans alcool pour un vrai reset."
+      "title": "Réinitialisation 90 jours",
+      "description": "Une longue période sans alcool pour une vraie remise à zéro."
     },
     "useTemplate": "Utiliser le modèle",
     "buildMyOwn": "Créer le mien"
   },
   "retrospective": {
     "promptTitle": "Cela fait un mois",
-    "promptBody": "Tu veux voir ce qui a changé sur la fenêtre {{label}} ?",
+    "promptBody": "Vous voulez voir ce qui a changé sur la fenêtre {{label}} ?",
     "open": "Voir",
     "dismiss": "Plus tard",
     "viewTitle": "Rétrospective {{label}}",
@@ -279,7 +279,7 @@
   },
   "funnel": {
     "title": "Entonnoir d'accueil",
-    "empty": "Aucune tentative enregistrée pour l'instant. Efface les données et refais l'accueil pour remplir.",
+    "empty": "Aucune tentative enregistrée pour l'instant. Effacez les données et refaites l'accueil pour remplir.",
     "subtitleOne": "Décomptes sur l'appareil à partir de {{n}} tentative. Jamais transmis.",
     "subtitleMany": "Décomptes sur l'appareil à partir de {{n}} tentatives. Jamais transmis.",
     "attempts": "Tentatives",

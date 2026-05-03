@@ -10,6 +10,7 @@
 
 import React from 'react';
 import type { ActivityEntry } from '../../lib/sync/syncStore';
+import { FormField } from '../../components/ui/FormField';
 
 function fmtRelative(ts: number): string {
   const delta = Date.now() - ts;
@@ -99,25 +100,21 @@ export function SyncEnablingForm({
   return (
     <form noValidate onSubmit={onSubmit} className="space-y-4" data-testid="sync-enable-form" aria-describedby={error ? 'sync-enable-error' : undefined}>
       <ErrorAlert id="sync-enable-error" error={error} errorRef={errorRef} />
-      <div className="space-y-1">
-        <label htmlFor="sync-email" className="block text-caption font-medium text-ink">Email</label>
-        <input
-          id="sync-email" type="email" value={email}
-          onChange={(e) => onEmailChange(e.target.value)} className="input" autoComplete="email"
-          aria-invalid={errorField === 'email' ? true : undefined}
-          aria-describedby={errorField === 'email' ? 'sync-enable-error' : undefined}
-        />
-      </div>
-      <div className="space-y-1">
-        <label htmlFor="sync-pass" className="block text-caption font-medium text-ink">Passphrase</label>
-        <input
-          id="sync-pass" type="password" value={passphrase}
-          onChange={(e) => onPassphraseChange(e.target.value)} className="input" autoComplete="new-password"
-          aria-invalid={errorField === 'passphrase' ? true : undefined}
-          aria-describedby={errorField === 'passphrase' ? 'sync-pass-hint sync-enable-error' : 'sync-pass-hint'}
-        />
-        <p id="sync-pass-hint" className="text-micro text-ink-subtle">12+ characters, with upper, lower, and a digit.</p>
-      </div>
+      <FormField
+        id="sync-email" label="Email"
+        hasError={errorField === 'email'}
+        errorId={errorField === 'email' ? 'sync-enable-error' : undefined}
+      >
+        <input type="email" value={email} onChange={(e) => onEmailChange(e.target.value)} className="input" autoComplete="email" />
+      </FormField>
+      <FormField
+        id="sync-pass" label="Passphrase"
+        description="12+ characters, with upper, lower, and a digit."
+        hasError={errorField === 'passphrase'}
+        errorId={errorField === 'passphrase' ? 'sync-enable-error' : undefined}
+      >
+        <input type="password" value={passphrase} onChange={(e) => onPassphraseChange(e.target.value)} className="input" autoComplete="new-password" />
+      </FormField>
       <div className="flex gap-2">
         <button type="submit" disabled={busy} className={PRIMARY_BTN} data-testid="sync-enable-continue">
           {busy ? 'Working…' : 'Continue'}
@@ -182,24 +179,20 @@ export function SyncSignInForm({
   return (
     <form noValidate onSubmit={onSubmit} className="space-y-4" data-testid="sync-signin-form" aria-describedby={error ? 'sync-signin-error' : undefined}>
       <ErrorAlert id="sync-signin-error" error={error} errorRef={errorRef} />
-      <div className="space-y-1">
-        <label htmlFor="signin-email" className="block text-caption font-medium text-ink">Email</label>
-        <input
-          id="signin-email" type="email" value={email}
-          onChange={(e) => onEmailChange(e.target.value)} className="input" autoComplete="email"
-          aria-invalid={errorField === 'email' ? true : undefined}
-          aria-describedby={errorField === 'email' ? 'sync-signin-error' : undefined}
-        />
-      </div>
-      <div className="space-y-1">
-        <label htmlFor="signin-pass" className="block text-caption font-medium text-ink">Passphrase</label>
-        <input
-          id="signin-pass" type="password" value={passphrase}
-          onChange={(e) => onPassphraseChange(e.target.value)} className="input" autoComplete="current-password"
-          aria-invalid={errorField === 'passphrase' ? true : undefined}
-          aria-describedby={errorField === 'passphrase' ? 'sync-signin-error' : undefined}
-        />
-      </div>
+      <FormField
+        id="signin-email" label="Email"
+        hasError={errorField === 'email'}
+        errorId={errorField === 'email' ? 'sync-signin-error' : undefined}
+      >
+        <input type="email" value={email} onChange={(e) => onEmailChange(e.target.value)} className="input" autoComplete="email" />
+      </FormField>
+      <FormField
+        id="signin-pass" label="Passphrase"
+        hasError={errorField === 'passphrase'}
+        errorId={errorField === 'passphrase' ? 'sync-signin-error' : undefined}
+      >
+        <input type="password" value={passphrase} onChange={(e) => onPassphraseChange(e.target.value)} className="input" autoComplete="current-password" />
+      </FormField>
       <div className="flex gap-2">
         <button type="submit" disabled={busy} className={PRIMARY_BTN} data-testid="sync-signin-continue">
           {busy ? 'Signing in…' : 'Sign in'}

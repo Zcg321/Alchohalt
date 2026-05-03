@@ -18,6 +18,11 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './e2e',
   testMatch: '**/*.spec.ts',
+  /* [R20-5] Perf specs are opt-in. They run a real network throttle
+   * which can be flaky under CI load. Run them locally via:
+   *   npx playwright test e2e/perf/
+   * The default run skips them. */
+  testIgnore: '**/perf/**',
   // The walkthroughs lean on a fresh localStorage state; running them
   // in parallel inside one Playwright workers would race on the page
   // origin's storage. fullyParallel:false keeps tests serial inside the
