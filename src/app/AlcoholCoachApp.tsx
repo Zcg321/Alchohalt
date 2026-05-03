@@ -18,6 +18,7 @@ import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import BackupAutoVerifyRibbon from '../features/backup/BackupAutoVerifyRibbon';
 import OnboardingFlow from '../features/onboarding/OnboardingFlow';
+import OnboardingReentryBanner from '../features/onboarding/OnboardingReentryBanner';
 import DataRecoveryScreen from '../features/recovery/DataRecoveryScreen';
 import CrisisResources from '../features/crisis/CrisisResources';
 import HardTimePanel from '../features/crisis/HardTimePanel';
@@ -219,6 +220,7 @@ function AlcoholCoachAppInner() {
       <a href="#main" className="skip-link">Skip to main content</a>
       <DataRecoveryScreen />
       <OnboardingFlow />
+      <OnboardingReentryBanner />
       <PWAInstallBanner isInstallable={isInstallable && showInstallBanner} promptInstall={promptInstall} onDismiss={() => setShowInstallBanner(false)} />
       <UpdateBanner updateAvailable={updateAvailable && showUpdateBanner} updateApp={updateApp} onDismiss={() => setShowUpdateBanner(false)} />
       <BackupAutoVerifyRibbon />
