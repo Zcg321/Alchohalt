@@ -30,21 +30,40 @@ interface Props {
   matchedCount: number;
 }
 
-const DAY_MS = 86_400_000;
+/**
+ * Parse "YYYY-MM-DD" from an <input type="date"> as LOCAL-time
+ * boundaries.
+ *
+ * Date.parse("YYYY-MM-DD") interprets the string as UTC midnight,
+ * which shifts the filter boundary by the user's UTC offset. A user
+ * in UTC-5 picking "2026-04-01" would get a boundary at 7 PM local
+ * on March 31 — entries logged in the late evening of March 31 local
+ * time would be incorrectly included in a "from April 1" filter.
+ *
+ * Construct the Date with local year/month/day fields instead so the
+ * boundary lines up with the user's perception of the day.
+ */
+function parseLocalDateBoundary(
+  dateInput: string,
+  position: 'start' | 'end',
+): number {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateInput);
+  if (!m) return Number.NaN;
+  const year = Number(m[1]);
+  const month = Number(m[2]) - 1;
+  const day = Number(m[3]);
+  if (position === 'end') {
+    return new Date(year, month, day, 23, 59, 59, 999).getTime();
+  }
+  return new Date(year, month, day, 0, 0, 0, 0).getTime();
+}
 
 function endOfDay(dateInput: string): number {
-  // dateInput is the value from <input type="date">: "YYYY-MM-DD"
-  // (no timezone). Treat as local midnight + 24h - 1ms so the upper
-  // bound is inclusive of the entire chosen day.
-  const t = Date.parse(dateInput);
-  if (Number.isNaN(t)) return Number.NaN;
-  return t + DAY_MS - 1;
+  return parseLocalDateBoundary(dateInput, 'end');
 }
 
 function startOfDay(dateInput: string): number {
-  const t = Date.parse(dateInput);
-  if (Number.isNaN(t)) return Number.NaN;
-  return t;
+  return parseLocalDateBoundary(dateInput, 'start');
 }
 
 function parseNonNegFloat(s: string): number | undefined {

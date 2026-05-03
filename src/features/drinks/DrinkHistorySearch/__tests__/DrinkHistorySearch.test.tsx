@@ -93,6 +93,50 @@ describe('[R14-2] DrinkHistorySearch component', () => {
     expect(typeof lastCall?.[0]?.dateFrom).toBe('number');
   });
 
+  it('parses date inputs as LOCAL midnight, not UTC midnight', () => {
+    /* Bug surfaced by Codex review on PR #48: <input type="date">
+     * values are local calendar dates, but Date.parse('YYYY-MM-DD')
+     * interprets them as UTC. In non-UTC zones this shifts boundaries
+     * by the user's offset and excludes/includes entries on the wrong
+     * day near midnight. The fix uses local-time Date construction. */
+    const { onCriteriaChange } = renderBar();
+    fireEvent.click(screen.getByTestId('drink-search-advanced-toggle'));
+    fireEvent.change(screen.getByTestId('drink-search-date-from'), {
+      target: { value: '2026-04-01' },
+    });
+    const calls = onCriteriaChange.mock.calls;
+    const lastCall = calls[calls.length - 1];
+    const dateFrom = lastCall?.[0]?.dateFrom;
+    expect(typeof dateFrom).toBe('number');
+    // Local midnight at 2026-04-01: hour/min/sec/ms all zero in local TZ.
+    const asDate = new Date(dateFrom!);
+    expect(asDate.getFullYear()).toBe(2026);
+    expect(asDate.getMonth()).toBe(3); // April (0-indexed)
+    expect(asDate.getDate()).toBe(1);
+    expect(asDate.getHours()).toBe(0);
+    expect(asDate.getMinutes()).toBe(0);
+    expect(asDate.getSeconds()).toBe(0);
+  });
+
+  it('parses dateTo as end-of-day local time (23:59:59.999)', () => {
+    const { onCriteriaChange } = renderBar();
+    fireEvent.click(screen.getByTestId('drink-search-advanced-toggle'));
+    fireEvent.change(screen.getByTestId('drink-search-date-to'), {
+      target: { value: '2026-04-01' },
+    });
+    const calls = onCriteriaChange.mock.calls;
+    const lastCall = calls[calls.length - 1];
+    const dateTo = lastCall?.[0]?.dateTo;
+    expect(typeof dateTo).toBe('number');
+    const asDate = new Date(dateTo!);
+    expect(asDate.getFullYear()).toBe(2026);
+    expect(asDate.getMonth()).toBe(3);
+    expect(asDate.getDate()).toBe(1);
+    expect(asDate.getHours()).toBe(23);
+    expect(asDate.getMinutes()).toBe(59);
+    expect(asDate.getSeconds()).toBe(59);
+  });
+
   it('emits stdMin when user enters a min-std value', () => {
     const { onCriteriaChange } = renderBar();
     fireEvent.click(screen.getByTestId('drink-search-advanced-toggle'));
