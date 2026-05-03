@@ -1,5 +1,7 @@
 /**
  * [R14-3] Tag-pattern insights card.
+ * [R15-A] Tags are now tappable buttons that open an inline tag explorer
+ * with weekday + hour distributions and the 10 most recent entries.
  *
  * Surfaces patterns the user might not have noticed:
  *
@@ -13,32 +15,28 @@
  *   - If no patterns surface, the card renders nothing (no "no
  *     patterns yet" placeholder — the absence speaks for itself).
  */
-import React from 'react';
+import React, { useState } from 'react';
 import type { Drink } from '../../types/common';
 import { stdDrinks } from '../../lib/calc';
 import { computeTagPatterns } from './tagPatterns';
+import TagExplorer from './TagExplorer';
 
 interface Props {
   drinks: Drink[];
 }
 
 function fmt(n: number): string {
-  // Two decimals for std-drink averages; matches formatStdDrinks
-  // shape used elsewhere in DrinkItem.
   return n.toFixed(2);
 }
 
 export default function TagPatternsCard({ drinks }: Props) {
+  const [openTag, setOpenTag] = useState<string | null>(null);
   const patterns = computeTagPatterns(drinks);
   if (patterns.length === 0) return null;
 
-  // Overall avg is needed for the comparison line. R14-6 makes
-  // stdDrinks() jurisdiction-aware via a module-level activeSystem.
-  // Re-using stdDrinks() here keeps the displayed "vs overall"
-  // baseline numerically consistent with computeTagPatterns' own
-  // per-tag averages (which also call stdDrinks). Without this, UK
-  // users (8 g per unit) would see a US-14g overall baseline next to
-  // UK-8g per-tag rows — the deltas would render incoherent.
+  // R14-6 makes stdDrinks() jurisdiction-aware via a module-level
+  // activeSystem; re-using it here keeps the displayed "vs overall"
+  // baseline numerically consistent with the per-tag averages.
   const totalStd = drinks.reduce((s, d) => s + stdDrinks(d.volumeMl, d.abvPct), 0);
   const overallAvg = drinks.length > 0 ? totalStd / drinks.length : 0;
 
@@ -52,32 +50,45 @@ export default function TagPatternsCard({ drinks }: Props) {
         Tag patterns
       </h3>
       <p className="text-caption text-ink-soft">
-        Tags appearing on at least 3 entries, sorted by how far their average diverges from your overall.
+        Tags appearing on at least 3 entries. Tap one to see weekday and hour-of-day shape.
       </p>
       <ul className="space-y-2" data-testid="tag-patterns-list">
         {patterns.map((p) => {
           const heavier = p.deltaVsOverall > 0;
+          const isOpen = openTag === p.tag;
           return (
-            <li
-              key={p.tag}
-              className="flex flex-wrap items-baseline justify-between gap-2 rounded-xl bg-surface px-3 py-2"
-              data-testid={`tag-pattern-${p.tag}`}
-            >
-              <span className="font-medium text-ink">#{p.tag}</span>
-              <span className="text-caption text-ink-soft tabular-nums">
-                {p.count} {p.count === 1 ? 'entry' : 'entries'}
-                {' · '}
-                avg {fmt(p.avgStd)} std
-                {' · '}
-                <span className={heavier ? 'text-ink' : 'text-ink-soft'}>
-                  {heavier ? '+' : ''}
-                  {fmt(p.deltaVsOverall)} vs overall {fmt(overallAvg)}
+            <li key={p.tag} data-testid={`tag-pattern-${p.tag}`}>
+              <button
+                type="button"
+                onClick={() => setOpenTag(isOpen ? null : p.tag)}
+                aria-expanded={isOpen}
+                aria-controls={isOpen ? `tag-explorer-${p.tag}-heading` : undefined}
+                className="flex w-full flex-wrap items-baseline justify-between gap-2 rounded-xl bg-surface px-3 py-2 text-left hover:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary-500"
+                data-testid={`tag-pattern-button-${p.tag}`}
+              >
+                <span className="font-medium text-ink">#{p.tag}</span>
+                <span className="text-caption text-ink-soft tabular-nums">
+                  {p.count} {p.count === 1 ? 'entry' : 'entries'}
+                  {' · '}
+                  avg {fmt(p.avgStd)} std
+                  {' · '}
+                  <span className={heavier ? 'text-ink' : 'text-ink-soft'}>
+                    {heavier ? '+' : ''}
+                    {fmt(p.deltaVsOverall)} vs overall {fmt(overallAvg)}
+                  </span>
                 </span>
-              </span>
+              </button>
             </li>
           );
         })}
       </ul>
+      {openTag !== null && (
+        <TagExplorer
+          drinks={drinks}
+          tag={openTag}
+          onClose={() => setOpenTag(null)}
+        />
+      )}
     </section>
   );
 }
