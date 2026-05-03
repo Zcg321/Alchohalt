@@ -66,6 +66,23 @@ export const DEFAULT_CALM_CONFIG: CalmConfig = {
   },
 };
 
+/**
+ * [R13-FIXUP-2-COPILOT] Types whose scheduling pipeline isn't wired
+ * yet. They stay in NotificationType (the body composers + audit
+ * panel still reference them) but they MUST NOT fire — even if a
+ * stale install has the type stored as `true` from an earlier
+ * version that surfaced the toggle.
+ *
+ * Used in two places:
+ *   1. applyCalmRules() drops these unconditionally (defense in depth)
+ *   2. NotificationsSettings filters them out of the rendered UI
+ *
+ * Round 14 lands the scheduling for `weeklyRecap` and removes it
+ * from this set in the same change.
+ */
+export const SCHEDULING_NOT_YET_WIRED: ReadonlySet<NotificationType> =
+  new Set<NotificationType>(['weeklyRecap']);
+
 export interface ScheduledNotification {
   /** Stable id for cancellation. Different types use different id ranges. */
   id: number;
@@ -172,6 +189,19 @@ export function dropOffTypes<T extends ScheduledNotification>(
 }
 
 /**
+ * [R13-FIXUP-2-COPILOT] Drop notifications whose type doesn't have a
+ * scheduling pipeline wired yet. Hard floor — runs even if the user's
+ * stored config says the type is on. Without this, a stale install
+ * that toggled `weeklyRecap=true` in PR #46 (before the toggle was
+ * hidden in this fixup) would keep firing once the cron lands in R14.
+ */
+export function dropUnwiredTypes<T extends ScheduledNotification>(
+  notifications: T[],
+): T[] {
+  return notifications.filter((n) => !SCHEDULING_NOT_YET_WIRED.has(n.type));
+}
+
+/**
  * Apply all calm rules in order: type filter → quiet-hours filter →
  * daily cap. Returns the surviving notifications, ready for the OS
  * scheduler.
@@ -180,7 +210,10 @@ export function applyCalmRules<T extends ScheduledNotification>(
   notifications: T[],
   config: CalmConfig,
 ): T[] {
-  const byType = dropOffTypes(notifications, config.types);
+  /* [R13-FIXUP-2-COPILOT] Drop unwired types FIRST so even a
+   * stale-config install with `weeklyRecap=true` doesn't surface them. */
+  const wired = dropUnwiredTypes(notifications);
+  const byType = dropOffTypes(wired, config.types);
   const byQuiet = dropQuietNotifications(byType, config.quietHours);
   return applyDailyCap(byQuiet, config.dailyCap);
 }

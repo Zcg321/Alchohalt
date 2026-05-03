@@ -6,8 +6,10 @@ import {
   DEFAULT_CALM_CONFIG,
   dropOffTypes,
   dropQuietNotifications,
+  dropUnwiredTypes,
   inQuietHours,
   isInAnyQuietWindow,
+  SCHEDULING_NOT_YET_WIRED,
   type ScheduledNotification,
 } from '../calmConfig';
 
@@ -156,6 +158,42 @@ describe('dropOffTypes', () => {
     const candidates = [n({ id: 2, type: 'goalMilestone', fireAt: at(11) })];
     const out = dropOffTypes(candidates, { dailyCheckin: true, goalMilestone: true });
     expect(out.map((x) => x.id)).toEqual([2]);
+  });
+});
+
+describe('[R13-FIXUP] dropUnwiredTypes', () => {
+  it('weeklyRecap is in the unwired set', () => {
+    expect(SCHEDULING_NOT_YET_WIRED.has('weeklyRecap')).toBe(true);
+  });
+
+  it('drops unwired types regardless of stored config', () => {
+    const candidates = [
+      n({ id: 1, type: 'dailyCheckin', fireAt: at(10) }),
+      n({ id: 2, type: 'weeklyRecap', fireAt: at(11) }),
+    ];
+    expect(dropUnwiredTypes(candidates).map((x) => x.id)).toEqual([1]);
+  });
+
+  it('applyCalmRules drops weeklyRecap even when stored types[weeklyRecap]=true', () => {
+    const candidates = [
+      n({ id: 1, type: 'dailyCheckin', fireAt: at(10) }),
+      n({ id: 2, type: 'weeklyRecap', fireAt: at(11) }),
+    ];
+    const out = applyCalmRules(candidates, {
+      ...DEFAULT_CALM_CONFIG,
+      types: { ...DEFAULT_CALM_CONFIG.types, weeklyRecap: true },
+    });
+    /* The hard floor wins: weeklyRecap doesn't fire even if the user
+     * has stored true (e.g. from a stale install before the fixup
+     * hid the toggle). */
+    expect(out.map((x) => x.id)).toEqual([1]);
+  });
+
+  it('non-unwired types still pass through normally', () => {
+    const candidates = [
+      n({ id: 1, type: 'goalMilestone', fireAt: at(10) }),
+    ];
+    expect(dropUnwiredTypes(candidates).map((x) => x.id)).toEqual([1]);
   });
 });
 

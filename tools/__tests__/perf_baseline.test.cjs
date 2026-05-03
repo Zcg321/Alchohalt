@@ -154,7 +154,7 @@ withTmp((tmp) => {
   assert(r.code === 0, 'check exits 0 within threshold');
 });
 
-console.log('5. no baseline → warns and exits 0 (does not block)');
+console.log('5. no baseline → FAILS (post-Codex fixup) with remediation message');
 withTmp((tmp) => {
   makeFakeDist(tmp, {
     eagerJsRaw: 100_000,
@@ -164,11 +164,30 @@ withTmp((tmp) => {
     asyncRaw: 5_000,
   });
   const r = runTool(tmp);
-  assert(r.code === 0, 'no baseline → exits 0');
-  /* The warning goes to stderr OR stdout depending on Node version /
-   * Windows shell. Look in either. */
+  /* [R13-FIXUP] Codex flagged the prior exit-0-on-missing-baseline as
+   * a security gap: removing perf-baseline.json silently bypassed
+   * the PR regression guard. Default mode now fails. */
+  assert(r.code === 1, 'no baseline → exits 1 (fails CI)');
   const allOut = r.stdout + r.stderr;
-  assert(/No perf-baseline\.json found/.test(allOut), 'warns about missing baseline');
+  assert(/is missing/.test(allOut), 'error message names the missing file');
+  assert(/--bootstrap-or-update/.test(allOut), 'error message points at the bootstrap escape hatch');
+});
+
+console.log('5b. --bootstrap-or-update with no baseline → seeds and exits 0');
+withTmp((tmp) => {
+  makeFakeDist(tmp, {
+    eagerJsRaw: 100_000,
+    reactRaw: 50_000,
+    vendorRaw: 20_000,
+    cssRaw: 10_000,
+    asyncRaw: 5_000,
+  });
+  const r = runTool(tmp, ['--bootstrap-or-update']);
+  assert(r.code === 0, 'bootstrap → exits 0');
+  assert(
+    fs.existsSync(path.join(tmp, 'perf-baseline.json')),
+    'bootstrap created the baseline file',
+  );
 });
 
 console.log('6. dist/assets missing → exits 2 (build error, not regression)');

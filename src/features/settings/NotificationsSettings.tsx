@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDB } from '../../store/db';
 import {
   APP_QUIET_HOURS,
   DEFAULT_CALM_CONFIG,
+  SCHEDULING_NOT_YET_WIRED,
   type NotificationType,
 } from '../../lib/notifications/calmConfig';
 import { hapticForEvent } from '../../shared/haptics';
@@ -40,15 +41,26 @@ const TYPE_LABELS: Record<NotificationType, { title: string; description: string
     description:
       'Periodic nudge to verify your last encrypted backup still unlocks.',
   },
-  /* [R13-2] Weekly recap. Off by default. Body is generated locally
-   * from your own drink log — never transmitted. Same calm rules
-   * apply (quiet hours, daily cap). */
+  /* [R13-2] Weekly recap. Type + composer landed in R13-2; the
+   * actual native scheduling cron is R14 work. We keep the entry in
+   * TYPE_LABELS so the body composer + DiagnosticsAudit can still
+   * reference it, but suppress the user-facing toggle until
+   * scheduling is wired (Codex review on PR #46 flagged the gap:
+   * a user opting in to a feature that never fires is broken UX).
+   *
+   * Round 14 lands buildWeeklyRecap into scheduleNative + removes
+   * weeklyRecap from RENDER_HIDDEN_TYPES. */
   weeklyRecap: {
     title: 'Weekly recap',
     description:
       'Once a week: AF days, logged drinks, over-cap days, and how this week compared to the prior one. Off by default.',
   },
 };
+
+/* [R13-FIXUP] UI-hidden = scheduling-not-yet-wired. Single source of
+ * truth lives in calmConfig.ts so the runtime filter
+ * (applyCalmRules → dropUnwiredTypes) and the UI filter agree. */
+const RENDER_HIDDEN_TYPES = SCHEDULING_NOT_YET_WIRED;
 
 export default function NotificationsSettings() {
   const { settings, setSettings } = useDB((s) => ({
@@ -60,6 +72,33 @@ export default function NotificationsSettings() {
   const types = { ...DEFAULT_CALM_CONFIG.types, ...(stored.types ?? {}) };
   const quietHours = stored.quietHours ?? DEFAULT_CALM_CONFIG.quietHours;
   const dailyCap = stored.dailyCap ?? DEFAULT_CALM_CONFIG.dailyCap;
+
+  /* [R13-FIXUP-2-COPILOT] One-shot migration: a stale install that
+   * toggled a now-hidden type (e.g. weeklyRecap=true from PR #46
+   * before this fixup) would have no UI to turn it back off, but
+   * the stored state would still surface in DiagnosticsAudit and
+   * (once R14 lands scheduling) start firing automatically. Force
+   * those types back to false on mount. The runtime
+   * dropUnwiredTypes() in applyCalmRules is the safety floor; this
+   * just keeps storage + UI in sync. */
+  const migratedRef = useRef(false);
+  useEffect(() => {
+    if (migratedRef.current) return;
+    const hiddenButOn = (Array.from(RENDER_HIDDEN_TYPES) as NotificationType[]).filter(
+      (t) => types[t] === true,
+    );
+    if (hiddenButOn.length === 0) {
+      migratedRef.current = true;
+      return;
+    }
+    const cleared = { ...types };
+    for (const t of hiddenButOn) cleared[t] = false;
+    setSettings?.({
+      calmNotifications: { ...stored, types: cleared },
+    });
+    migratedRef.current = true;
+    /* eslint-disable-next-line react-hooks/exhaustive-deps -- one-shot migration */
+  }, []);
 
   function setType(type: NotificationType, on: boolean) {
     hapticForEvent('settings-toggle');
@@ -102,7 +141,9 @@ export default function NotificationsSettings() {
       </div>
       <div className="card-content space-y-4">
         <div className="space-y-2">
-          {(Object.keys(TYPE_LABELS) as NotificationType[]).map((type) => {
+          {(Object.keys(TYPE_LABELS) as NotificationType[])
+            .filter((type) => !RENDER_HIDDEN_TYPES.has(type))
+            .map((type) => {
             const meta = TYPE_LABELS[type];
             const checked = types[type] === true;
             return (
