@@ -169,34 +169,34 @@
   "onboarding": {
     "welcome": {
       "title": "Bienvenue dans Alchohalt",
-      "description": "Votre compagnon bien-être personnel et privé pour construire des habitudes plus saines."
+      "description": "Un espace privé pour noter ce que vous buvez et observer ce qui change."
     },
     "privacy": {
-      "title": "Votre vie privée compte",
+      "title": "Vos données, votre appareil",
       "description": "Vos données vous appartiennent. Nous ne pouvons cryptographiquement pas les lire. Les fonctionnalités d'IA optionnelles (désactivées par défaut) sont la seule chose qui peut changer cela — vous les contrôlez dans Paramètres → IA."
     },
     "tracking": {
-      "title": "Suivi intelligent",
-      "description": "Enregistrez les boissons avec intention, déclencheurs HALT et niveaux d'envie pour comprendre vos schémas."
+      "title": "Notez ce que vous buvez",
+      "description": "Notez l'heure, le type, le pourquoi et le ressenti — seulement ce que vous voulez."
     },
     "insights": {
-      "title": "Analyses personnalisées",
-      "description": "Analyse de schémas sur l'appareil par défaut. Les Analyses IA optionnelles (désactivées tant que vous ne les activez pas) peuvent générer des réflexions écrites à partir de résumés anonymisés."
+      "title": "Ce qui change avec le temps",
+      "description": "Les schémas apparaissent au fur et à mesure que vous notez — sur votre appareil. Les Analyses IA optionnelles (désactivées tant que vous ne les activez pas) peuvent écrire une réflexion à partir d'un résumé anonymisé."
     },
     "goals": {
-      "title": "Définissez vos objectifs",
-      "description": "Créez des objectifs personnalisés et suivez vos progrès avec des compteurs de séries motivants."
+      "title": "Fixez un objectif si vous le souhaitez",
+      "description": "Choisissez une limite quotidienne ou une durée de série. Vous pouvez changer l'une ou l'autre à tout moment, ou ignorer entièrement."
     },
     "ready": {
-      "title": "Tout est prêt !",
-      "description": "Prêt à démarrer votre parcours bien-être ? Votre première saisie n'est qu'à un toucher."
+      "title": "Prêt quand vous l'êtes",
+      "description": "Ajoutez votre première entrée quand vous voudrez. Ou regardez simplement autour."
     },
     "quickTips": {
-      "title": "Conseils rapides",
-      "tip1": "Commencez par de petits objectifs atteignables",
-      "tip2": "Enregistrez honnêtement pour de meilleures analyses",
-      "tip3": "Vérifiez vos progrès régulièrement",
-      "tip4": "Exportez vos données à tout moment pour sauvegarde"
+      "title": "Quelques notes",
+      "tip1": "Commencez petit. Vous pourrez changer l'objectif plus tard.",
+      "tip2": "Les schémas que vous voyez sont aussi honnêtes que les entrées.",
+      "tip3": "Jetez un œil aux tendances quand vous y pensez. Il n'y a pas de tableau de scores.",
+      "tip4": "Vous pouvez tout exporter à tout moment. C'est à vous."
     },
     "back": "Retour",
     "skip": "Passer",
@@ -327,7 +327,7 @@
   },
   "support": {
     "title": "Support et retours",
-    "description": "Nous sommes là pour vous accompagner dans votre parcours bien-être. Vos retours nous aident à améliorer l'application."
+    "description": "Nous lisons nous-mêmes vos retours. Ils façonnent ce qui se construit."
   },
   "subscription": {
     "title": "Informations sur l'abonnement",
