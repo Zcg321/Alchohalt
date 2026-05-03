@@ -174,6 +174,26 @@ export interface Settings {
    * on the next auto-verification.
    */
   lastBackupRibbonDismissedTs?: number | undefined;
+  /**
+   * [R16-2] User-installable crisis line. The R13-A region packs
+   * cover US/UK/AU/CA/IE; everyone else has to scroll the "other
+   * regions" section. This lets a user from a smaller market paste a
+   * local-language hotline that surfaces FIRST in CrisisResources,
+   * above the auto-detected regional pack.
+   *
+   * No external lookup, no cloud, no validation beyond local format
+   * checks. Stored verbatim in the user's settings, transmitted only
+   * if they explicitly export their data.
+   *
+   * Phone is the only required field. The label is shown above the
+   * number; description below. Users in regions we already cover are
+   * welcome to add their own anyway — it just gets pinned at the top.
+   */
+  userCrisisLine?: {
+    label: string;
+    phone: string;
+    description?: string;
+  } | undefined;
 }
 
 export interface Entry {

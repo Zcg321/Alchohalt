@@ -1,6 +1,8 @@
 import React from 'react';
 import { detectRegionFromBrowser, getPack, US_PACK, type RegionCode } from './regions';
 import { telHref, smsHref, safeHttpUrl } from '../../lib/safeLinks';
+import { useDB } from '../../store/db';
+import UserCrisisLineEditor from './UserCrisisLineEditor';
 
 /**
  * Crisis resources — always-on, never gated by feature flags or
@@ -111,6 +113,11 @@ export default function CrisisResources({ className = '', region }: Props) {
   const detected = region ?? detectRegionFromBrowser();
   const primary = getPack(detected);
   const showUSFallback = primary.code !== 'US';
+  /* [R16-2] User-installable crisis line. When present, rendered FIRST
+   * (above the regional pack) so a user from a smaller market gets to
+   * their trusted local line in one tap. Description is optional and
+   * skipped from the description paragraph if empty. */
+  const userLine = useDB((s) => s.db.settings.userCrisisLine);
 
   return (
     <main className={`mx-auto max-w-2xl space-y-7 px-5 py-6 sm:px-6 ${className}`}>
@@ -158,6 +165,34 @@ export default function CrisisResources({ className = '', region }: Props) {
         </p>
       </header>
 
+      {userLine ? (
+        <section
+          aria-labelledby="user-crisis-line-pinned-heading"
+          data-testid="user-crisis-line-pinned"
+        >
+          <h2
+            id="user-crisis-line-pinned-heading"
+            className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle"
+          >
+            Your line
+          </h2>
+          <ul className="mt-3 space-y-3" role="list">
+            <ImmediateCard
+              r={{
+                id: 'user-crisis-line',
+                name: userLine.label,
+                description:
+                  userLine.description && userLine.description.length > 0
+                    ? userLine.description
+                    : 'Saved by you. Stays on your device.',
+                phone: userLine.phone,
+                available: 'As you noted',
+              }}
+            />
+          </ul>
+        </section>
+      ) : null}
+
       <section aria-labelledby="immediate-heading">
         <h2 id="immediate-heading" className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-subtle">
           Immediate help — {primary.label}
@@ -197,6 +232,8 @@ export default function CrisisResources({ className = '', region }: Props) {
           </section>
         </>
       )}
+
+      <UserCrisisLineEditor />
 
       <footer className="border-t border-border-soft pt-6 text-xs leading-relaxed text-ink-subtle space-y-2">
         <p>
