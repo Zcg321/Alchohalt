@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDB } from '../../store/db';
 import {
   APP_QUIET_HOURS,
   DEFAULT_CALM_CONFIG,
+  SCHEDULING_NOT_YET_WIRED,
   type NotificationType,
 } from '../../lib/notifications/calmConfig';
 import { hapticForEvent } from '../../shared/haptics';
@@ -56,12 +57,10 @@ const TYPE_LABELS: Record<NotificationType, { title: string; description: string
   },
 };
 
-/* [R13-FIXUP] Types whose UI toggles are hidden until their
- * scheduling pipeline lands. The type stays in the NotificationType
- * union so the composer + DiagnosticsAudit can still reference it. */
-const RENDER_HIDDEN_TYPES: ReadonlySet<NotificationType> = new Set<NotificationType>([
-  'weeklyRecap',
-]);
+/* [R13-FIXUP] UI-hidden = scheduling-not-yet-wired. Single source of
+ * truth lives in calmConfig.ts so the runtime filter
+ * (applyCalmRules → dropUnwiredTypes) and the UI filter agree. */
+const RENDER_HIDDEN_TYPES = SCHEDULING_NOT_YET_WIRED;
 
 export default function NotificationsSettings() {
   const { settings, setSettings } = useDB((s) => ({
@@ -73,6 +72,33 @@ export default function NotificationsSettings() {
   const types = { ...DEFAULT_CALM_CONFIG.types, ...(stored.types ?? {}) };
   const quietHours = stored.quietHours ?? DEFAULT_CALM_CONFIG.quietHours;
   const dailyCap = stored.dailyCap ?? DEFAULT_CALM_CONFIG.dailyCap;
+
+  /* [R13-FIXUP-2-COPILOT] One-shot migration: a stale install that
+   * toggled a now-hidden type (e.g. weeklyRecap=true from PR #46
+   * before this fixup) would have no UI to turn it back off, but
+   * the stored state would still surface in DiagnosticsAudit and
+   * (once R14 lands scheduling) start firing automatically. Force
+   * those types back to false on mount. The runtime
+   * dropUnwiredTypes() in applyCalmRules is the safety floor; this
+   * just keeps storage + UI in sync. */
+  const migratedRef = useRef(false);
+  useEffect(() => {
+    if (migratedRef.current) return;
+    const hiddenButOn = (Array.from(RENDER_HIDDEN_TYPES) as NotificationType[]).filter(
+      (t) => types[t] === true,
+    );
+    if (hiddenButOn.length === 0) {
+      migratedRef.current = true;
+      return;
+    }
+    const cleared = { ...types };
+    for (const t of hiddenButOn) cleared[t] = false;
+    setSettings?.({
+      calmNotifications: { ...stored, types: cleared },
+    });
+    migratedRef.current = true;
+    /* eslint-disable-next-line react-hooks/exhaustive-deps -- one-shot migration */
+  }, []);
 
   function setType(type: NotificationType, on: boolean) {
     hapticForEvent('settings-toggle');
