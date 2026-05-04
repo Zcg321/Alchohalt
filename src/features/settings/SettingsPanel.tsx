@@ -82,7 +82,7 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
             id="std-drink-system" aria-label="Drink units" data-testid="std-drink-system-select"
             value={settings.stdDrinkSystem ?? 'us'}
             onChange={(e) => {
-              setSettings({ stdDrinkSystem: e.target.value as 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie' });
+              setSettings({ stdDrinkSystem: e.target.value as 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie' | 'nz' });
               hapticForEvent('settings-toggle');
             }}
             className="input cursor-pointer"
@@ -90,6 +90,7 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
             <option value="us">United States (NIAAA, 14 g)</option>
             <option value="uk">United Kingdom (NHS units, 8 g)</option>
             <option value="au">Australia (NHMRC, 10 g)</option>
+            <option value="nz">New Zealand (HPA, 10 g)</option>
             <option value="eu">Europe (10 g)</option>
             <option value="ca">Canada (13.6 g)</option>
             <option value="ie">Ireland (HSE, 10 g)</option>

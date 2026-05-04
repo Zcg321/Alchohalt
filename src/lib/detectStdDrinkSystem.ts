@@ -36,6 +36,8 @@ export function detectStdDrinkSystem(localeTag: string | undefined): StdDrinkSys
       return 'uk';
     case 'au':
       return 'au';
+    case 'nz':
+      return 'nz';
     case 'ie':
       return 'ie';
     case 'ca':
@@ -51,10 +53,22 @@ export function detectStdDrinkSystem(localeTag: string | undefined): StdDrinkSys
     case 'ch':
     case 'pl':
     case 'cz':
+    case 'sk':
+    case 'hu':
+    case 'ro':
+    case 'gr':
+    case 'lu':
+    case 'lt':
+    case 'lv':
+    case 'ee':
+    case 'si':
+    case 'hr':
+    case 'bg':
     case 'se':
     case 'no':
     case 'dk':
     case 'fi':
+    case 'is':
       return 'eu';
     default:
       return 'us';
