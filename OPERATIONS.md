@@ -260,6 +260,58 @@ Owner contact (sole maintainer in the imagined scenario): see
 For Supabase backend issues: Supabase support is the escalation
 target (project settings → support).
 
+## Human-on-call when AI pair-programming gets it wrong
+
+[R28-A] Investor / partner question (round-27 investor-judge C3):
+*"You ship with heavy AI pair-programming. Who's the human on
+call when the AI gets a fix wrong, and how do you catch it?"*
+
+**Honest answer:** the owner is the human on call. The defenses
+that catch AI mistakes before they ship to a user are layered:
+
+1. **Lint + typecheck + 1,900+ tests** must pass before any commit
+   merges. Each round has an audit-walkthrough doc that records
+   "what the AI initially proposed and what got changed before
+   merge." Recent examples on file:
+   - `audit-walkthrough/round-25-stddrink-verify.md` — the AI's
+     first jurisdiction table had two mass-conversion bugs caught
+     by the verification round.
+   - `audit-walkthrough/round-23-csp-style-src-investigation.md`
+     — the AI misdiagnosed a CSP issue as needing a `style-src`
+     loosening; the human override kept the strict CSP and fixed
+     the actual cause.
+   - `audit-walkthrough/round-27-user-installed-content-backup-audit.md`
+     — the AI initially missed a category in the round-trip
+     enumeration; the audit doc forced the gap surface.
+2. **Spectacular gate at the end of every round** — N judges
+   (currently 27 → 28) review the round's work from N different
+   user perspectives. Anything one judge flags as broken blocks
+   the merge.
+3. **Pre-commit hooks** plus `scripts/health-scan.sh` runs the
+   full suite locally before push.
+4. **PR review via GitHub** (the merge UI is the final human
+   touch point — owner uses the Chrome MCP UI, native `.click()`
+   pattern, never auto-merge from CLI).
+
+**Failure mode we have NOT yet drilled:** silent AI regressions
+that pass all tests but ship behavior the owner didn't intend.
+Mitigation: every round writes an audit-walkthrough doc the owner
+reads before merge; any deviation from the round scope shows up
+in the doc summary. This is the discipline we'd commit to in
+writing for an investor: **no merge without an audit-walkthrough
+doc and a green spectacular gate.**
+
+**Pre-Series-A external pen test plan:** see
+`docs/launch/external-audit-plan.md` (R28-A). The investor doc
+C6 concern is tracked there with a triggering condition (close
+of pre-seed round) and a target firm category (browser-side crypto
++ web app pen test, not network ops).
+
+**Monetization commitment for partners:** see
+`docs/launch/monetization-commitment.md` (R28-A). The investor
+doc C2 concern is answered there with explicit numeric triggers
+for paywall flip and the trust-first sequencing rationale.
+
 ## Tooling references
 
 - `scripts/health-scan.sh` — runs a comprehensive scan against the
