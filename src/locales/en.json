@@ -356,6 +356,14 @@
     "description": "Alchohalt is open source. You can read the code, suggest changes, or build your own version."
   },
 
+  "selfExperiment.title": "What the app measures about itself",
+  "selfExperiment.description": "Everything below is on this device. Nothing is sent off-device, no analytics service touches it. The point is to make the app legible to its own user.",
+  "selfExperiment.jumpNav": "Dashboard sections",
+  "selfExperiment.jumpDiagnostics": "Onboarding diagnostics",
+  "selfExperiment.jumpAudit": "Settings audit",
+  "selfExperiment.jumpFunnel": "Onboarding funnel",
+
+
   "tenure.days.one": "{{count}} day",
   "tenure.days.other": "{{count}} days",
   "tenure.months.one": "{{count}} month",

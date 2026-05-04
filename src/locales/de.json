@@ -357,5 +357,12 @@
   "unit.time.one": "Mal",
   "unit.time.other": "Male",
   "unit.priorAnswer.one": "{{count}} frühere Antwort",
-  "unit.priorAnswer.other": "{{count}} frühere Antworten"
+  "unit.priorAnswer.other": "{{count}} frühere Antworten",
+
+  "selfExperiment.title": "Was die App über sich selbst misst",
+  "selfExperiment.description": "Alles unten Stehende bleibt auf diesem Gerät. Nichts wird an externe Server gesendet, kein Analysedienst greift darauf zu. Ziel ist, die App für ihren eigenen Nutzer transparent zu machen.",
+  "selfExperiment.jumpNav": "Dashboard-Bereiche",
+  "selfExperiment.jumpDiagnostics": "Onboarding-Diagnose",
+  "selfExperiment.jumpAudit": "Einstellungs-Audit",
+  "selfExperiment.jumpFunnel": "Onboarding-Funnel"
 }
