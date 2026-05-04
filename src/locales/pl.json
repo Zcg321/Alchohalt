@@ -142,9 +142,9 @@
   "alternative": "Alternatywne działanie",
   "alternativePlaceholder": "np. iść na spacer",
   "intention_celebrate": "świętowanie",
-  "intention_social": "towarzyski",
+  "intention_social": "towarzystwo",
   "intention_taste": "smak",
-  "intention_bored": "z nudów",
+  "intention_bored": "nuda",
   "intention_cope": "odprężenie",
   "intention_other": "inne",
   "halt_hungry": "głodny",
@@ -198,7 +198,7 @@
   "bulk.scope.clear": "Wyczyść",
   "bulk.deleteSelected": "Usuń wybrane",
   "bulk.shiftTime": "Przesuń czas…",
-  "bulk.scaleStd": "Skaluj std…",
+  "bulk.scaleStd": "Skaluj liczbę std…",
   "bulk.deleteConfirm.one": "Usunąć ten drink? Nie można cofnąć.",
   "bulk.deleteConfirm.few": "Usunąć {{n}} drinki? Nie można cofnąć.",
   "bulk.deleteConfirm.many": "Usunąć {{n}} drinków? Nie można cofnąć.",
@@ -256,7 +256,7 @@
   },
 
   "marketing": {
-    "tagline": "Bez reklam. Bez analityki. Z dołączonym pokwitowaniem zaufania.",
+    "tagline": "Bez reklam. Bez analityki. Zaufanie wliczone.",
     "shortTagline": "Bez reklam. Bez analityki. Twoje.",
     "moatLine": "Kryptograficznie nie jesteśmy w stanie odczytać tego, co zapisujesz."
   },
@@ -280,7 +280,7 @@
   "settings": {
     "privacy": {
       "heading": "Prywatność i dane",
-      "tagline": "Bez reklam. Bez analityki. Z dołączonym pokwitowaniem zaufania.",
+      "tagline": "Bez reklam. Bez analityki. Zaufanie wliczone.",
       "subtitle": "Trzy miejsca, w których jest to kontrolowane. Zgrupowane tutaj, więc to jedna decyzja zamiast trzech."
     }
   },
@@ -355,7 +355,7 @@
   },
 
   "goalEvolution": {
-    "title": "Wyrosłeś z tego celu",
+    "title": "Czas na nowy cel",
     "subtitle": "Dzień {{n}} bez alkoholu. Co dalej?",
     "dismiss": "Nie teraz",
     "extend": {
