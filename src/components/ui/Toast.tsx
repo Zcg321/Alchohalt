@@ -103,9 +103,14 @@ export function Toast({
               {action.label}
             </button>
           )}
+          {/* [R22-5] 65-year-old non-tech-user judge: 48pt floor on
+           * touch targets. The toast close button was 24px (p-1 +
+           * 16px icon). Bumped to 44pt min so a fine-motor-impaired
+           * user can dismiss without misclicking the action button
+           * directly to its left. WCAG 2.5.5 Target Size compliance. */}
           <button
             type="button"
-            className="flex-shrink-0 p-1 hover:bg-black/5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-current"
+            className="flex-shrink-0 min-h-[44px] min-w-[44px] p-2 hover:bg-black/5 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-current flex items-center justify-center"
             onClick={() => {
               setIsVisible(false);
               setTimeout(onClose, 300);
