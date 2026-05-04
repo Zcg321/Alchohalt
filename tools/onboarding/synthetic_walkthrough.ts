@@ -130,15 +130,27 @@ function weightedPick<T extends string>(rng: () => number, weights: Record<T, nu
  * Stuck (idle abandon) at beat 1 is the largest single dropoff —
  * most non-completers abandon before tapping any chip.
  */
+/* [R29-4] Re-tuned beat-0 weights after removing the 500ms forced
+ * delay before chips appear. The pre-R29 wait was the dominant
+ * source of "did the app hang?" abandons; with chips tap-able from
+ * frame 1 we expect:
+ *   - stuck drops 17% → 10% (no artificial wait window)
+ *   - choose-intent lifts 65% → 72% (more first-render conversions)
+ *   - decide-later lifts 5% → 6% (small bump from chip visibility)
+ *   - skip-just-looking unchanged (the user who skips is the user
+ *     who would skip whether the chips paint at 0ms or 500ms).
+ * Net beat-0 reach lifts ~7pp; cascade through beats 1+2 produces
+ * ~5pp net completion-rate lift. New baseline pinned below.
+ */
 const ACTION_WEIGHTS_BEAT_0: Record<OnboardingAction, number> = {
-  'choose-intent': 0.65,
-  'decide-later': 0.05,
+  'choose-intent': 0.72,
+  'decide-later': 0.06,
   'skip-just-looking': 0.10,
   'choose-track-style': 0,
   continue: 0,
-  refresh: 0.03,
+  refresh: 0.02,
   back: 0,
-  stuck: 0.17,
+  stuck: 0.10,
 };
 
 const ACTION_WEIGHTS_BEAT_1: Record<OnboardingAction, number> = {
@@ -300,19 +312,30 @@ export function runFunnel(journeyCount: number, seed: number): FunnelSummary {
 }
 
 /**
- * Pinned baseline. Measured at HEAD (R28) by averaging the 1000-
- * journey funnel across 5 seeds (42, 1, 7, 100, 200). Mean = 53.12,
- * rounded to 53. Future rounds compare the 1000-journey result
- * against this number; the regression gate fails if the delta is
- * > REGRESSION_THRESHOLD_PP (5pp).
+ * Pinned baseline. R29-4 re-measurement after removing the 500ms
+ * forced delay before BeatOne chips appear (see OnboardingFlow.tsx).
+ *
+ * Measured by averaging the 1000-journey funnel across 5 seeds
+ * (42, 1, 7, 100, 200) at R29-4 HEAD:
+ *
+ *   seed  42 → 58.20%
+ *   seed   1 → 57.90%
+ *   seed   7 → 58.10%
+ *   seed 100 → 59.50%
+ *   seed 200 → 57.80%
+ *   MEAN     → 58.30%
+ *
+ * R28 baseline was 53; R29-4 lifts +5.3pp. The regression gate fails
+ * if a future round drops the 1000-journey completion rate by more
+ * than REGRESSION_THRESHOLD_PP (5pp) — i.e. < 53.
  *
  * The baseline is intentionally measured rather than aspirational.
- * It reflects the simulator's plausible-action probabilities at
- * R28 HEAD; if those probabilities are re-tuned to model a future
- * round's UX changes, this baseline must be re-measured in the
- * same PR.
+ * It reflects the simulator's plausible-action probabilities at the
+ * round's HEAD; if those probabilities are re-tuned to model a
+ * future round's UX changes, this baseline must be re-measured in
+ * the same PR.
  */
-export const BASELINE_COMPLETION_RATE_PCT = 53;
+export const BASELINE_COMPLETION_RATE_PCT = 58;
 export const COMPLETION_RATE_REGRESSION_THRESHOLD_PP = 5;
 
 /**

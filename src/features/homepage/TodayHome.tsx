@@ -31,6 +31,7 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import TodayPanel from './TodayPanel';
 import LongTermActivityRibbon from './LongTermActivityRibbon';
 import FirstMonthRibbon from './FirstMonthRibbon';
+import FirstLaunchPrivacyCard from './FirstLaunchPrivacyCard';
 import { Disclaimer } from '../../components/Disclaimer';
 import { useDB } from '../../store/db';
 import NpsPulseBanner from '../nps/NpsPulseBanner';
@@ -250,6 +251,11 @@ export default function TodayHome({
 
   return (
     <main id="main">
+      {/* [R29-A C2] First-launch privacy card. Hidden in quiet mode —
+          a user who opted into quiet mode does not need a "did you
+          know we don't track you" tap surface. Auto-hides once the
+          user dismisses it OR once they've logged > 3 drinks. */}
+      {!quiet ? <FirstLaunchPrivacyCard drinksLogged={drinks.length} /> : null}
       <TodayPanel
         drinks={drinks}
         goals={goals}

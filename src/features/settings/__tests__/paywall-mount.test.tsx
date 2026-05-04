@@ -35,13 +35,19 @@ describe('[BUG-PAYWALL-MOUNT] SettingsPanel mounts the paywall', () => {
 
   it('the lazy SubscriptionManager renders all three paid tiers with correct prices', async () => {
     render(<SettingsPanel />);
+    /* [R29-C] Bumped from 4s to 10s. The lazy chunk import is fast in
+     * isolation (~1.7s) but the full vitest suite (~280 files) runs
+     * with high parallel pressure on a constrained CI environment, and
+     * the dynamic-import path can stretch past 4s under that load. The
+     * 10s ceiling absorbs that without masking real regressions — a
+     * genuinely-broken paywall mount fails synchronously. */
     await waitFor(
       () => {
         expect(screen.getByText(/\$4\.99 \/ month/)).toBeInTheDocument();
         expect(screen.getByText(/\$24\.99 \/ year/)).toBeInTheDocument();
         expect(screen.getByText(/\$69 once/)).toBeInTheDocument();
       },
-      { timeout: 4000 },
+      { timeout: 10000 },
     );
   });
 

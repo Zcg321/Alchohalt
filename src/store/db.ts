@@ -302,6 +302,15 @@ export interface Settings {
    * Sovereign-locked: each archive event requires explicit confirm.
    */
   archivedExperimentKeys?: string[] | undefined;
+  /**
+   * [R29-A C2] Timestamp recording when the user dismissed (or
+   * acknowledged) the first-launch privacy card on Today. Once set,
+   * the card never re-renders. Closes the marketing-director gap:
+   * an uncurious first-launch user who never enters Settings now sees
+   * "no analytics, no ads, your data on this device" right on Today,
+   * once. Local-only.
+   */
+  firstLaunchPrivacyCardDismissedAt?: number | undefined;
 }
 
 export interface Entry {

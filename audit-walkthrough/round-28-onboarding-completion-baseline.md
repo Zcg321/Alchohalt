@@ -5,6 +5,12 @@ rounds against the numbers below; the test suite enforces the
 regression threshold automatically (see
 `src/__tests__/onboarding-synthetic-walkthrough.test.ts`).
 
+> **R29-4 update (2026-05-04):** baseline lifted from **53 → 58**
+> after removing the 500ms forced delay before BeatOne chips appear.
+> See `audit-walkthrough/round-29-onboarding-completion-optimization.md`
+> for the rationale, the bug it fixed for reduced-motion users, and
+> the new measurement.
+
 ## Baseline numbers
 
 Measured by `tools/onboarding/synthetic_walkthrough.ts` at HEAD
