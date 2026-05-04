@@ -178,14 +178,18 @@ function BeatTwo({ onChoose }: BeatTwoProps) {
 }
 
 interface BeatThreeProps {
-  onStart: () => void;
+  onContinue: () => void;
 }
-function BeatThree({ onStart }: BeatThreeProps) {
+function BeatThree({ onContinue }: BeatThreeProps) {
   /* [ONBOARDING-ROUND-4] Optional "Tell me how" disclosure for users
-   * who want to verify the privacy claim before tapping Get started.
-   * Native <details> stays keyboard-accessible by default and inherits
-   * the dialog's focus trap. Copy stays calm — describes mechanism in
-   * plain language without crypto jargon. */
+   * who want to verify the privacy claim before continuing. Native
+   * <details> stays keyboard-accessible by default and inherits the
+   * dialog's focus trap. Copy stays calm — describes mechanism in
+   * plain language without crypto jargon.
+   *
+   * [R27-C] The terminal CTA on this beat is now "Continue" rather
+   * than "Get started" — Beat 4 owns the final decision (log style).
+   * Existing tests that click "Get started" land on Beat 4 unchanged. */
   return (
     <>
       <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
@@ -211,7 +215,64 @@ function BeatThree({ onStart }: BeatThreeProps) {
       </details>
       <button
         type="button"
-        onClick={onStart}
+        onClick={onContinue}
+        data-testid="onboarding-privacy-continue"
+        className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-neutral-900 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition-colors min-h-[48px]"
+      >
+        Continue
+      </button>
+    </>
+  );
+}
+
+/* [R27-C] Beat 4: log style. R26-4 ex-Reframe/ex-Sunnyside user audit
+ * found that the quick-vs-detailed toggle is buried in Settings →
+ * Appearance — first-week users default into detailed mode without
+ * knowing the alternative exists. Surface it once during onboarding
+ * with a two-chip choice + explicit reassurance that it's reversible.
+ * Either choice persists drinkLogMode and finishes onboarding via
+ * onComplete; no chip == default ('detailed') if the user closes the
+ * modal here. */
+interface BeatFourProps {
+  onChoose: (mode: 'quick' | 'detailed') => void;
+}
+function BeatFour({ onChoose }: BeatFourProps) {
+  return (
+    <>
+      <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        Want to log fast or in detail?
+      </h2>
+      <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+        You can change this anytime in Settings.
+      </p>
+      <div className="mt-5 grid gap-2.5">
+        <button
+          type="button"
+          onClick={() => onChoose('quick')}
+          data-testid="onboarding-log-mode-quick"
+          className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[56px]"
+        >
+          <div>Fast — one-tap chips</div>
+          <div className="mt-0.5 text-xs font-normal text-neutral-500 dark:text-neutral-400">
+            Default volume + ABV per drink type. No modal.
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={() => onChoose('detailed')}
+          data-testid="onboarding-log-mode-detailed"
+          className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[56px]"
+        >
+          <div>Detailed — pick volume, ABV, mood, tags</div>
+          <div className="mt-0.5 text-xs font-normal text-neutral-500 dark:text-neutral-400">
+            Full form. Slower but precise.
+          </div>
+        </button>
+      </div>
+      <button
+        type="button"
+        onClick={() => onChoose('detailed')}
+        data-testid="onboarding-log-mode-skip"
         className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-neutral-900 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition-colors min-h-[48px]"
       >
         Get started
@@ -223,7 +284,7 @@ function BeatThree({ onStart }: BeatThreeProps) {
 export default function OnboardingFlow() {
   const { t } = useLanguage();
   const { db, setSettings } = useDB();
-  const [step, setStep] = useState<0 | 1 | 2>(0);
+  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [isVisible, setIsVisible] = useState(false);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   // [R9-2] Local-only diagnostics buffer. Persisted on `complete()` /
@@ -251,15 +312,23 @@ export default function OnboardingFlow() {
     setIsVisible(false);
   }, [setSettings]);
 
-  const complete = useCallback(() => {
+  const complete = useCallback((logMode?: 'quick' | 'detailed') => {
     analytics.track('onboarding-complete', { step });
+    /* [R27-C] If the user chose a log mode on Beat 4, persist it
+     * alongside completion. Detailed is the existing default, so
+     * recording it explicitly is harmless but makes the diagnostics
+     * differentiate "user picked detailed" from "user closed before
+     * Beat 4." */
+    if (logMode) {
+      setSettings({ drinkLogMode: logMode });
+    }
     persist({
       status: 'completed',
       intent,
       trackStyle,
       completedAt: Date.now(),
     });
-  }, [persist, intent, trackStyle, step]);
+  }, [persist, intent, trackStyle, step, setSettings]);
 
   const skip = useCallback((path: NonNullable<OnboardingDiagnostics['skipPath']>) => {
     analytics.track('onboarding-skipped', { step });
@@ -271,7 +340,7 @@ export default function OnboardingFlow() {
       skipPath: path,
       // [R11-1] Capture step at moment of skip so the local funnel
       // view can compute drop-off per beat.
-      skipStep: step as 0 | 1 | 2,
+      skipStep: step,
     });
   }, [persist, intent, trackStyle, step]);
 
@@ -312,17 +381,17 @@ export default function OnboardingFlow() {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <span id="onboarding-title" className="sr-only">
-              Quick intro, step {step + 1} of 3
+              Quick intro, step {step + 1} of 4
             </span>
             <div
               role="progressbar"
               aria-valuenow={step + 1}
               aria-valuemin={1}
-              aria-valuemax={3}
-              aria-label={`Step ${step + 1} of 3`}
+              aria-valuemax={4}
+              aria-label={`Step ${step + 1} of 4`}
               className="flex gap-1.5"
             >
-              {[0, 1, 2].map((i) => (
+              {[0, 1, 2, 3].map((i) => (
                 <span
                   key={i}
                   aria-hidden
@@ -363,14 +432,15 @@ export default function OnboardingFlow() {
               onChoose={(s) => { setTrackStyle(s); setStep(2); }}
             />
           )}
-          {step === 2 && <BeatThree onStart={complete} />}
+          {step === 2 && <BeatThree onContinue={() => setStep(3)} />}
+          {step === 3 && <BeatFour onChoose={(mode) => complete(mode)} />}
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-3 text-xs text-neutral-500 dark:text-neutral-400">
           {step > 0 ? (
             <button
               type="button"
-              onClick={() => setStep((s) => (s === 0 ? 0 : ((s - 1) as 0 | 1 | 2)))}
+              onClick={() => setStep((s) => (s === 0 ? 0 : ((s - 1) as 0 | 1 | 2 | 3)))}
               className="hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline"
             >
               {t('onboarding.back', 'Back')}

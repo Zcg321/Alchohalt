@@ -120,6 +120,9 @@ describe('OnboardingFlow — diagnostics [R9-2]', () => {
     // so the test passes for both control + first-person variants.
     fireEvent.click(screen.getByTestId('onboarding-chip-cut-back'));
     fireEvent.click(screen.getByText('A month off'));
+    // [R27-C] Beat 3 (privacy) now advances via Continue rather than
+    // ending the flow. Beat 4 (log style) terminates with Get started.
+    fireEvent.click(screen.getByTestId('onboarding-privacy-continue'));
     fireEvent.click(screen.getByText(/Get started/i));
     const diag = useDB.getState().db.settings.onboardingDiagnostics;
     expect(diag?.status).toBe('completed');

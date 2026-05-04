@@ -62,7 +62,9 @@ describe('Decide-later tertiary chip [R23-C]', () => {
     fireEvent.click(screen.getByTestId('onboarding-chip-undecided'));
     // Step 2: pick any track style to advance.
     fireEvent.click(screen.getByText(/one day at a time/i));
-    // Step 3: Get started.
+    // [R27-C] Step 3 is now privacy → Continue; Step 4 is log style.
+    fireEvent.click(screen.getByTestId('onboarding-privacy-continue'));
+    // Step 4: Get started (defaults log mode to detailed).
     fireEvent.click(screen.getByText(/get started/i));
     const diag = useDB.getState().db.settings.onboardingDiagnostics;
     expect(diag?.status).toBe('completed');
