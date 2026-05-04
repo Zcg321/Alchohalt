@@ -18,6 +18,7 @@ const ProgressVisualization = React.lazy(() => import('../../features/insights/P
 const SmartRecommendations = React.lazy(() => import('../../features/insights/SmartRecommendations'));
 const TagPatternsCard = React.lazy(() => import('../../features/insights/TagPatternsCard'));
 const PeakHourCard = React.lazy(() => import('../../features/insights/PeakHourCard'));
+const CalorieTile = React.lazy(() => import('../../features/insights/CalorieTile'));
 const MoneySavedWidget = React.lazy(() => import('../../features/money/MoneySavedWidget'));
 const Milestones = React.lazy(() => import('../../features/milestones/Milestones'));
 const LoggingTenure = React.lazy(() => import('../../features/milestones/LoggingTenure'));
@@ -114,6 +115,13 @@ export default function InsightsTab({ drinks, goals }: Props) {
 
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>
         <MoneySavedWidget costs={last30Costs} monthlyBudget={goals.baselineMonthlySpend ?? 0} />
+      </Suspense>
+
+      {/* [R25-B] Derived calorie tile. Self-hides when the user
+          has not opted in via Settings → Show calorie tile, OR when
+          they have zero drinks in the trailing 7 days. */}
+      <Suspense fallback={null}>
+        <CalorieTile drinks={drinks} />
       </Suspense>
 
       {/* [IA-5] Real estate freed by stripping the Levels/Points panel

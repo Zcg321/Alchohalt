@@ -258,6 +258,27 @@ export interface Settings {
    * answered-set. Local-only.
    */
   npsDismissedAt?: number | undefined;
+  /**
+   * [R25-B] Opt-in for the derived calorie tile in Insights. Default
+   * OFF. The tile estimates kcal from grams-of-ethanol (~7 kcal/g);
+   * mixers and residual carbs are explicitly excluded so the number
+   * is a defensible floor, not an averaged guess. We never push-notify
+   * the value and never gamify it — voice rule is observation-only.
+   * Per the round-24 competitive matrix recommendation, this is
+   * gated behind a Settings toggle so users who don't want a body-
+   * image metric in their recovery surface never see it.
+   */
+  showCalorieTile?: boolean | undefined;
+  /**
+   * [R25-E] Quick-mode backdating window. Default 'today' (the
+   * existing R24-FF2 behavior — yesterday's drinks require switching
+   * to detailed mode). Some users want to log forgotten drinks from
+   * the night before in quick-mode without switching modes; setting
+   * this to 'yesterday' opens the backdating window to "today + the
+   * previous calendar day." Same per-tap haptic + announcement
+   * surface either way. Local-only setting.
+   */
+  quickLogBackdatingWindow?: 'today' | 'yesterday' | undefined;
 }
 
 export interface Entry {
