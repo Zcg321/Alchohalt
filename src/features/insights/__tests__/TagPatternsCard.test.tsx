@@ -28,31 +28,36 @@ describe('[R14-3] TagPatternsCard', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders patterns for tags that meet threshold', () => {
+  /* [R21-1] computeTagPatterns now runs through the insights worker
+   * client. In jsdom the client falls back to sync execution but is
+   * still wrapped in a Promise (useEffect → microtask). Tests use
+   * `findBy*` (which retries) instead of `getBy*` to wait for the
+   * post-resolve render. */
+  it('renders patterns for tags that meet threshold', async () => {
     const drinks: Drink[] = [
       drink({ ts: 0, tags: ['stressed'], volumeMl: 750, abvPct: 13 }),
       drink({ ts: 1, tags: ['stressed'], volumeMl: 750, abvPct: 13 }),
       drink({ ts: 2, tags: ['stressed'], volumeMl: 750, abvPct: 13 }),
     ];
     render(<TagPatternsCard drinks={drinks} />);
-    expect(screen.getByTestId('tag-patterns-card')).toBeInTheDocument();
+    expect(await screen.findByTestId('tag-patterns-card')).toBeInTheDocument();
     expect(screen.getByText('#stressed')).toBeInTheDocument();
   });
 
-  it('shows count, avgStd, and overall comparison per tag', () => {
+  it('shows count, avgStd, and overall comparison per tag', async () => {
     const drinks: Drink[] = [
       drink({ ts: 0, tags: ['celebrate'], volumeMl: 750, abvPct: 14 }),
       drink({ ts: 1, tags: ['celebrate'], volumeMl: 750, abvPct: 14 }),
       drink({ ts: 2, tags: ['celebrate'], volumeMl: 750, abvPct: 14 }),
     ];
     render(<TagPatternsCard drinks={drinks} />);
-    const item = screen.getByTestId('tag-pattern-celebrate');
+    const item = await screen.findByTestId('tag-pattern-celebrate');
     expect(item).toHaveTextContent(/3 entries/);
     expect(item).toHaveTextContent(/avg \d+\.\d+ std/);
     expect(item).toHaveTextContent(/vs overall/);
   });
 
-  it('renders multiple patterns sorted by absolute deviation', () => {
+  it('renders multiple patterns sorted by absolute deviation', async () => {
     const drinks: Drink[] = [
       // big positive deviation
       drink({ ts: 0, tags: ['celebrate'], volumeMl: 750, abvPct: 14 }),
@@ -64,20 +69,20 @@ describe('[R14-3] TagPatternsCard', () => {
       drink({ ts: 5, tags: ['neutral'] }),
     ];
     render(<TagPatternsCard drinks={drinks} />);
-    const list = screen.getByTestId('tag-patterns-list');
+    const list = await screen.findByTestId('tag-patterns-list');
     const items = list.querySelectorAll('[data-testid^="tag-pattern-"]');
     expect(items.length).toBeGreaterThanOrEqual(2);
     // first item should be celebrate (highest abs deviation)
     expect(items[0]).toHaveAttribute('data-testid', 'tag-pattern-celebrate');
   });
 
-  it('renders the explanatory caption about the threshold', () => {
+  it('renders the explanatory caption about the threshold', async () => {
     const drinks: Drink[] = [
       drink({ ts: 0, tags: ['x'], volumeMl: 750, abvPct: 13 }),
       drink({ ts: 1, tags: ['x'], volumeMl: 750, abvPct: 13 }),
       drink({ ts: 2, tags: ['x'], volumeMl: 750, abvPct: 13 }),
     ];
     render(<TagPatternsCard drinks={drinks} />);
-    expect(screen.getByText(/at least 3 entries/i)).toBeInTheDocument();
+    expect(await screen.findByText(/at least 3 entries/i)).toBeInTheDocument();
   });
 });

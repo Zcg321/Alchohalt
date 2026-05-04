@@ -7,6 +7,7 @@ import {
   type NotificationType,
 } from '../../lib/notifications/calmConfig';
 import { hapticForEvent } from '../../shared/haptics';
+import { FormField } from '../../components/ui/FormField';
 
 /**
  * [R12-4] Granular per-type notification toggles + quiet-hours window
@@ -123,13 +124,13 @@ function TypeRow({ type, meta, checked, onToggle }: {
   );
 }
 
-function HourSelect({ value, onChange, testId, label }: {
-  value: number; onChange: (h: number) => void; testId: string; label: string;
+function HourSelect({ value, onChange, testId }: {
+  value: number; onChange: (h: number) => void; testId: string;
 }) {
   return (
     <select
       value={value} onChange={(e) => onChange(Number(e.target.value))}
-      className="input cursor-pointer" data-testid={testId} aria-label={label}
+      className="input cursor-pointer" data-testid={testId}
     >
       {Array.from({ length: 24 }, (_, h) => (
         <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
@@ -138,6 +139,9 @@ function HourSelect({ value, onChange, testId, label }: {
   );
 }
 
+/* [R21-C] FormField primitive owns label↔select wiring. The fieldset's
+ * legend + descriptive paragraph stay outside FormField — that's a
+ * group-level affordance the primitive doesn't model. */
 function QuietHoursFieldset({ quietHours, setQuiet }: {
   quietHours: { startHour: number; endHour: number };
   setQuiet: (f: 'startHour' | 'endHour', h: number) => void;
@@ -149,14 +153,12 @@ function QuietHoursFieldset({ quietHours, setQuiet }: {
         No notifications during this window. App enforces a floor of {APP_QUIET_HOURS.startHour}:00–{APP_QUIET_HOURS.endHour}:00 local — you can extend but not narrow past it.
       </p>
       <div className="grid grid-cols-2 gap-3">
-        <label className="space-y-1">
-          <span className="label">Quiet from</span>
-          <HourSelect value={quietHours.startHour} onChange={(h) => setQuiet('startHour', h)} testId="quiet-start" label="Quiet hours start" />
-        </label>
-        <label className="space-y-1">
-          <span className="label">Resume at</span>
-          <HourSelect value={quietHours.endHour} onChange={(h) => setQuiet('endHour', h)} testId="quiet-end" label="Quiet hours end" />
-        </label>
+        <FormField id="quiet-start" label="Quiet from">
+          <HourSelect value={quietHours.startHour} onChange={(h) => setQuiet('startHour', h)} testId="quiet-start" />
+        </FormField>
+        <FormField id="quiet-end" label="Resume at">
+          <HourSelect value={quietHours.endHour} onChange={(h) => setQuiet('endHour', h)} testId="quiet-end" />
+        </FormField>
       </div>
     </fieldset>
   );

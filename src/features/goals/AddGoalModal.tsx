@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
+import { FormField } from '../../components/ui/FormField';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { useLanguage } from '../../i18n';
 import type { AdvancedGoal, GoalType } from './types';
@@ -93,29 +94,29 @@ function DetailForm(p: DetailFormProps) {
           ))}
         </div>
       </div>
-      <div>
-        <Label htmlFor="title" required>Goal Title</Label>
-        <Input id="title" value={p.title} onChange={(e) => p.setTitle(e.target.value)}
+      {/* [R21-C] FormField primitive owns label + input wrapper +
+        * description + aria wiring. The visible asterisk for required
+        * fields stays in the label text since FormField is type-agnostic
+        * about required vs optional. */}
+      <FormField id="title" label={<><span>Goal Title</span> <span aria-hidden="true" className="text-crisis-700">*</span></>}>
+        <Input value={p.title} onChange={(e) => p.setTitle(e.target.value)}
           placeholder={`e.g., ${selectedGoalType?.label}`} required />
-      </div>
-      <div>
-        <Label htmlFor="description">Description</Label>
-        <Input id="description" value={p.description} onChange={(e) => p.setDescription(e.target.value)}
+      </FormField>
+      <FormField id="description" label="Description">
+        <Input value={p.description} onChange={(e) => p.setDescription(e.target.value)}
           placeholder="Optional description of your goal" />
-      </div>
-      <div>
-        <Label htmlFor="target" required>Target</Label>
-        <Input id="target" type="number" value={p.target}
+      </FormField>
+      <FormField id="target" label={<><span>Target</span> <span aria-hidden="true" className="text-crisis-700">*</span></>}>
+        <Input type="number" value={p.target}
           onChange={(e) => p.setTarget(Number(e.target.value))} min={1} required
           rightIcon={<span className="text-xs text-ink-subtle">{p.selectedType === 'streak' ? 'days' : 'drinks'}</span>}
         />
-      </div>
-      <div>
-        <Label htmlFor="deadline">Deadline (Optional)</Label>
-        <Input id="deadline" type="date" value={p.deadline}
+      </FormField>
+      <FormField id="deadline" label="Deadline (Optional)">
+        <Input type="date" value={p.deadline}
           onChange={(e) => p.setDeadline(e.target.value)}
           min={new Date().toISOString().split('T')[0]} />
-      </div>
+      </FormField>
       <div className="flex gap-3 pt-4">
         <Button type="submit" className="flex-1">Create Goal</Button>
         <Button type="button" variant="secondary" onClick={p.onClose}>Cancel</Button>

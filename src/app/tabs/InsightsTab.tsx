@@ -41,7 +41,7 @@ export default function InsightsTab({ drinks, goals }: Props) {
 
   if (drinks.length === 0) {
     return (
-      <main id="main" className="mx-auto w-full max-w-2xl px-4 py-section-y-mobile lg:py-section-y-desktop">
+      <main id="main" className="mx-auto w-full max-w-2xl md:max-w-3xl px-4 py-section-y-mobile lg:py-section-y-desktop">
         <header className="text-center mb-8">
           <h2 className="text-h2 text-ink">Insights</h2>
         </header>
@@ -54,7 +54,7 @@ export default function InsightsTab({ drinks, goals }: Props) {
   }
 
   return (
-    <main id="main" className="mx-auto w-full max-w-2xl px-4 py-section-y-mobile lg:py-section-y-desktop space-y-8">
+    <main id="main" className="mx-auto w-full max-w-2xl md:max-w-3xl px-4 py-section-y-mobile lg:py-section-y-desktop space-y-8">
       <header className="text-center">
         <h2 className="text-h2 text-ink">Insights</h2>
         <p className="mt-1 text-caption text-ink-soft">Trends, money saved, mood patterns. Premium where applicable.</p>

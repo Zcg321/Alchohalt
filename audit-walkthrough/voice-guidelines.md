@@ -130,3 +130,68 @@ Surfaces audited 2026-05-03:
 | `features/backup/BackupAutoVerifyRibbon.tsx` | ✓ observation | Backup status, not milestone — N/A. |
 
 If a future milestone surface is added, run the five-question test above before merging.
+
+## Locale style guide — French (R21-B)
+
+Pinned by the R20-6 native-French-speaker judge + R21-B follow-up.
+Apply when adding/editing strings in `src/locales/fr.json`.
+
+- **Address: vous, never tu.** Vous is the canonical brand voice for
+  the wellness/recovery context. R20-6 unified all tu-form strings
+  to vous; new strings must match.
+- **`intention_*` keys are nouns, not verbs.** R21-B fixed
+  `intention_celebrate` (fêter → fête) and `intention_cope`
+  (décompresser → détente) to keep the selection list parallel.
+  Future intention values must be noun-form (or accept-as-fact
+  adjectives like `social`).
+- **"standard" stays invariable as an adjective.** Académie française
+  rule: borrowed adjectives don't agree in number. R21-B fixed the
+  one instance of "verres standards" → "verres standard" so all
+  fr.json uses the same form. Don't write "boissons standards" or
+  "verres standards" in new strings.
+- **Avoid "À vous." standalone.** R21-B replaced
+  `marketing.shortTagline` "Aucune publicité. Aucune analyse. À
+  vous." with "Aucune publicité. Aucune analyse. Vos données." —
+  same possessive concept, idiomatic French. Future taglines should
+  prefer "Vos données." or "C'est à vous." over standalone "À vous."
+- **No anglicisms in calm-tone strings.** R20-6 fixed "Reset de 90
+  jours" → "Réinitialisation 90 jours." Avoid Reset, Tracker,
+  Streak (use Série), etc. when a French equivalent reads cleanly.
+
+## Locale style guide — Spanish (R21-A)
+
+Pinned by the R21-A native-Spanish-speaker judge.
+Apply when adding/editing strings in `src/locales/es.json`.
+
+- **Address: tú everywhere.** Spanish wellness/recovery context
+  reads supportively in tú; the entire es locale already uses tú.
+  Avoid mixing usted in inline UI strings.
+- **Settings tab is `Configuración`, references match.** R21-A
+  unified inline references ("en Ajustes" → "en Configuración") so
+  users reading "Configura un presupuesto en Configuración" can
+  spot the matching tab without parsing twice.
+- **`intention_*` keys are nouns, not verbs.** R21-A fixed the three
+  verb-form intentions (`celebrar` → `celebración`, `degustar` →
+  `sabor`, `relajarse` → `relajación`). Future intention values
+  must be noun-form.
+- **Recovery-aware vocabulary, no `limpios`/`sucios`.** R21-A
+  changed "30 días limpios" → "30 días sin alcohol." Limpio (clean)
+  implies sucio (dirty), which pathologizes the user. Use
+  observation framing ("sin alcohol", "días AF") instead.
+- **Welcome strings use `Te damos la bienvenida`, not
+  `Bienvenido`.** Gender-marked masculine on the welcome surface is
+  a bad place to assume gender — verb-led "Te damos la bienvenida"
+  reads naturally and is gender-neutral.
+- **`Compromiso de confianza`, not `Recibo de confianza`.** Recibo
+  is a transactional cash-receipt; trust isn't a receipt in
+  Spanish. Use compromiso (commitment) for the privacy-tagline
+  brand language.
+- **Neutral Spanish over peninsular when both work.** Prefer
+  pretérito indefinido ("cambió") over compuesto ("ha cambiado")
+  for recent past — works in both Spain and LATAM.
+- **`Recuentos`, not `Conteos`.** Recuento is idiomatic Spanish for
+  this kind of statistical-tally context; conteo is a calque.
+- **`Disparador HALT más común`, not `más frecuente`.** Pin the
+  colloquial form. The mechanical-trigger feel of "Disparador" is a
+  known issue (deferred to R22 — full Disparador → Detonante
+  migration needs cross-checking with recovery-counselor convention).

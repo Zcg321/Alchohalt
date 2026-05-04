@@ -141,7 +141,11 @@ export default function Diagnostics() {
   return (
     <section className="card" aria-labelledby="diagnostics-heading" data-testid="diagnostics-card">
       <div className="card-header">
-        <h2 id="diagnostics-heading" className="text-lg font-semibold tracking-tight">
+        {/* [R21-2] tabIndex=-1 makes the heading focus target for the
+          * SelfExperimentDashboard jump-nav so screen-reader users
+          * land on the heading text after clicking the link. The
+          * heading isn't part of the keyboard tab order otherwise. */}
+        <h2 id="diagnostics-heading" tabIndex={-1} className="text-lg font-semibold tracking-tight">
           {t('diagnostics.title', 'Diagnostics')}
         </h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">

@@ -4,9 +4,7 @@ import type { Theme, Language } from '../../store/db';
 import { Button } from '../../components/ui/Button';
 import { Skeleton } from '../../components/ui/Skeleton';
 import DevTools from './DevTools';
-import Diagnostics from './Diagnostics';
-import DiagnosticsAudit from './DiagnosticsAudit';
-import OnboardingFunnelView from './OnboardingFunnelView';
+import SelfExperimentDashboard from './SelfExperimentDashboard';
 import BackupVerifier from '../backup/BackupVerifier';
 import NotificationsSettings from './NotificationsSettings';
 import SharingPanel from '../sharing/SharingPanel';
@@ -191,9 +189,10 @@ function PrivacyAndDataSection() {
       <Suspense fallback={<Skeleton className="h-24 w-full rounded-2xl" />}><CrashReportsToggleLazy /></Suspense>
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-2xl" />}><TrustReceiptLazy /></Suspense>
       <SharingPanel />
-      <Diagnostics />
-      <DiagnosticsAudit />
-      <OnboardingFunnelView />
+      {/* [R21-3] Self-experiment dashboard wraps Diagnostics +
+        * DiagnosticsAudit + OnboardingFunnelView under one section
+        * header so the on-device-only message stays single-source. */}
+      <SelfExperimentDashboard />
       <ReplayOnboardingButton />
     </section>
   );

@@ -12,7 +12,7 @@
   "dataCleared": "Datos borrados",
   "totalStdDrinks": "Total de bebidas estándar",
   "skipToContent": "Saltar al contenido",
-  "stats.mostFrequentHalt": "Disparador HALT más frecuente",
+  "stats.mostFrequentHalt": "Disparador HALT más común",
   "stats.vsPrev30d": "vs 30d prev",
   "stats.daysSinceLast": "Días desde la última bebida",
   "stats.shareProgress": "Compartir progreso",
@@ -25,7 +25,7 @@
   "money.savedThisMonth": "Ahorrado este mes",
   "money.spentLast30": "Gastado (últimos 30 días)",
   "money.spentVsBudget": "{{spent}} de {{budget}} de presupuesto",
-  "money.setBudgetHint": "Configura un presupuesto mensual en Ajustes para ver tus ahorros.",
+  "money.setBudgetHint": "Configura un presupuesto mensual en Configuración para ver tus ahorros.",
   "paywall.unlock": "Función Premium.",
   "paywall.cta": "Ver planes",
   "analytics.moodCorrelation.title": "Patrones de ánimo ↔ bebidas",
@@ -73,7 +73,7 @@
   "stats.share.week": "Semana",
   "stats.share.avgPerDay": "Prom/día (30d)",
   "stats.daysShort": "días",
-  "stats.std": "beb est.",
+  "stats.std": "Bebidas est.",
   "stats.progressCopied": "Progreso copiado al portapapeles",
   "stats.shareProgressDesc": "Compartir resumen de progreso",
   "stats.exportStats": "Exportar estadísticas",
@@ -101,11 +101,11 @@
   "haltLabel": "HALT",
   "alternative": "Acción alternativa",
   "alternativePlaceholder": "ej. dar un paseo",
-  "intention_celebrate": "celebrar",
+  "intention_celebrate": "celebración",
   "intention_social": "social",
-  "intention_taste": "degustar",
+  "intention_taste": "sabor",
   "intention_bored": "aburrimiento",
-  "intention_cope": "relajarse",
+  "intention_cope": "relajación",
   "intention_other": "otro",
   "halt_hungry": "hambriento",
   "halt_angry": "enojado",
@@ -173,7 +173,7 @@
   },
   "onboarding": {
     "welcome": {
-      "title": "Bienvenido a Alchohalt",
+      "title": "Te damos la bienvenida a Alchohalt",
       "description": "Un espacio privado para registrar lo que bebes y ver qué va cambiando."
     },
     "privacy": {
@@ -201,7 +201,7 @@
       "tip1": "Empieza con poco. Puedes cambiar la meta luego.",
       "tip2": "Los patrones son tan sinceros como los registros.",
       "tip3": "Mira las tendencias cuando te acuerdes. No hay marcador.",
-      "tip4": "Puedes exportar todo en cualquier momento. Es tuyo."
+      "tip4": "Puedes exportar todo en cualquier momento. Es todo tuyo."
     },
     "back": "Atrás",
     "skip": "Omitir",
@@ -212,7 +212,7 @@
     "getStarted": "Empezar"
   },
   "marketing": {
-    "tagline": "Sin anuncios. Sin análisis. Recibo de confianza incluido.",
+    "tagline": "Sin anuncios. Sin análisis. Compromiso de confianza incluido.",
     "shortTagline": "Sin anuncios. Sin análisis. Tuyo.",
     "moatLine": "Criptográficamente no podemos leer lo que registras."
   },
@@ -234,7 +234,7 @@
   "settings": {
     "privacy": {
       "heading": "Privacidad y datos",
-      "tagline": "Sin anuncios. Sin análisis. Recibo de confianza incluido.",
+      "tagline": "Sin anuncios. Sin análisis. Compromiso de confianza incluido.",
       "subtitle": "Tres ajustes que se controlan aquí. Agrupados para que sea una decisión en lugar de tres."
     }
   },
@@ -242,7 +242,7 @@
     "heading": "Plantillas",
     "subtitle": "Empieza con una forma común. Puedes personalizar todo igualmente.",
     "monthOff": {
-      "title": "30 días limpios",
+      "title": "30 días sin alcohol",
       "description": "Un mes completo sin alcohol."
     },
     "cutToSeven": {
@@ -270,7 +270,7 @@
   },
   "retrospective": {
     "promptTitle": "Ha pasado un mes",
-    "promptBody": "¿Quieres ver qué ha cambiado en la última ventana de {{label}}?",
+    "promptBody": "¿Quieres ver qué cambió en la última ventana de {{label}}?",
     "open": "Ver",
     "dismiss": "Ahora no",
     "viewTitle": "Retrospectiva de {{label}}",
@@ -285,8 +285,8 @@
   "funnel": {
     "title": "Embudo de incorporación",
     "empty": "Aún no se han registrado intentos. Borra los datos y vuelve a hacer la incorporación para llenar esto.",
-    "subtitleOne": "Conteos en el dispositivo a partir de {{n}} intento. Nunca se transmite.",
-    "subtitleMany": "Conteos en el dispositivo a partir de {{n}} intentos. Nunca se transmite.",
+    "subtitleOne": "Recuentos en el dispositivo a partir de {{n}} intento. Nunca se transmite.",
+    "subtitleMany": "Recuentos en el dispositivo a partir de {{n}} intentos. Nunca se transmite.",
     "attempts": "Intentos",
     "completed": "Completados",
     "completion": "Finalización",

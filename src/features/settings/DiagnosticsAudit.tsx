@@ -375,6 +375,8 @@ export default function DiagnosticsAudit() {
       <div className="card-header">
         <h2
           id="diagnostics-audit-heading"
+          /* [R21-2] tabIndex=-1 — see Diagnostics.tsx for rationale. */
+          tabIndex={-1}
           className="text-lg font-semibold tracking-tight"
         >
           What the app is doing right now
