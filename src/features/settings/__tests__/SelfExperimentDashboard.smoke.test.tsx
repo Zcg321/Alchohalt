@@ -67,4 +67,15 @@ describe('[R21-3] SelfExperimentDashboard', () => {
     render(<SelfExperimentDashboard />);
     expect(screen.getByTestId('diagnostics-audit')).toBeInTheDocument();
   });
+
+  it('[R21-2] sub-section headings are focusable for SR jump-nav landing', () => {
+    /* Anchor links default to scroll-only; without tabIndex=-1 on the
+     * heading, screen readers don't read out the heading on jump.
+     * Pin that the headings are focusable via programmatic focus. */
+    render(<SelfExperimentDashboard />);
+    const diagH = document.getElementById('diagnostics-heading');
+    const auditH = document.getElementById('diagnostics-audit-heading');
+    expect(diagH?.getAttribute('tabindex')).toBe('-1');
+    expect(auditH?.getAttribute('tabindex')).toBe('-1');
+  });
 });

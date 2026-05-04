@@ -36,7 +36,16 @@ export default function ProgressVisualization({ drinks, goals }: Props) {
 
   if (!progressData) {
     return (
-      <div className="space-y-6" aria-busy="true" data-testid="progress-loading">
+      <div
+        className="space-y-6"
+        aria-busy="true"
+        aria-live="polite"
+        data-testid="progress-loading"
+      >
+        {/* [R21-2] SR-only label so screen-reader users get audible
+          * feedback during the worker-compute window. Without this,
+          * the aria-busy alone is silent on most screen readers. */}
+        <span className="sr-only">Computing your insights…</span>
         <div className="rounded-2xl border border-border-soft bg-surface-elevated h-32 animate-pulse" />
         <div className="rounded-2xl border border-border-soft bg-surface-elevated h-24 animate-pulse" />
         <div className="rounded-2xl border border-border-soft bg-surface-elevated h-24 animate-pulse" />

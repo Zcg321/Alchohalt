@@ -26,7 +26,7 @@ export default function OnboardingFunnelView() {
         data-testid="onboarding-funnel-empty"
       >
         <div className="card-header">
-          <h3 id="funnel-heading" className="text-base font-semibold tracking-tight">
+          <h3 id="funnel-heading" tabIndex={-1} className="text-base font-semibold tracking-tight">
             {t('funnel.title', 'Onboarding funnel')}
           </h3>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
