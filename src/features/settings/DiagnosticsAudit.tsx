@@ -19,6 +19,7 @@ import {
 import SatisfactionDashboard from '../satisfaction/SatisfactionDashboard';
 import ExperimentSatisfactionPanel from '../experiments/ExperimentSatisfactionPanel';
 import AbWinnerReadout from '../experiments/AbWinnerReadout';
+import ArchivedExperimentsBanner from '../experiments/ArchivedExperimentsBanner';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -512,6 +513,10 @@ export default function DiagnosticsAudit() {
         </p>
       </div>
       <div className="card-content space-y-5">
+        {/* [R29-D] Recent-archive banner. Renders only when at least
+            one experiment is archived AND has a declared winner.
+            Surfaces what changed before the audit-row scroll. */}
+        <ArchivedExperimentsBanner />
         <NotificationsFieldset />
         <AccessibilityFieldset />
         <LocaleFieldset />
