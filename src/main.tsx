@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { AlcoholCoachApp } from './app/AlcoholCoachApp';
 import ErrorBoundary from './components/ErrorBoundary';
-import A11ySkipLink from './components/A11ySkipLink';
 import './index.css';
 import { registerSW } from './features/pwa/registerSW';
 import { bootstrapIAPOnStartup } from './features/iap/restoreEntitlement';
@@ -145,9 +144,11 @@ if (isDevTokensRoute) {
     );
   });
 } else {
+  /* [R22-2] A11ySkipLink moved into AlcoholCoachApp so it co-locates
+   * with the app render path and the skip-link.test.tsx render covers
+   * it without booting main.tsx. */
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-      <A11ySkipLink />
       <ErrorBoundary>
         <LanguageProvider>
           <AlcoholCoachApp />
