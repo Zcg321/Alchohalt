@@ -94,3 +94,59 @@ describe('[R11-1] computeOnboardingFunnel', () => {
     expect(f.steps[0].byPath['just-looking']).toBe(1);
   });
 });
+
+describe("[R25-2] computeOnboardingFunnel intent counts", () => {
+  it('returns zero counts when no attempts', () => {
+    const f = computeOnboardingFunnel(undefined, undefined);
+    expect(f.intentCounts).toEqual({
+      'cut-back': 0, quit: 0, curious: 0, undecided: 0, none: 0,
+    });
+  });
+
+  it('counts cut-back intent on a completed attempt', () => {
+    const f = computeOnboardingFunnel(
+      { status: 'completed', intent: 'cut-back', completedAt: 1 },
+      undefined,
+    );
+    expect(f.intentCounts['cut-back']).toBe(1);
+  });
+
+  it('counts undecided intent (R23-C "Decide later" tap)', () => {
+    const f = computeOnboardingFunnel(
+      { status: 'completed', intent: 'undecided', completedAt: 1 },
+      undefined,
+    );
+    expect(f.intentCounts.undecided).toBe(1);
+  });
+
+  it('counts undecided when user picks Decide later then skips', () => {
+    const f = computeOnboardingFunnel(
+      { status: 'skipped', intent: 'undecided', skipStep: 1, skipPath: 'escape', completedAt: 1 },
+      undefined,
+    );
+    expect(f.intentCounts.undecided).toBe(1);
+    expect(f.totalSkipped).toBe(1);
+  });
+
+  it('counts "none" when an attempt skipped before any chip tap', () => {
+    const f = computeOnboardingFunnel(
+      { status: 'skipped', skipStep: 0, skipPath: 'just-looking', completedAt: 1 },
+      undefined,
+    );
+    expect(f.intentCounts.none).toBe(1);
+  });
+
+  it('aggregates intent counts across history + current', () => {
+    const f = computeOnboardingFunnel(
+      { status: 'completed', intent: 'curious', completedAt: 100 },
+      [
+        { status: 'completed', intent: 'cut-back', completedAt: 1, revisedAt: 1 },
+        { status: 'completed', intent: 'undecided', completedAt: 2, revisedAt: 2 },
+        { status: 'skipped', intent: 'undecided', skipStep: 0, skipPath: 'x-button', completedAt: 3, revisedAt: 3 },
+      ],
+    );
+    expect(f.intentCounts['cut-back']).toBe(1);
+    expect(f.intentCounts.curious).toBe(1);
+    expect(f.intentCounts.undecided).toBe(2);
+  });
+});
