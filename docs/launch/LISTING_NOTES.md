@@ -64,6 +64,7 @@ Form fields → values:
 | License Agreement | Custom EULA → `https://<your-vercel-or-custom-domain>/legal/eula` (or leave default to use Apple's standard EULA) |
 | Support URL | (owner action — set up a support email or a help page) |
 | Marketing URL | (optional — link to a landing page if one exists) |
+| **Keywords (100 chars)** | See `docs/launch/app-store-keywords.md` for the chosen line + methodology. Paste into App Information → Keywords field. |
 
 App Privacy → Privacy Practices → reference the privacy policy URL for
 the data-collection inventory. Alchohalt is offline-first by default,

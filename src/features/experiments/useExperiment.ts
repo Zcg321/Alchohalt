@@ -20,9 +20,18 @@
 import { useEffect, useMemo } from 'react';
 import { findExperiment } from './registry';
 import { assignVariant, getDeviceBucket, recordExposure } from './bucket';
+import { useDB } from '../../store/db';
 
 export function useExperiment(key: string): string | null {
+  /* [R28-B] Runtime-archive override: if the owner has tapped
+   * "Archive losers" for this key in DiagnosticsAudit, treat the
+   * experiment as archived even when registry says active. The
+   * consumer falls back to its production default branch. */
+  const archivedKeys = useDB((s) => s.db.settings.archivedExperimentKeys);
+  const isRuntimeArchived = (archivedKeys ?? []).includes(key);
+
   const variant = useMemo(() => {
+    if (isRuntimeArchived) return null;
     const experiment = findExperiment(key);
     if (!experiment || experiment.status !== 'active') return null;
     try {
@@ -34,7 +43,7 @@ export function useExperiment(key: string): string | null {
       // crashing the render.
       return null;
     }
-  }, [key]);
+  }, [key, isRuntimeArchived]);
 
   useEffect(() => {
     if (variant !== null) recordExposure(key, variant);

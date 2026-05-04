@@ -18,6 +18,7 @@ import {
 } from '../satisfaction/satisfaction';
 import SatisfactionDashboard from '../satisfaction/SatisfactionDashboard';
 import ExperimentSatisfactionPanel from '../experiments/ExperimentSatisfactionPanel';
+import AbWinnerReadout from '../experiments/AbWinnerReadout';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -527,6 +528,11 @@ export default function DiagnosticsAudit() {
             dashboard; reads the same store as SatisfactionDashboard
             plus the local exposure log. */}
         <ExperimentSatisfactionPanel />
+        {/* [R28-B] A/B winner readout + sovereign-locked Archive
+            Losers action. Renders one row per non-draft experiment,
+            shows declared winner where present, and surfaces a
+            confirm-gated button to runtime-archive the experiment. */}
+        <AbWinnerReadout />
       </div>
     </section>
   );

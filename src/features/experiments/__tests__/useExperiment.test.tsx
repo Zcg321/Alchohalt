@@ -3,11 +3,15 @@ import { renderHook } from '@testing-library/react';
 import { useExperiment } from '../useExperiment';
 import { readExposures, clearExposures } from '../bucket';
 import * as registryModule from '../registry';
+import { useDB } from '../../../store/db';
 
 beforeEach(() => {
   if (typeof localStorage !== 'undefined') localStorage.clear();
   clearExposures();
   vi.restoreAllMocks();
+  useDB.getState().setSettings({
+    archivedExperimentKeys: undefined as never,
+  });
 });
 
 describe('[R14-4] useExperiment hook', () => {
@@ -121,5 +125,37 @@ describe('[R16-B] live registry contains the goal-nudge copy test', () => {
     expect(exp).toBeDefined();
     expect(exp?.status).toBe('active');
     expect(exp?.variants).toEqual(['control', 'softer']);
+  });
+});
+
+describe('[R28-B] runtime-archive override', () => {
+  it('returns null for an active experiment that is in archivedExperimentKeys', () => {
+    vi.spyOn(registryModule, 'findExperiment').mockReturnValue({
+      key: 'runtime-archived-exp',
+      variants: ['A', 'B'],
+      status: 'active',
+      description: '[winner: A] live but pinned',
+    });
+    useDB.getState().setSettings({
+      archivedExperimentKeys: ['runtime-archived-exp'] as never,
+    });
+    const { result } = renderHook(() => useExperiment('runtime-archived-exp'));
+    expect(result.current).toBeNull();
+    expect(readExposures()).toEqual([]);
+  });
+
+  it('still returns a variant for active experiments NOT in archivedExperimentKeys', () => {
+    vi.spyOn(registryModule, 'findExperiment').mockReturnValue({
+      key: 'still-bucketing',
+      variants: ['A', 'B'],
+      status: 'active',
+      description: '[winner: A] live and not pinned',
+    });
+    useDB.getState().setSettings({
+      archivedExperimentKeys: ['some-other-experiment'] as never,
+    });
+    const { result } = renderHook(() => useExperiment('still-bucketing'));
+    expect(result.current === 'A' || result.current === 'B').toBe(true);
+    expect(readExposures()).toHaveLength(1);
   });
 });
