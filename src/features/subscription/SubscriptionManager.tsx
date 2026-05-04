@@ -31,7 +31,7 @@ interface Props {
 function PricingHeader() {
   return (
     <header className="mb-10 text-center">
-      <h2 className="text-3xl font-semibold tracking-tight">A simple price.</h2>
+      <h2 id="pricing-heading" className="text-3xl font-semibold tracking-tight">A simple price.</h2>
       <p className="mt-3 text-base text-gray-600 dark:text-gray-400">
         More insights, same calm. Never gamified.
       </p>

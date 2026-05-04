@@ -30,7 +30,7 @@ export default function About() {
   return (
     <section className="space-y-6">
       <div className="p-4 border border-default rounded-xl bg-surface">
-        <h2 className="font-semibold mb-3 text-primary">About Alchohalt</h2>
+        <h2 id="about-heading" className="font-semibold mb-3 text-primary">About Alchohalt</h2>
         <div className="space-y-3 text-sm text-secondary">
           <p>{t('disclaimer')}</p>
           <p>Built by one person with AI assistance.</p>

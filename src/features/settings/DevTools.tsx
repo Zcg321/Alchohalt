@@ -12,7 +12,7 @@ export default function DevTools(){
   }
   return (
     <div className="p-4 mt-4 border rounded-2xl">
-      <h2 className="font-semibold mb-2">Developer Tools</h2>
+      <h2 id="dev-tools-heading" className="font-semibold mb-2">Developer Tools</h2>
       <button className="px-3 py-1 rounded bg-red-600 text-white" onClick={clearCaches}>Clear PWA Cache & Unregister SW</button>
     </div>
   );
