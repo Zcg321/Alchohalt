@@ -126,3 +126,61 @@ export function totalSatisfactionCount(
 ): number {
   return (signals ?? []).length;
 }
+
+/**
+ * [R27-1] Per-surface "sentiment" — up / (up + down) when there is
+ * at least 1 response, undefined when there are no responses. Used
+ * by the satisfaction dashboard to render a percentage and a
+ * traffic-light indicator. Pure; safe to call on every render.
+ *
+ * We deliberately do NOT extrapolate from zero responses: a surface
+ * with 0 signals reports as `unrated`, not "100% up" or "0% up". The
+ * dashboard renders this state distinctly so the owner can tell
+ * "nobody used this surface yet" from "everyone is unhappy."
+ */
+export type SurfaceSentiment =
+  | { surface: SatisfactionSurface; rated: false; up: 0; down: 0 }
+  | {
+      surface: SatisfactionSurface;
+      rated: true;
+      up: number;
+      down: number;
+      total: number;
+      /** Percent of responses that were thumb-up. 0..100, integer. */
+      positivePct: number;
+      /** Quick 3-bucket categorization for the traffic-light view. */
+      mood: 'good' | 'mixed' | 'concerning';
+    };
+
+export function surfaceSentiments(
+  signals: SatisfactionSignal[] | undefined,
+): SurfaceSentiment[] {
+  return summarizeSatisfaction(signals).map((t) => {
+    const total = t.up + t.down;
+    if (total === 0) {
+      return { surface: t.surface, rated: false, up: 0, down: 0 };
+    }
+    const positivePct = Math.round((t.up / total) * 100);
+    const mood: 'good' | 'mixed' | 'concerning' =
+      positivePct >= 80 ? 'good' : positivePct >= 50 ? 'mixed' : 'concerning';
+    return { surface: t.surface, rated: true, up: t.up, down: t.down, total, positivePct, mood };
+  });
+}
+
+/**
+ * [R27-1] Human-readable label for a surface key. Used by the
+ * dashboard so the owner sees "Today panel" rather than "today-panel".
+ * Deliberately not localized via the t() function — this view is
+ * owner-facing diagnostics, and the surface keys themselves are
+ * English identifiers in the codebase.
+ */
+export function surfaceDisplayLabel(surface: SatisfactionSurface): string {
+  switch (surface) {
+    case 'insights-tab': return 'Insights tab';
+    case 'drink-form': return 'Drink form';
+    case 'hard-time-panel': return 'Hard-time panel';
+    case 'today-panel': return 'Today panel';
+    case 'settings-privacy': return 'Settings → Privacy';
+    case 'onboarding-intent': return 'Onboarding (intent beat)';
+  }
+}

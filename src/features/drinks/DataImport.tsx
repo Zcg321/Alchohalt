@@ -18,10 +18,11 @@ type Step = 'pick' | 'map' | 'preview' | 'done';
 function fieldLabel(field: keyof ColumnMap): string {
   switch (field) {
     case 'date': return 'Date';
-    case 'drinks': return 'Drinks (count)';
+    case 'drinks': return 'Std drinks (count)';
     case 'drinkType': return 'Drink type';
     case 'notes': return 'Notes';
     case 'mood': return 'Mood';
+    case 'tags': return 'Tags';
   }
 }
 
@@ -53,7 +54,7 @@ function MapStep({ parsed, mapping, updateMapping, goPreview, reset }: {
         * stays inline in the label since FormField doesn't model
         * required-vs-optional state itself. */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {(['date', 'drinks', 'drinkType', 'notes', 'mood'] as const).map((field) => (
+        {(['date', 'drinks', 'drinkType', 'notes', 'mood', 'tags'] as const).map((field) => (
           <FormField
             key={field}
             id={`mapping-${field}`}
@@ -137,15 +138,46 @@ function PreviewStep({ result, commit, back }: { result: ApplyResult; commit: ()
   );
 }
 
-function DoneStep({ count, reset }: { count: number; reset: () => void }) {
+function DoneStep({
+  count,
+  reset,
+  undo,
+  undone,
+}: {
+  count: number;
+  reset: () => void;
+  undo: () => void;
+  undone: boolean;
+}) {
+  /* [R27-D] Imported-recently surface gives the user one shot to roll
+   * back the import. We track the imported-IDs in state so undo is
+   * deterministic — no diff-by-content, no false positives. After
+   * undo, the message switches to "Removed {count}" and Undo is
+   * hidden so they can't double-click into a confused state. */
   return (
     <div className="space-y-3">
-      <p className="text-sm">
-        Imported <strong>{count.toLocaleString()}</strong> entries.
+      <p className="text-sm" data-testid="data-import-done-summary">
+        {undone ? (
+          <>Removed <strong>{count.toLocaleString()}</strong> imported entries.</>
+        ) : (
+          <>Imported <strong>{count.toLocaleString()}</strong> entries.</>
+        )}
       </p>
-      <button type="button" className="btn btn-secondary" onClick={reset} data-testid="data-import-done">
-        Import another file
-      </button>
+      <div className="flex gap-2">
+        {!undone && count > 0 && (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={undo}
+            data-testid="data-import-undo"
+          >
+            Undo this import
+          </button>
+        )}
+        <button type="button" className="btn btn-secondary" onClick={reset} data-testid="data-import-done">
+          Import another file
+        </button>
+      </div>
     </div>
   );
 }
@@ -158,9 +190,15 @@ function useDataImportState() {
   const [result, setResult] = useState<ApplyResult | null>(null);
   const [committedCount, setCommittedCount] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  /* [R27-D] Track the IDs the most-recent import added so the Undo
+   * button can deterministically remove only those entries. Empty
+   * after reset() or successful undo. */
+  const [committedIds, setCommittedIds] = useState<string[]>([]);
+  const [undone, setUndone] = useState(false);
 
   const reset = () => {
-    setStep('pick'); setParsed(null); setMapping(null); setResult(null); setCommittedCount(0); setError(null);
+    setStep('pick'); setParsed(null); setMapping(null); setResult(null);
+    setCommittedCount(0); setError(null); setCommittedIds([]); setUndone(false);
   };
   const handleFile = async (ev: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
@@ -196,9 +234,27 @@ function useDataImportState() {
     };
     useDB.setState({ db: next });
     useDB.getState()._recompute();
-    setCommittedCount(withIds.length); setStep('done');
+    setCommittedCount(withIds.length);
+    setCommittedIds(withIds.map((e) => e.id));
+    setUndone(false);
+    setStep('done');
   };
-  return { step, setStep, parsed, mapping, result, committedCount, error, reset, handleFile, updateMapping, goPreview, commit };
+  /* [R27-D] Remove the entries we just added by ID. We do NOT
+   * recompute _lastLogAt — leaving the previous value is correct
+   * because _recompute scans entries.ts. */
+  const undo = () => {
+    if (committedIds.length === 0) return;
+    const idSet = new Set(committedIds);
+    const cur = useDB.getState().db;
+    const next = {
+      ...cur,
+      entries: cur.entries.filter((e) => !idSet.has(e.id)),
+    };
+    useDB.setState({ db: next });
+    useDB.getState()._recompute();
+    setUndone(true);
+  };
+  return { step, setStep, parsed, mapping, result, committedCount, undone, error, reset, handleFile, updateMapping, goPreview, commit, undo };
 }
 
 export default function DataImport() {
@@ -225,7 +281,14 @@ export default function DataImport() {
         {s.step === 'preview' && s.result && (
           <PreviewStep result={s.result} commit={s.commit} back={() => s.setStep('map')} />
         )}
-        {s.step === 'done' && <DoneStep count={s.committedCount} reset={s.reset} />}
+        {s.step === 'done' && (
+          <DoneStep
+            count={s.committedCount}
+            reset={s.reset}
+            undo={s.undo}
+            undone={s.undone}
+          />
+        )}
       </div>
     </div>
   );

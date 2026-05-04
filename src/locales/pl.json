@@ -470,5 +470,67 @@
   "selfExperiment.jumpNav": "Sekcje panelu",
   "selfExperiment.jumpDiagnostics": "Diagnostyka wdrożenia",
   "selfExperiment.jumpAudit": "Audyt ustawień",
-  "selfExperiment.jumpFunnel": "Lejek wdrożenia"
+  "selfExperiment.jumpFunnel": "Lejek wdrożenia",
+
+  "settings.stdDrink.explainSummary": "Co tu znaczy „1 porcja standardowa”?",
+  "settings.stdDrink.equalsLine": "W przybliżeniu odpowiada:",
+  "settings.stdDrink.sourcePrefix": "Źródło:",
+  "settings.stdDrink.changeHint": "Zmień powyższy wybór, aby użyć innej definicji.",
+  "settings.stdDrink.gramsSuffix": " g czystego alkoholu.",
+
+  "settings.privacy.headline.title": "Twoje dane. Na tym urządzeniu. Kropka.",
+  "settings.privacy.headline.claim": "Nic nie opuszcza Twojego urządzenia. Kopia zapasowa jest szyfrowana end-to-end. Bez analityki, bez reklam.",
+  "settings.privacy.headline.expand": "Jak to zweryfikować?",
+  "settings.privacy.headline.verifyIntro": "Trzy sprawdzenia, które może wykonać każdy:",
+  "settings.privacy.headline.verify1": "Otwórz narzędzia deweloperskie przeglądarki → zakładka Sieć → odśwież. Z wyłączonymi funkcjami opcjonalnymi ładuje się tylko statyczny pakiet aplikacji.",
+  "settings.privacy.headline.verify2": "Przeczytaj zestawienie funkcji poniżej: które opcjonalne elementy mogą wysyłać dane i czy są obecnie włączone.",
+  "settings.privacy.headline.verify3": "Otwórz Pokwitowanie zaufania na dole tej sekcji: gotowe do wydruku podsumowanie każdej deklaracji i pliku, który ją potwierdza.",
+
+  "satisfaction.label": "Czy to było pomocne?",
+  "satisfaction.up": "Kciuk w górę — pomocne",
+  "satisfaction.down": "Kciuk w dół — niepomocne",
+  "satisfaction.dismiss": "Zamknij pytanie o pomoc",
+  "satisfaction.thanks": "Dzięki. Zostaje na tym urządzeniu.",
+
+  "stdDrink.system.us.label": "1 porcja standardowa (USA, NIAAA)",
+  "stdDrink.system.us.equiv1": "355 ml (12 oz) piwa o 5%",
+  "stdDrink.system.us.equiv2": "150 ml (5 oz) wina o 12%",
+  "stdDrink.system.us.equiv3": "45 ml (1,5 oz) wódki o 40%",
+  "stdDrink.system.us.authority": "Amerykański Narodowy Instytut ds. Nadużywania Alkoholu (NIAAA)",
+
+  "stdDrink.system.uk.label": "1 jednostka (Wielka Brytania, NHS)",
+  "stdDrink.system.uk.equiv1": "pół pinty piwa o 4%",
+  "stdDrink.system.uk.equiv2": "76 ml wina o 12%",
+  "stdDrink.system.uk.equiv3": "25 ml wódki o 40% (pojedyncza miarka)",
+  "stdDrink.system.uk.authority": "Brytyjski NHS / Główni Lekarze Krajowi",
+
+  "stdDrink.system.au.label": "1 porcja standardowa (Australia, NHMRC)",
+  "stdDrink.system.au.equiv1": "285 ml piwa o 4,8% (tzw. „middy”/„pot”)",
+  "stdDrink.system.au.equiv2": "100 ml wina o 13%",
+  "stdDrink.system.au.equiv3": "30 ml wódki o 40%",
+  "stdDrink.system.au.authority": "Australijska Krajowa Rada Zdrowia i Badań Medycznych",
+
+  "stdDrink.system.eu.label": "1 porcja standardowa (UE, 10 g)",
+  "stdDrink.system.eu.equiv1": "250 ml piwa o 5%",
+  "stdDrink.system.eu.equiv2": "100 ml wina o 12,5%",
+  "stdDrink.system.eu.equiv3": "30 ml wódki o 40%",
+  "stdDrink.system.eu.authority": "Konsensus UE (NL/FR/DE — raport ICAP)",
+
+  "stdDrink.system.ca.label": "1 porcja standardowa (Kanada, Health Canada)",
+  "stdDrink.system.ca.equiv1": "341 ml (12 oz) piwa o 5%",
+  "stdDrink.system.ca.equiv2": "142 ml (5 oz) wina o 12%",
+  "stdDrink.system.ca.equiv3": "43 ml (1,5 oz) wódki o 40%",
+  "stdDrink.system.ca.authority": "Kanadyjskie wytyczne dotyczące spożycia alkoholu o niskim ryzyku",
+
+  "stdDrink.system.ie.label": "1 porcja standardowa (Irlandia, HSE)",
+  "stdDrink.system.ie.equiv1": "pół pinty lagera o 4,3%",
+  "stdDrink.system.ie.equiv2": "100 ml wina o 12,5%",
+  "stdDrink.system.ie.equiv3": "35,5 ml wódki o 40% (irlandzka miarka)",
+  "stdDrink.system.ie.authority": "Irlandzka Służba Zdrowia (HSE)",
+
+  "stdDrink.system.nz.label": "1 porcja standardowa (Nowa Zelandia, HPA)",
+  "stdDrink.system.nz.equiv1": "330 ml piwa o 4%",
+  "stdDrink.system.nz.equiv2": "100 ml wina o 12,5%",
+  "stdDrink.system.nz.equiv3": "30 ml wódki o 40%",
+  "stdDrink.system.nz.authority": "Nowozelandzka Agencja Promocji Zdrowia"
 }

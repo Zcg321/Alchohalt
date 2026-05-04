@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   STD_DRINK_EXPLANATIONS,
   getStdDrinkExplanation,
+  getStdDrinkExplanationLocalized,
   listMissingExplanations,
 } from '../stdDrinkExplanation';
 import { STD_DRINK_GRAMS } from '../calc';
@@ -51,5 +52,50 @@ describe('[R26-A] stdDrinkExplanation', () => {
   it('getStdDrinkExplanation returns the matching entry for a known system', () => {
     expect(getStdDrinkExplanation('uk').grams).toBe(8);
     expect(getStdDrinkExplanation('ca').grams).toBe(13.6);
+  });
+});
+
+describe('[R27-B] getStdDrinkExplanationLocalized', () => {
+  it('uses English fallback when t() returns the fallback', () => {
+    const t = (_k: string, fallback?: string) => fallback ?? '';
+    const out = getStdDrinkExplanationLocalized('us', t);
+    expect(out.label).toBe(STD_DRINK_EXPLANATIONS.us.label);
+    expect(out.equivalences).toEqual(STD_DRINK_EXPLANATIONS.us.equivalences);
+    expect(out.authority).toBe(STD_DRINK_EXPLANATIONS.us.authority);
+    expect(out.grams).toBe(STD_DRINK_EXPLANATIONS.us.grams);
+  });
+
+  it('uses translated values when t() returns a localized string', () => {
+    const dict: Record<string, string> = {
+      'stdDrink.system.uk.label': '1 unidad (Reino Unido, NHS)',
+      'stdDrink.system.uk.equiv1': 'media pinta',
+      'stdDrink.system.uk.equiv2': '76 ml de vino',
+      'stdDrink.system.uk.equiv3': '25 ml de licor',
+      'stdDrink.system.uk.authority': 'NHS UK',
+    };
+    const t = (k: string, fallback?: string) => dict[k] ?? fallback ?? '';
+    const out = getStdDrinkExplanationLocalized('uk', t);
+    expect(out.label).toBe('1 unidad (Reino Unido, NHS)');
+    expect(out.equivalences).toEqual(['media pinta', '76 ml de vino', '25 ml de licor']);
+    expect(out.authority).toBe('NHS UK');
+    expect(out.grams).toBe(8);
+  });
+
+  it('falls back to US system when given undefined', () => {
+    const t = (_k: string, fallback?: string) => fallback ?? '';
+    const out = getStdDrinkExplanationLocalized(undefined, t);
+    expect(out.grams).toBe(STD_DRINK_EXPLANATIONS.us.grams);
+  });
+
+  it('filters out blank equivalences if a locale leaves a slot empty', () => {
+    const dict: Record<string, string> = {
+      'stdDrink.system.us.equiv1': 'beer',
+      'stdDrink.system.us.equiv2': '',
+      'stdDrink.system.us.equiv3': 'spirit',
+    };
+    const t = (k: string, fallback?: string): string =>
+      k in dict ? (dict[k] ?? '') : fallback ?? '';
+    const out = getStdDrinkExplanationLocalized('us', t);
+    expect(out.equivalences).toEqual(['beer', 'spirit']);
   });
 });

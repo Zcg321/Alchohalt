@@ -135,3 +135,33 @@ export function listMissingExplanations(): StdDrinkSystem[] {
     (s) => !STD_DRINK_EXPLANATIONS[s],
   );
 }
+
+/**
+ * [R27-B] Locale-aware variant: same shape, but label / equivalences /
+ * authority resolved through the i18n t() function. The English
+ * STD_DRINK_EXPLANATIONS values are passed as fallbacks so missing
+ * keys don't blank out the surface — they just render in English.
+ *
+ * Keys follow the pattern `stdDrink.system.{us|uk|...}.{label|equiv1|equiv2|equiv3|authority}`.
+ * Three equivalence slots match the canonical English data; if a future
+ * locale wants to merge two equivalences for brevity, leave a slot
+ * empty — the helper filters falsy entries out.
+ */
+export type Translator = (key: string, fallback?: string) => string;
+
+export function getStdDrinkExplanationLocalized(
+  system: StdDrinkSystem | undefined,
+  t: Translator,
+): StdDrinkExplanation {
+  const base = getStdDrinkExplanation(system);
+  const sys = system && STD_DRINK_EXPLANATIONS[system] ? system : 'us';
+  const equivalences = (
+    base.equivalences.map((eq, i) => t(`stdDrink.system.${sys}.equiv${i + 1}`, eq))
+  ).filter((s) => s && s.trim().length > 0);
+  return {
+    label: t(`stdDrink.system.${sys}.label`, base.label),
+    grams: base.grams,
+    equivalences,
+    authority: t(`stdDrink.system.${sys}.authority`, base.authority),
+  };
+}

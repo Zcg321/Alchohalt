@@ -423,5 +423,67 @@
   "selfExperiment.jumpNav": "Dashboard-Bereiche",
   "selfExperiment.jumpDiagnostics": "Onboarding-Diagnose",
   "selfExperiment.jumpAudit": "Einstellungs-Audit",
-  "selfExperiment.jumpFunnel": "Onboarding-Funnel"
+  "selfExperiment.jumpFunnel": "Onboarding-Funnel",
+
+  "settings.stdDrink.explainSummary": "Was bedeutet hier „1 Standardglas“?",
+  "settings.stdDrink.equalsLine": "Entspricht ungefähr:",
+  "settings.stdDrink.sourcePrefix": "Quelle:",
+  "settings.stdDrink.changeHint": "Ändere die Auswahl oben, um eine andere Definition zu verwenden.",
+  "settings.stdDrink.gramsSuffix": " g reiner Alkohol.",
+
+  "settings.privacy.headline.title": "Deine Daten. Auf diesem Gerät. Punkt.",
+  "settings.privacy.headline.claim": "Nichts verlässt dein Gerät. Backups sind Ende-zu-Ende verschlüsselt. Keine Analyse, keine Werbung.",
+  "settings.privacy.headline.expand": "Wie kann ich das überprüfen?",
+  "settings.privacy.headline.verifyIntro": "Drei Prüfungen, die jeder durchführen kann:",
+  "settings.privacy.headline.verify1": "Browser-Entwicklertools öffnen → Reiter „Netzwerk“ → neu laden. Mit allen optionalen Funktionen aus wird nur das statische App-Bundle geladen.",
+  "settings.privacy.headline.verify2": "Lies die Funktionsübersicht unten: welche optionalen Dienste nach außen kommunizieren können und ob sie gerade aktiv sind.",
+  "settings.privacy.headline.verify3": "Öffne den Vertrauensbeleg am Ende dieses Abschnitts: druckbare Zusammenfassung jeder Aussage und der Datei, die sie belegt.",
+
+  "satisfaction.label": "War das hilfreich?",
+  "satisfaction.up": "Daumen hoch — hilfreich",
+  "satisfaction.down": "Daumen runter — nicht hilfreich",
+  "satisfaction.dismiss": "Hilfreich-Frage ausblenden",
+  "satisfaction.thanks": "Danke. Bleibt auf diesem Gerät.",
+
+  "stdDrink.system.us.label": "1 Standardglas (USA, NIAAA)",
+  "stdDrink.system.us.equiv1": "355 ml (12 oz) Bier mit 5 %",
+  "stdDrink.system.us.equiv2": "150 ml (5 oz) Wein mit 12 %",
+  "stdDrink.system.us.equiv3": "45 ml (1,5 oz) Spirituose mit 40 %",
+  "stdDrink.system.us.authority": "US-Institut für Alkoholmissbrauch und Alkoholismus (NIAAA)",
+
+  "stdDrink.system.uk.label": "1 Einheit (UK, NHS)",
+  "stdDrink.system.uk.equiv1": "ein halbes Pint Bier mit 4 %",
+  "stdDrink.system.uk.equiv2": "76 ml Wein mit 12 %",
+  "stdDrink.system.uk.equiv3": "25 ml Spirituose mit 40 % (Single Measure)",
+  "stdDrink.system.uk.authority": "NHS Vereinigtes Königreich / Chief Medical Officers",
+
+  "stdDrink.system.au.label": "1 Standardglas (AU, NHMRC)",
+  "stdDrink.system.au.equiv1": "285 ml Bier mit 4,8 % (ein „Middy“/„Pot“)",
+  "stdDrink.system.au.equiv2": "100 ml Wein mit 13 %",
+  "stdDrink.system.au.equiv3": "30 ml Spirituose mit 40 %",
+  "stdDrink.system.au.authority": "Nationales Gesundheits- und Medizinforschungsrat Australiens",
+
+  "stdDrink.system.eu.label": "1 Standardglas (EU, 10 g)",
+  "stdDrink.system.eu.equiv1": "250 ml Bier mit 5 %",
+  "stdDrink.system.eu.equiv2": "100 ml Wein mit 12,5 %",
+  "stdDrink.system.eu.equiv3": "30 ml Spirituose mit 40 %",
+  "stdDrink.system.eu.authority": "EU-Konsens (NL/FR/DE — ICAP-Bericht)",
+
+  "stdDrink.system.ca.label": "1 Standardglas (CA, Health Canada)",
+  "stdDrink.system.ca.equiv1": "341 ml (12 oz) Bier mit 5 %",
+  "stdDrink.system.ca.equiv2": "142 ml (5 oz) Wein mit 12 %",
+  "stdDrink.system.ca.equiv3": "43 ml (1,5 oz) Spirituose mit 40 %",
+  "stdDrink.system.ca.authority": "Health Canada — Niedrigrisiko-Trinkrichtlinien",
+
+  "stdDrink.system.ie.label": "1 Standardglas (IE, HSE)",
+  "stdDrink.system.ie.equiv1": "halbes Pint Lager mit 4,3 %",
+  "stdDrink.system.ie.equiv2": "100 ml Wein mit 12,5 %",
+  "stdDrink.system.ie.equiv3": "35,5 ml Spirituose mit 40 % (irisches Single)",
+  "stdDrink.system.ie.authority": "Irischer Gesundheitsdienst (HSE)",
+
+  "stdDrink.system.nz.label": "1 Standardglas (NZ, HPA)",
+  "stdDrink.system.nz.equiv1": "330 ml Bier mit 4 %",
+  "stdDrink.system.nz.equiv2": "100 ml Wein mit 12,5 %",
+  "stdDrink.system.nz.equiv3": "30 ml Spirituose mit 40 %",
+  "stdDrink.system.nz.authority": "Neuseeländische Gesundheitsförderungsagentur"
 }

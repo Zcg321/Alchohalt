@@ -470,5 +470,67 @@
   "selfExperiment.jumpNav": "Разделы панели",
   "selfExperiment.jumpDiagnostics": "Диагностика входа",
   "selfExperiment.jumpAudit": "Аудит настроек",
-  "selfExperiment.jumpFunnel": "Воронка входа"
+  "selfExperiment.jumpFunnel": "Воронка входа",
+
+  "settings.stdDrink.explainSummary": "Что здесь значит «1 стандартная порция»?",
+  "settings.stdDrink.equalsLine": "Примерно соответствует:",
+  "settings.stdDrink.sourcePrefix": "Источник:",
+  "settings.stdDrink.changeHint": "Измените выбор выше, чтобы использовать другое определение.",
+  "settings.stdDrink.gramsSuffix": " г чистого спирта.",
+
+  "settings.privacy.headline.title": "Ваши данные. На этом устройстве. И всё.",
+  "settings.privacy.headline.claim": "Ничего не покидает ваше устройство. Резервная копия зашифрована end-to-end. Без аналитики, без рекламы.",
+  "settings.privacy.headline.expand": "Как это проверить?",
+  "settings.privacy.headline.verifyIntro": "Три проверки, доступные каждому:",
+  "settings.privacy.headline.verify1": "Откройте инструменты разработчика браузера → вкладка «Сеть» → перезагрузите. При выключенных дополнительных функциях загружается только статичный пакет приложения.",
+  "settings.privacy.headline.verify2": "Прочитайте расшифровку по функциям ниже: какие дополнительные возможности могут отправлять данные и включены ли они сейчас.",
+  "settings.privacy.headline.verify3": "Откройте Чек доверия внизу раздела: готовое к печати резюме каждого утверждения и файла, который его подтверждает.",
+
+  "satisfaction.label": "Это было полезно?",
+  "satisfaction.up": "Палец вверх — полезно",
+  "satisfaction.down": "Палец вниз — не полезно",
+  "satisfaction.dismiss": "Закрыть вопрос о пользе",
+  "satisfaction.thanks": "Спасибо. Останется на этом устройстве.",
+
+  "stdDrink.system.us.label": "1 стандартная порция (США, NIAAA)",
+  "stdDrink.system.us.equiv1": "355 мл (12 oz) пива крепостью 5%",
+  "stdDrink.system.us.equiv2": "150 мл (5 oz) вина крепостью 12%",
+  "stdDrink.system.us.equiv3": "45 мл (1,5 oz) крепкого алкоголя 40%",
+  "stdDrink.system.us.authority": "Национальный институт по проблемам алкоголизма США (NIAAA)",
+
+  "stdDrink.system.uk.label": "1 единица (Великобритания, NHS)",
+  "stdDrink.system.uk.equiv1": "полпинты пива крепостью 4%",
+  "stdDrink.system.uk.equiv2": "76 мл вина крепостью 12%",
+  "stdDrink.system.uk.equiv3": "25 мл крепкого алкоголя 40% (одинарная мера)",
+  "stdDrink.system.uk.authority": "NHS Великобритании / главные медицинские офицеры",
+
+  "stdDrink.system.au.label": "1 стандартная порция (Австралия, NHMRC)",
+  "stdDrink.system.au.equiv1": "285 мл пива крепостью 4,8% («midi»/«pot»)",
+  "stdDrink.system.au.equiv2": "100 мл вина крепостью 13%",
+  "stdDrink.system.au.equiv3": "30 мл крепкого алкоголя 40%",
+  "stdDrink.system.au.authority": "Австралийский национальный совет по здравоохранению и медицинским исследованиям",
+
+  "stdDrink.system.eu.label": "1 стандартная порция (ЕС, 10 г)",
+  "stdDrink.system.eu.equiv1": "250 мл пива крепостью 5%",
+  "stdDrink.system.eu.equiv2": "100 мл вина крепостью 12,5%",
+  "stdDrink.system.eu.equiv3": "30 мл крепкого алкоголя 40%",
+  "stdDrink.system.eu.authority": "Консенсус ЕС (NL/FR/DE — отчёт ICAP)",
+
+  "stdDrink.system.ca.label": "1 стандартная порция (Канада, Health Canada)",
+  "stdDrink.system.ca.equiv1": "341 мл (12 oz) пива крепостью 5%",
+  "stdDrink.system.ca.equiv2": "142 мл (5 oz) вина крепостью 12%",
+  "stdDrink.system.ca.equiv3": "43 мл (1,5 oz) крепкого алкоголя 40%",
+  "stdDrink.system.ca.authority": "Рекомендации Health Canada по низкорисковому потреблению",
+
+  "stdDrink.system.ie.label": "1 стандартная порция (Ирландия, HSE)",
+  "stdDrink.system.ie.equiv1": "полпинты лагера крепостью 4,3%",
+  "stdDrink.system.ie.equiv2": "100 мл вина крепостью 12,5%",
+  "stdDrink.system.ie.equiv3": "35,5 мл крепкого алкоголя 40% (ирландская мера)",
+  "stdDrink.system.ie.authority": "Ирландская служба здравоохранения (HSE)",
+
+  "stdDrink.system.nz.label": "1 стандартная порция (Новая Зеландия, HPA)",
+  "stdDrink.system.nz.equiv1": "330 мл пива крепостью 4%",
+  "stdDrink.system.nz.equiv2": "100 мл вина крепостью 12,5%",
+  "stdDrink.system.nz.equiv3": "30 мл крепкого алкоголя 40%",
+  "stdDrink.system.nz.authority": "Агентство по укреплению здоровья Новой Зеландии"
 }

@@ -53,7 +53,7 @@ export interface OnboardingDiagnostics {
    * Diagnostics → Onboarding funnel view. Local-only; never
    * transmitted.
    */
-  skipStep?: 0 | 1 | 2 | undefined;
+  skipStep?: 0 | 1 | 2 | 3 | undefined;
 }
 
 export interface Settings {

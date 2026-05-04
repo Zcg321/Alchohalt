@@ -441,5 +441,67 @@
   "unit.time.one": "time",
   "unit.time.other": "times",
   "unit.priorAnswer.one": "{{count}} prior answer",
-  "unit.priorAnswer.other": "{{count}} prior answers"
+  "unit.priorAnswer.other": "{{count}} prior answers",
+
+  "settings.stdDrink.explainSummary": "What does \"1 std drink\" mean here?",
+  "settings.stdDrink.equalsLine": "Roughly equal to:",
+  "settings.stdDrink.sourcePrefix": "Source:",
+  "settings.stdDrink.changeHint": "Change the picker above to use a different definition.",
+  "settings.stdDrink.gramsSuffix": "g pure alcohol.",
+
+  "settings.privacy.headline.title": "Your data. On this device. Period.",
+  "settings.privacy.headline.claim": "Nothing leaves your device. Backup is end-to-end encrypted. No analytics, no ads.",
+  "settings.privacy.headline.expand": "How can I verify this?",
+  "settings.privacy.headline.verifyIntro": "Three checks anyone can run:",
+  "settings.privacy.headline.verify1": "Open browser devtools → Network tab → reload. With every optional feature off, only the static app bundle loads.",
+  "settings.privacy.headline.verify2": "Read the per-feature breakdown below: which optional things can call out, and whether they are on right now.",
+  "settings.privacy.headline.verify3": "Open the Trust Receipt at the bottom of this section: print-ready summary of every claim and the file that backs it up.",
+
+  "satisfaction.label": "Was this helpful?",
+  "satisfaction.up": "Thumb up — helpful",
+  "satisfaction.down": "Thumb down — not helpful",
+  "satisfaction.dismiss": "Dismiss helpful prompt",
+  "satisfaction.thanks": "Thanks. Stays on this device.",
+
+  "stdDrink.system.us.label": "1 std drink (US, NIAAA)",
+  "stdDrink.system.us.equiv1": "12 oz beer at 5% ABV",
+  "stdDrink.system.us.equiv2": "5 oz wine at 12% ABV",
+  "stdDrink.system.us.equiv3": "1.5 oz spirit at 40% ABV",
+  "stdDrink.system.us.authority": "US National Institute on Alcohol Abuse and Alcoholism",
+
+  "stdDrink.system.uk.label": "1 unit (UK, NHS)",
+  "stdDrink.system.uk.equiv1": "half a pint of 4% beer",
+  "stdDrink.system.uk.equiv2": "76 ml of 12% wine",
+  "stdDrink.system.uk.equiv3": "25 ml of 40% spirit (single measure)",
+  "stdDrink.system.uk.authority": "UK NHS / Chief Medical Officers",
+
+  "stdDrink.system.au.label": "1 std drink (AU, NHMRC)",
+  "stdDrink.system.au.equiv1": "285 ml of 4.8% beer (a \"middy\"/\"pot\")",
+  "stdDrink.system.au.equiv2": "100 ml of 13% wine",
+  "stdDrink.system.au.equiv3": "30 ml of 40% spirit",
+  "stdDrink.system.au.authority": "Australian National Health and Medical Research Council",
+
+  "stdDrink.system.eu.label": "1 std drink (EU, 10g)",
+  "stdDrink.system.eu.equiv1": "250 ml of 5% beer",
+  "stdDrink.system.eu.equiv2": "100 ml of 12.5% wine",
+  "stdDrink.system.eu.equiv3": "30 ml of 40% spirit",
+  "stdDrink.system.eu.authority": "EU consensus (NL/FR/DE — ICAP report)",
+
+  "stdDrink.system.ca.label": "1 std drink (CA, Health Canada)",
+  "stdDrink.system.ca.equiv1": "341 ml (12 oz) of 5% beer",
+  "stdDrink.system.ca.equiv2": "142 ml (5 oz) of 12% wine",
+  "stdDrink.system.ca.equiv3": "43 ml (1.5 oz) of 40% spirit",
+  "stdDrink.system.ca.authority": "Health Canada Low-Risk Alcohol Drinking Guidelines",
+
+  "stdDrink.system.ie.label": "1 std drink (IE, HSE)",
+  "stdDrink.system.ie.equiv1": "half-pint of 4.3% lager",
+  "stdDrink.system.ie.equiv2": "100 ml of 12.5% wine",
+  "stdDrink.system.ie.equiv3": "35.5 ml of 40% spirit (Irish single)",
+  "stdDrink.system.ie.authority": "Irish Health Service Executive",
+
+  "stdDrink.system.nz.label": "1 std drink (NZ, HPA)",
+  "stdDrink.system.nz.equiv1": "330 ml of 4% beer",
+  "stdDrink.system.nz.equiv2": "100 ml of 12.5% wine",
+  "stdDrink.system.nz.equiv3": "30 ml of 40% spirit",
+  "stdDrink.system.nz.authority": "New Zealand Health Promotion Agency"
 }

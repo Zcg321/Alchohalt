@@ -23,6 +23,9 @@ export interface ColumnMap {
   drinkType: string | null; // beer/wine/spirits/free-text (optional)
   notes: string | null; // optional
   mood: string | null; // optional
+  /** [R27-D] Free-form tags column. Cell can be a comma-, pipe-, or
+   *  semicolon-separated list. Empty cells are treated as no tags. */
+  tags: string | null; // optional
 }
 
 export interface ParsedRow {
@@ -121,6 +124,10 @@ const DRINKS_HEADERS = ['drinks', 'count', 'units', 'quantity', 'qty', 'standard
 const TYPE_HEADERS = ['type', 'drink', 'drink type', 'drinktype', 'beverage', 'category'];
 const NOTES_HEADERS = ['notes', 'note', 'comment', 'comments', 'description'];
 const MOOD_HEADERS = ['mood', 'feeling', 'how_felt', 'state'];
+/** [R27-D] Tag column header candidates. Common spreadsheet labels
+ *  for free-form classification: "tags" (Reframe, Sunnyside),
+ *  "labels" (Drinkaware), "categories" (some custom exports). */
+const TAGS_HEADERS = ['tags', 'tag', 'labels', 'label', 'categories'];
 
 export function detectColumns(headers: string[]): ColumnMap {
   const lowerToOriginal = new Map<string, string>();
@@ -144,7 +151,19 @@ export function detectColumns(headers: string[]): ColumnMap {
     drinkType: find(TYPE_HEADERS),
     notes: find(NOTES_HEADERS),
     mood: find(MOOD_HEADERS),
+    tags: find(TAGS_HEADERS),
   };
+}
+
+/** [R27-D] Split a tag-list cell on the most common delimiters and
+ *  return cleaned, deduplicated tags. Exported for the test. */
+export function parseTagsCell(raw: string | undefined): string[] {
+  if (!raw || !raw.trim()) return [];
+  const parts = raw
+    .split(/[,;|]/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
+  return Array.from(new Set(parts));
 }
 
 function inferKind(raw: string): 'beer' | 'wine' | 'spirits' | 'custom' {
@@ -211,6 +230,10 @@ export function applyMapping(rows: ParsedRow[], mapping: ColumnMap): ApplyResult
     const stdDrinks = mapping.drinks ? Number(row[mapping.drinks]) || 1 : 1;
     const notes = mapping.notes ? row[mapping.notes] : undefined;
     const mood = mapping.mood ? inferMood(row[mapping.mood] ?? '') : undefined;
+    /* [R27-D] Tags: optional column. Empty list omitted from the
+     * persisted entry so we don't pollute filters with empty arrays. */
+    const tags = mapping.tags ? parseTagsCell(row[mapping.tags]) : [];
+    const tagsField = tags.length > 0 ? tags : undefined;
 
     // Multi-drink rows: emit `drinkCount` entries with stdDrinks=1 each
     // unless the source already had a fractional or large stdDrinks
@@ -218,10 +241,10 @@ export function applyMapping(rows: ParsedRow[], mapping: ColumnMap): ApplyResult
     const explode = drinkCount > 1 && stdDrinks === drinkCount;
     if (explode) {
       for (let i = 0; i < drinkCount; i++) {
-        entries.push(buildEntry(ts + i * 60_000, kind, 1, notes, mood));
+        entries.push(buildEntry(ts + i * 60_000, kind, 1, notes, mood, tagsField));
       }
     } else {
-      entries.push(buildEntry(ts, kind, stdDrinks, notes, mood));
+      entries.push(buildEntry(ts, kind, stdDrinks, notes, mood, tagsField));
     }
   }
 
@@ -234,6 +257,7 @@ function buildEntry(
   stdDrinks: number,
   notes: string | undefined,
   mood: Entry['mood'] | undefined,
+  tags: string[] | undefined,
 ): Omit<Entry, 'id'> {
   const intention: Intention = 'other';
   const halt = { H: false, A: false, L: false, T: false };
@@ -246,5 +270,6 @@ function buildEntry(
     halt,
     notes: notes && notes.length > 0 ? notes : undefined,
     mood,
+    tags,
   };
 }

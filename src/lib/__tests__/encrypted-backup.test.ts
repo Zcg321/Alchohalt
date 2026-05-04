@@ -90,4 +90,93 @@ describe('encryptBackup → decryptBackup — round-trip', () => {
     const b = await encryptBackup(db(), 'same-pass');
     expect(a).not.toBe(b);
   }, 20_000);
+
+  /* [R27-3] User-installed dictionary backup audit. The encrypted
+   * backup serializes the entire DB via JSON.stringify, which
+   * includes:
+   *   - settings.userCrisisLine (custom crisis number)
+   *   - db.presets (custom drink presets)
+   *   - db.advancedGoals (custom goals)
+   * Round-trip must preserve all three so device-swap / reinstall
+   * users don't lose content they personally added. */
+  it('[R27-3] round-trips a custom user crisis line', async () => {
+    const original = db({
+      settings: {
+        ...db().settings,
+        userCrisisLine: {
+          label: "My therapist",
+          phone: "+1-555-0100",
+          description: "weekday hours",
+        },
+      },
+    });
+    const encrypted = await encryptBackup(original, 'correct-horse-battery');
+    const restored = await decryptBackup(encrypted, 'correct-horse-battery');
+    expect(restored.settings.userCrisisLine).toEqual({
+      label: "My therapist",
+      phone: "+1-555-0100",
+      description: "weekday hours",
+    });
+  }, 20_000);
+
+  it('[R27-3] round-trips custom drink presets', async () => {
+    const original = db({
+      presets: [
+        { name: "House porter", volumeMl: 568, abvPct: 5.4 },
+        { name: "Costco vodka pour", volumeMl: 60, abvPct: 40 },
+      ],
+    });
+    const encrypted = await encryptBackup(original, 'correct-horse-battery');
+    const restored = await decryptBackup(encrypted, 'correct-horse-battery');
+    expect(restored.presets).toEqual(original.presets);
+  }, 20_000);
+
+  it('[R27-3] round-trips custom advanced goals', async () => {
+    const original = db({
+      advancedGoals: [
+        {
+          id: 'goal-1',
+          type: 'streak',
+          title: 'Three dry days a week',
+          description: 'aim for at least three alcohol-free days every week',
+          target: 3,
+          current: 0,
+          unit: 'days',
+          isActive: true,
+        },
+      ],
+    });
+    const encrypted = await encryptBackup(original, 'correct-horse-battery');
+    const restored = await decryptBackup(encrypted, 'correct-horse-battery');
+    expect(restored.advancedGoals).toEqual(original.advancedGoals);
+  }, 20_000);
+
+  it('[R27-3] round-trips ALL user-installed content together (full simulated device-swap)', async () => {
+    const original = db({
+      settings: {
+        ...db().settings,
+        userCrisisLine: { label: 'Therapist', phone: '+1-555-0100' },
+      },
+      presets: [
+        { name: 'Local IPA', volumeMl: 473, abvPct: 6.5 },
+      ],
+      advancedGoals: [
+        {
+          id: 'goal-2',
+          type: 'reduction',
+          title: '10% less this month',
+          description: '',
+          target: 10,
+          current: 0,
+          unit: '%',
+          isActive: true,
+        },
+      ],
+    });
+    const encrypted = await encryptBackup(original, 'a-good-passphrase');
+    const restored = await decryptBackup(encrypted, 'a-good-passphrase');
+    expect(restored.settings.userCrisisLine).toEqual(original.settings.userCrisisLine);
+    expect(restored.presets).toEqual(original.presets);
+    expect(restored.advancedGoals).toEqual(original.advancedGoals);
+  }, 20_000);
 });
