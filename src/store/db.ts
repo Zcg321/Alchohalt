@@ -279,6 +279,16 @@ export interface Settings {
    * surface either way. Local-only setting.
    */
   quickLogBackdatingWindow?: 'today' | 'yesterday' | undefined;
+  /**
+   * [R26-1] Real-time per-surface satisfaction signals. Append-only.
+   * Each entry is {surface, response, ts}; the surface key is one of
+   * SATISFACTION_SURFACES (see src/features/satisfaction/satisfaction.ts).
+   * On-device only; visible in DiagnosticsAudit. The host chip uses
+   * shouldShowSatisfactionChip to gate appearance — once the user
+   * responds (or dismisses) for a surface, the chip suppresses for
+   * 14 days for that surface only.
+   */
+  satisfactionSignals?: { surface: string; response: 'up' | 'down'; ts: number }[] | undefined;
 }
 
 export interface Entry {

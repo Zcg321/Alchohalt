@@ -14,6 +14,7 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import { stdDrinks } from '../../lib/calc';
 
 const InsightsPanel = React.lazy(() => import('../../features/insights/InsightsPanel'));
+const SatisfactionChip = React.lazy(() => import('../../features/satisfaction/SatisfactionChip'));
 const ProgressVisualization = React.lazy(() => import('../../features/insights/ProgressVisualization'));
 const SmartRecommendations = React.lazy(() => import('../../features/insights/SmartRecommendations'));
 const TagPatternsCard = React.lazy(() => import('../../features/insights/TagPatternsCard'));
@@ -175,6 +176,18 @@ export default function InsightsTab({ drinks, goals }: Props) {
        */}
       <Suspense fallback={<Skeleton className="h-32 w-full rounded-xl" />}>
         <AIInsightsTile />
+      </Suspense>
+
+      {/* [R26-1] Per-surface satisfaction signal. Surfaces only after
+          the user has actually used the Insights tab (≥7 drinks).
+          surfaceUsedTs is the user's first drink timestamp — by the
+          time they reach the populated Insights view they've already
+          interacted with the data the surface depends on. */}
+      <Suspense fallback={null}>
+        <SatisfactionChip
+          surface="insights-tab"
+          surfaceUsedTs={drinks[0]?.ts}
+        />
       </Suspense>
     </main>
   );

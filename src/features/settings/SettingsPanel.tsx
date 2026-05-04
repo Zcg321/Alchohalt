@@ -14,6 +14,8 @@ import About from './About';
 import ReplayOnboardingButton from './ReplayOnboardingButton';
 import ResetPreferencesPanel from './ResetPreferencesPanel';
 import PrivacyStatus from './PrivacyStatus';
+import StdDrinkExplanation from './StdDrinkExplanation';
+import PrivacyHeadline from './PrivacyHeadline';
 
 const CrashReportsToggleLazy = React.lazy(() => import('./CrashReportsToggle'));
 import { hapticForEvent } from '../../shared/haptics';
@@ -98,6 +100,7 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
           <p className="text-xs text-neutral-600 dark:text-neutral-400">
             Picks the grams-of-ethanol-per-standard-drink your country uses. Affects every count the app shows.
           </p>
+          <StdDrinkExplanation />
         </div>
         {/* [R23-D] Quick-log toggle. Default 'detailed' (current
             workflow). 'quick' surfaces 3 tap-to-log chips above the
@@ -242,6 +245,7 @@ function PrivacyAndDataSection() {
           {t('settings.privacy.subtitle', "Three places this gets controlled. Grouped here so it's one decision instead of three.")}
         </p>
       </header>
+      <PrivacyHeadline />
       <section className="card">
         <div className="card-header">
           <h3 className="text-base font-semibold tracking-tight">Data Management</h3>

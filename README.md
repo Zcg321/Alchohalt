@@ -121,3 +121,21 @@ See [QUICKSTART_HEALTH_SCAN.md](./QUICKSTART_HEALTH_SCAN.md) for quick reference
 ## Screenshots
 
 Placeholder screenshots for mobile and desktop can be found under `public/screenshots/`. Replace the placeholder files with actual images when you have them.
+
+## Contributing
+
+Contributions are welcome. Before opening a PR:
+
+- Read [CONTRIBUTING.md](./CONTRIBUTING.md) — workflow, voice
+  guidelines, what we'll merge fast vs. decline
+- Read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) — community
+  expectations (this project deals with a sensitive topic; we
+  hold a high bar)
+- Read [GOVERNANCE.md](./GOVERNANCE.md) — who decides what,
+  what's off the table for unilateral changes
+- Found a security issue? See [SECURITY.md](./SECURITY.md) for
+  the private disclosure path. Don't file a public issue.
+
+Open an issue first for anything bigger than a typo. We'd rather
+discuss the shape than reject a PR after you've already done
+the work.
