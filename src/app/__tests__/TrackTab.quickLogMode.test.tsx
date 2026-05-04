@@ -18,16 +18,16 @@ import { useDB } from '../../store/db';
 import { LanguageProvider } from '../../i18n';
 
 const baseProps = {
-  drinks: [],
-  goals: { dailyCap: 2, weeklyGoal: 14, baselineMonthlySpend: 0 },
-  presets: [],
+  drinks: [] as never[],
+  goals: { dailyCap: 2, weeklyGoal: 14, baselineMonthlySpend: 0, pricePerStd: 5 },
+  presets: [] as never[],
   editing: null,
   onAddDrink: vi.fn(),
   onSaveDrink: vi.fn(),
   onStartEdit: vi.fn(),
   onDeleteDrink: vi.fn(),
   onCancelEdit: vi.fn(),
-} as const;
+};
 
 beforeEach(() => {
   if (typeof window !== 'undefined') window.localStorage.clear();

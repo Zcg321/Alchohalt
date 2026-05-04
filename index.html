@@ -31,13 +31,13 @@
 
       [R23-E] CSP Level 3 split: style-src-elem and style-src-attr.
       Modern browsers (Chrome 90+, Firefox 109+, Safari 15.4+) honor
-      style-src-elem for stylesheets + inline <style> blocks separately
-      from style-src-attr for inline style="" attributes. Splitting
-      lets us keep 'unsafe-inline' on the attribute side (where React's
-      style={} prop forces it) while locking down element-side <style>
-      injection to 'self' + the hashed splash. style-src is the
-      fallback for old browsers; the new directives override on
-      browsers that support them.
+      style-src-elem for stylesheets + inline-element CSS blocks
+      separately from style-src-attr for inline style attributes on
+      individual elements. Splitting lets us keep 'unsafe-inline' on
+      the attribute side (where React forces it) while locking down
+      element-side stylesheet injection to 'self' + the hashed splash.
+      style-src is the fallback for old browsers; the new directives
+      override on browsers that support them.
 
       script-src is 'self' only — the inline loader-removal script
       was moved to main.tsx in R19-5 so no inline-script allowance is
