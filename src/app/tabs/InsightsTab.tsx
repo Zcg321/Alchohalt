@@ -20,6 +20,7 @@ const TagPatternsCard = React.lazy(() => import('../../features/insights/TagPatt
 const PeakHourCard = React.lazy(() => import('../../features/insights/PeakHourCard'));
 const CalorieTile = React.lazy(() => import('../../features/insights/CalorieTile'));
 const MoneySavedWidget = React.lazy(() => import('../../features/money/MoneySavedWidget'));
+const InsightsEmptyPreview = React.lazy(() => import('../../features/insights/InsightsEmptyPreview'));
 const Milestones = React.lazy(() => import('../../features/milestones/Milestones'));
 const LoggingTenure = React.lazy(() => import('../../features/milestones/LoggingTenure'));
 const PremiumWellnessDashboard = React.lazy(() => import('../../features/wellness/PremiumWellnessDashboard'));
@@ -40,43 +41,53 @@ export default function InsightsTab({ drinks, goals }: Props) {
     .filter((d) => d.ts >= cutoff)
     .map((d) => stdDrinks(d.volumeMl, d.abvPct) * pricePerStd);
 
-  if (drinks.length === 0) {
+  if (drinks.length < 7) {
     return (
-      <main id="main" className="mx-auto w-full max-w-2xl md:max-w-3xl px-4 py-section-y-mobile lg:py-section-y-desktop">
-        <header className="text-center mb-8">
+      <main id="main" className="mx-auto w-full max-w-2xl md:max-w-3xl px-4 py-section-y-mobile lg:py-section-y-desktop space-y-6">
+        <header className="text-center">
           <h2 className="text-h2 text-ink">Insights</h2>
         </header>
-        <div
-          className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center"
-          data-testid="insights-empty-state"
-        >
-          {/* [R23-4] Calm empty-state illustration: a quiet horizontal
-              axis with three muted markers where bars would appear once
-              the user has data. No faces, no exclamation, no
-              cheerleader voice — observation, on-brand sage palette,
-              decorative only. */}
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 240 90"
-            className="mx-auto mb-4 w-32 text-sage-500/60 dark:text-sage-400/60"
+        {drinks.length === 0 ? (
+          <div
+            className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center"
+            data-testid="insights-empty-state"
           >
-            <line x1="20" y1="70" x2="220" y2="70" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="60" cy="55" r="3" fill="currentColor" opacity="0.5" />
-            <circle cx="120" cy="40" r="3" fill="currentColor" opacity="0.7" />
-            <circle cx="180" cy="50" r="3" fill="currentColor" opacity="0.5" />
-            <path
-              d="M60 55 Q90 47 120 40 T180 50"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeDasharray="3 5"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.4"
-            />
-          </svg>
-          <p className="text-body text-ink">Nothing to chart yet.</p>
-          <p className="mt-1 text-caption text-ink-soft">Add a few entries on the Track tab and your trends will show up here.</p>
-        </div>
+            {/* [R23-4] Calm empty-state illustration: a quiet horizontal
+                axis with three muted markers where bars would appear once
+                the user has data. No faces, no exclamation, no
+                cheerleader voice — observation, on-brand sage palette,
+                decorative only. */}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 240 90"
+              className="mx-auto mb-4 w-32 text-sage-500/60 dark:text-sage-400/60"
+            >
+              <line x1="20" y1="70" x2="220" y2="70" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <circle cx="60" cy="55" r="3" fill="currentColor" opacity="0.5" />
+              <circle cx="120" cy="40" r="3" fill="currentColor" opacity="0.7" />
+              <circle cx="180" cy="50" r="3" fill="currentColor" opacity="0.5" />
+              <path
+                d="M60 55 Q90 47 120 40 T180 50"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeDasharray="3 5"
+                strokeLinecap="round"
+                fill="none"
+                opacity="0.4"
+              />
+            </svg>
+            <p className="text-body text-ink">Nothing to chart yet.</p>
+            <p className="mt-1 text-caption text-ink-soft">Add a few entries on the Track tab and your trends will show up here.</p>
+          </div>
+        ) : null}
+        {/* [R25-H] Sample-data preview so users see the shape of their
+            insights before they have enough entries. Renders for both
+            zero-entry and partial-data states (< 7 entries). Always
+            labeled "Sample" — no risk of confusing the preview with
+            real data. */}
+        <Suspense fallback={<Skeleton className="h-72 w-full rounded-xl" />}>
+          <InsightsEmptyPreview entryCount={drinks.length} />
+        </Suspense>
       </main>
     );
   }
