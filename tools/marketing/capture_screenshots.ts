@@ -28,6 +28,7 @@ import { dirname, join } from 'node:path';
 import type { Browser, Page } from 'playwright';
 
 import { DB_KEY, makeSeedPayload } from './capture_lib';
+import { buildCaptionInjectScript, captionFor } from './captions';
 
 const REPO_ROOT = join(__dirname, '..', '..');
 const OUT_ROOT = join(REPO_ROOT, 'public', 'marketing', 'screenshots');
@@ -94,6 +95,19 @@ async function captureOne(
     await page.click('button[aria-label="Open crisis resources"]');
     await page.waitForSelector('[role="dialog"], [aria-modal="true"]', { timeout: 5000 });
     await page.waitForTimeout(400);
+  }
+
+  /* [R28-2] Inject the per-surface caption overlay AFTER any modal has
+   * opened. The overlay is fixed to the top, pointer-events:none, and
+   * uses a z-index well above any in-app modal. Disabled when the
+   * NO_CAPTIONS env var is set so a clean uncaptioned set can still be
+   * captured for review. */
+  if (!process.env.NO_CAPTIONS) {
+    const caption = captionFor(surface.id);
+    await page.evaluate(buildCaptionInjectScript(caption.text, theme));
+    // Let layout settle — the overlay shifts no underlying content but
+    // the browser still needs a frame to paint.
+    await page.waitForTimeout(120);
   }
 
   const out = join(OUT_ROOT, platform, theme, `${surface.id}.png`);

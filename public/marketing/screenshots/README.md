@@ -63,8 +63,25 @@ To capture a subset:
 npx tsx tools/marketing/capture_screenshots.ts --surfaces=today,crisis
 ```
 
+To capture without the [R28-2] caption overlay (useful for the
+clean review pass before captioned screenshots ship):
+
+```bash
+NO_CAPTIONS=1 npx tsx tools/marketing/capture_screenshots.ts
+```
+
 Override the target with `DEV_URL=http://localhost:5173` to point at the
 live dev server instead of the preview build.
+
+## Captions
+
+Each captured PNG includes a 1-line value-prop caption pinned to
+the top of the image (introduced in R28-2). The caption text +
+voice rules are defined in `tools/marketing/captions.ts`; edit
+that file to change wording for every platform/theme at once. The
+overlay is positioned `top:0`, `pointer-events:none`, with a
+solid background so it stays readable at thumbnail scale in store
+search results.
 
 ## Why a 7-day streak (not 366)
 
