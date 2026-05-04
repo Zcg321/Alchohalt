@@ -165,6 +165,7 @@
   "craving.low": "Niski",
   "craving.high": "Wysoki",
   "haltLabel": "HALT",
+  "haltExplanation": "Głodny, Zły, Samotny, Zmęczony — częste wyzwalacze, które warto zauważyć.",
   "alternative": "Alternatywne działanie",
   "alternativePlaceholder": "np. iść na spacer",
   "intention_celebrate": "świętowanie",

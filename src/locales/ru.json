@@ -165,6 +165,7 @@
   "craving.low": "Низкая",
   "craving.high": "Высокая",
   "haltLabel": "HALT",
+  "haltExplanation": "Голод, Злость, Одиночество, Усталость — частые триггеры, которые стоит замечать.",
   "alternative": "Альтернативное действие",
   "alternativePlaceholder": "напр. пойти на прогулку",
   "intention_celebrate": "праздник",
