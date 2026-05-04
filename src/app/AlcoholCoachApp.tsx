@@ -78,7 +78,7 @@ function CrisisDialog({
   );
 }
 
-function HardTimeDialog({ onClose }: { onClose: () => void }) {
+function HardTimeDialog({ onClose, onOpenDirectory }: { onClose: () => void; onOpenDirectory: () => void }) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
   useFocusTrap(dialogRef, true);
@@ -112,7 +112,7 @@ function HardTimeDialog({ onClose }: { onClose: () => void }) {
             </svg>
           </button>
         </div>
-        <HardTimePanel onClose={onClose} />
+        <HardTimePanel onClose={onClose} onOpenDirectory={onOpenDirectory} />
       </div>
     </div>
   );
@@ -238,9 +238,17 @@ function AlcoholCoachAppInner() {
         </div>
       )}
       <div role="status" aria-live="polite" className="sr-only">{actions.logAnnouncement}</div>
-      <AppHeader onOpenCrisis={crisis.openCrisis} />
+      <AppHeader onOpenHardTime={crisis.openHardTime} />
       {crisis.showCrisis ? <CrisisDialog dialogRef={crisis.crisisDialogRef} closeRef={crisis.crisisCloseRef} onClose={crisis.closeCrisis} /> : null}
-      {crisis.showHardTime ? <HardTimeDialog onClose={crisis.closeHardTime} /> : null}
+      {crisis.showHardTime ? (
+        <HardTimeDialog
+          onClose={crisis.closeHardTime}
+          onOpenDirectory={() => {
+            crisis.closeHardTime();
+            crisis.openCrisis();
+          }}
+        />
+      ) : null}
       <AppMainSurface panels={panels} activeTab={activeTab} setActiveTab={setActiveTab} showShareViewer={showShareViewer} legalSlug={legalSlug} />
       {actions.lastDeleted && (
         <div className="fixed bottom-24 lg:bottom-4 start-1/2 transform -translate-x-1/2 bg-charcoal-900 text-white px-6 py-3 rounded-pill shadow-strong flex items-center gap-3 z-50 animate-slide-up">

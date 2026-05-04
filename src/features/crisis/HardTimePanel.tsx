@@ -40,6 +40,10 @@ import { recordHardTimeOpen, shouldEscalate } from './escalation';
 
 interface Props {
   onClose: () => void;
+  /** [R25-C] Optional callback to open the broader CrisisResources
+   *  directory (region packs, every line we ship). Surfaces as a
+   *  tertiary "More crisis resources" link at the bottom of the panel. */
+  onOpenDirectory?: () => void;
 }
 
 const PRIMARY_BTN =
@@ -135,7 +139,7 @@ function BreathingTimer() {
   );
 }
 
-export default function HardTimePanel({ onClose }: Props) {
+export default function HardTimePanel({ onClose, onOpenDirectory }: Props) {
   const { setSettings } = useDB();
   const openLog = useDB((s) => s.db.settings.hardTimeOpenLog);
 
@@ -211,6 +215,22 @@ export default function HardTimePanel({ onClose }: Props) {
           Hides the dashboard until midnight. Nothing logged. The app stays here when you come back.
         </p>
       </div>
+
+      {/* [R25-C] Tertiary path to the full directory. Hidden when no
+          callback is provided (legacy callers). The button is text-
+          only — we don't promote browse-mode above the urgent doors. */}
+      {onOpenDirectory && (
+        <div className="pt-2 text-center">
+          <button
+            type="button"
+            onClick={onOpenDirectory}
+            data-testid="hard-time-open-directory"
+            className="text-sm text-ink-soft hover:text-ink underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
+          >
+            More crisis resources
+          </button>
+        </div>
+      )}
 
       <footer className="pt-2 text-micro text-ink-subtle">
         <p>
