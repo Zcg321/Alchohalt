@@ -439,6 +439,7 @@
   "settings.privacy.headline.verify1": "Browser-Entwicklertools öffnen → Reiter „Netzwerk“ → neu laden. Mit allen optionalen Funktionen aus wird nur das statische App-Bundle geladen.",
   "settings.privacy.headline.verify2": "Lies die Funktionsübersicht unten: welche optionalen Dienste nach außen kommunizieren können und ob sie gerade aktiv sind.",
   "settings.privacy.headline.verify3": "Öffne den Vertrauensbeleg am Ende dieses Abschnitts: druckbare Zusammenfassung jeder Aussage und der Datei, die sie belegt.",
+  "settings.privacy.headline.showFirstLaunchAgain": "Datenschutz-Karte vom ersten Start erneut anzeigen",
 
   "satisfaction.label": "War das hilfreich?",
   "satisfaction.up": "Daumen hoch — hilfreich",

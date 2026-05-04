@@ -439,6 +439,7 @@
   "settings.privacy.headline.verify1": "Abre las herramientas del navegador → pestaña Red → recarga. Con todas las funciones opcionales desactivadas, solo se carga el paquete estático de la app.",
   "settings.privacy.headline.verify2": "Lee el desglose por función más abajo: qué cosas opcionales pueden enviar datos fuera y si están activas ahora mismo.",
   "settings.privacy.headline.verify3": "Abre el Recibo de Confianza al final de esta sección: un resumen imprimible de cada afirmación y el archivo que la respalda.",
+  "settings.privacy.headline.showFirstLaunchAgain": "Volver a mostrar la tarjeta de privacidad inicial",
 
   "satisfaction.label": "¿Te resultó útil?",
   "satisfaction.up": "Pulgar arriba — útil",
