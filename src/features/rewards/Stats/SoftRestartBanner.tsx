@@ -2,6 +2,7 @@
 import React from 'react';
 import type { StreakStatus } from '../../../lib/calc';
 import { useLanguage } from '../../../i18n';
+import { pluralCount } from '../../../i18n/plural';
 
 /**
  * Soft-restart banner — owner-locked language. Replaces any "0 day"
@@ -10,7 +11,13 @@ import { useLanguage } from '../../../i18n';
  *
  *   building  → "{{count}} days alcohol-free. Keep going."
  *   starting  → "Today's a fresh start."   (new user, no history)
- *   restart   → "You're back. {{total}} alcohol-free days so far."
+ *   restart   → "You're back. {{count}} alcohol-free days so far."
+ *
+ * [R24-A] The Russian translator audit caught that "{{count}} дней"
+ * is wrong for n ∈ {1,2,3,4,21,...}. Switched both interpolated
+ * messages to pluralCount so locales (pl, ru) with multi-bucket
+ * plural rules render the right form. Single-bucket locales
+ * (en/de/es/fr) keep .one|.other and the legacy fallback string.
  */
 interface Props {
   status: StreakStatus;
@@ -18,16 +25,19 @@ interface Props {
 }
 
 export default function SoftRestartBanner({ status, className = '' }: Props) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   let message = '';
   let tone: 'positive' | 'neutral' | 'celebrate' = 'neutral';
 
   switch (status.kind) {
     case 'building':
-      message = t('stats.softRestart.building').replace(
-        '{{count}}',
-        String(status.currentStreak),
+      message = pluralCount(
+        t,
+        lang,
+        'stats.softRestart.building',
+        status.currentStreak,
+        `${status.currentStreak} days alcohol-free. Keep going.`,
       );
       tone = status.currentStreak >= 7 ? 'celebrate' : 'positive';
       break;
@@ -36,9 +46,12 @@ export default function SoftRestartBanner({ status, className = '' }: Props) {
       tone = 'neutral';
       break;
     case 'restart':
-      message = t('stats.softRestart.restart').replace(
-        '{{total}}',
-        String(status.totalAFDays),
+      message = pluralCount(
+        t,
+        lang,
+        'stats.softRestart.restart',
+        status.totalAFDays,
+        `You're back. ${status.totalAFDays} alcohol-free days so far.`,
       );
       tone = 'positive';
       break;

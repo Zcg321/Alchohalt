@@ -5,8 +5,8 @@
   "clearAllData": "Очистить все данные",
   "eraseConfirm": "Удалить все сохранённые данные? Это нельзя отменить.",
   "eraseConfirm.subtitle": "Все записи, цели, шаблоны и настройки будут удалены. Это нельзя отменить.",
-  "eraseConfirm.typePrompt": "Введите УДАЛИТЬ для подтверждения",
-  "eraseConfirm.typeWord": "УДАЛИТЬ",
+  "eraseConfirm.typePrompt": "Введите СТЕРЕТЬ для подтверждения",
+  "eraseConfirm.typeWord": "СТЕРЕТЬ",
   "eraseConfirm.confirmButton": "Удалить всё",
   "eraseConfirm.cancelButton": "Сохранить мои данные",
   "dataCleared": "Данные очищены",
@@ -21,7 +21,15 @@
   "stats.totalAFDays": "Всего дней без алкоголя",
   "stats.softRestart.starting": "Сегодня — свежий старт.",
   "stats.softRestart.restart": "Вы вернулись. {{total}} дней без алкоголя.",
+  "stats.softRestart.restart.one": "Вы вернулись. {{count}} день без алкоголя.",
+  "stats.softRestart.restart.few": "Вы вернулись. {{count}} дня без алкоголя.",
+  "stats.softRestart.restart.many": "Вы вернулись. {{count}} дней без алкоголя.",
+  "stats.softRestart.restart.other": "Вы вернулись. {{count}} дней без алкоголя.",
   "stats.softRestart.building": "{{count}} дней без алкоголя. Так держать.",
+  "stats.softRestart.building.one": "{{count}} день без алкоголя. Так держать.",
+  "stats.softRestart.building.few": "{{count}} дня без алкоголя. Так держать.",
+  "stats.softRestart.building.many": "{{count}} дней без алкоголя. Так держать.",
+  "stats.softRestart.building.other": "{{count}} дней без алкоголя. Так держать.",
   "money.savedThisMonth": "Сэкономлено в этом месяце",
   "money.spentLast30": "Потрачено (последние 30 дней)",
   "money.spentVsBudget": "{{spent}} из бюджета {{budget}}",
@@ -90,7 +98,15 @@
   "progressCards.streak.heading": "Текущая серия без алкоголя",
   "progressCards.streak.daysLabel": "Дней без алкоголя",
   "progressCards.streak.nextMilestone": "Следующая отметка на {{days}} дне",
+  "progressCards.streak.nextMilestone.one": "Следующая веха — {{count}} день",
+  "progressCards.streak.nextMilestone.few": "Следующая веха — {{count}} дня",
+  "progressCards.streak.nextMilestone.many": "Следующая веха — {{count}} дней",
+  "progressCards.streak.nextMilestone.other": "Следующая веха — {{count}} дней",
   "progressCards.streak.daysFromThere": "{{days}} дней с этой точки",
+  "progressCards.streak.daysFromThere.one": "ещё {{count}} день",
+  "progressCards.streak.daysFromThere.few": "ещё {{count}} дня",
+  "progressCards.streak.daysFromThere.many": "ещё {{count}} дней",
+  "progressCards.streak.daysFromThere.other": "ещё {{count}} дней",
   "progressCards.spending.heading": "Расходы за месяц",
   "progressCards.spending.spentThisMonth": "Потрачено в этом месяце",
   "progressCards.spending.potentialSavings": "Возможная экономия",
@@ -266,9 +282,9 @@
   },
 
   "marketing": {
-    "tagline": "Без рекламы. Без аналитики. С квитанцией доверия.",
-    "shortTagline": "Без рекламы. Без аналитики. Ваше.",
-    "moatLine": "Криптографически мы не можем прочитать то, что вы записываете."
+    "tagline": "Без рекламы. Без аналитики. Открытый код.",
+    "shortTagline": "Без рекламы. Без аналитики. Только ваше.",
+    "moatLine": "Шифрование устроено так, что мы не можем прочитать ваши записи."
   },
 
   "diagnostics": {
@@ -290,7 +306,7 @@
   "settings": {
     "privacy": {
       "heading": "Приватность и данные",
-      "tagline": "Без рекламы. Без аналитики. С квитанцией доверия.",
+      "tagline": "Без рекламы. Без аналитики. Открытый код.",
       "subtitle": "Три места, где это контролируется. Сгруппированы здесь, чтобы это было одно решение вместо трёх."
     }
   },
@@ -344,8 +360,8 @@
   "funnel": {
     "title": "Воронка введения",
     "empty": "Попыток ещё не записано. Очистите данные и пройдите введение, чтобы заполнить.",
-    "subtitleOne": "Локальные счётчики по {{n}} попытке. Никогда не передаются.",
-    "subtitleMany": "Локальные счётчики по {{n}} попыткам. Никогда не передаются.",
+    "subtitleOne": "Локальные счётчики за {{n}} попытку. Никогда не передаются.",
+    "subtitleMany": "Локальные счётчики за {{n}} попыток. Никогда не передаются.",
     "attempts": "Попытки",
     "completed": "Завершено",
     "completion": "Завершение",
@@ -385,7 +401,7 @@
   "medicalDisclaimer": {
     "title": "Важное медицинское уведомление",
     "content": "Alchohalt — личный инструмент отслеживания и не предоставляет медицинских советов, диагнозов или лечения. Это приложение не заменяет профессиональную медицинскую помощь.",
-    "emergency": "Если вы в неотложной медицинской ситуации или нуждаетесь в срочной помощи с употреблением веществ — немедленно свяжитесь со скорой помощью или медицинским специалистом. На вкладке Crisis есть прямые номера."
+    "emergency": "Если вы в неотложной ситуации или вам срочно нужна помощь с употреблением — немедленно позвоните 112 или обратитесь к врачу. На вкладке «Кризис» есть прямые номера."
   },
 
   "privacy": {

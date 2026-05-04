@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../i18n';
+import { pluralCount } from '../../i18n/plural';
 import type { Goals } from '../../types/common';
 import type { ProgressData } from './progressMath';
 
@@ -112,11 +113,28 @@ export function GoalProgressCard({ data, goals }: { data: ProgressData; goals: G
  * [R23-A] Localized to en/es/fr/de/pl/ru via progressCards.streak.* keys.
  */
 export function StreakMilestoneCard({ data }: { data: ProgressData }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { current, next, progress } = data.streakMilestones;
   const gap = Math.max(0, next - current);
-  const nextMilestoneText = t('progressCards.streak.nextMilestone').replace('{{days}}', String(next));
-  const gapText = t('progressCards.streak.daysFromThere').replace('{{days}}', String(gap));
+  /* [R24-A] Routed through pluralCount so pl/ru render the correct
+   * Slavic plural form for 1 / 2-4 / 5+. en/de/es/fr keep .one|.other
+   * via the existing parity. The fallback strings preserve pre-R24
+   * wording so tests that string-match continue to pass when the
+   * plural key happens to be missing in a future locale. */
+  const nextMilestoneText = pluralCount(
+    t,
+    lang,
+    'progressCards.streak.nextMilestone',
+    next,
+    `Next milestone at ${next} days`,
+  );
+  const gapText = pluralCount(
+    t,
+    lang,
+    'progressCards.streak.daysFromThere',
+    gap,
+    `${gap} days from there`,
+  );
   return (
     <div className="card">
       <div className="card-header">
