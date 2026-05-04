@@ -11,6 +11,11 @@ import { REGISTRY } from '../experiments/registry';
 import { readExposures, getDeviceBucket, assignVariant } from '../experiments/bucket';
 import { computeStorageUsage, formatBytes, type StorageUsage } from '../../lib/storage/usage';
 import { bucketForScore, type NpsResponse } from '../nps/nps';
+import {
+  summarizeSatisfaction,
+  totalSatisfactionCount,
+  type SatisfactionSignal,
+} from '../satisfaction/satisfaction';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -434,6 +439,54 @@ function NpsFieldset() {
   );
 }
 
+function SatisfactionFieldset() {
+  /* [R26-1] Per-surface real-time satisfaction signal. Renders the
+   * full surface list even at 0 responses so the owner can confirm
+   * the feature exists and stores nothing off-device. */
+  const signals = useDB((s) => s.db.settings.satisfactionSignals) as
+    | SatisfactionSignal[]
+    | undefined;
+  const total = totalSatisfactionCount(signals);
+  const tallies = summarizeSatisfaction(signals);
+
+  return (
+    <fieldset className={FIELDSET_CLASS}>
+      <legend className={LEGEND_CLASS}>Satisfaction signals</legend>
+      {total === 0 ? (
+        <dl className={GRID_CLASS}>
+          <AuditRow
+            label="Responses"
+            value="none yet"
+            testid="audit-satisfaction-count"
+          />
+        </dl>
+      ) : (
+        <dl className={GRID_CLASS}>
+          <AuditRow
+            label="Total responses"
+            value={String(total)}
+            testid="audit-satisfaction-count"
+          />
+          {tallies
+            .filter((t) => t.up + t.down > 0)
+            .map((t) => (
+              <AuditRow
+                key={t.surface}
+                label={t.surface}
+                value={`${t.up} up · ${t.down} down`}
+                testid={`audit-satisfaction-${t.surface}`}
+              />
+            ))}
+        </dl>
+      )}
+      <p className="text-xs text-ink-subtle">
+        Stays on this device. The chip surfaces after you use a surface
+        and suppresses for 14 days once you respond or dismiss.
+      </p>
+    </fieldset>
+  );
+}
+
 export default function DiagnosticsAudit() {
   return (
     <section
@@ -463,6 +516,7 @@ export default function DiagnosticsAudit() {
         <BackupFieldset />
         <ExperimentsFieldset />
         <NpsFieldset />
+        <SatisfactionFieldset />
       </div>
     </section>
   );
