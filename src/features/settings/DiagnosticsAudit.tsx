@@ -10,6 +10,7 @@ import {
 import { REGISTRY } from '../experiments/registry';
 import { readExposures, getDeviceBucket, assignVariant } from '../experiments/bucket';
 import { computeStorageUsage, formatBytes, type StorageUsage } from '../../lib/storage/usage';
+import { bucketForScore, type NpsResponse } from '../nps/nps';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -365,6 +366,74 @@ function ExperimentsFieldset() {
   );
 }
 
+function NpsFieldset() {
+  /* [R24-3] On-device NPS pulse history — owner-readable summary
+   * with mean score, last response timestamp, and bucket counts.
+   * Renders an empty-state when there are no responses yet so the
+   * fieldset stays visible and the user can confirm the feature
+   * exists and stores nothing off-device. */
+  const responses: NpsResponse[] = useDB((s) => s.db.settings.npsResponses ?? []);
+  const dismissedAt = useDB((s) => s.db.settings.npsDismissedAt);
+
+  if (responses.length === 0) {
+    return (
+      <fieldset className={FIELDSET_CLASS}>
+        <legend className={LEGEND_CLASS}>NPS pulse</legend>
+        <dl className={GRID_CLASS}>
+          <AuditRow label="Responses" value="none yet" testid="audit-nps-count" />
+          <AuditRow
+            label="Last skip"
+            value={dismissedAt ? new Date(dismissedAt).toLocaleString() : '—'}
+            testid="audit-nps-skip"
+          />
+        </dl>
+        <p className="text-xs text-ink-subtle">
+          Stays on this device. Surfaces every 30 days after at least 14
+          days of usage. Skipping counts as a 30-day suppression.
+        </p>
+      </fieldset>
+    );
+  }
+
+  const total = responses.length;
+  const mean = responses.reduce((s, r) => s + r.score, 0) / total;
+  const buckets = { detractor: 0, passive: 0, promoter: 0 };
+  for (const r of responses) buckets[bucketForScore(r.score)]++;
+  const last = responses.reduce((a, b) => (a.ts > b.ts ? a : b));
+
+  return (
+    <fieldset className={FIELDSET_CLASS}>
+      <legend className={LEGEND_CLASS}>NPS pulse</legend>
+      <dl className={GRID_CLASS}>
+        <AuditRow
+          label="Responses"
+          value={`${total} (mean ${mean.toFixed(1)})`}
+          testid="audit-nps-count"
+        />
+        <AuditRow
+          label="Last response"
+          value={`${new Date(last.ts).toLocaleString()} → ${last.score}`}
+          testid="audit-nps-last"
+        />
+        <AuditRow
+          label="Buckets"
+          value={`${buckets.promoter} promoter · ${buckets.passive} passive · ${buckets.detractor} detractor`}
+          testid="audit-nps-buckets"
+        />
+        <AuditRow
+          label="Last skip"
+          value={dismissedAt ? new Date(dismissedAt).toLocaleString() : '—'}
+          testid="audit-nps-skip"
+        />
+      </dl>
+      <p className="text-xs text-ink-subtle">
+        Stays on this device. Reasons (when given) are visible only when
+        you export your data; this audit shows the score and bucket only.
+      </p>
+    </fieldset>
+  );
+}
+
 export default function DiagnosticsAudit() {
   return (
     <section
@@ -393,6 +462,7 @@ export default function DiagnosticsAudit() {
         <StorageFieldset />
         <BackupFieldset />
         <ExperimentsFieldset />
+        <NpsFieldset />
       </div>
     </section>
   );

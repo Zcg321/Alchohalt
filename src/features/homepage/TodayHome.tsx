@@ -24,7 +24,7 @@
  *   - Levels / Points gamification (gone for now; full strip in `[IA-5]`)
  */
 
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import type { Drink, DrinkPreset, Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
 import ErrorBoundary from '../../components/ErrorBoundary';
@@ -33,6 +33,8 @@ import LongTermActivityRibbon from './LongTermActivityRibbon';
 import FirstMonthRibbon from './FirstMonthRibbon';
 import { Disclaimer } from '../../components/Disclaimer';
 import { useDB } from '../../store/db';
+import NpsPulseBanner from '../nps/NpsPulseBanner';
+import { shouldShowNpsPrompt } from '../nps/nps';
 
 const DrinkForm = React.lazy(() => import('../drinks/DrinkForm'));
 const EnhancedMoodTracker = React.lazy(() => import('../mood/EnhancedMoodTracker'));
@@ -192,6 +194,29 @@ export default function TodayHome({
   const quiet = useQuietMode();
   useIdlePrefetch();
 
+  /* [R24-3] On-device NPS pulse. Surfaces below the panel for users
+   * with ≥ 14 days of usage, every 30 days. Hidden in quiet mode —
+   * a user who flagged "I'm not okay right now" should not be asked
+   * how likely they are to recommend the app. The banner unmounts
+   * itself via onResolved by stamping settings; the gate function
+   * re-runs and returns false on next render. */
+  const npsResponses = useDB((s) => s.db.settings.npsResponses);
+  const npsDismissedAt = useDB((s) => s.db.settings.npsDismissedAt);
+  const firstEntryTs = useMemo(
+    () => (drinks.length === 0 ? undefined : Math.min(...drinks.map((d) => d.ts))),
+    [drinks],
+  );
+  const [npsResolvedAt, setNpsResolvedAt] = useState<number>(0);
+  const showNps =
+    !quiet &&
+    npsResolvedAt === 0 &&
+    shouldShowNpsPrompt({
+      firstEntryTs,
+      responses: npsResponses,
+      dismissedAt: npsDismissedAt,
+      now: Date.now(),
+    });
+
   // If the parent flips into edit mode, surface the log form so the
   // user can see the entry they're editing.
   React.useEffect(() => {
@@ -247,6 +272,12 @@ export default function TodayHome({
           <LongTermActivityRibbon drinks={drinks} goals={goals} className="mt-3" />
           <FirstMonthRibbon drinks={drinks} className="mt-3" />
         </>
+      ) : null}
+
+      {showNps ? (
+        <div className="mx-auto w-full max-w-3xl px-4 mt-3">
+          <NpsPulseBanner onResolved={() => setNpsResolvedAt(Date.now())} />
+        </div>
       ) : null}
 
       {!quiet && surface === 'log' ? (
