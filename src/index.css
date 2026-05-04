@@ -535,11 +535,61 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   .slide-up,
   .slide-down,
   .scale-up,
   .fade-in {
     animation: none;
+  }
+}
+
+/* [R22-B] Landscape-phone viewport rules.
+ *
+ * Phones held in landscape have very limited vertical real estate
+ * (iPhone SE: 320px, Pixel 6: 393px, iPhone 14: 428px). The default
+ * mobile bottom-nav (icon + label + active-state underline + py-2 +
+ * safe-bottom) measures ~64-72px — that's 18-22% of the viewport
+ * before browser chrome and the OS status bar.
+ *
+ * The orientation+max-height media query targets phones held sideways
+ * (and small handheld Android tablets in landscape) without affecting
+ * iPad landscape (iPad mini ≈ 768px height in landscape, well above
+ * the 500px cap).
+ *
+ * Constraints honored:
+ *   - 44pt touch target preserved: each tab cell stays ≥ 44px tall via
+ *     the grid-cols-5 width (~110px on a 568px viewport > 44pt) plus
+ *     min 44px height (icon 20 + label 12 + py-1 8 + line 4 = 44).
+ *   - Labels stay visible (icons-only is hostile for first-time users).
+ *   - Modals get dvh caps so the on-screen-keyboard doesn't push the
+ *     submit button below the safe area.
+ */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Tighten bottom-nav vertical padding while keeping the 44pt target. */
+  nav[aria-label="Primary (mobile)"] [role="tablist"] > button {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    min-height: 44px;
+  }
+  /* Drop the active-state underline element height — it consumes 6px
+   * for purely decorative emphasis. The text-color shift already
+   * communicates active-tab state; the WCAG indicator stays via the
+   * focus-visible outline ring. */
+  nav[aria-label="Primary (mobile)"] [role="tablist"] > button > span:last-child {
+    margin-top: 0;
+    height: 0;
+  }
+  /* Modal cards use dvh so the value tracks browser-chrome show/hide. */
+  [role="dialog"] > .card,
+  [role="dialog"] > div > .card {
+    max-height: 92dvh;
+  }
+  /* The Home-tab hero "Day N" headline is text-6xl by default; at
+   * 320px tall it dominates the screen. Compress to a still-readable
+   * size that leaves room for the day's actions. */
+  [data-testid="hero-day-number"] {
+    font-size: 2.5rem;
+    line-height: 1.1;
   }
 }

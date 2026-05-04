@@ -131,6 +131,7 @@ function HeroBlock({
         className="stat-num text-display sm:text-display text-ink mt-2 leading-none"
         aria-live="polite"
         aria-label={`Day ${dayCount}`}
+        data-testid="hero-day-number"
       >
         {statusKind === 'starting' ? 'Day 0' : `Day ${dayCount}`}
       </p>
