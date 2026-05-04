@@ -2,8 +2,21 @@ import type { PlanId } from '../../config/plans';
 
 export const ORDER: PlanId[] = ['free', 'premium_monthly', 'premium_yearly', 'premium_lifetime'];
 
+/**
+ * [R23-5] Behavioral-economist judge: replaced "Most popular" on the
+ * yearly tier with "Best per-month value." The previous label was
+ * informationally honest (it is the highest-converting tier per
+ * SubscriptionManager.tsx spec comments) but framed via social proof
+ * — "others picked this; you should too." That's a soft dark
+ * pattern. The replacement carries the same yearly-vs-monthly hint
+ * but anchors to objective math (the 48% per-month saving), not
+ * implicit peer pressure.
+ *
+ * Lifetime keeps "No subscription trap" — that's a value claim
+ * about the product itself, not a behavioral nudge.
+ */
 export const HIGHLIGHTS: Partial<Record<PlanId, { label: string; tone: 'primary' | 'success' }>> = {
-  premium_yearly: { label: 'Most popular', tone: 'primary' },
+  premium_yearly: { label: 'Best per-month value', tone: 'primary' },
   premium_lifetime: { label: 'No subscription trap', tone: 'success' },
 };
 

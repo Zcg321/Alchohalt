@@ -45,7 +45,34 @@ export default function InsightsTab({ drinks, goals }: Props) {
         <header className="text-center mb-8">
           <h2 className="text-h2 text-ink">Insights</h2>
         </header>
-        <div className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center">
+        <div
+          className="rounded-2xl border border-border-soft bg-surface-elevated p-card text-center"
+          data-testid="insights-empty-state"
+        >
+          {/* [R23-4] Calm empty-state illustration: a quiet horizontal
+              axis with three muted markers where bars would appear once
+              the user has data. No faces, no exclamation, no
+              cheerleader voice — observation, on-brand sage palette,
+              decorative only. */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 240 90"
+            className="mx-auto mb-4 w-32 text-sage-500/60 dark:text-sage-400/60"
+          >
+            <line x1="20" y1="70" x2="220" y2="70" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="60" cy="55" r="3" fill="currentColor" opacity="0.5" />
+            <circle cx="120" cy="40" r="3" fill="currentColor" opacity="0.7" />
+            <circle cx="180" cy="50" r="3" fill="currentColor" opacity="0.5" />
+            <path
+              d="M60 55 Q90 47 120 40 T180 50"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeDasharray="3 5"
+              strokeLinecap="round"
+              fill="none"
+              opacity="0.4"
+            />
+          </svg>
           <p className="text-body text-ink">Nothing to chart yet.</p>
           <p className="mt-1 text-caption text-ink-soft">Add a few entries on the Track tab and your trends will show up here.</p>
         </div>

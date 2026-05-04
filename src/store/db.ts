@@ -35,7 +35,14 @@ export type HALT = { H:boolean; A:boolean; L:boolean; T:boolean };
  */
 export interface OnboardingDiagnostics {
   status: 'not-started' | 'completed' | 'skipped';
-  intent?: 'cut-back' | 'quit' | 'curious' | undefined;
+  /**
+   * [R23-C] 'undecided' is a deliberate non-decision — the user opted
+   * to continue without committing on Day 0. Distinct from `undefined`
+   * (no answer recorded) and from skipping the flow entirely. Surfaces
+   * in Diagnostics with a "Decide later" label and unlocks revision
+   * via IntentRevisionModal.
+   */
+  intent?: 'cut-back' | 'quit' | 'curious' | 'undecided' | undefined;
   trackStyle?: 'day-by-day' | 'thirty-day' | 'custom' | undefined;
   completedAt?: number | undefined;
   skipPath?: 'x-button' | 'escape' | 'backdrop' | 'skip-explore' | 'just-looking' | undefined;
@@ -212,6 +219,22 @@ export interface Settings {
    * and what's not.
    */
   crashReportsEnabled?: boolean | undefined;
+  /**
+   * [R23-D] Drink-form mode preference.
+   *
+   *   'detailed' (default; undefined === 'detailed' for back-compat) —
+   *     full DrinkForm with chips + datetime + progressive disclosure
+   *     for volume/ABV and HALT/intention/craving. Round 22 default.
+   *
+   *   'quick' — three large tap-to-log chips above the form. Tapping
+   *     a chip records a default-volume / default-ABV drink at the
+   *     current time without expanding any modal. The full form
+   *     stays accessible via "Need more detail?" disclosure.
+   *
+   * The toggle lives in Settings → Appearance. Per-user preference,
+   * persists across reloads via the standard settings store.
+   */
+  drinkLogMode?: 'quick' | 'detailed' | undefined;
 }
 
 export interface Entry {

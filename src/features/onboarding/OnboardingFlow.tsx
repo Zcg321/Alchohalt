@@ -31,13 +31,17 @@ import { useExperiment } from '../experiments/useExperiment';
  * parade. No exclamation marks. Sentence case throughout.
  */
 
-type Intent = 'cut-back' | 'quit' | 'curious';
+type Intent = 'cut-back' | 'quit' | 'curious' | 'undecided';
 type TrackStyle = 'day-by-day' | 'thirty-day' | 'custom';
 
 interface BeatOneProps {
   onChoose: (intent: Intent) => void;
   onJustLooking: () => void;
   justLookingLabel: string;
+  /** [R23-C] Tertiary "Decide later" label — distinct from the just-looking
+   * skip path because it advances the flow + records intent='undecided'
+   * rather than dismissing the modal. */
+  decideLaterLabel: string;
   /** [R15-B] Variant from the onboarding-chip-copy-2026Q2 experiment. */
   chipVariant: string | null;
 }
@@ -45,12 +49,18 @@ interface BeatOneProps {
  * variant. The intent IDs ('cut-back', 'quit', 'curious') are stable
  * so the downstream OnboardingDiagnostics record stays consistent
  * across variants — only the human-facing label changes. */
-const CHIP_LABELS_CONTROL: Readonly<Record<Intent, string>> = {
+/* [R23-C] The three primary chips remain cut-back / quit / curious;
+ * 'undecided' is rendered separately as a tertiary chip with its own
+ * label. Keeping the label sets focused on the three primaries
+ * preserves the experiment variants without introducing a 4th label
+ * column nobody is testing. */
+type PrimaryIntent = Exclude<Intent, 'undecided'>;
+const CHIP_LABELS_CONTROL: Readonly<Record<PrimaryIntent, string>> = {
   'cut-back': 'Trying to drink less',
   quit: 'Trying to stop',
   curious: 'Not sure yet',
 };
-const CHIP_LABELS_FIRST_PERSON: Readonly<Record<Intent, string>> = {
+const CHIP_LABELS_FIRST_PERSON: Readonly<Record<PrimaryIntent, string>> = {
   'cut-back': 'I want to drink less',
   quit: "I'm stopping for now",
   curious: "I'm here to learn",
@@ -59,17 +69,17 @@ const CHIP_LABELS_FIRST_PERSON: Readonly<Record<Intent, string>> = {
  * restores the hedge of "trying" / "pausing" / "looking" so the chips
  * read as observation of a current attempt rather than a declaration
  * of intent. */
-const CHIP_LABELS_FIRST_PERSON_TRYING: Readonly<Record<Intent, string>> = {
+const CHIP_LABELS_FIRST_PERSON_TRYING: Readonly<Record<PrimaryIntent, string>> = {
   'cut-back': "I'm trying to drink less",
   quit: "I'm pausing alcohol for now",
   curious: "I'm just looking around",
 };
-function chipLabelFor(variant: string | null, intent: Intent): string {
+function chipLabelFor(variant: string | null, intent: PrimaryIntent): string {
   if (variant === 'first-person') return CHIP_LABELS_FIRST_PERSON[intent];
   if (variant === 'first-person-trying') return CHIP_LABELS_FIRST_PERSON_TRYING[intent];
   return CHIP_LABELS_CONTROL[intent];
 }
-function BeatOne({ onChoose, onJustLooking, justLookingLabel, chipVariant }: BeatOneProps) {
+function BeatOne({ onChoose, onJustLooking, justLookingLabel, decideLaterLabel, chipVariant }: BeatOneProps) {
   /* [ONBOARDING-ROUND-4] Half-second pause before chips appear. The
    * user just opened the app on Day 0 — let the question land before
    * the answer prompts crowd in. The chips fade in via the existing
@@ -108,6 +118,21 @@ function BeatOne({ onChoose, onJustLooking, justLookingLabel, chipVariant }: Bea
               </button>
             ))}
           </div>
+          {/* [R23-C] Tertiary "Decide later" chip. Visually subdued
+              (dashed border, no fill) so it reads as a non-decision,
+              not a fourth equal option. Records intent='undecided'
+              and ADVANCES to step 1 — distinct from the just-looking
+              link below which dismisses the modal. */}
+          <div className="mt-3 motion-safe:animate-fade-in">
+            <button
+              type="button"
+              onClick={() => onChoose('undecided')}
+              data-testid="onboarding-chip-undecided"
+              className="w-full rounded-2xl border border-dashed border-neutral-300/80 bg-transparent px-5 py-3 text-start text-sm font-medium text-neutral-600 hover:bg-neutral-50/60 hover:border-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-600/70 dark:text-neutral-300 dark:hover:bg-neutral-800/40 transition-colors min-h-[44px]"
+            >
+              {decideLaterLabel}
+            </button>
+          </div>
           {/* [R9-T2] Tertiary skip-ahead. Distinct from the bottom "Skip and
               explore" so we can tell from local Diagnostics whether users
               jump straight in or pick a chip first. */}
@@ -124,9 +149,10 @@ function BeatOne({ onChoose, onJustLooking, justLookingLabel, chipVariant }: Bea
         </>
       ) : (
         /* Reserved-space placeholder so the dialog doesn't reflow when
-         * the chips arrive. Three rows × 56px (button + gap) plus the
-         * R9-T2 tertiary skip row. */
-        <div aria-hidden className="mt-5 h-[200px]" />
+         * the chips arrive. Three primary chips × 56px + tertiary
+         * Decide-later chip × 52px + just-looking link row.
+         * [R23-C] Bumped from 200 → 252px to fit the new chip. */
+        <div aria-hidden className="mt-5 h-[252px]" />
       )}
     </>
   );
@@ -352,6 +378,7 @@ export default function OnboardingFlow() {
               onChoose={(i) => { setIntent(i); setStep(1); }}
               onJustLooking={() => skip('just-looking')}
               justLookingLabel={t('onboarding.justLooking', "I'm just looking")}
+              decideLaterLabel={t('onboarding.decideLater', 'Decide later')}
               chipVariant={chipVariant}
             />
           )}

@@ -88,3 +88,32 @@ describe('[R19-5+] existing security header set is intact', () => {
     expect(csp).toContain("script-src 'self'");
   });
 });
+
+describe('[R23-E] CSP Level 3 style-src split', () => {
+  /* The split lets us keep 'unsafe-inline' on style-src-attr (where
+   * React's style={} prop forces it on every progress bar) while
+   * locking style-src-elem to 'self' + the hashed splash. Browsers
+   * supporting Level 3 (Chrome 90+, Firefox 109+, Safari 15.4+) honor
+   * the split; older browsers fall back to style-src. The hash for
+   * the splash <style> is the same in both directives. */
+  const csp = globalHeaders.get('Content-Security-Policy') ?? '';
+
+  it('style-src-elem locks down to self + the hashed splash inline <style>', () => {
+    expect(csp).toContain("style-src-elem 'self' 'sha256-");
+  });
+
+  it('style-src-elem does NOT include unsafe-inline (the whole point)', () => {
+    const elemDirective = /style-src-elem [^;]*/.exec(csp)?.[0] ?? '';
+    expect(elemDirective).not.toContain("'unsafe-inline'");
+  });
+
+  it("style-src-attr keeps 'unsafe-inline' for React's style={} prop", () => {
+    expect(csp).toContain("style-src-attr 'unsafe-inline'");
+  });
+
+  it('style-src fallback retains unsafe-inline for old browsers', () => {
+    /* The fallback is unchanged from R20-A so older browsers (which
+     * ignore style-src-elem/attr) keep the same posture as before. */
+    expect(csp).toMatch(/style-src 'self' 'unsafe-inline' 'sha256-/);
+  });
+});

@@ -4,6 +4,7 @@ import type { Theme, Language } from '../../store/db';
 import { Button } from '../../components/ui/Button';
 import { Skeleton } from '../../components/ui/Skeleton';
 import DevTools from './DevTools';
+import SettingsJumpNav from './SettingsJumpNav';
 import SelfExperimentDashboard from './SelfExperimentDashboard';
 import BackupVerifier from '../backup/BackupVerifier';
 import NotificationsSettings from './NotificationsSettings';
@@ -95,6 +96,29 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
           </select>
           <p className="text-xs text-neutral-600 dark:text-neutral-400">
             Picks the grams-of-ethanol-per-standard-drink your country uses. Affects every count the app shows.
+          </p>
+        </div>
+        {/* [R23-D] Quick-log toggle. Default 'detailed' (current
+            workflow). 'quick' surfaces 3 tap-to-log chips above the
+            form for users who want one-tap logging. */}
+        <div className="space-y-1 mt-4" id="drink-log-mode">
+          <label className="label" htmlFor="drink-log-mode-select">Drink-log style</label>
+          <select
+            id="drink-log-mode-select"
+            aria-label="Drink-log style"
+            data-testid="drink-log-mode-select"
+            value={settings.drinkLogMode ?? 'detailed'}
+            onChange={(e) => {
+              setSettings({ drinkLogMode: e.target.value as 'quick' | 'detailed' });
+              hapticForEvent('settings-toggle');
+            }}
+            className="input cursor-pointer"
+          >
+            <option value="detailed">Detailed form</option>
+            <option value="quick">Quick log (1-tap chips)</option>
+          </select>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
+            Quick mode shows three tap-to-log chips above the form. The full form stays one tap away.
           </p>
         </div>
       </div>
@@ -221,6 +245,7 @@ export default function SettingsPanel() {
   }));
   return (
     <div className="space-y-6">
+      <SettingsJumpNav />
       <AppearanceSection settings={settings} setTheme={setTheme} setLanguage={setLanguage} setSettings={setSettings} />
       <RemindersSection settings={settings} setRemindersEnabled={setRemindersEnabled} setReminderTimes={setReminderTimes} />
       <PrivacyAndDataSection />

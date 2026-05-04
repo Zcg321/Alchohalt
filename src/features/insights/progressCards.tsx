@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../../i18n';
 import type { Goals } from '../../types/common';
 import type { ProgressData } from './progressMath';
 
@@ -52,32 +53,33 @@ function GoalRow({
 }
 
 export function GoalProgressCard({ data, goals }: { data: ProgressData; goals: Goals }) {
+  const { t } = useLanguage();
   return (
     <div className="card">
       <div className="card-header">
-        <h2 className="text-xl font-semibold">Goal Progress</h2>
+        <h2 className="text-xl font-semibold">{t('progressCards.goalProgress.heading')}</h2>
       </div>
       <div className="card-content space-y-6">
         <div>
           <GoalRow
-            label="Daily limit"
+            label={t('progressCards.goalProgress.dailyLabel')}
             percent={data.dailyProgress}
             goalValue={goals.dailyCap}
-            unitLabel="drinks remaining"
-            overUnitLabel="drinks over today's limit"
+            unitLabel={t('progressCards.goalProgress.dailyUnit')}
+            overUnitLabel={t('progressCards.goalProgress.dailyOverUnit')}
             palette="green"
-            emptyHint="Set a daily limit in Settings to track progress."
+            emptyHint={t('progressCards.goalProgress.dailyEmpty')}
           />
         </div>
         <div>
           <GoalRow
-            label="Weekly goal"
+            label={t('progressCards.goalProgress.weeklyLabel')}
             percent={data.weeklyProgress}
             goalValue={goals.weeklyGoal}
-            unitLabel="drinks remaining this week"
-            overUnitLabel="drinks over this week's goal"
+            unitLabel={t('progressCards.goalProgress.weeklyUnit')}
+            overUnitLabel={t('progressCards.goalProgress.weeklyOverUnit')}
             palette="blue"
-            emptyHint="Set a weekly goal in Settings to track progress."
+            emptyHint={t('progressCards.goalProgress.weeklyEmpty')}
           />
         </div>
       </div>
@@ -106,23 +108,28 @@ export function GoalProgressCard({ data, goals }: { data: ProgressData; goals: G
  * The milestone date entries in features/milestones/Milestones.tsx
  * already pass the observation test (subtitles like "A year. Pause
  * and let that land." — observation, not earned-badge).
+ *
+ * [R23-A] Localized to en/es/fr/de/pl/ru via progressCards.streak.* keys.
  */
 export function StreakMilestoneCard({ data }: { data: ProgressData }) {
+  const { t } = useLanguage();
   const { current, next, progress } = data.streakMilestones;
   const gap = Math.max(0, next - current);
+  const nextMilestoneText = t('progressCards.streak.nextMilestone').replace('{{days}}', String(next));
+  const gapText = t('progressCards.streak.daysFromThere').replace('{{days}}', String(gap));
   return (
     <div className="card">
       <div className="card-header">
-        <h2 className="text-xl font-semibold">Current alcohol-free streak</h2>
+        <h2 className="text-xl font-semibold">{t('progressCards.streak.heading')}</h2>
       </div>
       <div className="card-content">
         <div className="text-center mb-4">
           <div className="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">{current}</div>
-          <div className="text-sm text-ink-soft">Days alcohol-free</div>
+          <div className="text-sm text-ink-soft">{t('progressCards.streak.daysLabel')}</div>
         </div>
         <div className="mb-2">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm">Next milestone at {next} days</span>
+            <span className="text-sm">{nextMilestoneText}</span>
             <span className="text-sm text-ink-soft">{Math.round(progress)}%</span>
           </div>
           <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-2">
@@ -132,7 +139,7 @@ export function StreakMilestoneCard({ data }: { data: ProgressData }) {
             />
           </div>
         </div>
-        <div className="text-xs text-center text-ink-subtle">{gap} days from there</div>
+        <div className="text-xs text-center text-ink-subtle">{gapText}</div>
       </div>
     </div>
   );
@@ -145,27 +152,28 @@ function budgetBarColor(actual: number, budget: number): string {
 }
 
 export function MonthlySpendingCard({ data }: { data: ProgressData }) {
+  const { t } = useLanguage();
   const { actual, budget, savings } = data.monthlySpending;
   return (
     <div className="card">
       <div className="card-header">
-        <h2 className="text-xl font-semibold">Monthly Spending</h2>
+        <h2 className="text-xl font-semibold">{t('progressCards.spending.heading')}</h2>
       </div>
       <div className="card-content">
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="text-center">
             <div className="text-2xl font-bold text-ink">${actual.toFixed(0)}</div>
-            <div className="text-sm text-ink-soft">Spent this month</div>
+            <div className="text-sm text-ink-soft">{t('progressCards.spending.spentThisMonth')}</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600 dark:text-green-400">${savings.toFixed(0)}</div>
-            <div className="text-sm text-ink-soft">Potential savings</div>
+            <div className="text-sm text-ink-soft">{t('progressCards.spending.potentialSavings')}</div>
           </div>
         </div>
         {budget > 0 ? (
           <div className="relative">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm">Budget usage</span>
+              <span className="text-sm">{t('progressCards.spending.budgetUsage')}</span>
               <span className="text-sm text-ink-soft stat-num">{((actual / budget) * 100).toFixed(0)}%</span>
             </div>
             <div className="w-full bg-cream-100 dark:bg-charcoal-700 rounded-full h-3">
@@ -176,7 +184,7 @@ export function MonthlySpendingCard({ data }: { data: ProgressData }) {
             </div>
           </div>
         ) : (
-          <p className="text-xs text-ink-subtle">Set a monthly budget in Settings to track usage.</p>
+          <p className="text-xs text-ink-subtle">{t('progressCards.spending.empty')}</p>
         )}
       </div>
     </div>
@@ -196,23 +204,25 @@ const TREND_COLOR: Record<ProgressData['healthMetrics']['improvementTrend'], str
 };
 
 export function HealthInsightsCard({ data }: { data: ProgressData }) {
+  const { t } = useLanguage();
   const { alcoholFreeDays, averageCraving, improvementTrend } = data.healthMetrics;
+  const trendKey = `progressCards.health.trend.${improvementTrend}`;
   return (
     <div className="card">
       <div className="card-header">
-        <h2 className="text-xl font-semibold">Health Insights</h2>
+        <h2 className="text-xl font-semibold">{t('progressCards.health.heading')}</h2>
       </div>
       <div className="card-content">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">{alcoholFreeDays}</div>
-            <div className="text-sm text-ink-soft">AF days this month</div>
+            <div className="text-sm text-ink-soft">{t('progressCards.health.afDaysThisMonth')}</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
               {averageCraving.toFixed(1)}
             </div>
-            <div className="text-sm text-ink-soft">Avg. craving level</div>
+            <div className="text-sm text-ink-soft">{t('progressCards.health.avgCraving')}</div>
           </div>
           <div className="text-center">
             <div className={`text-2xl font-bold mb-1 ${TREND_COLOR[improvementTrend]}`} aria-hidden="true">
@@ -221,9 +231,10 @@ export function HealthInsightsCard({ data }: { data: ProgressData }) {
             {/* [R21-5] SR-only label so the trend value isn't lost behind
               * aria-hidden on the icon. Sighted users see the arrow + the
               * "Overall trend" caption below; SR users now hear the
-              * direction word + the trend label. */}
-            <span className="sr-only">{improvementTrend}</span>
-            <div className="text-sm text-ink-soft">Overall trend</div>
+              * direction word + the trend label.
+              * [R23-A] Trend label localized via progressCards.health.trend.* keys. */}
+            <span className="sr-only">{t(trendKey)}</span>
+            <div className="text-sm text-ink-soft">{t('progressCards.health.overallTrend')}</div>
           </div>
         </div>
       </div>

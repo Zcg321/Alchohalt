@@ -16,7 +16,7 @@ import { useFocusTrap } from '../../hooks/useFocusTrap';
  *     (so the audit trail is preserved)
  */
 
-type Intent = 'cut-back' | 'quit' | 'curious';
+type Intent = 'cut-back' | 'quit' | 'curious' | 'undecided';
 
 interface Props {
   open: boolean;
@@ -111,6 +111,18 @@ export default function IntentRevisionModal({ open, onClose }: Props) {
               {label}
             </button>
           ))}
+          {/* [R23-C] Decide-later chip mirrors the onboarding step 1
+              tertiary so users can revert to a non-decision later
+              (e.g. they picked "cut-back" on Day 0 but want to step
+              back from a label). Visually subdued — same dashed style. */}
+          <button
+            type="button"
+            onClick={() => handleChoose('undecided')}
+            data-testid="intent-revision-undecided"
+            className="w-full rounded-2xl border border-dashed border-neutral-300/80 bg-transparent px-5 py-3 text-start text-sm font-medium text-neutral-600 hover:bg-neutral-50/60 hover:border-neutral-400 dark:border-neutral-600/70 dark:text-neutral-300 dark:hover:bg-neutral-800/40 transition-colors min-h-[44px]"
+          >
+            Decide later
+          </button>
         </div>
       </div>
     </div>

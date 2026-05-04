@@ -29,11 +29,21 @@
       splash CSS below as defense-in-depth so a hash-only browser
       still loads the splash.
 
+      [R23-E] CSP Level 3 split: style-src-elem and style-src-attr.
+      Modern browsers (Chrome 90+, Firefox 109+, Safari 15.4+) honor
+      style-src-elem for stylesheets + inline-element CSS blocks
+      separately from style-src-attr for inline style attributes on
+      individual elements. Splitting lets us keep 'unsafe-inline' on
+      the attribute side (where React forces it) while locking down
+      element-side stylesheet injection to 'self' + the hashed splash.
+      style-src is the fallback for old browsers; the new directives
+      override on browsers that support them.
+
       script-src is 'self' only — the inline loader-removal script
       was moved to main.tsx in R19-5 so no inline-script allowance is
       needed.
     -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 'sha256-TTRsBuJTnOt9ZjeMvTwC72vISJMYqLy+lmchqarbe1I='; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.ingest.sentry.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; worker-src 'self'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 'sha256-TTRsBuJTnOt9ZjeMvTwC72vISJMYqLy+lmchqarbe1I='; style-src-elem 'self' 'sha256-TTRsBuJTnOt9ZjeMvTwC72vISJMYqLy+lmchqarbe1I='; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https://*.supabase.in https://*.ingest.sentry.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; worker-src 'self'" />
 
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
