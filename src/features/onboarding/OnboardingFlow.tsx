@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+/* [R29-4] BeatOne no longer needs useState/useEffect — the chips
+ * render immediately. Imports kept for the rest of the file. */
 import { useDB } from '../../store/db';
 import type { OnboardingDiagnostics } from '../../store/db';
 import { useLanguage } from '../../i18n';
@@ -62,17 +64,24 @@ const CHIP_LABELS: Readonly<Record<PrimaryIntent, string>> = {
   curious: "I'm just looking around",
 };
 function BeatOne({ onChoose, onJustLooking, justLookingLabel, decideLaterLabel }: BeatOneProps) {
-  /* [ONBOARDING-ROUND-4] Half-second pause before chips appear. The
-   * user just opened the app on Day 0 — let the question land before
-   * the answer prompts crowd in. The chips fade in via the existing
-   * animate-fade-in keyframe. Reduced-motion users get an instant
-   * mount without the fade. */
-  const [showChips, setShowChips] = useState(false);
-  useEffect(() => {
-    const t = window.setTimeout(() => setShowChips(true), 500);
-    return () => window.clearTimeout(t);
-  }, []);
-
+  /* [R29-4] The chips render immediately and are tap-able from frame 1.
+   *
+   * Pre-R29 wired a 500ms setTimeout before the chips appeared
+   * ("[ONBOARDING-ROUND-4] half-second pause"). Two problems with
+   * that pattern:
+   *   1. A reduced-motion user *also* waited 500ms — the
+   *      `motion-safe:` class only suppressed the fade animation,
+   *      not the JS timer that gated the render. That's a bug for
+   *      the disability cohort.
+   *   2. From a perceived-performance lens, 500ms of "did the app
+   *      hang?" is exactly the window where first-launch users
+   *      abandon — well past the 100ms threshold where users
+   *      perceive an intentional pause vs a broken UI.
+   *
+   * The fade-in animation now runs on the chips themselves via the
+   * existing `motion-safe:animate-fade-in` keyframe — visual calm is
+   * preserved for users who don't have reduced-motion, and tap
+   * targets are live from the first paint. */
   return (
     <>
       <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
@@ -81,61 +90,51 @@ function BeatOne({ onChoose, onJustLooking, justLookingLabel, decideLaterLabel }
       <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
         Whatever you pick stays on your phone. You can change your mind anytime.
       </p>
-      {showChips ? (
-        <>
-          <div
-            className="mt-5 grid gap-2.5 motion-safe:animate-fade-in"
-            data-testid="onboarding-chip-row"
-            data-variant="first-person-trying"
+      <div
+        className="mt-5 grid gap-2.5 motion-safe:animate-fade-in"
+        data-testid="onboarding-chip-row"
+        data-variant="first-person-trying"
+      >
+        {(['cut-back', 'quit', 'curious'] as const).map((id) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onChoose(id)}
+            data-testid={`onboarding-chip-${id}`}
+            className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
           >
-            {(['cut-back', 'quit', 'curious'] as const).map((id) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => onChoose(id)}
-                data-testid={`onboarding-chip-${id}`}
-                className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
-              >
-                {CHIP_LABELS[id]}
-              </button>
-            ))}
-          </div>
-          {/* [R23-C] Tertiary "Decide later" chip. Visually subdued
-              (dashed border, no fill) so it reads as a non-decision,
-              not a fourth equal option. Records intent='undecided'
-              and ADVANCES to step 1 — distinct from the just-looking
-              link below which dismisses the modal. */}
-          <div className="mt-3 motion-safe:animate-fade-in">
-            <button
-              type="button"
-              onClick={() => onChoose('undecided')}
-              data-testid="onboarding-chip-undecided"
-              className="w-full rounded-2xl border border-dashed border-neutral-300/80 bg-transparent px-5 py-3 text-start text-sm font-medium text-neutral-600 hover:bg-neutral-50/60 hover:border-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-600/70 dark:text-neutral-300 dark:hover:bg-neutral-800/40 transition-colors min-h-[44px]"
-            >
-              {decideLaterLabel}
-            </button>
-          </div>
-          {/* [R9-T2] Tertiary skip-ahead. Distinct from the bottom "Skip and
-              explore" so we can tell from local Diagnostics whether users
-              jump straight in or pick a chip first. */}
-          <div className="mt-4 text-center motion-safe:animate-fade-in">
-            <button
-              type="button"
-              onClick={onJustLooking}
-              data-testid="onboarding-just-looking"
-              className="text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 rounded"
-            >
-              {justLookingLabel}
-            </button>
-          </div>
-        </>
-      ) : (
-        /* Reserved-space placeholder so the dialog doesn't reflow when
-         * the chips arrive. Three primary chips × 56px + tertiary
-         * Decide-later chip × 52px + just-looking link row.
-         * [R23-C] Bumped from 200 → 252px to fit the new chip. */
-        <div aria-hidden className="mt-5 h-[252px]" />
-      )}
+            {CHIP_LABELS[id]}
+          </button>
+        ))}
+      </div>
+      {/* [R23-C] Tertiary "Decide later" chip. Visually subdued
+          (dashed border, no fill) so it reads as a non-decision,
+          not a fourth equal option. Records intent='undecided'
+          and ADVANCES to step 1 — distinct from the just-looking
+          link below which dismisses the modal. */}
+      <div className="mt-3 motion-safe:animate-fade-in">
+        <button
+          type="button"
+          onClick={() => onChoose('undecided')}
+          data-testid="onboarding-chip-undecided"
+          className="w-full rounded-2xl border border-dashed border-neutral-300/80 bg-transparent px-5 py-3 text-start text-sm font-medium text-neutral-600 hover:bg-neutral-50/60 hover:border-neutral-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-600/70 dark:text-neutral-300 dark:hover:bg-neutral-800/40 transition-colors min-h-[44px]"
+        >
+          {decideLaterLabel}
+        </button>
+      </div>
+      {/* [R9-T2] Tertiary skip-ahead. Distinct from the bottom "Skip and
+          explore" so we can tell from local Diagnostics whether users
+          jump straight in or pick a chip first. */}
+      <div className="mt-4 text-center motion-safe:animate-fade-in">
+        <button
+          type="button"
+          onClick={onJustLooking}
+          data-testid="onboarding-just-looking"
+          className="text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 rounded"
+        >
+          {justLookingLabel}
+        </button>
+      </div>
     </>
   );
 }
