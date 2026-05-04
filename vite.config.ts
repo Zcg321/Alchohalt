@@ -82,6 +82,20 @@ export default defineConfig(() => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+          /* [R29-B-FIX] Exclude the largest async chunk(s) from the
+           * SW precache. R29-B lazy-loaded 4 of the 5 tabs, isolating
+           * SettingsTab into a 633 KB chunk. The Workbox default
+           * precaches everything globPatterns matches; on Lighthouse
+           * mobile (4× CPU + slow-4G throttle), the SW install was
+           * fetching the 633 KB SettingsTab chunk in parallel with
+           * the eager paint, driving TTI to 13 s.
+           *
+           * SettingsTab is now excluded from the install-time precache.
+           * The runtime caching strategy (StaleWhileRevalidate for
+           * scripts/styles via the existing rule below) caches it on
+           * first navigation to Settings — exactly matching the
+           * lazy() intent. Eager paint is unblocked. */
+          globIgnores: ['**/SettingsTab-*.js'],
           /* [R20-2] sw-custom.js carries the Background Sync event
            * handler; Workbox imports it at SW init so 'sync' events
            * fire even when the app is closed. */
