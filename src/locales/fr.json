@@ -157,6 +157,7 @@
   "craving.low": "Faible",
   "craving.high": "Forte",
   "haltLabel": "HALT",
+  "haltExplanation": "Affamé, En colère, Seul, Fatigué — déclencheurs courants à remarquer.",
   "alternative": "Action alternative",
   "alternativePlaceholder": "ex. faire une promenade",
   "intention_celebrate": "fête",

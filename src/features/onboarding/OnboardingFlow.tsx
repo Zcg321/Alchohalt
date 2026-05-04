@@ -4,7 +4,6 @@ import type { OnboardingDiagnostics } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { analytics } from '../analytics/analytics';
-import { useExperiment } from '../experiments/useExperiment';
 
 /**
  * [ONBOARD-1] Three-beat conversational onboarding.
@@ -13,8 +12,9 @@ import { useExperiment } from '../experiments/useExperiment';
  * tracking / insights / goals / ready) with three honest beats:
  *
  *   1. "Hi. What brings you here today?"
- *      Three optional chips: Trying to drink less / Trying to stop /
- *      Not sure yet. Skip works. Choice is recorded but never required.
+ *      Three optional chips, plus "Decide later" tertiary, plus
+ *      "I'm just looking" skip. Choice is recorded but never required.
+ *      [R25-G] Chip labels pinned to first-person-trying winner.
  *
  *   2. "How would you like to track?"
  *      Three optional chips: One day at a time / A month off /
@@ -42,44 +42,26 @@ interface BeatOneProps {
    * skip path because it advances the flow + records intent='undecided'
    * rather than dismissing the modal. */
   decideLaterLabel: string;
-  /** [R15-B] Variant from the onboarding-chip-copy-2026Q2 experiment. */
-  chipVariant: string | null;
 }
-/* [R15-B / R16-A] Three label sets driven by the active experiment
- * variant. The intent IDs ('cut-back', 'quit', 'curious') are stable
- * so the downstream OnboardingDiagnostics record stays consistent
- * across variants — only the human-facing label changes. */
-/* [R23-C] The three primary chips remain cut-back / quit / curious;
- * 'undecided' is rendered separately as a tertiary chip with its own
- * label. Keeping the label sets focused on the three primaries
- * preserves the experiment variants without introducing a 4th label
- * column nobody is testing. */
+/* [R25-G] Onboarding chip copy A/B winner: first-person-trying.
+ *
+ * The R15-B / R16-A experiment ran 3 arms (control / first-person /
+ * first-person-trying). R25-G picks the winner per voice principles
+ * — observation over declaration, owned without commitment-anxiety —
+ * and ships first-person-trying as the only variant. The experiment
+ * is archived (existing exposure history preserved for the audit
+ * panel; no new buckets assigned). The dead variant code is removed.
+ *
+ * Voice rationale documented in audit-walkthrough/round-25-onboarding-
+ * ab-winner.md. The `chipLabelFor` indirection is gone — labels are
+ * the same for everyone, full stop. */
 type PrimaryIntent = Exclude<Intent, 'undecided'>;
-const CHIP_LABELS_CONTROL: Readonly<Record<PrimaryIntent, string>> = {
-  'cut-back': 'Trying to drink less',
-  quit: 'Trying to stop',
-  curious: 'Not sure yet',
-};
-const CHIP_LABELS_FIRST_PERSON: Readonly<Record<PrimaryIntent, string>> = {
-  'cut-back': 'I want to drink less',
-  quit: "I'm stopping for now",
-  curious: "I'm here to learn",
-};
-/* [R16-A] Gentler middle ground: keeps the first-person voice but
- * restores the hedge of "trying" / "pausing" / "looking" so the chips
- * read as observation of a current attempt rather than a declaration
- * of intent. */
-const CHIP_LABELS_FIRST_PERSON_TRYING: Readonly<Record<PrimaryIntent, string>> = {
+const CHIP_LABELS: Readonly<Record<PrimaryIntent, string>> = {
   'cut-back': "I'm trying to drink less",
   quit: "I'm pausing alcohol for now",
   curious: "I'm just looking around",
 };
-function chipLabelFor(variant: string | null, intent: PrimaryIntent): string {
-  if (variant === 'first-person') return CHIP_LABELS_FIRST_PERSON[intent];
-  if (variant === 'first-person-trying') return CHIP_LABELS_FIRST_PERSON_TRYING[intent];
-  return CHIP_LABELS_CONTROL[intent];
-}
-function BeatOne({ onChoose, onJustLooking, justLookingLabel, decideLaterLabel, chipVariant }: BeatOneProps) {
+function BeatOne({ onChoose, onJustLooking, justLookingLabel, decideLaterLabel }: BeatOneProps) {
   /* [ONBOARDING-ROUND-4] Half-second pause before chips appear. The
    * user just opened the app on Day 0 — let the question land before
    * the answer prompts crowd in. The chips fade in via the existing
@@ -104,7 +86,7 @@ function BeatOne({ onChoose, onJustLooking, justLookingLabel, decideLaterLabel, 
           <div
             className="mt-5 grid gap-2.5 motion-safe:animate-fade-in"
             data-testid="onboarding-chip-row"
-            data-variant={chipVariant ?? 'control'}
+            data-variant="first-person-trying"
           >
             {(['cut-back', 'quit', 'curious'] as const).map((id) => (
               <button
@@ -114,7 +96,7 @@ function BeatOne({ onChoose, onJustLooking, justLookingLabel, decideLaterLabel, 
                 data-testid={`onboarding-chip-${id}`}
                 className="w-full rounded-2xl border border-neutral-200/70 bg-white px-5 py-3.5 text-start text-sm font-medium text-neutral-800 hover:bg-neutral-50 hover:border-neutral-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-neutral-700/60 dark:bg-neutral-800/60 dark:text-neutral-100 dark:hover:bg-neutral-800 transition-colors min-h-[48px]"
               >
-                {chipLabelFor(chipVariant, id)}
+                {CHIP_LABELS[id]}
               </button>
             ))}
           </div>
@@ -244,11 +226,6 @@ export default function OnboardingFlow() {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [isVisible, setIsVisible] = useState(false);
   const dialogRef = useRef<HTMLDivElement | null>(null);
-  /* [R15-B] First active A/B test. Variant is stable per device,
-   * deterministic from the install bucket. The hook returns null
-   * when the experiment is dormant or the env can't read storage,
-   * which falls through to the control labels in chipLabelFor. */
-  const chipVariant = useExperiment('onboarding-chip-copy-2026Q2');
   // [R9-2] Local-only diagnostics buffer. Persisted on `complete()` /
   // `skip()` so we don't write on every chip tap.
   const [intent, setIntent] = useState<Intent | undefined>();
@@ -379,7 +356,6 @@ export default function OnboardingFlow() {
               onJustLooking={() => skip('just-looking')}
               justLookingLabel={t('onboarding.justLooking', "I'm just looking")}
               decideLaterLabel={t('onboarding.decideLater', 'Decide later')}
-              chipVariant={chipVariant}
             />
           )}
           {step === 1 && (

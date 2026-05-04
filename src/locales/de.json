@@ -157,6 +157,7 @@
   "craving.low": "Niedrig",
   "craving.high": "Hoch",
   "haltLabel": "HALT",
+  "haltExplanation": "Hungrig, Wütend, Einsam, Müde — häufige Auslöser, auf die man achten sollte.",
   "alternative": "Alternative Aktion",
   "alternativePlaceholder": "z. B. spazieren gehen",
   "intention_celebrate": "Feier",

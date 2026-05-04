@@ -157,6 +157,7 @@
   "craving.low": "Low",
   "craving.high": "High",
   "haltLabel": "HALT",
+  "haltExplanation": "Hungry, Angry, Lonely, Tired — common triggers to notice.",
   "alternative": "Alternative action",
   "alternativePlaceholder": "e.g. take a walk",
   "intention_celebrate": "celebrate",

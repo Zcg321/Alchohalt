@@ -1,23 +1,28 @@
 /**
- * [R15-B] Onboarding chip-copy A/B test.
+ * [R25-G] Onboarding chip-copy A/B winner pinned.
  *
- * The experiment 'onboarding-chip-copy-2026Q2' is registered active.
- * Variant assignment is deterministic from the device-bucket nanoid
- * stored in localStorage. By seeding the bucket directly we can pin
- * a render to either variant for assertion.
+ * R15-B / R16-A ran a 3-arm experiment ('onboarding-chip-copy-2026Q2'
+ * with control / first-person / first-person-trying). R25-G picks
+ * first-person-trying as the winner per voice principles —
+ * observation over declaration, owned without commitment-anxiety —
+ * archives the experiment, and ships the winning labels for everyone.
  *
- * Buckets used here were found by enumeration: 'A_BUCKET' yields
- * the control branch under FNV-1a('onboarding-chip-copy-2026Q2::A_BUCKET'),
- * 'F_BUCKET' yields first-person. If the assignment math ever
- * changes (very unlikely — algorithms are stable contracts) these
- * may need re-derivation; the test would fail loudly on it.
+ * This file replaces the previous 3-variant assertion suite. It pins
+ * the new ground truth:
+ *   - All users see the first-person-trying chip labels regardless
+ *     of bucket assignment.
+ *   - data-variant="first-person-trying" is the canonical value.
+ *   - The experiment is archived in the registry; useExperiment
+ *     returns null so no new exposures are recorded.
+ *
+ * Existing exposure history (from R15-B / R16-A) is preserved in
+ * localStorage for audit purposes but isn't read here.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
 import OnboardingFlow from '../OnboardingFlow';
 import { useDB } from '../../../store/db';
 import { __resetPreferencesCacheForTests } from '../../../shared/capacitor';
-import { assignVariant } from '../../experiments/bucket';
 import { findExperiment } from '../../experiments/registry';
 
 function flushChipDelay() {
@@ -37,117 +42,56 @@ afterEach(() => {
   if (typeof window !== 'undefined') window.localStorage.clear();
 });
 
-/** Find a bucket id that maps to the requested variant. */
-function findBucketFor(variant: 'control' | 'first-person' | 'first-person-trying'): string {
-  const exp = findExperiment('onboarding-chip-copy-2026Q2');
-  if (!exp) throw new Error('experiment not found in registry');
-  for (let i = 0; i < 5000; i++) {
-    const bucket = `bucket-${i}`;
-    if (assignVariant(exp, bucket) === variant) return bucket;
-  }
-  throw new Error(`No bucket found for variant=${variant} within 5000 tries`);
-}
-
-describe('[R15-B] onboarding chip-copy A/B', () => {
-  it('control bucket renders third-person chip labels', () => {
-    const controlBucket = findBucketFor('control');
-    window.localStorage.setItem('exp.device-bucket', controlBucket);
-
+describe('[R25-G] onboarding chip-copy winner pinned (first-person-trying)', () => {
+  it('renders first-person-trying chip labels for everyone', () => {
     render(<OnboardingFlow />);
     flushChipDelay();
 
-    const row = screen.getByTestId('onboarding-chip-row');
-    expect(row).toHaveAttribute('data-variant', 'control');
-
     expect(screen.getByTestId('onboarding-chip-cut-back')).toHaveTextContent(
-      'Trying to drink less'
+      "I'm trying to drink less",
     );
     expect(screen.getByTestId('onboarding-chip-quit')).toHaveTextContent(
-      'Trying to stop'
+      "I'm pausing alcohol for now",
     );
     expect(screen.getByTestId('onboarding-chip-curious')).toHaveTextContent(
-      'Not sure yet'
+      "I'm just looking around",
     );
   });
 
-  it('first-person bucket renders first-person chip labels', () => {
-    const fpBucket = findBucketFor('first-person');
-    window.localStorage.setItem('exp.device-bucket', fpBucket);
-
+  it('data-variant attribute is the winner name, not "control"', () => {
     render(<OnboardingFlow />);
     flushChipDelay();
-
-    const row = screen.getByTestId('onboarding-chip-row');
-    expect(row).toHaveAttribute('data-variant', 'first-person');
-
-    expect(screen.getByTestId('onboarding-chip-cut-back')).toHaveTextContent(
-      'I want to drink less'
-    );
-    expect(screen.getByTestId('onboarding-chip-quit')).toHaveTextContent(
-      "I'm stopping for now"
-    );
-    expect(screen.getByTestId('onboarding-chip-curious')).toHaveTextContent(
-      "I'm here to learn"
-    );
-  });
-
-  /* [R16-A] Third variant: gentler first-person hedged with "trying"
-   * / "pausing" / "looking around". Keeps the first-person voice the
-   * R15-B test introduced but restores the trying-not-declaring tone
-   * the designer-judge flagged in the 15-judge gate. */
-  it('first-person-trying bucket renders gentler first-person chip labels', () => {
-    const tryingBucket = findBucketFor('first-person-trying');
-    window.localStorage.setItem('exp.device-bucket', tryingBucket);
-
-    render(<OnboardingFlow />);
-    flushChipDelay();
-
     const row = screen.getByTestId('onboarding-chip-row');
     expect(row).toHaveAttribute('data-variant', 'first-person-trying');
+  });
 
+  it('the experiment is archived in the registry', () => {
+    const exp = findExperiment('onboarding-chip-copy-2026Q2');
+    expect(exp).toBeDefined();
+    expect(exp!.status).toBe('archived');
+  });
+
+  it('renders the same labels regardless of any prior bucket assignment', () => {
+    // Even if a returning user has an old bucket assignment from when
+    // the experiment was active, the archived state means
+    // first-person-trying labels show consistently.
+    window.localStorage.setItem('exp.device-bucket', 'pre-r25-bucket-id');
+    render(<OnboardingFlow />);
+    flushChipDelay();
     expect(screen.getByTestId('onboarding-chip-cut-back')).toHaveTextContent(
-      "I'm trying to drink less"
-    );
-    expect(screen.getByTestId('onboarding-chip-quit')).toHaveTextContent(
-      "I'm pausing alcohol for now"
-    );
-    expect(screen.getByTestId('onboarding-chip-curious')).toHaveTextContent(
-      "I'm just looking around"
+      "I'm trying to drink less",
     );
   });
 
-  it('records exposure to localStorage on first render with active variant', () => {
-    const fpBucket = findBucketFor('first-person');
-    window.localStorage.setItem('exp.device-bucket', fpBucket);
-
+  it('intent ID stays stable when the chip is clicked', () => {
     render(<OnboardingFlow />);
     flushChipDelay();
-
-    const exposuresRaw = window.localStorage.getItem('exp.exposures');
-    expect(exposuresRaw).not.toBeNull();
-    const log = JSON.parse(exposuresRaw!);
-    expect(Array.isArray(log)).toBe(true);
-    expect(log.length).toBeGreaterThan(0);
-    const last = log[log.length - 1];
-    expect(last.key).toBe('onboarding-chip-copy-2026Q2');
-    expect(['control', 'first-person']).toContain(last.variant);
-  });
-
-  it('intent ID stays stable across variants (cut-back fires regardless of label)', () => {
-    const fpBucket = findBucketFor('first-person');
-    window.localStorage.setItem('exp.device-bucket', fpBucket);
-
-    render(<OnboardingFlow />);
-    flushChipDelay();
-
-    // Click the first-person variant of the cut-back chip
     const chip = screen.getByTestId('onboarding-chip-cut-back');
-    expect(chip).toHaveTextContent('I want to drink less');
+    expect(chip).toHaveTextContent("I'm trying to drink less");
     chip.click();
-
-    // Intent recorded as 'cut-back', regardless of label variant
-    // (We can't easily inspect setIntent here without completing the
-    // flow; but the test above for full-flow uses the same testid +
-    // asserts diag.intent === 'cut-back', proving the contract.)
+    // Intent IDs ('cut-back', 'quit', 'curious') are stable across
+    // copy revisions — the downstream OnboardingDiagnostics record
+    // is unaffected by the label change. (Full-flow tests assert
+    // diag.intent === 'cut-back'; we don't duplicate that here.)
   });
 });

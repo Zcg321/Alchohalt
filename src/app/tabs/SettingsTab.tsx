@@ -30,7 +30,9 @@ export default function SettingsTab({ onOpenCrisis }: Props) {
           <div>
             <p className="text-h3 text-indigo-700">Crisis Resources</p>
             <p className="mt-1 text-caption text-indigo-700/80">
-              24/7 support lines. Always reachable from the header pill, too.
+              {/* [R25-C] Header pill now opens the urgent right-now panel; this
+                  link surfaces the full region-aware directory directly. */}
+              24/7 support lines, full directory. The header pill opens "right now" support; tap "More crisis resources" there for this full list.
             </p>
           </div>
           <span aria-hidden className="text-indigo-700">{'>'}</span>

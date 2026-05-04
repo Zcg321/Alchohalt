@@ -82,7 +82,7 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
             id="std-drink-system" aria-label="Drink units" data-testid="std-drink-system-select"
             value={settings.stdDrinkSystem ?? 'us'}
             onChange={(e) => {
-              setSettings({ stdDrinkSystem: e.target.value as 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie' });
+              setSettings({ stdDrinkSystem: e.target.value as 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie' | 'nz' });
               hapticForEvent('settings-toggle');
             }}
             className="input cursor-pointer"
@@ -90,6 +90,7 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
             <option value="us">United States (NIAAA, 14 g)</option>
             <option value="uk">United Kingdom (NHS units, 8 g)</option>
             <option value="au">Australia (NHMRC, 10 g)</option>
+            <option value="nz">New Zealand (HPA, 10 g)</option>
             <option value="eu">Europe (10 g)</option>
             <option value="ca">Canada (13.6 g)</option>
             <option value="ie">Ireland (HSE, 10 g)</option>
@@ -120,6 +121,54 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
           <p className="text-xs text-neutral-600 dark:text-neutral-400">
             Quick mode shows three tap-to-log chips above the form. The full form stays one tap away.
           </p>
+        </div>
+        {/* [R25-E] Quick-mode backdating window. Default 'today'
+            (matches R24-FF2 behavior). 'yesterday' opens a one-day
+            window so users can log forgotten drinks from the night
+            before without switching to detailed mode. */}
+        <div className="space-y-1 mt-4" id="quick-log-backdating">
+          <label className="label" htmlFor="quick-log-backdating-select">Quick-mode backdating window</label>
+          <select
+            id="quick-log-backdating-select"
+            aria-label="Quick-mode backdating window"
+            data-testid="quick-log-backdating-select"
+            value={settings.quickLogBackdatingWindow ?? 'today'}
+            onChange={(e) => {
+              setSettings({ quickLogBackdatingWindow: e.target.value as 'today' | 'yesterday' });
+              hapticForEvent('settings-toggle');
+            }}
+            className="input cursor-pointer"
+          >
+            <option value="today">Today only</option>
+            <option value="yesterday">Today + yesterday</option>
+          </select>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
+            Detailed mode always allows any timestamp. This setting only affects quick-log chips.
+          </p>
+        </div>
+        {/* [R25-B] Calorie tile opt-in. OFF by default per the
+            round-24 competitive matrix recommendation — recovery
+            surfaces should not push body-image metrics on users
+            who didn't ask for them. */}
+        <div className="mt-4" id="calorie-tile-toggle">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              data-testid="calorie-tile-toggle"
+              checked={settings.showCalorieTile === true}
+              onChange={(e) => {
+                setSettings({ showCalorieTile: e.target.checked });
+                hapticForEvent('settings-toggle');
+              }}
+              className="mt-1 w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500 focus:ring-2"
+            />
+            <span>
+              <span className="block text-sm font-medium">Show calorie tile in Insights</span>
+              <span className="block mt-1 text-xs text-neutral-600 dark:text-neutral-400">
+                Estimate from ethanol only — mixers and residual carbs are excluded so the number is a defensible floor, not an averaged guess. Off by default.
+              </span>
+            </span>
+          </label>
         </div>
       </div>
     </section>

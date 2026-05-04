@@ -31,6 +31,18 @@ export interface OnboardingFunnel {
   /** Completion rate as 0..1, or null if no attempts yet. */
   completionRate: number | null;
   steps: [FunnelStepStat, FunnelStepStat, FunnelStepStat];
+  /**
+   * [R25-2] Intent distribution across all attempts (current + history).
+   * 'undecided' counts the R23-C "Decide later" tertiary chip taps.
+   * `none` covers attempts that skipped before any chip was tapped.
+   */
+  intentCounts: {
+    'cut-back': number;
+    quit: number;
+    curious: number;
+    undecided: number;
+    none: number;
+  };
 }
 
 const STEP_LABELS = ['Beat 1: intro / intent', 'Beat 2: track style', 'Beat 3: ready'];
@@ -65,8 +77,26 @@ export function computeOnboardingFunnel(
 
   let totalCompleted = 0;
   let totalSkipped = 0;
+  const intentCounts: OnboardingFunnel['intentCounts'] = {
+    'cut-back': 0,
+    quit: 0,
+    curious: 0,
+    undecided: 0,
+    none: 0,
+  };
 
   for (const a of attempts) {
+    // [R25-2] Tally chosen intent across every recorded attempt
+    // regardless of whether it was completed or skipped. The R23-C
+    // 'undecided' chip records intent='undecided' before advancing,
+    // so a skipped-after-undecided attempt still counts toward the
+    // undecided bucket.
+    if (a.intent === 'cut-back') intentCounts['cut-back']++;
+    else if (a.intent === 'quit') intentCounts.quit++;
+    else if (a.intent === 'curious') intentCounts.curious++;
+    else if (a.intent === 'undecided') intentCounts.undecided++;
+    else intentCounts.none++;
+
     if (a.status === 'completed') {
       // Completed users reached every step.
       steps[0].reached++;
@@ -99,5 +129,6 @@ export function computeOnboardingFunnel(
     totalSkipped,
     completionRate: totalAttempts === 0 ? null : totalCompleted / totalAttempts,
     steps,
+    intentCounts,
   };
 }

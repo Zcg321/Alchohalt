@@ -14,6 +14,19 @@ export default function HaltChecks({ selected, onChange }: Props) {
   return (
     <fieldset>
       <legend className="block font-medium">{t('haltLabel')}</legend>
+      {/* [R25-3] Disability-rights / plain-language audit. The bare
+          "HALT" acronym is opaque to first-time users, low-literacy
+          users, and ESL users. The four-word expansion below names
+          the underlying state so the term is self-explaining on every
+          render. Renders as caption text under the legend so it
+          doesn't change the form layout for returning users. */}
+      <p
+        id="halt-explanation"
+        className="mt-1 mb-2 text-xs text-ink-soft"
+        data-testid="halt-explanation"
+      >
+        {t('haltExplanation', 'Hungry, Angry, Lonely, Tired — common triggers to notice.')}
+      </p>
       {haltOptions.map((h) => (
         <label key={h} className="me-2">
           <input
@@ -26,6 +39,7 @@ export default function HaltChecks({ selected, onChange }: Props) {
                   : selected.filter((x) => x !== h)
               )
             }
+            aria-describedby="halt-explanation"
           />{' '}
           {t(`halt_${h}`)}
         </label>

@@ -23,6 +23,7 @@ describe('[R14-6] STD_DRINK_GRAMS constants match published guidance', () => {
   it('Europe (10g consensus) = 10g', () => expect(STD_DRINK_GRAMS.eu).toBe(10));
   it('Canada Low-Risk = 13.6g', () => expect(STD_DRINK_GRAMS.ca).toBe(13.6));
   it('Ireland HSE = 10g', () => expect(STD_DRINK_GRAMS.ie).toBe(10));
+  it('[R25-A] New Zealand HPA = 10g', () => expect(STD_DRINK_GRAMS.nz).toBe(10));
 });
 
 describe('[R14-6] gramsAlcohol unchanged across systems (physics is invariant)', () => {
@@ -91,7 +92,7 @@ describe('[R14-6] stdDrinkLabel', () => {
     expect(stdDrinkLabel('uk')).toBe('unit');
   });
   it('returns "std" for everywhere else', () => {
-    (['us', 'au', 'eu', 'ca', 'ie'] as StdDrinkSystem[]).forEach((sys) => {
+    (['us', 'au', 'eu', 'ca', 'ie', 'nz'] as StdDrinkSystem[]).forEach((sys) => {
       expect(stdDrinkLabel(sys)).toBe('std');
     });
   });
@@ -105,7 +106,7 @@ describe('[R14-6] stdDrinkLabel', () => {
 
 describe('[R14-6] STD_DRINK_SYSTEM_LABELS', () => {
   it('has a label for every system', () => {
-    const systems: StdDrinkSystem[] = ['us', 'uk', 'au', 'eu', 'ca', 'ie'];
+    const systems: StdDrinkSystem[] = ['us', 'uk', 'au', 'eu', 'ca', 'ie', 'nz'];
     for (const sys of systems) {
       expect(STD_DRINK_SYSTEM_LABELS[sys]).toBeTruthy();
       expect(STD_DRINK_SYSTEM_LABELS[sys]).toMatch(/g/);

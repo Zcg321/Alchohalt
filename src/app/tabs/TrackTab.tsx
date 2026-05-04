@@ -40,13 +40,18 @@ interface QuickModeControlsProps {
   showDetailed: boolean;
   onToggleDetailed: () => void;
   t: (key: string, fallback?: string) => string;
+  /** [R25-E] Active backdating window — drives the link copy. */
+  backdatingWindow: 'today' | 'yesterday' | undefined;
 }
 
 function QuickModeControls(props: QuickModeControlsProps) {
   const {
     onLog, showBackdateLink, mostRecentDrink, onBackdate,
-    showDetailed, onToggleDetailed, t,
+    showDetailed, onToggleDetailed, t, backdatingWindow,
   } = props;
+  const linkLabel = backdatingWindow === 'yesterday'
+    ? t('drinkLog.quick.earlierOrYesterday', 'Last night or earlier? Adjust last entry')
+    : t('drinkLog.quick.earlierToday', 'Earlier today? Adjust last entry');
   return (
     <div className="mb-4 space-y-3">
       <QuickLogChips onLog={onLog} />
@@ -57,7 +62,7 @@ function QuickModeControls(props: QuickModeControlsProps) {
           data-testid="quick-log-backdate-link"
           className="text-xs text-ink-soft hover:text-ink underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
         >
-          {t('drinkLog.quick.earlierToday', 'Earlier today? Adjust last entry')}
+          {linkLabel}
         </button>
       )}
       {/* [R24-FF3] Disclosure toggle stepped down from primary
@@ -160,19 +165,30 @@ function HistorySection(props: HistorySectionProps) {
 }
 
 /* [R24-FF2] 10 min — typical "I forgot to log earlier" window. Lives
- * outside the component so tests can reference it later if needed. */
+ * outside the component so tests can reference it later if needed.
+ * [R25-E] When the user opts into 'yesterday' backdating, the window
+ * extends to the previous calendar day's start (local time). */
 const QUICK_BACKDATE_WINDOW_MS = 10 * 60 * 1000;
+
+function quickBackdateWindowFloor(window: 'today' | 'yesterday' | undefined, nowMs: number): number {
+  if (window !== 'yesterday') return nowMs - QUICK_BACKDATE_WINDOW_MS;
+  const start = new Date(nowMs);
+  start.setHours(0, 0, 0, 0);
+  return start.getTime() - 24 * 60 * 60 * 1000;
+}
 
 interface QuickModeState {
   isQuickMode: boolean;
   showQuickLogHint: boolean;
   showBackdateLink: boolean;
   mostRecentDrink: Drink | null;
+  backdatingWindow: 'today' | 'yesterday' | undefined;
 }
 
 function useQuickModeState(drinks: Drink[], editing: Drink | null, showDetailed: boolean): QuickModeState {
   const drinkLogMode = useDB((s) => s.db.settings.drinkLogMode);
   const quickLogHintAt = useDB((s) => s.db.settings.quickLogHintAt);
+  const backdatingWindow = useDB((s) => s.db.settings.quickLogBackdatingWindow);
   const isQuickMode = drinkLogMode === 'quick' && !editing;
   const showQuickLogHint = shouldShowQuickLogHint({
     drinkCount: drinks.length,
@@ -187,12 +203,13 @@ function useQuickModeState(drinks: Drink[], editing: Drink | null, showDetailed:
         : drinks.reduce((a, b) => (a.ts > b.ts ? a : b)),
     [drinks],
   );
+  const floor = quickBackdateWindowFloor(backdatingWindow, Date.now());
   const showBackdateLink =
     isQuickMode &&
     !showDetailed &&
     mostRecentDrink !== null &&
-    Date.now() - mostRecentDrink.ts <= QUICK_BACKDATE_WINDOW_MS;
-  return { isQuickMode, showQuickLogHint, showBackdateLink, mostRecentDrink };
+    mostRecentDrink.ts >= floor;
+  return { isQuickMode, showQuickLogHint, showBackdateLink, mostRecentDrink, backdatingWindow };
 }
 
 export default function TrackTab({
@@ -211,7 +228,7 @@ export default function TrackTab({
   const empty = drinks.length === 0;
   const { t } = useLanguage();
   const [showDetailed, setShowDetailed] = useState(false);
-  const { isQuickMode, showQuickLogHint, showBackdateLink, mostRecentDrink } =
+  const { isQuickMode, showQuickLogHint, showBackdateLink, mostRecentDrink, backdatingWindow } =
     useQuickModeState(drinks, editing, showDetailed);
   // [R14-2] History search/filter — bar only emits criteria; list never knows about search.
   const [criteria, setCriteria] = useState<DrinkSearchCriteria>({});
@@ -237,6 +254,7 @@ export default function TrackTab({
             showDetailed={showDetailed}
             onToggleDetailed={() => setShowDetailed((v) => !v)}
             t={t}
+            backdatingWindow={backdatingWindow}
           />
         )}
         {(!isQuickMode || showDetailed || editing) && (

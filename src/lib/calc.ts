@@ -13,11 +13,12 @@ export function gramsAlcohol(volumeMl: number, abvPct: number): number {
  *   eu: most-common-EU consensus (NL/FR/DE/IE — ICAP report)
  *   ca: Canada's Low-Risk Alcohol Drinking Guidelines (13.6g)
  *   ie: Irish Health Service Executive
+ *   nz: New Zealand Health Promotion Agency (10g) — added R25-A
  *
  * See audit-walkthrough/round-14-researcher-judge.md for the full
  * citations + the bug rationale.
  */
-export type StdDrinkSystem = 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie';
+export type StdDrinkSystem = 'us' | 'uk' | 'au' | 'eu' | 'ca' | 'ie' | 'nz';
 
 export const STD_DRINK_GRAMS: Record<StdDrinkSystem, number> = {
   us: 14.0,
@@ -26,6 +27,7 @@ export const STD_DRINK_GRAMS: Record<StdDrinkSystem, number> = {
   eu: 10.0,
   ca: 13.6,
   ie: 10.0,
+  nz: 10.0,
 };
 
 /**
@@ -85,6 +87,7 @@ export const STD_DRINK_SYSTEM_LABELS: Record<StdDrinkSystem, string> = {
   eu: 'Europe (10 g)',
   ca: 'Canada (13.6 g)',
   ie: 'Ireland (HSE, 10 g)',
+  nz: 'New Zealand (HPA, 10 g)',
 };
 
 interface Drink {

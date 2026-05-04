@@ -18,6 +18,20 @@ describe('[R15-C] detectStdDrinkSystem', () => {
     expect(detectStdDrinkSystem('en-AU')).toBe('au');
   });
 
+  it('[R25-A] returns nz for en-NZ', () => {
+    expect(detectStdDrinkSystem('en-NZ')).toBe('nz');
+  });
+
+  it('[R25-A] expanded EU coverage: hu, ro, gr, sk, hr, bg, is', () => {
+    expect(detectStdDrinkSystem('hu-HU')).toBe('eu');
+    expect(detectStdDrinkSystem('ro-RO')).toBe('eu');
+    expect(detectStdDrinkSystem('el-GR')).toBe('eu');
+    expect(detectStdDrinkSystem('sk-SK')).toBe('eu');
+    expect(detectStdDrinkSystem('hr-HR')).toBe('eu');
+    expect(detectStdDrinkSystem('bg-BG')).toBe('eu');
+    expect(detectStdDrinkSystem('is-IS')).toBe('eu');
+  });
+
   it('returns ie for en-IE', () => {
     expect(detectStdDrinkSystem('en-IE')).toBe('ie');
   });

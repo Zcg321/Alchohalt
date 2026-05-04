@@ -90,6 +90,50 @@ export default function OnboardingFunnelView() {
           </div>
         </dl>
 
+        {/* [R25-2] Intent chip distribution. Surfaces 'undecided' tap
+            count so the owner can see how often the R23-C tertiary
+            "Decide later" path is chosen. */}
+        <div
+          className="rounded-lg border border-neutral-200/70 dark:border-neutral-700/60 p-3 space-y-1.5"
+          data-testid="funnel-intent-counts"
+        >
+          <p className="text-xs uppercase tracking-wider text-ink-soft">
+            {t('funnel.intentCounts', 'Intent chips chosen')}
+          </p>
+          <ul className="grid grid-cols-2 sm:grid-cols-5 gap-x-3 gap-y-1 text-xs">
+            <li className="flex items-baseline justify-between gap-2">
+              <span className="text-ink-soft">cut-back</span>
+              <span className="font-medium tabular-nums" data-testid="funnel-intent-cut-back">
+                {funnel.intentCounts['cut-back']}
+              </span>
+            </li>
+            <li className="flex items-baseline justify-between gap-2">
+              <span className="text-ink-soft">quit</span>
+              <span className="font-medium tabular-nums" data-testid="funnel-intent-quit">
+                {funnel.intentCounts.quit}
+              </span>
+            </li>
+            <li className="flex items-baseline justify-between gap-2">
+              <span className="text-ink-soft">curious</span>
+              <span className="font-medium tabular-nums" data-testid="funnel-intent-curious">
+                {funnel.intentCounts.curious}
+              </span>
+            </li>
+            <li className="flex items-baseline justify-between gap-2">
+              <span className="text-ink-soft">undecided</span>
+              <span className="font-medium tabular-nums" data-testid="funnel-intent-undecided">
+                {funnel.intentCounts.undecided}
+              </span>
+            </li>
+            <li className="flex items-baseline justify-between gap-2">
+              <span className="text-ink-soft">no chip</span>
+              <span className="font-medium tabular-nums" data-testid="funnel-intent-none">
+                {funnel.intentCounts.none}
+              </span>
+            </li>
+          </ul>
+        </div>
+
         <div className="space-y-2">
           {funnel.steps.map((s) => {
             const reachRate =

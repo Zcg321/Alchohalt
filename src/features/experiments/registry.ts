@@ -95,9 +95,9 @@ export const REGISTRY: readonly Experiment[] = [
   {
     key: 'onboarding-chip-copy-2026Q2',
     variants: ['control', 'first-person', 'first-person-trying'] as const,
-    status: 'active',
+    status: 'archived',
     description:
-      'Onboarding intent chips: third-person ("Trying to drink less") vs declarative first-person ("I want to drink less") vs gentler first-person ("I\'m trying to drink less").',
+      '[R25-G winner: first-person-trying] Onboarding intent chips: third-person vs declarative first-person vs gentler first-person. Pinned to first-person-trying per voice principles — observation over declaration, owned without commitment-anxiety. Existing exposure history preserved; no new buckets assigned.',
   },
   {
     key: 'goal-nudge-copy-2026Q2',

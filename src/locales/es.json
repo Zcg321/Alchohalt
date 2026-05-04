@@ -157,6 +157,7 @@
   "craving.low": "Bajo",
   "craving.high": "Alto",
   "haltLabel": "HALT",
+  "haltExplanation": "Hambriento, Enojado, Solo, Cansado — disparadores comunes a notar.",
   "alternative": "Acción alternativa",
   "alternativePlaceholder": "ej. dar un paseo",
   "intention_celebrate": "celebración",
