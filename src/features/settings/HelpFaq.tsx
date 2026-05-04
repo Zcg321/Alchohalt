@@ -107,6 +107,15 @@ const FAQS: ReadonlyArray<FaqEntry> = [
     link: { href: '#about-heading', label: 'Open About' },
   },
   {
+    /* [R28-5 marketing-director judge follow-up C3] Crisis-support
+     * is the single biggest moat in the listing description; it
+     * deserves its own discoverable answer in Help. */
+    id: 'crisis-support',
+    question: 'How do I find crisis support if I need it right now?',
+    answer:
+      'The "Need help?" pill in the header is on every screen. Tap it for a 1-minute breathing timer plus direct dial to 988 (US Suicide & Crisis Lifeline), Crisis Text Line, and SAMHSA. Region packs cover US, UK, AU, CA, and IE; if your country is not covered, you can paste a local hotline in Settings. Crisis resources are never paid, never gated, and work fully offline.',
+  },
+  {
     id: 'set-a-goal',
     question: 'How do I set a daily or weekly goal?',
     answer:

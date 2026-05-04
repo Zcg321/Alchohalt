@@ -20,12 +20,22 @@ describe('[R28-1] HelpFaq', () => {
     expect(heading.id).toBe('help-heading');
   });
 
-  it('renders all 10 FAQ entries by default', () => {
+  it('renders all 11 FAQ entries by default (10 base + R28-5 crisis-support)', () => {
     render(<HelpFaq />);
-    expect(__FAQS).toHaveLength(10);
+    expect(__FAQS).toHaveLength(11);
     for (const faq of __FAQS) {
       expect(screen.getByTestId(`help-faq-item-${faq.id}`)).toBeTruthy();
     }
+  });
+
+  it('[R28-5] crisis-support entry is present + non-empty', () => {
+    render(<HelpFaq />);
+    const item = screen.getByTestId('help-faq-item-crisis-support');
+    expect(item).toBeTruthy();
+    const answer = screen.getByTestId('help-faq-a-crisis-support');
+    // Must reference the always-on header pill specifically + 988.
+    expect(answer.textContent).toContain('Need help?');
+    expect(answer.textContent).toContain('988');
   });
 
   it('filters by question text (case-insensitive)', () => {
