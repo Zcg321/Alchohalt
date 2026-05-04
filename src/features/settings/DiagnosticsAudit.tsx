@@ -16,6 +16,7 @@ import {
   totalSatisfactionCount,
   type SatisfactionSignal,
 } from '../satisfaction/satisfaction';
+import SatisfactionDashboard from '../satisfaction/SatisfactionDashboard';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -517,6 +518,10 @@ export default function DiagnosticsAudit() {
         <ExperimentsFieldset />
         <NpsFieldset />
         <SatisfactionFieldset />
+        {/* [R27-1] Richer per-surface dashboard. Coexists with the
+            legacy SatisfactionFieldset so any audit doc that links
+            to the existing testids keeps working. */}
+        <SatisfactionDashboard />
       </div>
     </section>
   );
