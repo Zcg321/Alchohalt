@@ -96,9 +96,10 @@ export default function IntentRevisionModal({ open, onClose }: Props) {
         <div className="grid gap-2.5">
           {(
             [
-              ['cut-back', 'Trying to drink less'],
-              ['quit', 'Trying to stop'],
-              ['curious', 'Not sure yet'],
+              // [R25-G] Pinned to first-person-trying winner labels.
+              ['cut-back', "I'm trying to drink less"],
+              ['quit', "I'm pausing alcohol for now"],
+              ['curious', "I'm just looking around"],
             ] as const
           ).map(([id, label]) => (
             <button
