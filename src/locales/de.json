@@ -423,5 +423,25 @@
   "selfExperiment.jumpNav": "Dashboard-Bereiche",
   "selfExperiment.jumpDiagnostics": "Onboarding-Diagnose",
   "selfExperiment.jumpAudit": "Einstellungs-Audit",
-  "selfExperiment.jumpFunnel": "Onboarding-Funnel"
+  "selfExperiment.jumpFunnel": "Onboarding-Funnel",
+
+  "settings.stdDrink.explainSummary": "Was bedeutet hier „1 Standardglas“?",
+  "settings.stdDrink.equalsLine": "Entspricht ungefähr:",
+  "settings.stdDrink.sourcePrefix": "Quelle:",
+  "settings.stdDrink.changeHint": "Ändere die Auswahl oben, um eine andere Definition zu verwenden.",
+  "settings.stdDrink.gramsSuffix": " g reiner Alkohol.",
+
+  "settings.privacy.headline.title": "Deine Daten. Auf diesem Gerät. Punkt.",
+  "settings.privacy.headline.claim": "Nichts verlässt dein Gerät. Backups sind Ende-zu-Ende verschlüsselt. Keine Analyse, keine Werbung.",
+  "settings.privacy.headline.expand": "Wie kann ich das überprüfen?",
+  "settings.privacy.headline.verifyIntro": "Drei Prüfungen, die jeder durchführen kann:",
+  "settings.privacy.headline.verify1": "Browser-Entwicklertools öffnen → Reiter „Netzwerk“ → neu laden. Mit allen optionalen Funktionen aus wird nur das statische App-Bundle geladen.",
+  "settings.privacy.headline.verify2": "Lies die Funktionsübersicht unten: welche optionalen Dienste nach außen kommunizieren können und ob sie gerade aktiv sind.",
+  "settings.privacy.headline.verify3": "Öffne den Vertrauensbeleg am Ende dieses Abschnitts: druckbare Zusammenfassung jeder Aussage und der Datei, die sie belegt.",
+
+  "satisfaction.label": "War das hilfreich?",
+  "satisfaction.up": "Daumen hoch — hilfreich",
+  "satisfaction.down": "Daumen runter — nicht hilfreich",
+  "satisfaction.dismiss": "Hilfreich-Frage ausblenden",
+  "satisfaction.thanks": "Danke. Bleibt auf diesem Gerät."
 }

@@ -470,5 +470,25 @@
   "selfExperiment.jumpNav": "Sekcje panelu",
   "selfExperiment.jumpDiagnostics": "Diagnostyka wdrożenia",
   "selfExperiment.jumpAudit": "Audyt ustawień",
-  "selfExperiment.jumpFunnel": "Lejek wdrożenia"
+  "selfExperiment.jumpFunnel": "Lejek wdrożenia",
+
+  "settings.stdDrink.explainSummary": "Co tu znaczy „1 porcja standardowa”?",
+  "settings.stdDrink.equalsLine": "W przybliżeniu odpowiada:",
+  "settings.stdDrink.sourcePrefix": "Źródło:",
+  "settings.stdDrink.changeHint": "Zmień powyższy wybór, aby użyć innej definicji.",
+  "settings.stdDrink.gramsSuffix": " g czystego alkoholu.",
+
+  "settings.privacy.headline.title": "Twoje dane. Na tym urządzeniu. Kropka.",
+  "settings.privacy.headline.claim": "Nic nie opuszcza Twojego urządzenia. Kopia zapasowa jest szyfrowana end-to-end. Bez analityki, bez reklam.",
+  "settings.privacy.headline.expand": "Jak to zweryfikować?",
+  "settings.privacy.headline.verifyIntro": "Trzy sprawdzenia, które może wykonać każdy:",
+  "settings.privacy.headline.verify1": "Otwórz narzędzia deweloperskie przeglądarki → zakładka Sieć → odśwież. Z wyłączonymi funkcjami opcjonalnymi ładuje się tylko statyczny pakiet aplikacji.",
+  "settings.privacy.headline.verify2": "Przeczytaj zestawienie funkcji poniżej: które opcjonalne elementy mogą wysyłać dane i czy są obecnie włączone.",
+  "settings.privacy.headline.verify3": "Otwórz Pokwitowanie zaufania na dole tej sekcji: gotowe do wydruku podsumowanie każdej deklaracji i pliku, który ją potwierdza.",
+
+  "satisfaction.label": "Czy to było pomocne?",
+  "satisfaction.up": "Kciuk w górę — pomocne",
+  "satisfaction.down": "Kciuk w dół — niepomocne",
+  "satisfaction.dismiss": "Zamknij pytanie o pomoc",
+  "satisfaction.thanks": "Dzięki. Zostaje na tym urządzeniu."
 }

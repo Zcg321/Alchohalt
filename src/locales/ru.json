@@ -470,5 +470,25 @@
   "selfExperiment.jumpNav": "Разделы панели",
   "selfExperiment.jumpDiagnostics": "Диагностика входа",
   "selfExperiment.jumpAudit": "Аудит настроек",
-  "selfExperiment.jumpFunnel": "Воронка входа"
+  "selfExperiment.jumpFunnel": "Воронка входа",
+
+  "settings.stdDrink.explainSummary": "Что здесь значит «1 стандартная порция»?",
+  "settings.stdDrink.equalsLine": "Примерно соответствует:",
+  "settings.stdDrink.sourcePrefix": "Источник:",
+  "settings.stdDrink.changeHint": "Измените выбор выше, чтобы использовать другое определение.",
+  "settings.stdDrink.gramsSuffix": " г чистого спирта.",
+
+  "settings.privacy.headline.title": "Ваши данные. На этом устройстве. И всё.",
+  "settings.privacy.headline.claim": "Ничего не покидает ваше устройство. Резервная копия зашифрована end-to-end. Без аналитики, без рекламы.",
+  "settings.privacy.headline.expand": "Как это проверить?",
+  "settings.privacy.headline.verifyIntro": "Три проверки, доступные каждому:",
+  "settings.privacy.headline.verify1": "Откройте инструменты разработчика браузера → вкладка «Сеть» → перезагрузите. При выключенных дополнительных функциях загружается только статичный пакет приложения.",
+  "settings.privacy.headline.verify2": "Прочитайте расшифровку по функциям ниже: какие дополнительные возможности могут отправлять данные и включены ли они сейчас.",
+  "settings.privacy.headline.verify3": "Откройте Чек доверия внизу раздела: готовое к печати резюме каждого утверждения и файла, который его подтверждает.",
+
+  "satisfaction.label": "Это было полезно?",
+  "satisfaction.up": "Палец вверх — полезно",
+  "satisfaction.down": "Палец вниз — не полезно",
+  "satisfaction.dismiss": "Закрыть вопрос о пользе",
+  "satisfaction.thanks": "Спасибо. Останется на этом устройстве."
 }

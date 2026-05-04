@@ -423,5 +423,25 @@
   "selfExperiment.jumpNav": "Secciones del panel",
   "selfExperiment.jumpDiagnostics": "Diagnósticos de incorporación",
   "selfExperiment.jumpAudit": "Auditoría de Configuración",
-  "selfExperiment.jumpFunnel": "Embudo de incorporación"
+  "selfExperiment.jumpFunnel": "Embudo de incorporación",
+
+  "settings.stdDrink.explainSummary": "¿Qué significa aquí «1 bebida estándar»?",
+  "settings.stdDrink.equalsLine": "Aproximadamente equivalente a:",
+  "settings.stdDrink.sourcePrefix": "Fuente:",
+  "settings.stdDrink.changeHint": "Cambia el selector de arriba para usar otra definición.",
+  "settings.stdDrink.gramsSuffix": "g de alcohol puro.",
+
+  "settings.privacy.headline.title": "Tus datos. En este dispositivo. Punto.",
+  "settings.privacy.headline.claim": "Nada sale de tu dispositivo. La copia de seguridad va cifrada de extremo a extremo. Sin analíticas, sin anuncios.",
+  "settings.privacy.headline.expand": "¿Cómo puedo verificarlo?",
+  "settings.privacy.headline.verifyIntro": "Tres comprobaciones que cualquiera puede hacer:",
+  "settings.privacy.headline.verify1": "Abre las herramientas del navegador → pestaña Red → recarga. Con todas las funciones opcionales desactivadas, solo se carga el paquete estático de la app.",
+  "settings.privacy.headline.verify2": "Lee el desglose por función más abajo: qué cosas opcionales pueden enviar datos fuera y si están activas ahora mismo.",
+  "settings.privacy.headline.verify3": "Abre el Recibo de Confianza al final de esta sección: un resumen imprimible de cada afirmación y el archivo que la respalda.",
+
+  "satisfaction.label": "¿Te resultó útil?",
+  "satisfaction.up": "Pulgar arriba — útil",
+  "satisfaction.down": "Pulgar abajo — no fue útil",
+  "satisfaction.dismiss": "Descartar pregunta de utilidad",
+  "satisfaction.thanks": "Gracias. Se queda en este dispositivo."
 }

@@ -441,5 +441,25 @@
   "unit.time.one": "time",
   "unit.time.other": "times",
   "unit.priorAnswer.one": "{{count}} prior answer",
-  "unit.priorAnswer.other": "{{count}} prior answers"
+  "unit.priorAnswer.other": "{{count}} prior answers",
+
+  "settings.stdDrink.explainSummary": "What does \"1 std drink\" mean here?",
+  "settings.stdDrink.equalsLine": "Roughly equal to:",
+  "settings.stdDrink.sourcePrefix": "Source:",
+  "settings.stdDrink.changeHint": "Change the picker above to use a different definition.",
+  "settings.stdDrink.gramsSuffix": "g pure alcohol.",
+
+  "settings.privacy.headline.title": "Your data. On this device. Period.",
+  "settings.privacy.headline.claim": "Nothing leaves your device. Backup is end-to-end encrypted. No analytics, no ads.",
+  "settings.privacy.headline.expand": "How can I verify this?",
+  "settings.privacy.headline.verifyIntro": "Three checks anyone can run:",
+  "settings.privacy.headline.verify1": "Open browser devtools → Network tab → reload. With every optional feature off, only the static app bundle loads.",
+  "settings.privacy.headline.verify2": "Read the per-feature breakdown below: which optional things can call out, and whether they are on right now.",
+  "settings.privacy.headline.verify3": "Open the Trust Receipt at the bottom of this section: print-ready summary of every claim and the file that backs it up.",
+
+  "satisfaction.label": "Was this helpful?",
+  "satisfaction.up": "Thumb up — helpful",
+  "satisfaction.down": "Thumb down — not helpful",
+  "satisfaction.dismiss": "Dismiss helpful prompt",
+  "satisfaction.thanks": "Thanks. Stays on this device."
 }
