@@ -30,54 +30,34 @@ interface Props {
   onResolved?: () => void;
 }
 
-export default function NpsPulseBanner({ now = Date.now, onResolved }: Props) {
-  const setSettings = useDB((s) => s.setSettings);
-  const existing = useDB((s) => s.db.settings.npsResponses);
+function ThanksState() {
   const { t } = useLanguage();
-  const [score, setScore] = useState<number>(7);
-  const [reason, setReason] = useState<string>('');
-  const [submitted, setSubmitted] = useState<boolean>(false);
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      data-testid="nps-pulse-thanks"
+      className="rounded-2xl border border-border-soft bg-surface-elevated p-card"
+    >
+      <p className="text-body text-ink">
+        {t('nps.thanks', 'Thanks. Stays on this device.')}
+      </p>
+    </div>
+  );
+}
 
-  function submit() {
-    const ts = now();
-    const next: NpsResponse = {
-      ts,
-      score: clampScore(score),
-    };
-    const trimmed = normalizeReason(reason);
-    if (trimmed !== undefined) next.reason = trimmed;
-    setSettings({
-      npsResponses: [...(existing ?? []), next],
-    });
-    setSubmitted(true);
-    /* Briefly show the thanks state before unmounting so the user
-     * sees the privacy reassurance ("Stays on this device.") at
-     * least once. The host's onResolved fires immediately so the
-     * gate stops re-rendering the banner; the thanks state lives
-     * in local component state until the host re-renders. */
-    onResolved?.();
-  }
+interface FormProps {
+  score: number;
+  setScore: (n: number) => void;
+  reason: string;
+  setReason: (s: string) => void;
+  onSubmit: () => void;
+  onSkip: () => void;
+}
 
-  function skip() {
-    setSettings({ npsDismissedAt: now() });
-    onResolved?.();
-  }
-
-  if (submitted) {
-    return (
-      <div
-        role="status"
-        aria-live="polite"
-        data-testid="nps-pulse-thanks"
-        className="rounded-2xl border border-border-soft bg-surface-elevated p-card"
-      >
-        <p className="text-body text-ink">
-          {t('nps.thanks', 'Thanks. Stays on this device.')}
-        </p>
-      </div>
-    );
-  }
-
+function NpsForm({ score, setScore, reason, setReason, onSubmit, onSkip }: FormProps) {
+  const { t } = useLanguage();
+  const body = t('nps.body', 'Would you tell a friend about Alchohalt? 0 = not at all, 10 = definitely.');
   return (
     <section
       role="region"
@@ -88,13 +68,9 @@ export default function NpsPulseBanner({ now = Date.now, onResolved }: Props) {
       <h3 id="nps-pulse-title" className="text-h3 text-ink">
         {t('nps.title', 'Quick check-in')}
       </h3>
-      <p className="text-body text-ink-soft">
-        {t('nps.body', 'Would you tell a friend about Alchohalt? 0 = not at all, 10 = definitely.')}
-      </p>
+      <p className="text-body text-ink-soft">{body}</p>
       <div className="space-y-2">
-        <label htmlFor="nps-score" className="sr-only">
-          {t('nps.body', 'Would you tell a friend about Alchohalt? 0 = not at all, 10 = definitely.')}
-        </label>
+        <label htmlFor="nps-score" className="sr-only">{body}</label>
         <input
           id="nps-score"
           type="range"
@@ -134,7 +110,7 @@ export default function NpsPulseBanner({ now = Date.now, onResolved }: Props) {
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          onClick={submit}
+          onClick={onSubmit}
           data-testid="nps-pulse-submit"
           className="rounded-full bg-primary-700 px-4 py-2 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:bg-primary-600 dark:hover:bg-primary-700"
         >
@@ -142,7 +118,7 @@ export default function NpsPulseBanner({ now = Date.now, onResolved }: Props) {
         </button>
         <button
           type="button"
-          onClick={skip}
+          onClick={onSkip}
           data-testid="nps-pulse-skip"
           className="text-sm text-ink-soft underline underline-offset-2 hover:text-ink"
         >
@@ -153,5 +129,44 @@ export default function NpsPulseBanner({ now = Date.now, onResolved }: Props) {
         {t('nps.thanks', 'Thanks. Stays on this device.')}
       </p>
     </section>
+  );
+}
+
+export default function NpsPulseBanner({ now = Date.now, onResolved }: Props) {
+  const setSettings = useDB((s) => s.setSettings);
+  const existing = useDB((s) => s.db.settings.npsResponses);
+  const [score, setScore] = useState<number>(7);
+  const [reason, setReason] = useState<string>('');
+  const [submitted, setSubmitted] = useState<boolean>(false);
+
+  function submit() {
+    const next: NpsResponse = { ts: now(), score: clampScore(score) };
+    const trimmed = normalizeReason(reason);
+    if (trimmed !== undefined) next.reason = trimmed;
+    setSettings({ npsResponses: [...(existing ?? []), next] });
+    setSubmitted(true);
+    /* Briefly show the thanks state before unmounting so the user
+     * sees the privacy reassurance ("Stays on this device.") at
+     * least once. The host's onResolved fires immediately so the
+     * gate stops re-rendering the banner; the thanks state lives
+     * in local component state until the host re-renders. */
+    onResolved?.();
+  }
+
+  function skip() {
+    setSettings({ npsDismissedAt: now() });
+    onResolved?.();
+  }
+
+  if (submitted) return <ThanksState />;
+  return (
+    <NpsForm
+      score={score}
+      setScore={setScore}
+      reason={reason}
+      setReason={setReason}
+      onSubmit={submit}
+      onSkip={skip}
+    />
   );
 }
