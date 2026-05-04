@@ -11,10 +11,17 @@ import A11ySkipLink from '../components/A11ySkipLink';
 import AppHeader from './AppHeader';
 import TabShell, { type TabId } from './TabShell';
 import TodayHome from '../features/homepage/TodayHome';
-import TrackTab from './tabs/TrackTab';
-import GoalsTab from './tabs/GoalsTab';
-import InsightsTab from './tabs/InsightsTab';
-import SettingsTab from './tabs/SettingsTab';
+/* [R29-B] Lazy the four non-default tabs. TodayHome stays eager (it's
+ * the default route a returning user lands on). TrackTab + GoalsTab +
+ * InsightsTab + SettingsTab were each bundled into the main index
+ * chunk; pulling them out drops the index chunk weight below the
+ * Lighthouse-mobile noise floor at the 0.75 perf threshold. See
+ * audit-walkthrough/round-29-lighthouse-flake-rca.md for the
+ * measurement and the bundle-delta math. */
+const TrackTab = React.lazy(() => import('./tabs/TrackTab'));
+const GoalsTab = React.lazy(() => import('./tabs/GoalsTab'));
+const InsightsTab = React.lazy(() => import('./tabs/InsightsTab'));
+const SettingsTab = React.lazy(() => import('./tabs/SettingsTab'));
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
 import { type LegalSlug } from '../features/legal/slugs';
@@ -157,6 +164,12 @@ function buildPanels(opts: {
   onGoalsChange: (g: Goals) => void;
 }): Record<TabId, React.ReactNode> {
   const { drinks, goals, presets, actions, setActiveTab, openHardTime, openCrisis, onGoalsChange } = opts;
+  /* [R29-B] Lazy tabs share one Suspense fallback. The Skeleton is the
+   * standard tab-switch placeholder used elsewhere in the app; on a
+   * warm cache it renders for one paint then resolves. */
+  const lazyFallback = (
+    <Skeleton className="mx-auto mt-12 max-w-3xl h-96 rounded-2xl" />
+  );
   return {
     today: (
       <TodayHome drinks={drinks} editing={actions.editingDrink} goals={goals} presets={presets}
@@ -164,15 +177,29 @@ function buildPanels(opts: {
         onOpenInsights={() => setActiveTab('insights')} onRoughNight={openHardTime} />
     ),
     track: (
-      <TrackTab drinks={drinks} goals={goals} presets={presets} editing={actions.editingDrink}
-        onAddDrink={actions.addDrink} onSaveDrink={actions.saveDrink} onStartEdit={actions.startEdit}
-        onDeleteDrink={actions.deleteDrink} onCancelEdit={actions.cancelEdit}
-        onBulkDelete={actions.bulkDelete} onBulkShiftTime={actions.bulkShiftTime}
-        onBulkScaleStd={actions.bulkScaleStd} />
+      <React.Suspense fallback={lazyFallback}>
+        <TrackTab drinks={drinks} goals={goals} presets={presets} editing={actions.editingDrink}
+          onAddDrink={actions.addDrink} onSaveDrink={actions.saveDrink} onStartEdit={actions.startEdit}
+          onDeleteDrink={actions.deleteDrink} onCancelEdit={actions.cancelEdit}
+          onBulkDelete={actions.bulkDelete} onBulkShiftTime={actions.bulkShiftTime}
+          onBulkScaleStd={actions.bulkScaleStd} />
+      </React.Suspense>
     ),
-    goals: <GoalsTab goals={goals} onGoalsChange={onGoalsChange} />,
-    insights: <InsightsTab drinks={drinks} goals={goals} />,
-    settings: <SettingsTab onOpenCrisis={openCrisis} />,
+    goals: (
+      <React.Suspense fallback={lazyFallback}>
+        <GoalsTab goals={goals} onGoalsChange={onGoalsChange} />
+      </React.Suspense>
+    ),
+    insights: (
+      <React.Suspense fallback={lazyFallback}>
+        <InsightsTab drinks={drinks} goals={goals} />
+      </React.Suspense>
+    ),
+    settings: (
+      <React.Suspense fallback={lazyFallback}>
+        <SettingsTab onOpenCrisis={openCrisis} />
+      </React.Suspense>
+    ),
   };
 }
 
