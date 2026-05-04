@@ -4,6 +4,7 @@ import type { Theme, Language } from '../../store/db';
 import { Button } from '../../components/ui/Button';
 import { Skeleton } from '../../components/ui/Skeleton';
 import DevTools from './DevTools';
+import SettingsJumpNav from './SettingsJumpNav';
 import SelfExperimentDashboard from './SelfExperimentDashboard';
 import BackupVerifier from '../backup/BackupVerifier';
 import NotificationsSettings from './NotificationsSettings';
@@ -221,6 +222,7 @@ export default function SettingsPanel() {
   }));
   return (
     <div className="space-y-6">
+      <SettingsJumpNav />
       <AppearanceSection settings={settings} setTheme={setTheme} setLanguage={setLanguage} setSettings={setSettings} />
       <RemindersSection settings={settings} setRemindersEnabled={setRemindersEnabled} setReminderTimes={setReminderTimes} />
       <PrivacyAndDataSection />
