@@ -47,6 +47,7 @@ describe('detectColumns', () => {
       drinkType: 'type',
       notes: 'notes',
       mood: 'mood',
+      tags: null,
     });
   });
 
@@ -67,6 +68,7 @@ describe('applyMapping', () => {
     drinkType: 'type',
     notes: 'notes',
     mood: null,
+    tags: null,
   };
 
   it('builds entries from rows with all fields', () => {
@@ -125,5 +127,48 @@ describe('applyMapping', () => {
     );
     expect(result.entries).toHaveLength(1);
     expect(new Date(result.entries[0]!.ts).getDate()).toBe(15);
+  });
+
+  // [R27-D] Tags column support — generic CSV importer.
+  it('imports comma-separated tags onto each entry', () => {
+    const tagged: ColumnMap = { ...mapping, tags: 'tags' };
+    const result = applyMapping(
+      [{ date: '2026-01-15', drinks: '1', type: 'beer', notes: '', tags: 'social, evening' }],
+      tagged,
+    );
+    expect(result.entries[0]?.tags).toEqual(['social', 'evening']);
+  });
+
+  it('imports pipe-separated tags', () => {
+    const tagged: ColumnMap = { ...mapping, tags: 'tags' };
+    const result = applyMapping(
+      [{ date: '2026-01-15', drinks: '1', type: 'beer', notes: '', tags: 'home|alone|stress' }],
+      tagged,
+    );
+    expect(result.entries[0]?.tags).toEqual(['home', 'alone', 'stress']);
+  });
+
+  it('omits tags field when cell is empty', () => {
+    const tagged: ColumnMap = { ...mapping, tags: 'tags' };
+    const result = applyMapping(
+      [{ date: '2026-01-15', drinks: '1', type: 'beer', notes: '', tags: '' }],
+      tagged,
+    );
+    expect(result.entries[0]?.tags).toBeUndefined();
+  });
+
+  it('detects tags column via TAGS_HEADERS', () => {
+    expect(detectColumns(['date', 'tag']).tags).toBe('tag');
+    expect(detectColumns(['date', 'Labels']).tags).toBe('Labels');
+    expect(detectColumns(['date', 'categories']).tags).toBe('categories');
+  });
+
+  it('deduplicates repeated tags within a cell', () => {
+    const tagged: ColumnMap = { ...mapping, tags: 'tags' };
+    const result = applyMapping(
+      [{ date: '2026-01-15', drinks: '1', type: 'beer', notes: '', tags: 'social, social, evening' }],
+      tagged,
+    );
+    expect(result.entries[0]?.tags).toEqual(['social', 'evening']);
   });
 });
