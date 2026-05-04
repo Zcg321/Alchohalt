@@ -289,6 +289,19 @@ export interface Settings {
    * 14 days for that surface only.
    */
   satisfactionSignals?: { surface: string; response: 'up' | 'down'; ts: number }[] | undefined;
+  /**
+   * [R28-B] Runtime-archived experiment keys. When the owner taps the
+   * "Archive losers" button in DiagnosticsAudit's AbWinnerReadout, the
+   * experiment key is appended here. useExperiment then returns null
+   * for those keys (skips bucketing + exposure), so the consuming
+   * surface falls back to its production default copy.
+   *
+   * Why store at runtime instead of editing registry.ts: lets the
+   * owner archive without a code change. Reversible by editing the
+   * registry (which always wins) or by clearing this list.
+   * Sovereign-locked: each archive event requires explicit confirm.
+   */
+  archivedExperimentKeys?: string[] | undefined;
 }
 
 export interface Entry {
