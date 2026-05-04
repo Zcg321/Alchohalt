@@ -15,13 +15,13 @@
 import React from 'react';
 import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
-import { getStdDrinkExplanation } from '../../lib/stdDrinkExplanation';
+import { getStdDrinkExplanationLocalized } from '../../lib/stdDrinkExplanation';
 import type { StdDrinkSystem } from '../../lib/calc';
 
 export default function StdDrinkExplanation() {
   const system = useDB((s) => s.db.settings.stdDrinkSystem) as StdDrinkSystem | undefined;
   const { t } = useLanguage();
-  const explanation = getStdDrinkExplanation(system);
+  const explanation = getStdDrinkExplanationLocalized(system, t);
   const summary = t(
     'settings.stdDrink.explainSummary',
     'What does "1 std drink" mean here?',

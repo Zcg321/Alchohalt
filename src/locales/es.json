@@ -443,5 +443,47 @@
   "satisfaction.up": "Pulgar arriba — útil",
   "satisfaction.down": "Pulgar abajo — no fue útil",
   "satisfaction.dismiss": "Descartar pregunta de utilidad",
-  "satisfaction.thanks": "Gracias. Se queda en este dispositivo."
+  "satisfaction.thanks": "Gracias. Se queda en este dispositivo.",
+
+  "stdDrink.system.us.label": "1 bebida estándar (EE. UU., NIAAA)",
+  "stdDrink.system.us.equiv1": "355 ml (12 oz) de cerveza al 5%",
+  "stdDrink.system.us.equiv2": "150 ml (5 oz) de vino al 12%",
+  "stdDrink.system.us.equiv3": "45 ml (1,5 oz) de licor al 40%",
+  "stdDrink.system.us.authority": "Instituto Nacional sobre Abuso de Alcohol y Alcoholismo (EE. UU.)",
+
+  "stdDrink.system.uk.label": "1 unidad (Reino Unido, NHS)",
+  "stdDrink.system.uk.equiv1": "media pinta de cerveza al 4%",
+  "stdDrink.system.uk.equiv2": "76 ml de vino al 12%",
+  "stdDrink.system.uk.equiv3": "25 ml de licor al 40% (medida sencilla)",
+  "stdDrink.system.uk.authority": "NHS del Reino Unido / Chief Medical Officers",
+
+  "stdDrink.system.au.label": "1 bebida estándar (Australia, NHMRC)",
+  "stdDrink.system.au.equiv1": "285 ml de cerveza al 4,8% (un «middy»/«pot»)",
+  "stdDrink.system.au.equiv2": "100 ml de vino al 13%",
+  "stdDrink.system.au.equiv3": "30 ml de licor al 40%",
+  "stdDrink.system.au.authority": "Consejo Nacional de Salud e Investigación Médica de Australia",
+
+  "stdDrink.system.eu.label": "1 bebida estándar (UE, 10 g)",
+  "stdDrink.system.eu.equiv1": "250 ml de cerveza al 5%",
+  "stdDrink.system.eu.equiv2": "100 ml de vino al 12,5%",
+  "stdDrink.system.eu.equiv3": "30 ml de licor al 40%",
+  "stdDrink.system.eu.authority": "Consenso UE (NL/FR/DE — informe ICAP)",
+
+  "stdDrink.system.ca.label": "1 bebida estándar (Canadá, Health Canada)",
+  "stdDrink.system.ca.equiv1": "341 ml (12 oz) de cerveza al 5%",
+  "stdDrink.system.ca.equiv2": "142 ml (5 oz) de vino al 12%",
+  "stdDrink.system.ca.equiv3": "43 ml (1,5 oz) de licor al 40%",
+  "stdDrink.system.ca.authority": "Directrices de bajo riesgo de Health Canada",
+
+  "stdDrink.system.ie.label": "1 bebida estándar (Irlanda, HSE)",
+  "stdDrink.system.ie.equiv1": "media pinta de lager al 4,3%",
+  "stdDrink.system.ie.equiv2": "100 ml de vino al 12,5%",
+  "stdDrink.system.ie.equiv3": "35,5 ml de licor al 40% (medida irlandesa)",
+  "stdDrink.system.ie.authority": "Servicio de Salud Irlandés (HSE)",
+
+  "stdDrink.system.nz.label": "1 bebida estándar (NZ, HPA)",
+  "stdDrink.system.nz.equiv1": "330 ml de cerveza al 4%",
+  "stdDrink.system.nz.equiv2": "100 ml de vino al 12,5%",
+  "stdDrink.system.nz.equiv3": "30 ml de licor al 40%",
+  "stdDrink.system.nz.authority": "Agencia de Promoción de la Salud de Nueva Zelanda"
 }

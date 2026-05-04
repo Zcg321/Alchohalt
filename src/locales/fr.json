@@ -443,5 +443,47 @@
   "satisfaction.up": "Pouce levé — utile",
   "satisfaction.down": "Pouce baissé — pas utile",
   "satisfaction.dismiss": "Ignorer la question d'utilité",
-  "satisfaction.thanks": "Merci. Reste sur cet appareil."
+  "satisfaction.thanks": "Merci. Reste sur cet appareil.",
+
+  "stdDrink.system.us.label": "1 verre standard (États-Unis, NIAAA)",
+  "stdDrink.system.us.equiv1": "355 ml (12 oz) de bière à 5 %",
+  "stdDrink.system.us.equiv2": "150 ml (5 oz) de vin à 12 %",
+  "stdDrink.system.us.equiv3": "45 ml (1,5 oz) de spiritueux à 40 %",
+  "stdDrink.system.us.authority": "National Institute on Alcohol Abuse and Alcoholism (États-Unis)",
+
+  "stdDrink.system.uk.label": "1 unité (Royaume-Uni, NHS)",
+  "stdDrink.system.uk.equiv1": "demi-pinte de bière à 4 %",
+  "stdDrink.system.uk.equiv2": "76 ml de vin à 12 %",
+  "stdDrink.system.uk.equiv3": "25 ml de spiritueux à 40 % (mesure simple)",
+  "stdDrink.system.uk.authority": "NHS du Royaume-Uni / Chief Medical Officers",
+
+  "stdDrink.system.au.label": "1 verre standard (Australie, NHMRC)",
+  "stdDrink.system.au.equiv1": "285 ml de bière à 4,8 % (un « middy »/« pot »)",
+  "stdDrink.system.au.equiv2": "100 ml de vin à 13 %",
+  "stdDrink.system.au.equiv3": "30 ml de spiritueux à 40 %",
+  "stdDrink.system.au.authority": "Conseil national australien de la santé et de la recherche médicale",
+
+  "stdDrink.system.eu.label": "1 verre standard (UE, 10 g)",
+  "stdDrink.system.eu.equiv1": "250 ml de bière à 5 %",
+  "stdDrink.system.eu.equiv2": "100 ml de vin à 12,5 %",
+  "stdDrink.system.eu.equiv3": "30 ml de spiritueux à 40 %",
+  "stdDrink.system.eu.authority": "Consensus UE (NL/FR/DE — rapport ICAP)",
+
+  "stdDrink.system.ca.label": "1 verre standard (Canada, Santé Canada)",
+  "stdDrink.system.ca.equiv1": "341 ml (12 oz) de bière à 5 %",
+  "stdDrink.system.ca.equiv2": "142 ml (5 oz) de vin à 12 %",
+  "stdDrink.system.ca.equiv3": "43 ml (1,5 oz) de spiritueux à 40 %",
+  "stdDrink.system.ca.authority": "Directives de Santé Canada sur la consommation à faible risque",
+
+  "stdDrink.system.ie.label": "1 verre standard (Irlande, HSE)",
+  "stdDrink.system.ie.equiv1": "demi-pinte de lager à 4,3 %",
+  "stdDrink.system.ie.equiv2": "100 ml de vin à 12,5 %",
+  "stdDrink.system.ie.equiv3": "35,5 ml de spiritueux à 40 % (mesure irlandaise)",
+  "stdDrink.system.ie.authority": "Health Service Executive (Irlande)",
+
+  "stdDrink.system.nz.label": "1 verre standard (Nouvelle-Zélande, HPA)",
+  "stdDrink.system.nz.equiv1": "330 ml de bière à 4 %",
+  "stdDrink.system.nz.equiv2": "100 ml de vin à 12,5 %",
+  "stdDrink.system.nz.equiv3": "30 ml de spiritueux à 40 %",
+  "stdDrink.system.nz.authority": "Health Promotion Agency (Nouvelle-Zélande)"
 }
