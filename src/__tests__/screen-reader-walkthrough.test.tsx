@@ -37,7 +37,8 @@ describe('SR walkthrough — Onboarding (Beat 1)', () => {
     const labelledBy = dialog.getAttribute('aria-labelledby');
     expect(labelledBy).toBeTruthy();
     const title = document.getElementById(labelledBy!);
-    expect(title?.textContent).toMatch(/step 1 of 3/i);
+    // [R27-C] Onboarding gained a 4th beat (log-style picker).
+    expect(title?.textContent).toMatch(/step 1 of 4/i);
   });
 
   it('step indicator is exposed as a progressbar (not aria-hidden)', () => {
@@ -45,7 +46,8 @@ describe('SR walkthrough — Onboarding (Beat 1)', () => {
     render(<OnboardingFlow />);
     const progress = screen.getByRole('progressbar');
     expect(progress.getAttribute('aria-valuenow')).toBe('1');
-    expect(progress.getAttribute('aria-valuemax')).toBe('3');
+    // [R27-C] Onboarding gained a 4th beat (log-style picker).
+    expect(progress.getAttribute('aria-valuemax')).toBe('4');
   });
 
   it('X icon button announces as "Close" (not "Skip")', () => {
