@@ -486,6 +486,7 @@
   "settings.privacy.headline.verify1": "Otwórz narzędzia deweloperskie przeglądarki → zakładka Sieć → odśwież. Z wyłączonymi funkcjami opcjonalnymi ładuje się tylko statyczny pakiet aplikacji.",
   "settings.privacy.headline.verify2": "Przeczytaj zestawienie funkcji poniżej: które opcjonalne elementy mogą wysyłać dane i czy są obecnie włączone.",
   "settings.privacy.headline.verify3": "Otwórz Pokwitowanie zaufania na dole tej sekcji: gotowe do wydruku podsumowanie każdej deklaracji i pliku, który ją potwierdza.",
+  "settings.privacy.headline.showFirstLaunchAgain": "Pokaż ponownie kartę prywatności pierwszego uruchomienia",
 
   "satisfaction.label": "Czy to było pomocne?",
   "satisfaction.up": "Kciuk w górę — pomocne",

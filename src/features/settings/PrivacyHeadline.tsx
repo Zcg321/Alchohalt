@@ -18,9 +18,14 @@
  */
 import React from 'react';
 import { useLanguage } from '../../i18n';
+import { useDB } from '../../store/db';
 
 export default function PrivacyHeadline() {
   const { t } = useLanguage();
+  const dismissedAt = useDB(
+    (s) => s.db.settings.firstLaunchPrivacyCardDismissedAt,
+  );
+  const setSettings = useDB((s) => s.setSettings);
   return (
     <section
       data-testid="privacy-headline"
@@ -75,6 +80,21 @@ export default function PrivacyHeadline() {
           </ol>
         </div>
       </details>
+      {dismissedAt ? (
+        <button
+          type="button"
+          data-testid="privacy-headline-show-first-launch"
+          onClick={() =>
+            setSettings({ firstLaunchPrivacyCardDismissedAt: undefined as never })
+          }
+          className="mt-3 text-xs font-medium text-sage-700 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 dark:text-sage-300"
+        >
+          {t(
+            'settings.privacy.headline.showFirstLaunchAgain',
+            'Show the first-launch privacy card again',
+          )}
+        </button>
+      ) : null}
     </section>
   );
 }

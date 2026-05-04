@@ -439,6 +439,7 @@
   "settings.privacy.headline.verify1": "Ouvrez les outils du navigateur → onglet Réseau → rechargez. Avec toutes les fonctions optionnelles désactivées, seul le bundle statique de l'app se charge.",
   "settings.privacy.headline.verify2": "Lisez le détail par fonction ci-dessous : quelles options peuvent transmettre des données vers l'extérieur, et si elles sont actives maintenant.",
   "settings.privacy.headline.verify3": "Ouvrez le Reçu de confiance en bas de cette section : un récapitulatif imprimable de chaque promesse et du fichier qui la justifie.",
+  "settings.privacy.headline.showFirstLaunchAgain": "Afficher à nouveau la carte de confidentialité de premier lancement",
 
   "satisfaction.label": "Cela vous a-t-il été utile ?",
   "satisfaction.up": "Pouce levé — utile",
