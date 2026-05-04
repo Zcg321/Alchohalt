@@ -101,12 +101,12 @@
   "haltLabel": "HALT",
   "alternative": "Alternative Aktion",
   "alternativePlaceholder": "z. B. spazieren gehen",
-  "intention_celebrate": "feiern",
-  "intention_social": "gesellig",
+  "intention_celebrate": "Feier",
+  "intention_social": "Geselligkeit",
   "intention_taste": "Geschmack",
   "intention_bored": "Langeweile",
-  "intention_cope": "abschalten",
-  "intention_other": "anderes",
+  "intention_cope": "Bewältigung",
+  "intention_other": "Anderes",
   "halt_hungry": "hungrig",
   "halt_angry": "wütend",
   "halt_lonely": "einsam",
@@ -156,7 +156,7 @@
   "bulk.scope.clear": "Leeren",
   "bulk.deleteSelected": "Auswahl löschen",
   "bulk.shiftTime": "Zeit verschieben…",
-  "bulk.scaleStd": "Std anpassen…",
+  "bulk.scaleStd": "Standardgetränke anpassen…",
   "bulk.deleteConfirm.one": "Dieses Getränk löschen? Lässt sich nicht rückgängig machen.",
   "bulk.deleteConfirm.many": "{{n}} Getränke löschen? Lässt sich nicht rückgängig machen.",
   "ribbon.heading": "Deine letzten sieben Tage auf einen Blick",
@@ -207,7 +207,7 @@
     "getStarted": "Loslegen"
   },
   "marketing": {
-    "tagline": "Keine Werbung. Keine Analytik. Trust-Receipt inklusive.",
+    "tagline": "Keine Werbung. Keine Analytik. Vertrauen inklusive.",
     "shortTagline": "Keine Werbung. Keine Analytik. Deins.",
     "moatLine": "Wir können kryptografisch nicht lesen, was du einträgst."
   },
@@ -229,7 +229,7 @@
   "settings": {
     "privacy": {
       "heading": "Privatsphäre & Daten",
-      "tagline": "Keine Werbung. Keine Analytik. Trust-Receipt inklusive.",
+      "tagline": "Keine Werbung. Keine Analytik. Vertrauen inklusive.",
       "subtitle": "Drei Bereiche, hier zusammengeführt — eine Entscheidung statt drei."
     }
   },
