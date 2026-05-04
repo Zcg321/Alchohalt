@@ -101,11 +101,11 @@
   "haltLabel": "HALT",
   "alternative": "Action alternative",
   "alternativePlaceholder": "ex. faire une promenade",
-  "intention_celebrate": "fêter",
+  "intention_celebrate": "fête",
   "intention_social": "social",
   "intention_taste": "goût",
   "intention_bored": "ennui",
-  "intention_cope": "décompresser",
+  "intention_cope": "détente",
   "intention_other": "autre",
   "halt_hungry": "affamé",
   "halt_angry": "en colère",
@@ -208,7 +208,7 @@
   },
   "marketing": {
     "tagline": "Aucune publicité. Aucune analyse. Attestation de confiance incluse.",
-    "shortTagline": "Aucune publicité. Aucune analyse. À vous.",
+    "shortTagline": "Aucune publicité. Aucune analyse. Vos données.",
     "moatLine": "Nous ne pouvons cryptographiquement pas lire ce que vous enregistrez."
   },
   "diagnostics": {
@@ -312,7 +312,7 @@
     },
     "budget": {
       "title": "Budget d'entretien",
-      "detail": "Autorise jusqu'à 4 verres standards par semaine."
+      "detail": "Autorise jusqu'à 4 verres standard par semaine."
     }
   },
   "medicalDisclaimer": {

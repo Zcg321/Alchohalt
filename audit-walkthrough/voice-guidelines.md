@@ -130,3 +130,30 @@ Surfaces audited 2026-05-03:
 | `features/backup/BackupAutoVerifyRibbon.tsx` | ✓ observation | Backup status, not milestone — N/A. |
 
 If a future milestone surface is added, run the five-question test above before merging.
+
+## Locale style guide — French (R21-B)
+
+Pinned by the R20-6 native-French-speaker judge + R21-B follow-up.
+Apply when adding/editing strings in `src/locales/fr.json`.
+
+- **Address: vous, never tu.** Vous is the canonical brand voice for
+  the wellness/recovery context. R20-6 unified all tu-form strings
+  to vous; new strings must match.
+- **`intention_*` keys are nouns, not verbs.** R21-B fixed
+  `intention_celebrate` (fêter → fête) and `intention_cope`
+  (décompresser → détente) to keep the selection list parallel.
+  Future intention values must be noun-form (or accept-as-fact
+  adjectives like `social`).
+- **"standard" stays invariable as an adjective.** Académie française
+  rule: borrowed adjectives don't agree in number. R21-B fixed the
+  one instance of "verres standards" → "verres standard" so all
+  fr.json uses the same form. Don't write "boissons standards" or
+  "verres standards" in new strings.
+- **Avoid "À vous." standalone.** R21-B replaced
+  `marketing.shortTagline` "Aucune publicité. Aucune analyse. À
+  vous." with "Aucune publicité. Aucune analyse. Vos données." —
+  same possessive concept, idiomatic French. Future taglines should
+  prefer "Vos données." or "C'est à vous." over standalone "À vous."
+- **No anglicisms in calm-tone strings.** R20-6 fixed "Reset de 90
+  jours" → "Réinitialisation 90 jours." Avoid Reset, Tracker,
+  Streak (use Série), etc. when a French equivalent reads cleanly.
