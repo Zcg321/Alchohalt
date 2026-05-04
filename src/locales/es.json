@@ -357,5 +357,12 @@
   "unit.time.one": "vez",
   "unit.time.other": "veces",
   "unit.priorAnswer.one": "{{count}} respuesta anterior",
-  "unit.priorAnswer.other": "{{count}} respuestas anteriores"
+  "unit.priorAnswer.other": "{{count}} respuestas anteriores",
+
+  "selfExperiment.title": "Lo que la app mide sobre sí misma",
+  "selfExperiment.description": "Todo lo siguiente está en este dispositivo. Nada se envía fuera, ningún servicio de análisis lo toca. El objetivo es que la app sea legible para su propio usuario.",
+  "selfExperiment.jumpNav": "Secciones del panel",
+  "selfExperiment.jumpDiagnostics": "Diagnósticos de incorporación",
+  "selfExperiment.jumpAudit": "Auditoría de Configuración",
+  "selfExperiment.jumpFunnel": "Embudo de incorporación"
 }

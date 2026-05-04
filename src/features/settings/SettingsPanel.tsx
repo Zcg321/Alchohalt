@@ -43,7 +43,7 @@ function AppearanceSection({ settings, setTheme, setLanguage, setSettings }: {
   return (
     <section className="card">
       <div className="card-header">
-        <h2 className="text-lg font-semibold tracking-tight">Appearance</h2>
+        <h2 id="appearance-heading" className="text-lg font-semibold tracking-tight">Appearance</h2>
       </div>
       <div className="card-content">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -117,7 +117,7 @@ function RemindersSection({ settings, setRemindersEnabled, setReminderTimes }: {
   return (
     <section className="card">
       <div className="card-header">
-        <h2 className="text-lg font-semibold tracking-tight">Reminders</h2>
+        <h2 id="reminders-heading" className="text-lg font-semibold tracking-tight">Reminders</h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
           Off by default. The checkbox below turns daily check-in notifications on.
         </p>

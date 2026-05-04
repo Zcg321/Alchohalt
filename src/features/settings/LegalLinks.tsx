@@ -23,7 +23,7 @@ export default function LegalLinks() {
   return (
     <section className="card">
       <div className="card-content">
-        <h2 className="text-base font-semibold tracking-tight mb-3">Legal</h2>
+        <h2 id="legal-heading" className="text-base font-semibold tracking-tight mb-3">Legal</h2>
         <ul className="space-y-1.5 text-sm">
           {LINKS.map((l) => (
             <li key={l.slug}>

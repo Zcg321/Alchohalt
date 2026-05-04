@@ -396,5 +396,12 @@
   "unit.priorAnswer.one": "{{count}} предыдущий ответ",
   "unit.priorAnswer.few": "{{count}} предыдущих ответа",
   "unit.priorAnswer.many": "{{count}} предыдущих ответов",
-  "unit.priorAnswer.other": "{{count}} предыдущего ответа"
+  "unit.priorAnswer.other": "{{count}} предыдущего ответа",
+
+  "selfExperiment.title": "Что приложение измеряет о себе",
+  "selfExperiment.description": "Всё, что показано ниже, находится на этом устройстве. Ничего не отправляется наружу, ни один сервис аналитики не имеет доступа. Цель — сделать приложение прозрачным для самого пользователя.",
+  "selfExperiment.jumpNav": "Разделы панели",
+  "selfExperiment.jumpDiagnostics": "Диагностика входа",
+  "selfExperiment.jumpAudit": "Аудит настроек",
+  "selfExperiment.jumpFunnel": "Воронка входа"
 }

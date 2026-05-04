@@ -396,5 +396,12 @@
   "unit.priorAnswer.one": "{{count}} wcześniejsza odpowiedź",
   "unit.priorAnswer.few": "{{count}} wcześniejsze odpowiedzi",
   "unit.priorAnswer.many": "{{count}} wcześniejszych odpowiedzi",
-  "unit.priorAnswer.other": "{{count}} wcześniejszej odpowiedzi"
+  "unit.priorAnswer.other": "{{count}} wcześniejszej odpowiedzi",
+
+  "selfExperiment.title": "Co aplikacja mierzy o samej sobie",
+  "selfExperiment.description": "Wszystko poniżej znajduje się na tym urządzeniu. Nic nie jest wysyłane na zewnątrz, żadna usługa analityczna tego nie dotyka. Celem jest, by aplikacja była czytelna dla samego użytkownika.",
+  "selfExperiment.jumpNav": "Sekcje panelu",
+  "selfExperiment.jumpDiagnostics": "Diagnostyka wdrożenia",
+  "selfExperiment.jumpAudit": "Audyt ustawień",
+  "selfExperiment.jumpFunnel": "Lejek wdrożenia"
 }

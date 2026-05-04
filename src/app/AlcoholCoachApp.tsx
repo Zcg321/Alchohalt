@@ -7,6 +7,7 @@ import {
   legacyGoalsToSettings,
 } from '../lib/data-bridge';
 import ScrollTopButton from '../components/ScrollTopButton';
+import A11ySkipLink from '../components/A11ySkipLink';
 import AppHeader from './AppHeader';
 import TabShell, { type TabId } from './TabShell';
 import TodayHome from '../features/homepage/TodayHome';
@@ -217,7 +218,13 @@ function AlcoholCoachAppInner() {
 
   return (
     <>
-      <a href="#main" className="skip-link">Skip to main content</a>
+      {/* [R22-2] Single skip-link via the i18n'd component. The previous
+       * arrangement rendered <A11ySkipLink /> in main.tsx PLUS an inline
+       * <a>Skip to main content</a> here — screen-reader users heard
+       * two skip targets in a row at page load (both pointed at #main).
+       * Co-locating the link with the app means tests render it without
+       * needing main.tsx, and there's only one in the AT tree. */}
+      <A11ySkipLink />
       <DataRecoveryScreen />
       <OnboardingFlow />
       <OnboardingReentryBanner />

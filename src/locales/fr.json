@@ -357,5 +357,12 @@
   "unit.time.one": "fois",
   "unit.time.other": "fois",
   "unit.priorAnswer.one": "{{count}} réponse précédente",
-  "unit.priorAnswer.other": "{{count}} réponses précédentes"
+  "unit.priorAnswer.other": "{{count}} réponses précédentes",
+
+  "selfExperiment.title": "Ce que l'application mesure sur elle-même",
+  "selfExperiment.description": "Tout ce qui suit reste sur cet appareil. Rien n'est envoyé à l'extérieur, aucun service d'analyse n'y a accès. L'objectif : rendre l'application lisible pour son propre utilisateur.",
+  "selfExperiment.jumpNav": "Sections du tableau de bord",
+  "selfExperiment.jumpDiagnostics": "Diagnostics d'onboarding",
+  "selfExperiment.jumpAudit": "Audit des paramètres",
+  "selfExperiment.jumpFunnel": "Tunnel d'onboarding"
 }
