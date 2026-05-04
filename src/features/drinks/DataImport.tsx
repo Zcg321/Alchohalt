@@ -11,6 +11,7 @@ import {
 } from './importMapping';
 import { useLanguage } from '../../i18n';
 import { pluralNoun } from '../../i18n/plural';
+import { FormField } from '../../components/ui/FormField';
 
 type Step = 'pick' | 'map' | 'preview' | 'done';
 
@@ -48,23 +49,31 @@ function MapStep({ parsed, mapping, updateMapping, goPreview, reset }: {
         Detected {parsed.rows.length.toLocaleString()} rows in {parsed.format.toUpperCase()}.
         Map columns below — date is required, the rest are optional.
       </p>
+      {/* [R21-C] FormField owns label↔select wiring. The required '*'
+        * stays inline in the label since FormField doesn't model
+        * required-vs-optional state itself. */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {(['date', 'drinks', 'drinkType', 'notes', 'mood'] as const).map((field) => (
-          <label key={field} className="flex flex-col text-sm">
-            <span className="text-xs uppercase tracking-wider text-ink-soft mb-1">
-              {fieldLabel(field)}
-              {field === 'date' && <span className="text-rose-700 ms-1">*</span>}
-            </span>
+          <FormField
+            key={field}
+            id={`mapping-${field}`}
+            label={
+              <span className="text-xs uppercase tracking-wider text-ink-soft">
+                {fieldLabel(field)}
+                {field === 'date' && <span aria-hidden="true" className="text-rose-700 ms-1">*</span>}
+              </span>
+            }
+          >
             <select
               value={mapping[field] ?? ''}
               onChange={(e) => updateMapping(field, e.target.value)}
               data-testid={`mapping-${field}`}
-              className="px-3 py-2 rounded-md border border-current/20 bg-surface-elevated"
+              className="px-3 py-2 rounded-md border border-current/20 bg-surface-elevated w-full"
             >
               <option value="">— not mapped —</option>
               {parsed.headers.map((h) => (<option key={h} value={h}>{h}</option>))}
             </select>
-          </label>
+          </FormField>
         ))}
       </div>
       <div className="flex gap-2">
