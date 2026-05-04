@@ -24,6 +24,18 @@ type DiagDataT = ReturnType<typeof useDB.getState>['db']['settings']['onboarding
 type DiagHistoryT = NonNullable<ReturnType<typeof useDB.getState>['db']['settings']['onboardingDiagnosticsHistory']>;
 type T = ReturnType<typeof useLanguage>['t'];
 
+/**
+ * [R23-C] Map intent codes to human-friendly labels for the
+ * Diagnostics readout. The codes are stable; only the display label
+ * gets translated. 'undecided' renders as "Decide later" so a
+ * self-experimenter sees the tertiary path was chosen.
+ */
+function intentLabel(intent: string | undefined, t: T): string {
+  if (!intent) return t('diagnostics.noChoice', '—');
+  if (intent === 'undecided') return t('onboarding.decideLater', 'Decide later');
+  return intent;
+}
+
 function DiagnosticsGrid({ diag, t }: { diag: DiagDataT; t: T }) {
   const status = diag?.status ?? 'not-started';
   const statusLabel =
@@ -54,7 +66,7 @@ function DiagnosticsGrid({ diag, t }: { diag: DiagDataT; t: T }) {
           {t('diagnostics.intentChosen', 'Intent chosen')}
         </dt>
         <dd className="font-medium" data-testid="diagnostics-intent">
-          {diag?.intent ?? t('diagnostics.noChoice', '—')}
+          {intentLabel(diag?.intent, t)}
         </dd>
       </div>
       <div className="flex flex-col">
@@ -87,7 +99,7 @@ function HistoryDetails({ history, t }: { history: DiagHistoryT; t: T }) {
       <ul className="mt-2 space-y-1 text-xs">
         {history.slice().reverse().map((row) => (
           <li key={row.revisedAt} className="text-ink-soft">
-            <span className="font-medium text-ink">{row.intent ?? '—'}</span>
+            <span className="font-medium text-ink">{intentLabel(row.intent, t)}</span>
             <span className="ms-2">{new Date(row.revisedAt).toLocaleString()}</span>
           </li>
         ))}

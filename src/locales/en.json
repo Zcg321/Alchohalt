@@ -110,6 +110,7 @@
   "settings.jumpNav.billing": "Plan",
   "settings.jumpNav.about": "About",
   "settings.jumpNav.legal": "Legal",
+  "onboarding.decideLater": "Decide later",
   "disclaimer": "Your logs stay on your device. We can't read them. Not medical advice.",
   "export": "Export",
   "import": "Import",

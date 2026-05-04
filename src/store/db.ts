@@ -35,7 +35,14 @@ export type HALT = { H:boolean; A:boolean; L:boolean; T:boolean };
  */
 export interface OnboardingDiagnostics {
   status: 'not-started' | 'completed' | 'skipped';
-  intent?: 'cut-back' | 'quit' | 'curious' | undefined;
+  /**
+   * [R23-C] 'undecided' is a deliberate non-decision — the user opted
+   * to continue without committing on Day 0. Distinct from `undefined`
+   * (no answer recorded) and from skipping the flow entirely. Surfaces
+   * in Diagnostics with a "Decide later" label and unlocks revision
+   * via IntentRevisionModal.
+   */
+  intent?: 'cut-back' | 'quit' | 'curious' | 'undecided' | undefined;
   trackStyle?: 'day-by-day' | 'thirty-day' | 'custom' | undefined;
   completedAt?: number | undefined;
   skipPath?: 'x-button' | 'escape' | 'backdrop' | 'skip-explore' | 'just-looking' | undefined;
