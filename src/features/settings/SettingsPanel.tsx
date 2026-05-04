@@ -11,6 +11,7 @@ import NotificationsSettings from './NotificationsSettings';
 import SharingPanel from '../sharing/SharingPanel';
 import LegalLinks from './LegalLinks';
 import About from './About';
+import HelpFaq from './HelpFaq';
 import ReplayOnboardingButton from './ReplayOnboardingButton';
 import ResetPreferencesPanel from './ResetPreferencesPanel';
 import PrivacyStatus from './PrivacyStatus';
@@ -304,6 +305,7 @@ export default function SettingsPanel() {
       <PrivacyAndDataSection />
       <ResetPreferencesPanel />
       <BillingSection />
+      <HelpFaq />
       <About />
       <LegalLinks />
       <DevTools />

@@ -30,6 +30,8 @@ const SECTIONS: ReadonlyArray<{ key: string; href: string; fallback: string }> =
   { key: 'settings.jumpNav.reminders', href: '#reminders-heading', fallback: 'Reminders' },
   { key: 'settings.jumpNav.privacy', href: '#privacy-and-data-heading', fallback: 'Privacy' },
   { key: 'settings.jumpNav.billing', href: '#plan-and-billing-heading', fallback: 'Plan' },
+  /* [R28-1] Help anchor — surfaces the FAQ between Plan and About. */
+  { key: 'settings.jumpNav.help', href: '#help-heading', fallback: 'Help' },
   { key: 'settings.jumpNav.about', href: '#about-heading', fallback: 'About' },
   { key: 'settings.jumpNav.legal', href: '#legal-heading', fallback: 'Legal' },
 ];
