@@ -17,6 +17,7 @@ import {
   type SatisfactionSignal,
 } from '../satisfaction/satisfaction';
 import SatisfactionDashboard from '../satisfaction/SatisfactionDashboard';
+import ExperimentSatisfactionPanel from '../experiments/ExperimentSatisfactionPanel';
 
 /**
  * [R13-4] Diagnostics audit panel — "this is what your app is doing
@@ -522,6 +523,10 @@ export default function DiagnosticsAudit() {
             legacy SatisfactionFieldset so any audit doc that links
             to the existing testids keeps working. */}
         <SatisfactionDashboard />
+        {/* [R27-2] Per-arm satisfaction cross-tab. Pure read-only
+            dashboard; reads the same store as SatisfactionDashboard
+            plus the local exposure log. */}
+        <ExperimentSatisfactionPanel />
       </div>
     </section>
   );
