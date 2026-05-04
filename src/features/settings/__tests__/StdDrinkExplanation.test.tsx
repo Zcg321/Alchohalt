@@ -50,9 +50,9 @@ describe('[R26-A] StdDrinkExplanation', () => {
     render(<StdDrinkExplanation />);
     const grams = screen.getByTestId('stddrink-grams');
     expect(grams.textContent).toMatch(/8/);
-    expect(grams.textContent.toLowerCase()).toContain('unit');
+    expect(grams.textContent ?? '').toMatch(/unit/i);
     const list = screen.getByTestId('stddrink-equivalences');
-    expect(list.textContent.toLowerCase()).toMatch(/half a pint/);
+    expect(list.textContent ?? '').toMatch(/half a pint/i);
   });
 
   it('switches to AU 10g definition when stdDrinkSystem is au', () => {
@@ -61,7 +61,7 @@ describe('[R26-A] StdDrinkExplanation', () => {
     const grams = screen.getByTestId('stddrink-grams');
     expect(grams.textContent).toMatch(/10/);
     const list = screen.getByTestId('stddrink-equivalences');
-    expect(list.textContent.toLowerCase()).toMatch(/middy|pot|285/);
+    expect(list.textContent ?? '').toMatch(/middy|pot|285/i);
   });
 
   it('switches to NZ definition when stdDrinkSystem is nz', () => {

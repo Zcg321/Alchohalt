@@ -186,7 +186,7 @@ export default function InsightsTab({ drinks, goals }: Props) {
       <Suspense fallback={null}>
         <SatisfactionChip
           surface="insights-tab"
-          surfaceUsedTs={drinks.length > 0 ? drinks[0].ts : undefined}
+          surfaceUsedTs={drinks[0]?.ts}
         />
       </Suspense>
     </main>

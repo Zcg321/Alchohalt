@@ -75,7 +75,7 @@ describe('[R26-1] SatisfactionChip', () => {
     );
     fireEvent.click(screen.getByTestId('satisfaction-down-drink-form'));
     const stored = useDB.getState().db.settings.satisfactionSignals;
-    expect(stored![0].response).toBe('down');
+    expect(stored?.[0]?.response).toBe('down');
   });
 
   it('dismiss occupies the suppression window without poisoning up-count', () => {
@@ -88,7 +88,7 @@ describe('[R26-1] SatisfactionChip', () => {
     );
     fireEvent.click(screen.getByTestId('satisfaction-dismiss-today-panel'));
     const stored = useDB.getState().db.settings.satisfactionSignals;
-    expect(stored![0].response).toBe('down');
+    expect(stored?.[0]?.response).toBe('down');
   });
 
   it('does not render when a recent same-surface signal exists', () => {

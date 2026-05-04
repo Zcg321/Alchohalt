@@ -116,7 +116,7 @@ export default function SatisfactionChip({ surface, surfaceUsedTs, now = Date.no
         data-testid={`satisfaction-dismiss-${surface}`}
         onClick={dismiss}
         aria-label={t('satisfaction.dismiss', 'Dismiss helpful prompt')}
-        className="ml-1 text-neutral-500 hover:text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-neutral-400 dark:hover:text-neutral-200"
+        className="ms-1 text-neutral-500 hover:text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-neutral-400 dark:hover:text-neutral-200"
       >
         <span aria-hidden>×</span>
       </button>
