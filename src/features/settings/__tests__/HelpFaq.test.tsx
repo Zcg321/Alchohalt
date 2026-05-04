@@ -112,4 +112,20 @@ describe('[R28-1] HelpFaq', () => {
     fireEvent.change(search, { target: { value: '' } });
     expect(screen.getByTestId('help-faq-item-set-a-goal')).toBeTruthy();
   });
+
+  it('[R28-1 fix] search filter checks the same strings the user sees, not the English fallback only', () => {
+    /* Regression guard for Codex review C2: when locale entries are
+     * added under settings.help.faq.<id>.q/.a, search should match
+     * the localized text. With no locale entries present the
+     * fallback IS the English text, so this confirms the filter
+     * still works against the resolved string. */
+    render(<HelpFaq />);
+    const search = screen.getByTestId('help-faq-search') as HTMLInputElement;
+    // The crisis-support entry's English answer mentions "988".
+    fireEvent.change(search, { target: { value: '988' } });
+    expect(screen.getByTestId('help-faq-item-crisis-support')).toBeTruthy();
+    // And the entry whose English question contains "phone".
+    fireEvent.change(search, { target: { value: 'phone' } });
+    expect(screen.getByTestId('help-faq-item-lost-phone')).toBeTruthy();
+  });
 });

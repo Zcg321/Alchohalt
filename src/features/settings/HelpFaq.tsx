@@ -166,9 +166,22 @@ function FaqItem({ faq, query }: { faq: FaqEntry; query: string }) {
   );
 }
 
-function matchesQuery(faq: FaqEntry, query: string): boolean {
+/* [R28-1 fix per Codex review] Search filters against the translated
+ * strings the user actually sees. Previously it filtered against the
+ * English fallback fields — once locale catalogs added
+ * `settings.help.faq.<id>.q` / `.a` entries, a non-English user
+ * typing "borrar" would see false "No matches" because the haystack
+ * was still English. Resolving via t() per render keeps display +
+ * filter in sync. */
+function matchesTranslatedQuery(
+  faq: FaqEntry,
+  query: string,
+  resolve: (key: string, fallback: string) => string,
+): boolean {
   if (!query) return true;
-  const haystack = `${faq.question} ${faq.answer}`.toLowerCase();
+  const question = resolve(`settings.help.faq.${faq.id}.q`, faq.question);
+  const answer = resolve(`settings.help.faq.${faq.id}.a`, faq.answer);
+  const haystack = `${question} ${answer}`.toLowerCase();
   return haystack.includes(query.toLowerCase());
 }
 
@@ -176,8 +189,8 @@ export default function HelpFaq() {
   const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const filtered = useMemo(
-    () => FAQS.filter((f) => matchesQuery(f, query)),
-    [query],
+    () => FAQS.filter((f) => matchesTranslatedQuery(f, query, t)),
+    [query, t],
   );
 
   return (

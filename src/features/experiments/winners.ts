@@ -135,7 +135,17 @@ export function summarizeExperimentWinners(
   for (const exp of registry) {
     if (exp.status === 'draft') continue;
     const runtimeArchived = archived.has(exp.key);
-    const declaredWinner = parseWinnerFromDescription(exp.description);
+    const parsedWinner = parseWinnerFromDescription(exp.description);
+    /* [R28-B fix per Codex review] A winner marker like
+     * `[winner: soFtr]` parses successfully but doesn't refer to
+     * any real arm. Treat such typo-winners as "no winner declared"
+     * so the Archive Losers button never fires off an invalid
+     * archive that would pin users to a default for no real reason.
+     * The variant set is the source of truth. */
+    const declaredWinner =
+      parsedWinner !== null && exp.variants.includes(parsedWinner)
+        ? parsedWinner
+        : null;
     const cell = crosstabByKey.get(exp.key);
     const deviceArm = cell?.variant ?? null;
     const deviceUp = cell?.up ?? 0;

@@ -120,6 +120,36 @@ describe('summarizeExperimentWinners', () => {
     expect(out[0]!.effectiveStatus).toBe('archived');
   });
 
+  it('[R28-B fix] declared winner that is NOT in exp.variants is treated as no winner', () => {
+    /* Typo-protection: a `[winner: soFtr]` marker that doesn't
+     * match any actual variant must not enable the Archive Losers
+     * button. Otherwise a single typo would silently archive the
+     * experiment and pin everyone to the production default. */
+    const typoWinner: Experiment = {
+      key: 'typo-winner',
+      variants: ['control', 'softer'] as const,
+      status: 'active',
+      description: '[winner: soFtr] typo in winner name',
+    };
+    const out = summarizeExperimentWinners([typoWinner], [], [], []);
+    expect(out[0]!.declaredWinner).toBe(null);
+    expect(out[0]!.canArchiveLosers).toBe(false);
+    expect(out[0]!.readoutLine).toContain('No declared winner yet');
+  });
+
+  it('[R28-B fix] declared winner that matches a real variant still enables canArchiveLosers', () => {
+    /* Sanity-check the validation didn't break the happy path. */
+    const valid: Experiment = {
+      key: 'valid-winner',
+      variants: ['control', 'softer'] as const,
+      status: 'active',
+      description: '[winner: softer] valid winner',
+    };
+    const out = summarizeExperimentWinners([valid], [], [], []);
+    expect(out[0]!.declaredWinner).toBe('softer');
+    expect(out[0]!.canArchiveLosers).toBe(true);
+  });
+
   it('reports device arm + post-exposure positive% from crosstab', () => {
     const exposures = [exposure('active-with-winner', 'softer', 1000)];
     const signals = [
