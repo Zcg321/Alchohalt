@@ -93,8 +93,8 @@ describe('[R27-B] getStdDrinkExplanationLocalized', () => {
       'stdDrink.system.us.equiv2': '',
       'stdDrink.system.us.equiv3': 'spirit',
     };
-    const t = (k: string, fallback?: string) =>
-      k in dict ? dict[k] : fallback ?? '';
+    const t = (k: string, fallback?: string): string =>
+      k in dict ? (dict[k] ?? '') : fallback ?? '';
     const out = getStdDrinkExplanationLocalized('us', t);
     expect(out.equivalences).toEqual(['beer', 'spirit']);
   });

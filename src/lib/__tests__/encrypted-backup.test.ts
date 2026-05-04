@@ -122,8 +122,8 @@ describe('encryptBackup → decryptBackup — round-trip', () => {
   it('[R27-3] round-trips custom drink presets', async () => {
     const original = db({
       presets: [
-        { name: "House porter", kind: "beer", volumeMl: 568, abvPct: 5.4 },
-        { name: "Costco vodka pour", kind: "spirits", volumeMl: 60, abvPct: 40 },
+        { name: "House porter", volumeMl: 568, abvPct: 5.4 },
+        { name: "Costco vodka pour", volumeMl: 60, abvPct: 40 },
       ],
     });
     const encrypted = await encryptBackup(original, 'correct-horse-battery');
@@ -158,7 +158,7 @@ describe('encryptBackup → decryptBackup — round-trip', () => {
         userCrisisLine: { label: 'Therapist', phone: '+1-555-0100' },
       },
       presets: [
-        { name: 'Local IPA', kind: 'beer', volumeMl: 473, abvPct: 6.5 },
+        { name: 'Local IPA', volumeMl: 473, abvPct: 6.5 },
       ],
       advancedGoals: [
         {
