@@ -102,11 +102,15 @@ describe('[R14-4] useExperiment hook', () => {
   });
 });
 
-describe('[R15-B / R16-A] live registry contains the onboarding chip-copy test', () => {
-  it('exposes onboarding-chip-copy-2026Q2 as an active 3-way experiment', () => {
+describe('[R15-B / R16-A / R25-G] live registry contains the onboarding chip-copy test', () => {
+  it('[R25-G] onboarding-chip-copy-2026Q2 is archived after winner pin', () => {
     const exp = registryModule.findExperiment('onboarding-chip-copy-2026Q2');
     expect(exp).toBeDefined();
-    expect(exp?.status).toBe('active');
+    // R25-G picked first-person-trying as the winner per voice principles
+    // and archived the experiment. Existing exposure history preserved;
+    // no new buckets assigned. The variant list is left intact for
+    // historical replay.
+    expect(exp?.status).toBe('archived');
     expect(exp?.variants).toEqual(['control', 'first-person', 'first-person-trying']);
   });
 });

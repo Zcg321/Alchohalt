@@ -80,17 +80,25 @@ describe('[R25-E] quick-log backdating window — yesterday toggle', () => {
     expect(screen.getByTestId('quick-log-backdate-link')).toBeTruthy();
   });
 
-  it('yesterday: a drink from 30 hours ago is still in the window (yesterday-day)', () => {
+  it('yesterday: a drink at midday yesterday is in the window', () => {
     useDB.getState().setSettings({ quickLogBackdatingWindow: 'yesterday' });
-    const ts = Date.now() - 30 * 60 * 60 * 1000;
-    renderTab([{ ts }]);
+    // Anchor to noon yesterday — always within the floor (start of yesterday)
+    // regardless of what hour the test runs at.
+    const noonYesterday = new Date();
+    noonYesterday.setDate(noonYesterday.getDate() - 1);
+    noonYesterday.setHours(12, 0, 0, 0);
+    renderTab([{ ts: noonYesterday.getTime() }]);
     expect(screen.getByTestId('quick-log-backdate-link')).toBeTruthy();
   });
 
-  it('yesterday: a drink from 50 hours ago is OUT of window', () => {
+  it('yesterday: a drink from two days ago is OUT of window', () => {
     useDB.getState().setSettings({ quickLogBackdatingWindow: 'yesterday' });
-    const ts = Date.now() - 50 * 60 * 60 * 1000;
-    renderTab([{ ts }]);
+    // Anchor to noon two days ago — guaranteed to be before the start
+    // of yesterday regardless of test time-of-day.
+    const noonTwoDaysAgo = new Date();
+    noonTwoDaysAgo.setDate(noonTwoDaysAgo.getDate() - 2);
+    noonTwoDaysAgo.setHours(12, 0, 0, 0);
+    renderTab([{ ts: noonTwoDaysAgo.getTime() }]);
     expect(screen.queryByTestId('quick-log-backdate-link')).toBeNull();
   });
 

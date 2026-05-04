@@ -17,14 +17,24 @@ import InsightsTab from './tabs/InsightsTab';
 import SettingsTab from './tabs/SettingsTab';
 import PWAInstallBanner from './PWAInstallBanner';
 import UpdateBanner from './UpdateBanner';
-import BackupAutoVerifyRibbon from '../features/backup/BackupAutoVerifyRibbon';
-import OnboardingFlow from '../features/onboarding/OnboardingFlow';
-import OnboardingReentryBanner from '../features/onboarding/OnboardingReentryBanner';
-import DataRecoveryScreen from '../features/recovery/DataRecoveryScreen';
-import CrisisResources from '../features/crisis/CrisisResources';
-import HardTimePanel from '../features/crisis/HardTimePanel';
 import { type LegalSlug } from '../features/legal/slugs';
 import { Skeleton } from '../components/ui/Skeleton';
+
+/* [R25-1] Lazy-loaded surfaces. None of these render in the
+ * critical path of a returning user landing on Today:
+ *   - OnboardingFlow / OnboardingReentryBanner: only first-run users
+ *   - DataRecoveryScreen: only when prior data is corrupt
+ *   - BackupAutoVerifyRibbon: only after a backup runs
+ *   - CrisisResources / HardTimePanel: only when user opens the dialog
+ *   - LegalDocPage / ShareViewer / ComponentGallery: route-gated
+ * Moving them out of the eager bundle drops the index chunk
+ * mass that drives Lighthouse mobile perf below 0.75. */
+const BackupAutoVerifyRibbon = React.lazy(() => import('../features/backup/BackupAutoVerifyRibbon'));
+const OnboardingFlow = React.lazy(() => import('../features/onboarding/OnboardingFlow'));
+const OnboardingReentryBanner = React.lazy(() => import('../features/onboarding/OnboardingReentryBanner'));
+const DataRecoveryScreen = React.lazy(() => import('../features/recovery/DataRecoveryScreen'));
+const CrisisResources = React.lazy(() => import('../features/crisis/CrisisResources'));
+const HardTimePanel = React.lazy(() => import('../features/crisis/HardTimePanel'));
 
 const LegalDocPage = React.lazy(() => import('../features/legal/LegalDocPage'));
 const ShareViewer = React.lazy(() => import('../features/sharing/ShareViewer'));
@@ -72,7 +82,9 @@ function CrisisDialog({
             </svg>
           </button>
         </div>
-        <CrisisResources />
+        <React.Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <CrisisResources />
+        </React.Suspense>
       </div>
     </div>
   );
@@ -112,7 +124,9 @@ function HardTimeDialog({ onClose, onOpenDirectory }: { onClose: () => void; onO
             </svg>
           </button>
         </div>
-        <HardTimePanel onClose={onClose} onOpenDirectory={onOpenDirectory} />
+        <React.Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <HardTimePanel onClose={onClose} onOpenDirectory={onOpenDirectory} />
+        </React.Suspense>
       </div>
     </div>
   );
@@ -225,12 +239,24 @@ function AlcoholCoachAppInner() {
        * Co-locating the link with the app means tests render it without
        * needing main.tsx, and there's only one in the AT tree. */}
       <A11ySkipLink />
-      <DataRecoveryScreen />
-      <OnboardingFlow />
-      <OnboardingReentryBanner />
+      {/* [R25-1] Lazy-loaded surfaces wrapped in fallback-null
+          Suspense — none of these block first paint, and no
+          skeleton is needed because they're already invisible
+          until activated. */}
+      <React.Suspense fallback={null}>
+        <DataRecoveryScreen />
+      </React.Suspense>
+      <React.Suspense fallback={null}>
+        <OnboardingFlow />
+      </React.Suspense>
+      <React.Suspense fallback={null}>
+        <OnboardingReentryBanner />
+      </React.Suspense>
       <PWAInstallBanner isInstallable={isInstallable && showInstallBanner} promptInstall={promptInstall} onDismiss={() => setShowInstallBanner(false)} />
       <UpdateBanner updateAvailable={updateAvailable && showUpdateBanner} updateApp={updateApp} onDismiss={() => setShowUpdateBanner(false)} />
-      <BackupAutoVerifyRibbon />
+      <React.Suspense fallback={null}>
+        <BackupAutoVerifyRibbon />
+      </React.Suspense>
       {!isOnline && (
         <div className="fixed bottom-20 start-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-pill bg-charcoal-900/90 px-3.5 py-2 text-caption font-medium text-white shadow-medium backdrop-blur-sm" role="status" aria-live="polite">
           <span className="h-1.5 w-1.5 rounded-pill bg-amber-300" aria-hidden />
