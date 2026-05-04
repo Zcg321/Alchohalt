@@ -15,6 +15,9 @@ import { useDB } from '../../store/db';
 import { useLanguage } from '../../i18n';
 import DrinkHistorySearch from '../../features/drinks/DrinkHistorySearch';
 import QuickLogChips from '../../features/drinks/DrinkForm/QuickLogChips';
+import QuickLogHintBanner, {
+  shouldShowQuickLogHint,
+} from '../../features/drinks/DrinkForm/QuickLogHintBanner';
 import {
   filterDrinks,
   isCriteriaEmpty,
@@ -60,9 +63,37 @@ export default function TrackTab({
    * detailed form. The detailed form remains accessible via "Need
    * more detail?" disclosure so power users keep their workflow. */
   const drinkLogMode = useDB((s) => s.db.settings.drinkLogMode);
+  const quickLogHintAt = useDB((s) => s.db.settings.quickLogHintAt);
   const isQuickMode = drinkLogMode === 'quick' && !editing;
+  const showQuickLogHint = shouldShowQuickLogHint({
+    drinkCount: drinks.length,
+    drinkLogMode,
+    quickLogHintAt,
+    editing: editing !== null,
+  });
   const { t } = useLanguage();
   const [showDetailed, setShowDetailed] = useState(false);
+
+  /* [R24-FF2] Quick-mode "earlier today?" backdating link. Shown
+   * inline below the chips when the most-recent drink was logged
+   * within the last QUICK_BACKDATE_WINDOW_MS. Reuses the existing
+   * onStartEdit prop so the user lands in the same edit form they
+   * would from the history list — no parallel time-picker UI to
+   * maintain. Window matches the typical "I forgot to log when I
+   * actually drank it" lag for someone who just sat down. */
+  const QUICK_BACKDATE_WINDOW_MS = 10 * 60 * 1000;
+  const mostRecentDrink = useMemo(
+    () =>
+      drinks.length === 0
+        ? null
+        : drinks.reduce((a, b) => (a.ts > b.ts ? a : b)),
+    [drinks],
+  );
+  const showBackdateLink =
+    isQuickMode &&
+    !showDetailed &&
+    mostRecentDrink !== null &&
+    Date.now() - mostRecentDrink.ts <= QUICK_BACKDATE_WINDOW_MS;
 
   // [R14-2] History search/filter. State lives here so the search bar
   // and DrinkList stay decoupled — the bar only emits criteria; the
@@ -84,18 +115,36 @@ export default function TrackTab({
 
       <section aria-labelledby="track-form" className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
         <h3 id="track-form" className="text-h3 text-ink mb-4">{editing ? 'Edit drink' : 'Log a drink'}</h3>
+        {showQuickLogHint && <QuickLogHintBanner />}
         {isQuickMode && (
           <div className="mb-4 space-y-3">
             <QuickLogChips onLog={onAddDrink} />
+            {showBackdateLink && mostRecentDrink && (
+              <button
+                type="button"
+                onClick={() => onStartEdit(mostRecentDrink)}
+                data-testid="quick-log-backdate-link"
+                className="text-xs text-ink-soft hover:text-ink underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
+              >
+                {t('drinkLog.quick.earlierToday', 'Earlier today? Adjust last entry')}
+              </button>
+            )}
+            {/* [R24-FF3] Disclosure toggle stepped down from primary
+                color to ink-soft + caret. Low-vision users zooming in
+                still see it (text-sm + underline-on-hover), but at
+                100% it no longer competes with the chips for visual
+                weight. Same focus-ring, same hit area. */}
             <button
               type="button"
               onClick={() => setShowDetailed((v) => !v)}
+              aria-expanded={showDetailed}
+              aria-controls="track-form"
               data-testid="quick-log-toggle-detailed"
-              className="text-sm text-primary-600 dark:text-primary-400 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 rounded"
+              className="text-sm text-ink-soft hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-500 rounded"
             >
               {showDetailed
-                ? t('drinkLog.quick.hideDetailed', 'Hide detailed form')
-                : t('drinkLog.quick.needMoreDetail', 'Need more detail?')}
+                ? t('drinkLog.quick.hideDetailed', 'Hide detailed form') + ' ▴'
+                : t('drinkLog.quick.needMoreDetail', 'Need more detail?') + ' ▾'}
             </button>
           </div>
         )}

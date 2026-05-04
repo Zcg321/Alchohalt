@@ -235,6 +235,29 @@ export interface Settings {
    * persists across reloads via the standard settings store.
    */
   drinkLogMode?: 'quick' | 'detailed' | undefined;
+  /**
+   * [R24-FF1] Timestamp recording the user's response to the
+   * one-shot "quick-log mode is also available" hint that surfaces in
+   * TrackTab once they've logged ≥ 7 drinks while still on detailed
+   * mode. Set by either action (switch, dismiss). Once non-null the
+   * hint is suppressed forever — we never re-prompt. Local-only.
+   */
+  quickLogHintAt?: number | undefined;
+  /**
+   * [R24-3] On-device NPS pulse. Local-only history of every NPS
+   * answer. 30-day cadence: prompt fires when (now - lastTs) >= 30d
+   * AND the user has at least 14 days of usage (first-entry stamp).
+   * Score is 0-10; reason is optional, capped at 240 chars on input.
+   * Visible to the owner via DiagnosticsAudit. Never transmitted.
+   */
+  npsResponses?: { ts: number; score: number; reason?: string }[] | undefined;
+  /**
+   * [R24-3] Most-recent timestamp the user dismissed the NPS prompt
+   * without answering. Suppresses re-prompt for 30 days. Separate
+   * from `npsResponses` so a deliberate skip doesn't leak into the
+   * answered-set. Local-only.
+   */
+  npsDismissedAt?: number | undefined;
 }
 
 export interface Entry {
