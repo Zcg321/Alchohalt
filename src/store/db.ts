@@ -219,6 +219,22 @@ export interface Settings {
    * and what's not.
    */
   crashReportsEnabled?: boolean | undefined;
+  /**
+   * [R23-D] Drink-form mode preference.
+   *
+   *   'detailed' (default; undefined === 'detailed' for back-compat) —
+   *     full DrinkForm with chips + datetime + progressive disclosure
+   *     for volume/ABV and HALT/intention/craving. Round 22 default.
+   *
+   *   'quick' — three large tap-to-log chips above the form. Tapping
+   *     a chip records a default-volume / default-ABV drink at the
+   *     current time without expanding any modal. The full form
+   *     stays accessible via "Need more detail?" disclosure.
+   *
+   * The toggle lives in Settings → Appearance. Per-user preference,
+   * persists across reloads via the standard settings store.
+   */
+  drinkLogMode?: 'quick' | 'detailed' | undefined;
 }
 
 export interface Entry {

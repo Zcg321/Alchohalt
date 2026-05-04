@@ -11,7 +11,10 @@
 import React, { Suspense, useMemo, useState } from 'react';
 import type { Drink, DrinkPreset, Goals } from '../../types/common';
 import { Skeleton } from '../../components/ui/Skeleton';
+import { useDB } from '../../store/db';
+import { useLanguage } from '../../i18n';
 import DrinkHistorySearch from '../../features/drinks/DrinkHistorySearch';
+import QuickLogChips from '../../features/drinks/DrinkForm/QuickLogChips';
 import {
   filterDrinks,
   isCriteriaEmpty,
@@ -52,6 +55,14 @@ export default function TrackTab({
   onBulkScaleStd,
 }: Props) {
   const empty = drinks.length === 0;
+  /* [R23-D] Quick-log mode setting. When 'quick' AND the user is not
+   * editing an existing drink, render QuickLogChips above the
+   * detailed form. The detailed form remains accessible via "Need
+   * more detail?" disclosure so power users keep their workflow. */
+  const drinkLogMode = useDB((s) => s.db.settings.drinkLogMode);
+  const isQuickMode = drinkLogMode === 'quick' && !editing;
+  const { t } = useLanguage();
+  const [showDetailed, setShowDetailed] = useState(false);
 
   // [R14-2] History search/filter. State lives here so the search bar
   // and DrinkList stay decoupled — the bar only emits criteria; the
@@ -73,15 +84,32 @@ export default function TrackTab({
 
       <section aria-labelledby="track-form" className="rounded-2xl border border-border-soft bg-surface-elevated p-card shadow-card">
         <h3 id="track-form" className="text-h3 text-ink mb-4">{editing ? 'Edit drink' : 'Log a drink'}</h3>
-        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-          <DrinkForm
-            onSubmit={editing ? onSaveDrink : onAddDrink}
-            initial={editing || undefined}
-            submitLabel={editing ? 'Save' : 'Add'}
-            onCancel={editing ? onCancelEdit : undefined}
-            presets={presets}
-          />
-        </Suspense>
+        {isQuickMode && (
+          <div className="mb-4 space-y-3">
+            <QuickLogChips onLog={onAddDrink} />
+            <button
+              type="button"
+              onClick={() => setShowDetailed((v) => !v)}
+              data-testid="quick-log-toggle-detailed"
+              className="text-sm text-primary-600 dark:text-primary-400 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 rounded"
+            >
+              {showDetailed
+                ? t('drinkLog.quick.hideDetailed', 'Hide detailed form')
+                : t('drinkLog.quick.needMoreDetail', 'Need more detail?')}
+            </button>
+          </div>
+        )}
+        {(!isQuickMode || showDetailed || editing) && (
+          <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+            <DrinkForm
+              onSubmit={editing ? onSaveDrink : onAddDrink}
+              initial={editing || undefined}
+              submitLabel={editing ? 'Save' : 'Add'}
+              onCancel={editing ? onCancelEdit : undefined}
+              presets={presets}
+            />
+          </Suspense>
+        )}
       </section>
 
       <section aria-labelledby="track-history" className="space-y-3">
