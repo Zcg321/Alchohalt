@@ -13,6 +13,7 @@ function GoalRow({
   percent,
   goalValue,
   unitLabel,
+  overUnitLabel,
   palette,
   emptyHint,
 }: {
@@ -20,10 +21,15 @@ function GoalRow({
   percent: number;
   goalValue: number;
   unitLabel: string;
+  /* [R21-5] Recently-quit-user judge: "Exceeded by 100%" is math-shame.
+   * Pass an absolute-units phrasing for the over-limit case so the
+   * copy reads as a calendar fact, not a percentage scoreboard. */
+  overUnitLabel: string;
   palette: 'green' | 'blue';
   emptyHint: string;
 }) {
   if (percent < 0) return <p className="text-xs text-ink-subtle">{emptyHint}</p>;
+  const drinksOver = goalValue * (percent - 100) / 100;
   return (
     <>
       <div className="flex justify-between items-center mb-2">
@@ -39,7 +45,7 @@ function GoalRow({
       <div className="text-xs text-ink-subtle mt-1">
         {percent <= 100
           ? `${(goalValue - (goalValue * percent) / 100).toFixed(1)} ${unitLabel}`
-          : `Exceeded by ${(percent - 100).toFixed(0)}%`}
+          : `${drinksOver.toFixed(1)} ${overUnitLabel}`}
       </div>
     </>
   );
@@ -58,6 +64,7 @@ export function GoalProgressCard({ data, goals }: { data: ProgressData; goals: G
             percent={data.dailyProgress}
             goalValue={goals.dailyCap}
             unitLabel="drinks remaining"
+            overUnitLabel="drinks over today's limit"
             palette="green"
             emptyHint="Set a daily limit in Settings to track progress."
           />
@@ -68,6 +75,7 @@ export function GoalProgressCard({ data, goals }: { data: ProgressData; goals: G
             percent={data.weeklyProgress}
             goalValue={goals.weeklyGoal}
             unitLabel="drinks remaining this week"
+            overUnitLabel="drinks over this week's goal"
             palette="blue"
             emptyHint="Set a weekly goal in Settings to track progress."
           />
@@ -210,6 +218,11 @@ export function HealthInsightsCard({ data }: { data: ProgressData }) {
             <div className={`text-2xl font-bold mb-1 ${TREND_COLOR[improvementTrend]}`} aria-hidden="true">
               {TREND_ICON[improvementTrend]}
             </div>
+            {/* [R21-5] SR-only label so the trend value isn't lost behind
+              * aria-hidden on the icon. Sighted users see the arrow + the
+              * "Overall trend" caption below; SR users now hear the
+              * direction word + the trend label. */}
+            <span className="sr-only">{improvementTrend}</span>
             <div className="text-sm text-ink-soft">Overall trend</div>
           </div>
         </div>
